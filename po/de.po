@@ -7,19 +7,23 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-07 23:58+0200\n"
+"POT-Creation-Date: 2020-06-08 01:32+0200\n"
 "PO-Revision-Date: 2020-06-07 23:58+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ASCII\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/Widgets/Window.vala:24
-msgid "Station Name"
-msgstr ""
+#: src/Widgets/Window.vala:49
+msgid "Playing"
+msgstr "Läuft"
+
+#: src/Widgets/Window.vala:53
+msgid "Stopped"
+msgstr "Angehalten"
 
 #: data/com.github.louis77.tuner.desktop.in:3
 #: data/com.github.louis77.tuner.appdata.xml.in:6

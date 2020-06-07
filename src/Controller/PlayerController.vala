@@ -20,53 +20,8 @@
 */
 
 
-public class Tuner.PlayerController {
+public class Tuner.PlayerController : Object {
 
-    private Gst.Player _player;
-
-    public PlayerController() {
-    	_player = new Gst.Player(null, null);
-
-    	print("Player Controller created.");
-    }
-
-    public void playURI(string uri) {
-    	_player.uri = uri;
-    	_player.play();
-
-    	print("Player URI set and playing started");
-    }
-
-    public void stop() {
-    	_player.stop();
-
-    	print("Player stopped.");
-    }
+    //Object ();
 
 }
-
-/*
-	    // Build the pipeline:
-	    Gst.Element pipeline;
-	    try {
-		    pipeline = Gst.parse_launch ("playbin uri=http://barbaradio.hoerradar.de/barbaradio-live-mp3-hq");
-	    } catch (Error e) {
-		    print ("Error: %s\n", e.message);
-		    return;
-	    }
-
-	    // Start playing:
-	    pipeline.set_state (Gst.State.PLAYING);
-
-	    // Wait until error or EOS:
-	    Gst.Bus bus = pipeline.get_bus ();
-	    bus.message.connect ( (msg) => {
-	        print("Received message");
-	    });
-
-	    // bus.timed_pop_filtered (Gst.CLOCK_TIME_NONE, Gst.MessageType.ERROR | Gst.MessageType.EOS);
-
-	    // Free resources:
-	    // pipeline.set_state (Gst.State.NULL);
-
-*/

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-07 23:58+0200\n"
+"POT-Creation-Date: 2020-06-08 01:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,8 +17,12 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/Widgets/Window.vala:24
-msgid "Station Name"
+#: src/Widgets/Window.vala:49
+msgid "Playing"
+msgstr ""
+
+#: src/Widgets/Window.vala:53
+msgid "Stopped"
 msgstr ""
 
 #: data/com.github.louis77.tuner.desktop.in:3

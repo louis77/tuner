@@ -6,6 +6,7 @@ executable(
     'Widgets/HeaderBar.vala',
     'Widgets/StationBox.vala',
     'Controller/PlayerController.vala',
+    'Model/StationModel.vala',
     dependencies: [
         dependency('gtk+-3.0'),
         dependency('granite'),
