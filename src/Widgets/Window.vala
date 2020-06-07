@@ -21,7 +21,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             return before_destroy ();
         });
 
-        var station_label = new Gtk.Label ("Station Name");
+        var station_label = new Gtk.Label (_("Station Name"));
         var player_state_label = new Gtk.Label ("Player State");
 
         var station_list = new Gtk.Grid ();
