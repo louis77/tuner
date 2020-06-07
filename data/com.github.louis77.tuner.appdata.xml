@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2019 Your Name <you@email.com> -->
+<component type="desktop">
+  <id>com.github.louis77.tuner</id>
+  <metadata_license>CC0</metadata_license>
+  <name>Tuner</name>
+  <summary>Listen to your favourite internet radio stations</summary>
+  <description>
+    <p>Listen to your favourite internet radio stations.</p>
+  </description>
+</component>
