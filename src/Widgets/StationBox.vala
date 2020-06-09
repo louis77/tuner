@@ -26,6 +26,7 @@ public class Tuner.StationBox : Gtk.Button {
     public StationBox (Tuner.Model.StationModel station) {
         label = station.title;
         this.station = station;
+        this.set_valign (Gtk.Align.CENTER);
 
     /*
         border_width = 20;

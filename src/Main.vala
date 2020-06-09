@@ -22,7 +22,6 @@
 public static int main (string[] args) {
     Gst.init (ref args);
 
-    var app = new Application ();
-
+    var app = Tuner.Application.instance;
     return app.run (args);
 }

@@ -34,16 +34,22 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         title = "Choose a station";
         subtitle = "Paused";
 
-        var menu_button = new Gtk.Button.from_icon_name (
-            "media-playback-pause",
+        var play_button = new Gtk.Button.from_icon_name (
+            "media-playback-pause-symbolic",
             Gtk.IconSize.LARGE_TOOLBAR
         );
-        menu_button.valign = Gtk.Align.CENTER;
-        menu_button.clicked.connect (() => {
+        play_button.valign = Gtk.Align.CENTER;
+        play_button.action_name = "win.action_quit";
+        play_button.tooltip_markup = Granite.markup_accel_tooltip (
+            Tuner.Application.instance.get_accels_for_action (play_button.action_name),
+            _("Pause playback")
+        );
+        play_button.clicked.connect (() => {
             stop_clicked ();
         });
 
-        pack_end (menu_button);
+        pack_start (play_button);
+
     }
 
     public void open_dialog () {

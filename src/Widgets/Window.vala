@@ -24,7 +24,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public Gtk.Stack stack { get; set; }
 
     private Gst.Player _playerController;
-    private Tuner.HeaderBar headerbar;
+    private HeaderBar headerbar;
 
     public Window (Application app) {
         Object (
@@ -58,7 +58,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         window_position = Gtk.WindowPosition.CENTER;
         set_default_size (350, 80);
 
-        settings = new GLib.Settings ("com.github.louis77.tuner");
+        settings = Application.instance.settings;
 
         move (settings.get_int ("pos-x"), settings.get_int ("pos-y"));
         resize (settings.get_int ("window-width"), settings.get_int ("window-height"));
@@ -67,34 +67,41 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             return before_destroy ();
         });
 
-        var station_list = new Gtk.Grid ();
 
-        Tuner.Model.StationModel[] stations = {
-            new Tuner.Model.StationModel ("Barba Radio 1", "Germany", "http://barbaradio.hoerradar.de/barbaradio-live-mp3-hq"),
-            new Tuner.Model.StationModel ("Radio 1", "Zurich", "http://radio.nello.tv/128k"),
-            new Tuner.Model.StationModel ("SRF 1 General", "Zurich", "http://stream.srg-ssr.ch/m/drs1/mp3_128")
-        };
+        var station_list = new Gtk.FlowBox ();
+        station_list.column_spacing = 5;
+        station_list.row_spacing = 5;
+        station_list.border_width = 20;
+        station_list.valign = Gtk.Align.START;
+
+        var directory = new Model.RadioBrowserDirectory();
+        var stations = directory.all();
 
         foreach (var s in stations) {
-            var box = new Tuner.StationBox (s);
+            var box = new StationBox (s);
             box.clicked.connect (() => {
                 this.handle_station_click (box.station);
             });
             station_list.add (box);
         }
 
-        add (station_list);
+        var content = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
+        content.valign = Gtk.Align.START;
+        var station_list_title = new Granite.HeaderLabel ("Top Stations");
+        station_list_title.xpad = 20;
+        station_list_title.ypad = 10;
+        content.pack_start (station_list_title);
+        content.pack_start (station_list);
 
-        headerbar = new Tuner.HeaderBar (this);
+        add (content);
+
+        headerbar = new HeaderBar (this);
         headerbar.stop_clicked.connect ( () => {
             handle_stop_playback ();
         });
         set_titlebar (headerbar);
 
         show_all ();
-
-
-
     }
 
     public void handle_station_click(Tuner.Model.StationModel station) {

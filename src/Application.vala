@@ -19,17 +19,31 @@
 * Authored by: Louis Brauer <louis@brauer.family>
 */
 
-public class Application : Gtk.Application {
+public class Tuner.Application : Gtk.Application {
+    public GLib.Settings settings;
 
     public Application () {
         Object (
             application_id: "com.github.louis77.tuner",
             flags: ApplicationFlags.FLAGS_NONE
         );
+
+        settings = new GLib.Settings ("com.github.louis77.tuner");
+    }
+
+    public static Application _instance = null;
+
+    public static Application instance {
+        get {
+            if (_instance == null) {
+                _instance = new Application ();
+            }
+            return _instance;
+        }
     }
 
     protected override void activate() {
-        var window = new Tuner.Window (this);
+        var window = new Window (this);
 
         add_window (window);
     }
