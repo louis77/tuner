@@ -24,6 +24,8 @@ public class Tuner.Model.StationModel : Object {
     public string location { get; private set; }
     public string url { get; private set; }
 
+    public string? favicon_url { get; set; }
+
     public StationModel (string title, string location, string url) {
         this.title = title;
         this.location = location;

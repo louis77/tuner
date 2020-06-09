@@ -22,20 +22,26 @@
 using Gee;
 
 // TODO: handle failures
+// TODO: use async
 
 class Tuner.Model.RadioBrowserDirectory : IDirectoryProvider {
 
     // TODO: choose local server from server list
-    private const string URL = "http://de1.api.radio-browser.info/json/stations/topclick/9";
+    private const string API_BASE_URL = "http://de1.api.radio-browser.info";
     private Soup.Session _session;
 
     public RadioBrowserDirectory() {
         _session = new Soup.Session ();
-        _session.user_agent = "com.github.louis77.tuner.RadioBrowserDirectory/0.1";
+        // TODO: Get Application ID dynamically
+        _session.user_agent = "com.github.louis77.tuner/0.1";
     }
 
-    public ArrayList<StationModel> all() {
-        var data = load_topclick();
+    public ArrayList<StationModel> all() throws DataError {
+        var data = load_top (9);
+        if (data == null) {
+            throw new DataError.PARSE_DATA("Unable to retrieve data");
+        }
+
         var stations = new ArrayList<StationModel>();
 
         data.foreach_element ((array, index, element) => {
@@ -43,10 +49,13 @@ class Tuner.Model.RadioBrowserDirectory : IDirectoryProvider {
             var name = obj.get_string_member("name");
             var url = obj.get_string_member("url_resolved");
             var location = obj.get_string_member("country");
+            var favicon = obj.get_string_member("favicon");
 
-            stations.add(new StationModel (name, location, url));
+            var s = new StationModel (name, location, url);
+            s.favicon_url = favicon;
+            stations.add(s);
 
-            print(@"$index - $name\n");
+            debug (@"$index - $name\n");
         });
 
         return stations;
@@ -54,11 +63,22 @@ class Tuner.Model.RadioBrowserDirectory : IDirectoryProvider {
     }
 
     // TODO: don't use blocking calls here
-    private Json.Array load_topclick() {
-        var message = new Soup.Message ("GET", URL);
+    private Json.Array? load_top (uint rowcount) {
+        //var resource = @"json/stations/topclick/$rowcount";
+
+        var resource = @"json/stations/search?language=en&limit=$rowcount&order=clicktrend";
+        var message = new Soup.Message ("GET", @"$API_BASE_URL/$resource");
+        Json.Node rootnode;
+
         _session.send_message (message);
         var body = (string) message.response_body.data;
-        var rootnode = Json.from_string (body);
+
+        try {
+            rootnode = Json.from_string (body);
+        } catch (Error e) {
+            warning ("unable to parse JSON response: %s", e.message);
+            return null;
+        }
         var rootarray = rootnode.get_array ();
 
         return rootarray;

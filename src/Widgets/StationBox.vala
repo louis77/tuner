@@ -21,12 +21,26 @@
 
 public class Tuner.StationBox : Gtk.Button {
 
-    public Tuner.Model.StationModel station { get; private set; }
+    public Model.StationModel station { get; private set; }
 
-    public StationBox (Tuner.Model.StationModel station) {
+    public StationBox (Model.StationModel station) {
         label = station.title;
         this.station = station;
         this.set_valign (Gtk.Align.CENTER);
+
+        if (station.favicon_url != null) {
+            var session = new Soup.Session ();
+            var request = session.request (station.favicon_url);
+            var stream = request.send ();
+            var data_stream = new DataInputStream (stream);
+
+            var pxbuf = new Gdk.Pixbuf.from_stream (data_stream);
+            var pxbuf_scaled = pxbuf.scale_simple (32, 32, Gdk.InterpType.BILINEAR);
+            var image = new Gtk.Image.from_pixbuf (pxbuf_scaled);
+            this.image = image;
+            always_show_image = true;
+
+        }
 
     /*
         border_width = 20;

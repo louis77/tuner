@@ -39,11 +39,12 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             Gtk.IconSize.LARGE_TOOLBAR
         );
         play_button.valign = Gtk.Align.CENTER;
-        play_button.action_name = "win.action_quit";
+        /* play_button.action_name = "win.action_quit";
         play_button.tooltip_markup = Granite.markup_accel_tooltip (
             Tuner.Application.instance.get_accels_for_action (play_button.action_name),
             _("Pause playback")
         );
+        */
         play_button.clicked.connect (() => {
             stop_clicked ();
         });

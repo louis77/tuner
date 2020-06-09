@@ -21,7 +21,14 @@
 
 using Gee;
 
+// Errors
+public errordomain DataError {
+    PARSE_DATA
+}
+
 interface Tuner.Model.IDirectoryProvider {
 
-    public abstract ArrayList<StationModel> all();
+    // Methods
+    public abstract ArrayList<StationModel> all() throws DataError;
+
 }
