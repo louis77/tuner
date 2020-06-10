@@ -65,26 +65,31 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         headerbar.stop_clicked.connect ( () => {
             handle_stop_playback ();
         });
-        headerbar.shuffle_clicked.connect ( () => {
-            debug (@"Shuffle Button Clicked");
-            var childs = content.get_children();
-            foreach (var c in childs) {
-                c.destroy();
-            }
-            _directory.load_top_stations ();
-        });
         set_titlebar (headerbar);
 
         var content_header = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
         content_header.homogeneous = false;
 
-        var station_list_icon = new Gtk.Image.from_icon_name ("folder-music-symbolic", Gtk.IconSize.DIALOG);
+        var station_list_icon = new Gtk.Image.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.DIALOG);
         content_header.pack_start (station_list_icon, false, false, 20);
 
         var station_list_title = new Tuner.HeaderLabel ("Discover");
         station_list_title.xpad = 20;
         station_list_title.ypad = 20;
         content_header.pack_start (station_list_title, false, false);
+
+        var shuffle_button = new Gtk.Image.from_icon_name (
+            "media-playlist-shuffle-symbolic",
+            Gtk.IconSize.LARGE_TOOLBAR
+        );
+        shuffle_button.tooltip_text = "Discover more stations";
+        //shuffle_button.relief = Gtk.ReliefStyle.NONE;
+        var shuffle_button_eventbox = new Gtk.EventBox ();
+        shuffle_button_eventbox.button_release_event.connect (() => {
+            handle_shuffle_click ();
+        });
+        shuffle_button_eventbox.add (shuffle_button);
+        content_header.pack_start (shuffle_button_eventbox, false, false);
 
         content_area = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
         content_area.get_style_context ().add_class ("color-dark");
@@ -148,6 +153,15 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         _playerController.uri = station.url;
         _playerController.play ();
+    }
+
+    public void handle_shuffle_click() {
+        debug (@"Shuffle Button Clicked");
+        var childs = content.get_children();
+        foreach (var c in childs) {
+            c.destroy();
+        }
+        _directory.load_top_stations ();
     }
 
     public void handle_stop_playback() {
