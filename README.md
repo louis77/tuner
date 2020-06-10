@@ -1,4 +1,4 @@
-# Tuner
+# ![icon](docs/logo_01.png) Tuner
 
 ## Minimalist radio station player
 
