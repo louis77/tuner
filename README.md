@@ -1,3 +1,3 @@
 # Tuner
 
-![Screenshot 01](docs/screen_01.png)
+![Screenshot 01](docs/screen_02.png)

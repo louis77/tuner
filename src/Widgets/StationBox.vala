@@ -19,43 +19,63 @@
 * Authored by: Louis Brauer <louis@brauer.family>
 */
 
-public class Tuner.StationBox : Gtk.Button {
+public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
 
     public Model.StationModel station { get; private set; }
 
     public StationBox (Model.StationModel station) {
-        label = station.title;
+
+        Object (
+            description: station.location,
+            title: station.title,
+            icon: new Gtk.Image()
+        );
+
         this.station = station;
-        this.set_valign (Gtk.Align.CENTER);
 
-        if (station.favicon_url != null) {
+        // in Vala nullable strings are always empty
+        if (station.favicon_url != "") {
             var session = new Soup.Session ();
-            var request = session.request (station.favicon_url);
-            var stream = request.send ();
-            var data_stream = new DataInputStream (stream);
+            var message = new Soup.Message ("GET", station.favicon_url);
 
-            var pxbuf = new Gdk.Pixbuf.from_stream (data_stream);
-            var pxbuf_scaled = pxbuf.scale_simple (32, 32, Gdk.InterpType.BILINEAR);
-            var image = new Gtk.Image.from_pixbuf (pxbuf_scaled);
-            this.image = image;
-            always_show_image = true;
+            session.send_async.begin (message, null, (obj, res) => {
+                GLib.InputStream? stream;
+
+                try {
+                    stream = session.send_async.end(res);
+                } catch (Error e) {
+                    return;
+                }
+
+                if (stream == null) {
+                    return;
+                }
+
+                var data_stream = new DataInputStream (stream);
+
+                // TODO: use from_stream_async?
+                // TODO: use default image if rendering fails
+
+                Gdk.Pixbuf pxbuf;
+
+                try {
+                    pxbuf = new Gdk.Pixbuf.from_stream_at_scale (data_stream, 48, 48, true, null);
+                } catch (Error e) {
+                    warning ("Couldn't render favicon: %s (%s)",
+                        station.favicon_url ?? "unknown url",
+                        e.message);
+                    return;
+                }
+
+                this.icon.set_from_pixbuf (pxbuf);
+            });
 
         }
 
-    /*
-        border_width = 20;
-        var style_context = get_style_context();
-        style_context.add_class (Granite.STYLE_CLASS_CARD);
-
-        var label = new Gtk.Label (station.title);
-        pack_start (label);
-
-        var sublabel = new Gtk.Label (station.location);
-        pack_start (sublabel);
-        */
     }
 
     construct {
+        always_show_image = true;
     }
 
 }

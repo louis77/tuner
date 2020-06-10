@@ -19,35 +19,19 @@
 * Authored by: Louis Brauer <louis@brauer.family>
 */
 
-public class Tuner.HeaderBar : Gtk.HeaderBar {
+using Gee;
 
-    public Tuner.Window main_window { get; construct; }
-    public Gtk.Button play_button { get; set; }
+class Tuner.Services.LocalDirectory : Object, IDirectoryProvider {
 
-    public signal void stop_clicked();
+    public ArrayList<Model.StationModel> all() {
 
-    public HeaderBar (Tuner.Window window) {
-        Object (
-            main_window: window
-        );
-    }
+        var stations = new ArrayList<Model.StationModel>();
 
-    construct {
-        show_close_button = true;
-        title = "Choose a station";
-        subtitle = "Paused";
+        stations.add(new Model.StationModel ("Barba Radio 1", "Germany", "http://barbaradio.hoerradar.de/barbaradio-live-mp3-hq"));
+        stations.add(new Model.StationModel ("Radio 1", "Zurich", "http://radio.nello.tv/128k"));
+        stations.add(new Model.StationModel ("SRF 1 General", "Zurich", "http://stream.srg-ssr.ch/m/drs1/mp3_128"));
 
-        play_button = new Gtk.Button.from_icon_name (
-            "media-playback-pause-symbolic",
-            Gtk.IconSize.LARGE_TOOLBAR
-        );
-        play_button.valign = Gtk.Align.CENTER;
-        play_button.sensitive = false;
-        play_button.clicked.connect (() => {
-            stop_clicked ();
-        });
-
-        pack_start (play_button);
+        return stations;
 
     }
 

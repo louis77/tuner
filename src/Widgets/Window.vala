@@ -37,26 +37,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     construct {
         _playerController = new Gst.Player( null, null );
-        _playerController.state_changed.connect ((e, state) => {
-            switch (state) {
-                case Gst.PlayerState.BUFFERING:
-                    debug ("player state changed to Buffering");
-                    headerbar.subtitle = "Buffering";
-                    break;
-                case Gst.PlayerState.PAUSED:
-                    debug ("player state changed to Paused");
-                    headerbar.subtitle = "Paused";
-                    break;
-                case Gst.PlayerState.PLAYING:
-                    debug ("player state changed to Playing");
-                    headerbar.subtitle = _("Playing");
-                    break;
-                case Gst.PlayerState.STOPPED:
-                    debug ("player state changed to Stopped");
-                    headerbar.subtitle = _("Stopped");
-                    break;
-            }
-        });
+        _playerController.state_changed.connect (handle_player_state_changed);
 
         window_position = Gtk.WindowPosition.CENTER;
         set_default_size (350, 80);
@@ -84,11 +65,16 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     }
 
     public void handle_updated_stations (ArrayList<Model.StationModel> stations) {
+        debug ("entering handle_updated_stations");
         var station_list = new Gtk.FlowBox ();
+        station_list.homogeneous = true;
+        station_list.min_children_per_line = 2;
         station_list.column_spacing = 5;
         station_list.row_spacing = 5;
         station_list.border_width = 20;
         station_list.valign = Gtk.Align.START;
+        // TODO: doesn't seem to work, first element is always selected
+        station_list.selection_mode = Gtk.SelectionMode.NONE;
 
         foreach (var s in stations) {
             var box = new StationBox (s);
@@ -98,15 +84,23 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             station_list.add (box);
         }
 
+        station_list.unselect_all ();
+
         var content = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
         content.valign = Gtk.Align.START;
-        var station_list_title = new Granite.HeaderLabel ("Top Stations");
+        var station_list_title = new Tuner.HeaderLabel ("Top Stations");
         station_list_title.xpad = 20;
-        station_list_title.ypad = 10;
+        station_list_title.ypad = 20;
         content.pack_start (station_list_title);
         content.pack_start (station_list);
+        content.get_style_context().add_class("welcome");
+
+        // var scrolled_window = new Gtk.ScrolledWindow (null, null);
+        // scrolled_window.add (content);
+        // add (scrolled_window);
 
         add (content);
+        debug ("exiting handle_updated_stations");
     }
 
     public void handle_station_click(Tuner.Model.StationModel station) {
@@ -121,6 +115,45 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public void handle_stop_playback() {
         info ("Stop Playback requested");
         _playerController.stop ();
+    }
+
+    public void handle_player_state_changed (Gst.Player player, Gst.PlayerState state) {
+        switch (state) {
+            case Gst.PlayerState.BUFFERING:
+                debug ("player state changed to Buffering");
+                Gdk.threads_add_idle (() => {
+                    headerbar.subtitle = "Buffering";
+                    headerbar.play_button.sensitive = true;
+                    return false;
+                });
+                break;;
+            case Gst.PlayerState.PAUSED:
+                debug ("player state changed to Paused");
+                Gdk.threads_add_idle (() => {
+                    headerbar.subtitle = "Paused";
+                    headerbar.play_button.sensitive = false;
+                    return false;
+                });
+                break;;
+            case Gst.PlayerState.PLAYING:
+                debug ("player state changed to Playing");
+                Gdk.threads_add_idle (() => {
+                    headerbar.subtitle = _("Playing");
+                    headerbar.play_button.sensitive = true;
+                    return false;
+                });
+                break;;
+            case Gst.PlayerState.STOPPED:
+                debug ("player state changed to Stopped");
+                Gdk.threads_add_idle (() => {
+                    headerbar.subtitle = _("Stopped");
+                    headerbar.play_button.sensitive = false;
+                    return false;
+                });
+                break;
+        }
+
+        return;
     }
 
     public bool before_destroy () {

@@ -19,36 +19,20 @@
 * Authored by: Louis Brauer <louis@brauer.family>
 */
 
-public class Tuner.HeaderBar : Gtk.HeaderBar {
+public class Tuner.HeaderLabel : Gtk.Label {
 
-    public Tuner.Window main_window { get; construct; }
-    public Gtk.Button play_button { get; set; }
-
-    public signal void stop_clicked();
-
-    public HeaderBar (Tuner.Window window) {
+    /**
+     * Create a new HeaderLabel
+     */
+    public HeaderLabel (string label) {
         Object (
-            main_window: window
+            label: label
         );
     }
 
     construct {
-        show_close_button = true;
-        title = "Choose a station";
-        subtitle = "Paused";
-
-        play_button = new Gtk.Button.from_icon_name (
-            "media-playback-pause-symbolic",
-            Gtk.IconSize.LARGE_TOOLBAR
-        );
-        play_button.valign = Gtk.Align.CENTER;
-        play_button.sensitive = false;
-        play_button.clicked.connect (() => {
-            stop_clicked ();
-        });
-
-        pack_start (play_button);
-
+        halign = Gtk.Align.START;
+        xalign = 0;
+        get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
     }
-
 }

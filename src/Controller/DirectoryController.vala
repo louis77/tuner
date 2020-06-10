@@ -19,36 +19,29 @@
 * Authored by: Louis Brauer <louis@brauer.family>
 */
 
-public class Tuner.HeaderBar : Gtk.HeaderBar {
+using Gee;
 
-    public Tuner.Window main_window { get; construct; }
-    public Gtk.Button play_button { get; set; }
+// TODO: Provide cache facility for favicons
 
-    public signal void stop_clicked();
+public class Tuner.DirectoryController : Object {
 
-    public HeaderBar (Tuner.Window window) {
-        Object (
-            main_window: window
-        );
+    public IDirectoryProvider provider { get; set; }
+
+    public signal void stations_updated (ArrayList<Model.StationModel> stations);
+
+    public DirectoryController (IDirectoryProvider provider) {
+        this.provider = provider;
     }
 
-    construct {
-        show_close_button = true;
-        title = "Choose a station";
-        subtitle = "Paused";
-
-        play_button = new Gtk.Button.from_icon_name (
-            "media-playback-pause-symbolic",
-            Gtk.IconSize.LARGE_TOOLBAR
-        );
-        play_button.valign = Gtk.Align.CENTER;
-        play_button.sensitive = false;
-        play_button.clicked.connect (() => {
-            stop_clicked ();
-        });
-
-        pack_start (play_button);
-
+    public void load_top_stations() {
+        try {
+            var stations = provider.all();
+            if (stations != null) {
+                stations_updated (stations);
+            }
+        } catch (DataError e) {
+            warning ("unable to fetch stations from directory: %s", e.message);
+        }
     }
 
 }
