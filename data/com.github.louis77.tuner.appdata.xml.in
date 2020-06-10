@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2019 Your Name <you@email.com> -->
 <component type="desktop">
-  <id>com.github.louis77.tuner</id>
+  <id>com.github.tuner-elementary.tuner</id>
   <metadata_license>CC0</metadata_license>
   <name>Tuner</name>
   <summary>Discover and lsiten to internet radio stations</summary>

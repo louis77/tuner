@@ -24,11 +24,11 @@ public class Tuner.Application : Gtk.Application {
 
     public Application () {
         Object (
-            application_id: "com.github.louis77.tuner",
+            application_id: "com.github.tuner-elementary.tuner",
             flags: ApplicationFlags.FLAGS_NONE
         );
 
-        settings = new GLib.Settings ("com.github.louis77.tuner");
+        settings = new GLib.Settings ("com.github.tuner-elementary.tuner");
     }
 
     public static Application _instance = null;

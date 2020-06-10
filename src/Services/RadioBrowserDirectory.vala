@@ -33,7 +33,7 @@ class Tuner.Services.RadioBrowserDirectory : Object, IDirectoryProvider {
     public RadioBrowserDirectory() {
         _session = new Soup.Session ();
         // TODO: Get Application ID dynamically
-        _session.user_agent = "com.github.louis77.tuner/0.1";
+        _session.user_agent = "com.github.tuner-elementary.tuner/0.1";
     }
 
     public ArrayList<Model.StationModel> all() throws DataError {

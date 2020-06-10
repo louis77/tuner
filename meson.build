@@ -1,4 +1,4 @@
-project('com.github.louis77.tuner', 'vala', 'c')
+project('com.github.tuner-elementary.tuner', 'vala', 'c')
 
 gnome = import('gnome')
 i18n = import('i18n')

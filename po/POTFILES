@@ -1,5 +1,5 @@
 src/Application.vala
 src/Widgets/Window.vala
 src/Widgets/HeaderBar.vala
-data/com.github.louis77.tuner.desktop.in
-data/com.github.louis77.tuner.appdata.xml.in
+data/com.github.tuner-elementary.tuner.desktop.in
+data/com.github.tuner-elementary.tuner.appdata.xml.in

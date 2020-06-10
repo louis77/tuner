@@ -39,7 +39,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     static construct {
         var provider = new Gtk.CssProvider ();
-        provider.load_from_resource ("com/github/louis77/tuner/Application.css");
+        provider.load_from_resource ("com/github/tuner-elementary/tuner/Application.css");
         Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), provider,                 Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
 
