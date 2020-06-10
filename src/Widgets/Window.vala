@@ -28,11 +28,19 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     private Gst.Player _playerController;
     private DirectoryController _directory;
     private HeaderBar headerbar;
+    private Gtk.Box content_area;
+    private Gtk.Box content;
 
     public Window (Application app) {
         Object (
             application: app
         );
+    }
+
+    static construct {
+        var provider = new Gtk.CssProvider ();
+        provider.load_from_resource ("com/github/louis77/tuner/Application.css");
+        Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), provider,                 Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
 
     construct {
@@ -45,35 +53,69 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         settings = Application.instance.settings;
 
         move (settings.get_int ("pos-x"), settings.get_int ("pos-y"));
-        resize (settings.get_int ("window-width"), settings.get_int ("window-height"));
+        // TODO: disable resizing for now
+        // resize (settings.get_int ("window-width"), settings.get_int ("window-height"));
+
 
         delete_event.connect (e => {
             return before_destroy ();
         });
 
-        _directory = new DirectoryController (new Services.RadioBrowserDirectory());
-        _directory.stations_updated.connect (handle_updated_stations);
-        _directory.load_top_stations();
-
         headerbar = new HeaderBar (this);
         headerbar.stop_clicked.connect ( () => {
             handle_stop_playback ();
         });
+        headerbar.shuffle_clicked.connect ( () => {
+            debug (@"Shuffle Button Clicked");
+            var childs = content.get_children();
+            foreach (var c in childs) {
+                c.destroy();
+            }
+            _directory.load_top_stations ();
+        });
         set_titlebar (headerbar);
 
+        var content_header = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+        content_header.homogeneous = false;
+
+        var station_list_icon = new Gtk.Image.from_icon_name ("folder-music-symbolic", Gtk.IconSize.DIALOG);
+        content_header.pack_start (station_list_icon, false, false, 20);
+
+        var station_list_title = new Tuner.HeaderLabel ("Discover");
+        station_list_title.xpad = 20;
+        station_list_title.ypad = 20;
+        content_header.pack_start (station_list_title, false, false);
+
+        content_area = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
+        content_area.get_style_context ().add_class ("color-dark");
+        content_area.pack_start (content_header, false, false);
+        content_area.pack_start (new Gtk.Separator (Gtk.Orientation.HORIZONTAL), false, false);
+
+        content = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
+        content.get_style_context ().add_class ("color-light");
+        content.valign = Gtk.Align.START;
+        content.get_style_context().add_class("welcome");
+        content_area.add (content);
+
+        add (content_area);
+
         show_all ();
+
+        _directory = new DirectoryController (new Services.RadioBrowserDirectory());
+        _directory.stations_updated.connect (handle_updated_stations);
+        _directory.load_top_stations();
+
     }
 
     public void handle_updated_stations (ArrayList<Model.StationModel> stations) {
         debug ("entering handle_updated_stations");
         var station_list = new Gtk.FlowBox ();
-        station_list.homogeneous = true;
+        station_list.homogeneous = false;
         station_list.min_children_per_line = 2;
         station_list.column_spacing = 5;
         station_list.row_spacing = 5;
         station_list.border_width = 20;
         station_list.valign = Gtk.Align.START;
-        // TODO: doesn't seem to work, first element is always selected
         station_list.selection_mode = Gtk.SelectionMode.NONE;
 
         foreach (var s in stations) {
@@ -84,22 +126,18 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             station_list.add (box);
         }
 
+        content.add (station_list);
         station_list.unselect_all ();
 
-        var content = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
-        content.valign = Gtk.Align.START;
-        var station_list_title = new Tuner.HeaderLabel ("Top Stations");
-        station_list_title.xpad = 20;
-        station_list_title.ypad = 20;
-        content.pack_start (station_list_title);
-        content.pack_start (station_list);
-        content.get_style_context().add_class("welcome");
 
+
+        // Main content area
+        set_geometry_hints (null, null, Gdk.WindowHints.MIN_SIZE);
+        show_all ();
         // var scrolled_window = new Gtk.ScrolledWindow (null, null);
         // scrolled_window.add (content);
         // add (scrolled_window);
 
-        add (content);
         debug ("exiting handle_updated_stations");
     }
 

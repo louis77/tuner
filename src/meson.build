@@ -12,6 +12,7 @@ executable(
     'Services/IDirectoryProvider.vala',
     'Services/LocalDirectory.vala',
     'Services/RadioBrowserDirectory.vala',
+    code_resources,
     dependencies: [
         dependency('gtk+-3.0'),
         dependency('gee-0.8'),

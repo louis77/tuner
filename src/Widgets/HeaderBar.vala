@@ -23,8 +23,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
     public Tuner.Window main_window { get; construct; }
     public Gtk.Button play_button { get; set; }
+    public Gtk.Button shuffle_button { get; set; }
 
-    public signal void stop_clicked();
+    public signal void stop_clicked ();
+    public signal void shuffle_clicked ();
 
     public HeaderBar (Tuner.Window window) {
         Object (
@@ -43,11 +45,17 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         );
         play_button.valign = Gtk.Align.CENTER;
         play_button.sensitive = false;
-        play_button.clicked.connect (() => {
-            stop_clicked ();
-        });
+        play_button.clicked.connect (() => { stop_clicked (); });
 
         pack_start (play_button);
+
+        shuffle_button = new Gtk.Button.from_icon_name (
+            "media-playlist-shuffle-symbolic",
+            Gtk.IconSize.LARGE_TOOLBAR
+        );
+        shuffle_button.clicked.connect (() => { shuffle_clicked (); });
+        pack_end (shuffle_button);
+
 
     }
 
