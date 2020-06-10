@@ -19,11 +19,14 @@
 * Authored by: Louis Brauer <louis@brauer.family>
 */
 
+using Gee;
+
 public class Tuner.Window : Gtk.ApplicationWindow {
     public GLib.Settings settings;
     public Gtk.Stack stack { get; set; }
 
     private Gst.Player _playerController;
+    private DirectoryController _directory;
     private HeaderBar headerbar;
 
     public Window (Application app) {
@@ -67,15 +70,25 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             return before_destroy ();
         });
 
+        _directory = new DirectoryController (new Services.RadioBrowserDirectory());
+        _directory.stations_updated.connect (handle_updated_stations);
+        _directory.load_top_stations();
 
+        headerbar = new HeaderBar (this);
+        headerbar.stop_clicked.connect ( () => {
+            handle_stop_playback ();
+        });
+        set_titlebar (headerbar);
+
+        show_all ();
+    }
+
+    public void handle_updated_stations (ArrayList<Model.StationModel> stations) {
         var station_list = new Gtk.FlowBox ();
         station_list.column_spacing = 5;
         station_list.row_spacing = 5;
         station_list.border_width = 20;
         station_list.valign = Gtk.Align.START;
-
-        var directory = new Model.RadioBrowserDirectory();
-        var stations = directory.all();
 
         foreach (var s in stations) {
             var box = new StationBox (s);
@@ -94,14 +107,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         content.pack_start (station_list);
 
         add (content);
-
-        headerbar = new HeaderBar (this);
-        headerbar.stop_clicked.connect ( () => {
-            handle_stop_playback ();
-        });
-        set_titlebar (headerbar);
-
-        show_all ();
     }
 
     public void handle_station_click(Tuner.Model.StationModel station) {
