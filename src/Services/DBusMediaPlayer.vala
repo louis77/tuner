@@ -116,12 +116,34 @@ namespace Tuner.DBus {
 
     public class MediaPlayerPlayer : Object, DBus.IMediaPlayer2Player {
         [DBus (visible = false)]
+        private string _playback_status = "Stopped";
+        private uint update_metadata_source = 0;
+        private uint send_property_source = 0;
+        private HashTable<string,Variant> changed_properties = null;
+        private HashTable<string,Variant> _metadata;
+
+        [DBus (visible = false)]
         public unowned DBusConnection conn { get; construct set; }
 
         private const string INTERFACE_NAME = "org.mpris.MediaPlayer2.Player";
 
         public MediaPlayerPlayer (DBusConnection conn) {
             Object (conn: conn);
+            Application.instance.player.state_changed.connect ((state) => {
+                debug ("DBUS PLAYER STATE CHANGED");
+                switch (state) {
+                case Gst.PlayerState.PLAYING:
+                case Gst.PlayerState.BUFFERING:
+                    playback_status = "Playing";
+                    break;
+                case Gst.PlayerState.STOPPED:
+                    playback_status = "Stopped";
+                    break;
+                case Gst.PlayerState.PAUSED:
+                    playback_status = "Paused";
+                    break;
+                }
+            });
         }
 
         public void next() throws DBusError, IOError {
@@ -138,7 +160,7 @@ namespace Tuner.DBus {
 
         public void play_pause() throws DBusError, IOError {
             debug ("DBus PlayPause() requested");
-            Application.instance.player.player.stop();
+            Application.instance.player.play_pause();
         }
 
         public void stop() throws DBusError, IOError {
@@ -148,6 +170,7 @@ namespace Tuner.DBus {
 
         public void play() throws DBusError, IOError {
             debug ("DBus Play() requested");
+            Application.instance.player.play_pause ();
         }
 
         public void seek(int64 Offset) throws DBusError, IOError {
@@ -167,20 +190,12 @@ namespace Tuner.DBus {
 
         public string playback_status {
             owned get {
-
-                var state = Application.instance.player.current_state ?? Gst.PlayerState.STOPPED;
-
-                switch (state) {
-                case Gst.PlayerState.PLAYING:
-                case Gst.PlayerState.BUFFERING:
-                    return "Playing";
-                case Gst.PlayerState.STOPPED:
-                    return "Stopped";
-                case Gst.PlayerState.PAUSED:
-                    return "Paused";
-                }
-
-                return "Stopped";
+                debug ("DBus PlaybackStatus() requested");
+                return _playback_status;
+            }
+            set {
+                _playback_status = value;
+                trigger_metadata_update ();
             }
         }
 
@@ -197,12 +212,14 @@ namespace Tuner.DBus {
             owned get {
                 debug ("DBus metadata requested");
                 var table = new HashTable<string, Variant> (str_hash, str_equal);
+                table.insert ("xesam:title", "Tuner");
 
                 var station = Application.instance.player.station;
                 if (station != null) {
-                    table.insert ("xesam:title", station.title);
+                    var station_title = station.title;
+                    table.insert ("xesam:artist", get_simple_string_array (station_title));
                 } else {
-                    table.insert ("xesam:title", "Tuner");
+                    table.insert ("xesam:artist", get_simple_string_array (null));
                 }
 
                 return table;
@@ -243,5 +260,77 @@ namespace Tuner.DBus {
             }
         }
 
+        private void trigger_metadata_update () {
+            debug ("DBUS TRIGGER METADATA UPDATE");
+            if (update_metadata_source != 0) {
+                Source.remove (update_metadata_source);
+            }
+
+            update_metadata_source = Timeout.add (300, () => {
+                Variant variant = playback_status;
+
+                queue_property_for_notification ("PlaybackStatus", variant);
+                queue_property_for_notification ("Metadata", metadata);
+                update_metadata_source = 0;
+                return false;
+            });
+        }
+
+        private void queue_property_for_notification (string property, Variant val) {
+            debug (@"DBUS QUEUE PROPERTY CHANGE: $property");
+            // putting the properties into a hashtable works as akind of event compression
+
+            if (changed_properties == null) {
+                changed_properties = new HashTable<string, Variant> (str_hash, str_equal);
+            }
+
+            changed_properties.insert (property, val);
+
+            if (send_property_source == 0) {
+                send_property_source = Idle.add (send_property_change);
+            }
+        }
+
+        private bool send_property_change () {
+            debug ("DBUG SEND PROPERTY CHANGE");
+            if (changed_properties == null) {
+                return false;
+            }
+
+            var builder = new VariantBuilder (VariantType.ARRAY);
+            var invalidated_builder = new VariantBuilder (new VariantType ("as"));
+
+            foreach (string name in changed_properties.get_keys ()) {
+                Variant variant = changed_properties.lookup (name);
+                builder.add ("{sv}", name, variant);
+            }
+
+            changed_properties = null;
+
+            try {
+                conn.emit_signal (null,
+                                  "/org/mpris/MediaPlayer2",
+                                  "org.freedesktop.DBus.Properties",
+                                  "PropertiesChanged",
+                                  new Variant ("(sa{sv}as)",
+                                             INTERFACE_NAME,
+                                             builder,
+                                             invalidated_builder)
+                                 );
+            } catch (Error e) {
+                print ("Could not send MPRIS property change: %s\n", e.message);
+            }
+            send_property_source = 0;
+            return false;
+        }
+
+        private static string[] get_simple_string_array (string? text) {
+            if (text == null) {
+                return new string[0];
+            }
+            string[] array = new string[0];
+            array += text;
+            return array;
+        }
     }
 }

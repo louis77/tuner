@@ -54,7 +54,7 @@ public interface Tuner.DBus.IMediaPlayer2Player : GLib.Object {
 	public signal void seeked(int64 Position);
 
 	[DBus (name = "PlaybackStatus")]
-	public abstract string playback_status { owned get; }
+	public abstract string playback_status { owned get; set; }
 
 	[DBus (name = "LoopStatus")]
 	public abstract string loop_status { owned get; }

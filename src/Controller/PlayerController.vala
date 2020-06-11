@@ -22,7 +22,7 @@
 
 public class Tuner.PlayerController : Object {
     private Model.StationModel _station;
-    private Gst.PlayerState? _current_state;
+    private Gst.PlayerState? _current_state = Gst.PlayerState.STOPPED;
     public Gst.Player player;
 
     public signal void station_changed (Model.StationModel station);
@@ -65,6 +65,18 @@ public class Tuner.PlayerController : Object {
 
     public bool can_play () {
         return _station != null;
+    }
+
+    public void play_pause () {
+        switch (_current_state) {
+            case Gst.PlayerState.PLAYING:
+            case Gst.PlayerState.BUFFERING:
+                player.stop ();
+                break;
+            default:
+                player.play ();
+                break;
+        }
     }
 
 }
