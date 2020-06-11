@@ -44,8 +44,9 @@ public class Tuner.Application : Gtk.Application {
 
     protected override void activate() {
         var window = new Window (this);
-
         add_window (window);
+
+        DBus.initialize ();
     }
 
 }

@@ -6,4 +6,4 @@
 [X] Make StationBox a custom Widget
 [ ] There are stations playing video. If closed, app is crashing
 [ ] Select local Radio Browser server
-
+[ ] Implement DBus interface https://specifications.freedesktop.org/mpris-spec/2.2/
