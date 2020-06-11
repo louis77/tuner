@@ -6,6 +6,7 @@ executable(
     'Widgets/HeaderBar.vala',
     'Widgets/StationBox.vala',
     'Widgets/HeaderLabel.vala',
+    'Widgets/ContentBox.vala',
     'Controller/PlayerController.vala',
     'Controller/DirectoryController.vala',
     'Model/StationModel.vala',

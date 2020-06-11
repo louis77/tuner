@@ -22,6 +22,30 @@
 
 public class Tuner.PlayerController : Object {
 
-    //Object ();
+    public Gst.Player player;
+    private Model.StationModel _station;
+
+    public signal void station_changed (Model.StationModel station);
+
+    construct {
+        player = new Gst.Player (null, null);
+    }
+
+    public Model.StationModel station {
+        get {
+            return _station;
+        }
+
+        set {
+            _station = value;
+            play_station (_station);
+        }
+    }
+
+    public void play_station (Model.StationModel station) {
+        player.uri = station.url;
+        player.play ();
+        station_changed (station);
+    }
 
 }

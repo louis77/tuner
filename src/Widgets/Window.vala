@@ -25,11 +25,10 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public GLib.Settings settings;
     public Gtk.Stack stack { get; set; }
 
-    private Gst.Player _playerController;
+    private PlayerController _player;
     private DirectoryController _directory;
     private HeaderBar headerbar;
-    private Gtk.Box content_area;
-    private Gtk.Box content;
+    private ContentBox content_area;
 
     public Window (Application app) {
         Object (
@@ -44,19 +43,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     }
 
     construct {
-        _playerController = new Gst.Player( null, null );
-        _playerController.state_changed.connect (handle_player_state_changed);
-
         window_position = Gtk.WindowPosition.CENTER;
         set_default_size (350, 80);
-
         settings = Application.instance.settings;
-
         move (settings.get_int ("pos-x"), settings.get_int ("pos-y"));
         // TODO: disable resizing for now
         // resize (settings.get_int ("window-width"), settings.get_int ("window-height"));
-
-
         delete_event.connect (e => {
             return before_destroy ();
         });
@@ -67,106 +59,45 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
         set_titlebar (headerbar);
 
-        var content_header = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-        content_header.homogeneous = false;
-
-        var station_list_icon = new Gtk.Image.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.DIALOG);
-        content_header.pack_start (station_list_icon, false, false, 20);
-
-        var station_list_title = new Tuner.HeaderLabel ("Discover");
-        station_list_title.xpad = 20;
-        station_list_title.ypad = 20;
-        content_header.pack_start (station_list_title, false, false);
-
-        var shuffle_button = new Gtk.Image.from_icon_name (
-            "media-playlist-shuffle-symbolic",
-            Gtk.IconSize.LARGE_TOOLBAR
-        );
-        shuffle_button.tooltip_text = "Discover more stations";
-        //shuffle_button.relief = Gtk.ReliefStyle.NONE;
-        var shuffle_button_eventbox = new Gtk.EventBox ();
-        shuffle_button_eventbox.button_release_event.connect (() => {
-            handle_shuffle_click ();
-        });
-        shuffle_button_eventbox.add (shuffle_button);
-        content_header.pack_start (shuffle_button_eventbox, false, false);
-
-        content_area = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
-        content_area.get_style_context ().add_class ("color-dark");
-        content_area.pack_start (content_header, false, false);
-        content_area.pack_start (new Gtk.Separator (Gtk.Orientation.HORIZONTAL), false, false);
-
-        content = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
-        content.get_style_context ().add_class ("color-light");
-        content.valign = Gtk.Align.START;
-        content.get_style_context().add_class("welcome");
-        content_area.add (content);
-
-        add (content_area);
-
-        show_all ();
+        _player = new PlayerController ();
+        _player.player.state_changed.connect (handle_player_state_changed);
+        _player.station_changed.connect (headerbar.update_from_station);
 
         _directory = new DirectoryController (new Services.RadioBrowserDirectory());
         _directory.stations_updated.connect (handle_updated_stations);
-        _directory.load_top_stations();
 
+        content_area = new ContentBox (
+            new Gtk.Image.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.DIALOG),
+            "Discover",
+            _directory.load_top_stations,
+            handle_station_click
+        );
+
+        add (content_area);
+        show_all ();
+
+        _directory.load_top_stations();
     }
 
     public void handle_updated_stations (ArrayList<Model.StationModel> stations) {
         debug ("entering handle_updated_stations");
-        var station_list = new Gtk.FlowBox ();
-        station_list.homogeneous = false;
-        station_list.min_children_per_line = 2;
-        station_list.column_spacing = 5;
-        station_list.row_spacing = 5;
-        station_list.border_width = 20;
-        station_list.valign = Gtk.Align.START;
-        station_list.selection_mode = Gtk.SelectionMode.NONE;
-
-        foreach (var s in stations) {
-            var box = new StationBox (s);
-            box.clicked.connect (() => {
-                this.handle_station_click (box.station);
-            });
-            station_list.add (box);
-        }
-
-        content.add (station_list);
-        station_list.unselect_all ();
-
-
-
-        // Main content area
+        content_area.stations = stations;
         set_geometry_hints (null, null, Gdk.WindowHints.MIN_SIZE);
         show_all ();
+
         // var scrolled_window = new Gtk.ScrolledWindow (null, null);
         // scrolled_window.add (content);
         // add (scrolled_window);
-
-        debug ("exiting handle_updated_stations");
     }
 
     public void handle_station_click(Tuner.Model.StationModel station) {
         info (@"handle station click for $(station.title)");
-        headerbar.title = station.title;
-        headerbar.subtitle = "Connecting";
-
-        _playerController.uri = station.url;
-        _playerController.play ();
-    }
-
-    public void handle_shuffle_click() {
-        debug (@"Shuffle Button Clicked");
-        var childs = content.get_children();
-        foreach (var c in childs) {
-            c.destroy();
-        }
-        _directory.load_top_stations ();
+        _player.station = station;
     }
 
     public void handle_stop_playback() {
         info ("Stop Playback requested");
-        _playerController.stop ();
+        _player.player.stop ();
     }
 
     public void handle_player_state_changed (Gst.Player player, Gst.PlayerState state) {

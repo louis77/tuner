@@ -48,4 +48,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         pack_start (play_button);
     }
 
+    public void update_from_station (Model.StationModel station) {
+        title = station.title;
+        subtitle = "Connecting";
+    }
+
 }
