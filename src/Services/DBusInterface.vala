@@ -83,22 +83,22 @@ public interface Tuner.DBus.IMediaPlayer2Player : GLib.Object {
 	public abstract double maximum_rate {  get; set; }
 
 	[DBus (name = "CanGoNext")]
-	public abstract bool can_go_next {  get; set; }
+	public abstract bool can_go_next {  get; }
 
 	[DBus (name = "CanGoPrevious")]
-	public abstract bool can_go_previous {  get; set; }
+	public abstract bool can_go_previous {  get; }
 
 	[DBus (name = "CanPlay")]
-	public abstract bool can_play {  get; set; }
+	public abstract bool can_play {  get; }
 
 	[DBus (name = "CanPause")]
-	public abstract bool can_pause {  get; set; }
+	public abstract bool can_pause {  get; }
 
 	[DBus (name = "CanSeek")]
-	public abstract bool can_seek {  get; set; }
+	public abstract bool can_seek {  get; }
 
 	[DBus (name = "CanControl")]
-	public abstract bool can_control {  get; set; }
+	public abstract bool can_control {  get; }
 }
 
 [DBus (name = "org.mpris.MediaPlayer2", timeout = 120000)]
@@ -117,7 +117,7 @@ public interface Tuner.DBus.IMediaPlayer2 : GLib.Object {
 	public abstract bool fullscreen {  get; set; }
 
 	[DBus (name = "CanSetFullscreen")]
-	public abstract bool can_set_fullscreen {  get; set; }
+	public abstract bool can_set_fullscreen {  get; }
 
 	[DBus (name = "CanRaise")]
 	public abstract bool can_raise {  get; }

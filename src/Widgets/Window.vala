@@ -30,10 +30,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     private HeaderBar headerbar;
     private ContentBox content_area;
 
-    public Window (Application app) {
+    public Window (Application app, PlayerController player) {
         Object (
             application: app
         );
+        _player = player;
+        _player.state_changed.connect (handle_player_state_changed);
+        _player.station_changed.connect (headerbar.update_from_station);
     }
 
     static construct {
@@ -58,10 +61,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             handle_stop_playback ();
         });
         set_titlebar (headerbar);
-
-        _player = new PlayerController ();
-        _player.player.state_changed.connect (handle_player_state_changed);
-        _player.station_changed.connect (headerbar.update_from_station);
 
         _directory = new DirectoryController (new Services.RadioBrowserDirectory());
         _directory.stations_updated.connect (handle_updated_stations);
@@ -100,7 +99,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         _player.player.stop ();
     }
 
-    public void handle_player_state_changed (Gst.Player player, Gst.PlayerState state) {
+    public void handle_player_state_changed (Gst.PlayerState state) {
         switch (state) {
             case Gst.PlayerState.BUFFERING:
                 debug ("player state changed to Buffering");

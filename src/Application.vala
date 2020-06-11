@@ -21,6 +21,8 @@
 
 public class Tuner.Application : Gtk.Application {
     public GLib.Settings settings;
+    public PlayerController player;
+    public Window window;
 
     public Application () {
         Object (
@@ -29,6 +31,8 @@ public class Tuner.Application : Gtk.Application {
         );
 
         settings = new GLib.Settings ("com.github.tuner-elementary.tuner");
+        player = new PlayerController ();
+
     }
 
     public static Application _instance = null;
@@ -43,7 +47,7 @@ public class Tuner.Application : Gtk.Application {
     }
 
     protected override void activate() {
-        var window = new Window (this);
+        window = new Window (this, player);
         add_window (window);
 
         DBus.initialize ();

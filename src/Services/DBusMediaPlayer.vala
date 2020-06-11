@@ -52,6 +52,9 @@ namespace Tuner.DBus {
     public class MediaPlayer : Object, DBus.IMediaPlayer2 {
         public void raise() throws DBusError, IOError {
             debug ("DBus Raise() requested");
+            var now = new DateTime.now_local ();
+            var timestamp = (uint32) now.to_unix ();
+            Application.instance.window.present_with_time (timestamp);
         }
 
         public void quit() throws DBusError, IOError {
@@ -102,7 +105,12 @@ namespace Tuner.DBus {
         }
 
         public bool fullscreen { get; set; default = false; }
-        public bool can_set_fullscreen { get; set; default = true; }
+        public bool can_set_fullscreen {
+            get {
+                debug ("CanSetFullscreen() requested");
+                return true;
+            }
+        }
     }
 
 
@@ -130,10 +138,12 @@ namespace Tuner.DBus {
 
         public void play_pause() throws DBusError, IOError {
             debug ("DBus PlayPause() requested");
+            Application.instance.player.player.stop();
         }
 
         public void stop() throws DBusError, IOError {
             debug ("DBus stop() requested");
+            Application.instance.player.player.stop();
         }
 
         public void play() throws DBusError, IOError {
@@ -157,7 +167,20 @@ namespace Tuner.DBus {
 
         public string playback_status {
             owned get {
-                return "Playing";
+
+                var state = Application.instance.player.current_state ?? Gst.PlayerState.STOPPED;
+
+                switch (state) {
+                case Gst.PlayerState.PLAYING:
+                case Gst.PlayerState.BUFFERING:
+                    return "Playing";
+                case Gst.PlayerState.STOPPED:
+                    return "Stopped";
+                case Gst.PlayerState.PAUSED:
+                    return "Paused";
+                }
+
+                return "Stopped";
             }
         }
 
@@ -169,10 +192,18 @@ namespace Tuner.DBus {
 
         public double rate { get; set; }
         public bool shuffle { get; set; }
+
         public HashTable<string, Variant>? metadata {
             owned get {
+                debug ("DBus metadata requested");
                 var table = new HashTable<string, Variant> (str_hash, str_equal);
-                table.insert ("xesam:title", "A radio station");
+
+                var station = Application.instance.player.station;
+                if (station != null) {
+                    table.insert ("xesam:title", station.title);
+                } else {
+                    table.insert ("xesam:title", "Tuner");
+                }
 
                 return table;
             }
@@ -181,12 +212,36 @@ namespace Tuner.DBus {
         public int64 position { get; }
         public double minimum_rate {  get; set; }
 	    public double maximum_rate {  get; set; }
-	    public bool can_go_next {  get; set; }
-	    public bool can_go_previous {  get; set; }
-        public bool can_play {  get; set; }
-	    public bool can_pause {  get; set; }
-	    public bool can_seek {  get; set; }
-	    public bool can_control {  get; set; }
+
+	    public bool can_go_next {
+	        get {
+    	        debug ("CanGoNext() requested");
+	            return false;
+	        }
+	    }
+
+	    public bool can_go_previous {
+	        get {
+    	        debug ("CanGoPrevious() requested");
+	            return false;
+	        }
+	    }
+
+        public bool can_play {
+            get {
+                debug ("CanPlay() requested");
+                return Application.instance.player.can_play ();
+            }
+        }
+	    public bool can_pause {  get; }
+	    public bool can_seek {  get; }
+
+	    public bool can_control {
+	        get {
+                debug ("CanControl() requested");
+                return true;
+            }
+        }
 
     }
 }
