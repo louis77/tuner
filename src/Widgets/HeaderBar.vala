@@ -25,7 +25,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     public Gtk.Button play_button { get; set; }
 
     public signal void stop_clicked ();
-    public signal void shuffle_clicked ();
 
     public HeaderBar (Tuner.Window window) {
         Object (

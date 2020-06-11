@@ -54,8 +54,6 @@ class Tuner.Services.RadioBrowserDirectory : Object, IDirectoryProvider {
             var s = new Model.StationModel (name, location, url);
             s.favicon_url = favicon;
             stations.add(s);
-
-            debug (@"$index - $name\n");
         });
 
         return stations;
