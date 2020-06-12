@@ -60,6 +60,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         headerbar.stop_clicked.connect ( () => {
             handle_stop_playback ();
         });
+        headerbar.star_clicked.connect ( (starred) => {
+            _directory.star_station (_player.station, starred);
+        });
         set_titlebar (headerbar);
 
         _directory = new DirectoryController (new Services.RadioBrowserDirectory());

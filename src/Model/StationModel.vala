@@ -20,13 +20,16 @@
 */
 
 public class Tuner.Model.StationModel : Object {
+    public string id { get; set; }
     public string title { get; private set; }
     public string location { get; private set; }
     public string url { get; private set; }
+    public bool starred { get; set; }
 
     public string? favicon_url { get; set; }
 
-    public StationModel (string title, string location, string url) {
+    public StationModel (string id, string title, string location, string url) {
+        this.id = id;
         this.title = title;
         this.location = location;
         this.url = url;

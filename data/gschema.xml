@@ -22,5 +22,10 @@
             <summary>Window height</summary>
             <description>Saved height of main window</description>
         </key>
+        <key name="starred-stations" type="as">
+            <default>[]</default>
+            <summary>Starred stations</summary>
+            <description>All station starred by the user</description>
+        </key>
     </schema>
 </schemalist>

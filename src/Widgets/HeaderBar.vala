@@ -24,8 +24,12 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     public Tuner.Window main_window { get; construct; }
     public Gtk.Button play_button { get; set; }
 
+    private Gtk.Button star_button;
+    private bool _starred = false;
+    private Model.StationModel _station;
+
     public signal void stop_clicked ();
-    public signal void star_clicked ();
+    public signal void star_clicked (bool starred);
 
     public HeaderBar (Tuner.Window window) {
         Object (
@@ -48,19 +52,42 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
         pack_start (play_button);
 
-        var star_button = new Gtk.Button.from_icon_name (
+        star_button = new Gtk.Button.from_icon_name (
             "non-starred",
             Gtk.IconSize.LARGE_TOOLBAR
         );
         star_button.valign = Gtk.Align.CENTER;
-        star_button.sensitive = false;
+        star_button.sensitive = true;
+        star_button.tooltip_text = "Star this station to see it more often";
+        star_button.clicked.connect (() => {
+            starred = !starred;
+            star_clicked (starred);
+        });
 
         pack_end (star_button);
     }
 
     public void update_from_station (Model.StationModel station) {
+        _station = station;
         title = station.title;
         subtitle = "Connecting";
+        starred = station.starred;
+        debug (@"Station $(title) starred? $starred");
+    }
+
+    private bool starred {
+        get {
+            return _starred;
+        }
+
+        set {
+            _starred = value;
+            if (!_starred) {
+                star_button.image = new Gtk.Image.from_icon_name ("non-starred",    Gtk.IconSize.LARGE_TOOLBAR);
+            } else {
+                star_button.image = new Gtk.Image.from_icon_name ("starred",    Gtk.IconSize.LARGE_TOOLBAR);
+            }
+        }
     }
 
 }

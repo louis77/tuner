@@ -37,6 +37,7 @@ public class Tuner.DirectoryController : Object {
         try {
             var stations = provider.all();
             if (stations != null) {
+                augment_with_userinfo (stations);
                 stations_updated (stations);
             }
         } catch (DataError e) {
@@ -44,4 +45,39 @@ public class Tuner.DirectoryController : Object {
         }
     }
 
+    public void augment_with_userinfo (ArrayList<Model.StationModel> stations) {
+        var settings = Application.instance.settings;
+        var starred = settings.get_strv ("starred-stations");
+
+        foreach (Model.StationModel station in stations) {
+            foreach (string id in starred) {
+                if (id == station.id) {
+                    debug (@"Station STARRED: $(station.title)");
+                    station.starred = true;
+                } else {
+                    debug (@"Station UNSTARRED: $(station.title)");
+                }
+            }
+        }
+    }
+
+    public void star_station (Model.StationModel station, bool starred) {
+        var settings = Application.instance.settings;
+        var starred_stations = settings.get_strv ("starred-stations");
+
+        if (starred) {
+            starred_stations += station.id;
+            settings.set_strv ("starred-stations", starred_stations);
+            station.starred = true;
+        } else {
+            string[] new_starred = {};
+            foreach (string id in starred_stations) {
+                if (id != station.id) {
+                    new_starred += id;
+                }
+            }
+            settings.set_strv ("starred-stations", new_starred);
+            station.starred = false;
+        }
+    }
 }

@@ -46,12 +46,13 @@ class Tuner.Services.RadioBrowserDirectory : Object, IDirectoryProvider {
 
         data.foreach_element ((array, index, element) => {
             var obj = element.get_object ();
+            var id = obj.get_string_member ("stationuuid") ?? "unknown id";
             var name = obj.get_string_member("name") ?? "unknown name";
             var url = obj.get_string_member("url_resolved") ?? "unknown url";
             var location = obj.get_string_member("country") ?? "unknown country";
             var favicon = obj.get_string_member("favicon");
 
-            var s = new Model.StationModel (name, location, url);
+            var s = new Model.StationModel (id, name, location, url);
             s.favicon_url = favicon;
             stations.add(s);
         });

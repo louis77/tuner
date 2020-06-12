@@ -27,9 +27,9 @@ class Tuner.Services.LocalDirectory : Object, IDirectoryProvider {
 
         var stations = new ArrayList<Model.StationModel>();
 
-        stations.add(new Model.StationModel ("Barba Radio 1", "Germany", "http://barbaradio.hoerradar.de/barbaradio-live-mp3-hq"));
-        stations.add(new Model.StationModel ("Radio 1", "Zurich", "http://radio.nello.tv/128k"));
-        stations.add(new Model.StationModel ("SRF 1 General", "Zurich", "http://stream.srg-ssr.ch/m/drs1/mp3_128"));
+        stations.add(new Model.StationModel ("1", "Barba Radio 1", "Germany", "http://barbaradio.hoerradar.de/barbaradio-live-mp3-hq"));
+        stations.add(new Model.StationModel ("2", "Radio 1", "Zurich", "http://radio.nello.tv/128k"));
+        stations.add(new Model.StationModel ("3,", "SRF 1 General", "Zurich", "http://stream.srg-ssr.ch/m/drs1/mp3_128"));
 
         return stations;
 
