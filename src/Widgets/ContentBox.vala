@@ -30,7 +30,7 @@ public class Tuner.ContentBox : Gtk.Box {
     private Gtk.Box header;
     public Gtk.Box content;
 
-    public ContentBox (Gtk.Image icon, string title, ActionFunc action, StationFunc sfunc) {
+    public ContentBox (Gtk.Image? icon, string title, ActionFunc action, StationFunc sfunc) {
         Object (
             orientation: Gtk.Orientation.VERTICAL,
             spacing: 0
@@ -40,25 +40,26 @@ public class Tuner.ContentBox : Gtk.Box {
 
         header = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
         header.homogeneous = false;
-        header.pack_start (icon, false, false, 20);
+
+        if (icon != null) {
+            header.pack_start (icon, false, false, 20);
+        }
 
         var header_label = new HeaderLabel (title);
         header_label.xpad = 20;
         header_label.ypad = 20;
         header.pack_start (header_label, false, false);
 
-        var shuffle_button = new Gtk.Image.from_icon_name (
+        var shuffle_button = new Gtk.Button.from_icon_name (
             "media-playlist-shuffle-symbolic",
             Gtk.IconSize.LARGE_TOOLBAR
         );
+        shuffle_button.valign = Gtk.Align.CENTER;
         shuffle_button.tooltip_text = "Discover more stations";
-        var shuffle_button_eventbox = new Gtk.EventBox ();
-        shuffle_button_eventbox.button_release_event.connect (() => {
+        shuffle_button.clicked.connect (() => {
             action ();
-            return false;
         });
-        shuffle_button_eventbox.add (shuffle_button);
-        header.pack_start (shuffle_button_eventbox, false, false);
+        header.pack_start (shuffle_button, false, false);
 
         pack_start (header, false, false);
         pack_start (new Gtk.Separator (Gtk.Orientation.HORIZONTAL), false, false);

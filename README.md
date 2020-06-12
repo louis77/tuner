@@ -6,7 +6,14 @@
 
 Discover and Listen to random radio stations while you work.
 
-![Screenshot 01](docs/screen_03.png?raw=true)
+![Screenshot 01](docs/screen_04.png?raw=true)
+
+## Motivation
+
+I love listening to radio while I work. There are tens of tousands of cool internet radio stations available, however I find it hard to "find" new stations by using filters and genres. As of now, this little app takes away all the filtering and just presents me with new radio stations every time I use it.
+
+While I hacked on this App, I discovered so many cool and new stations, which makes it even more enjoyable. I hope you enjoy it too.
+
 
 ## Dependencies
 

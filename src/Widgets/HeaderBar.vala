@@ -25,6 +25,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     public Gtk.Button play_button { get; set; }
 
     public signal void stop_clicked ();
+    public signal void star_clicked ();
 
     public HeaderBar (Tuner.Window window) {
         Object (
@@ -46,6 +47,15 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         play_button.clicked.connect (() => { stop_clicked (); });
 
         pack_start (play_button);
+
+        var star_button = new Gtk.Button.from_icon_name (
+            "non-starred",
+            Gtk.IconSize.LARGE_TOOLBAR
+        );
+        star_button.valign = Gtk.Align.CENTER;
+        star_button.sensitive = false;
+
+        pack_end (star_button);
     }
 
     public void update_from_station (Model.StationModel station) {

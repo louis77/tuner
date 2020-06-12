@@ -31,8 +31,11 @@ public class Tuner.PlayerController : Object {
     construct {
         player = new Gst.Player (null, null);
         player.state_changed.connect ((state) => {
-            current_state = state;
-            state_changed (_current_state);
+            // Don't forward flickering between playing and buffering
+            if (!(current_state == Gst.PlayerState.PLAYING && state == Gst.PlayerState.BUFFERING) && !(state == current_state)) {
+                state_changed (state);
+                current_state = state;
+            }
         });
     }
 

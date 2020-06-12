@@ -50,8 +50,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         set_default_size (350, 80);
         settings = Application.instance.settings;
         move (settings.get_int ("pos-x"), settings.get_int ("pos-y"));
-        // TODO: disable resizing for now
-        // resize (settings.get_int ("window-width"), settings.get_int ("window-height"));
+        resize (default_width, default_height);
+
         delete_event.connect (e => {
             return before_destroy ();
         });
@@ -66,8 +66,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         _directory.stations_updated.connect (handle_updated_stations);
 
         content_area = new ContentBox (
-            new Gtk.Image.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.DIALOG),
-            "Discover",
+            // new Gtk.Image.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.DIALOG),
+            null,
+            "Discover Stations",
             _directory.load_top_stations,
             handle_station_click
         );
@@ -81,9 +82,10 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public void handle_updated_stations (ArrayList<Model.StationModel> stations) {
         debug ("entering handle_updated_stations");
         content_area.stations = stations;
-        set_geometry_hints (null, null, Gdk.WindowHints.MIN_SIZE);
-        show_all ();
 
+        // set_geometry_hints (null, null, Gdk.WindowHints.MIN_SIZE);
+        show_all ();
+        resize (default_width, default_height);
         // var scrolled_window = new Gtk.ScrolledWindow (null, null);
         // scrolled_window.add (content);
         // add (scrolled_window);

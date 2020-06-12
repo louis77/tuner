@@ -35,3 +35,18 @@
     border-color: #fff;
     border: 1px;
 }
+
+.station-button {
+}
+
+.station-button:hover {
+        background-color: #dddddd;
+}
+
+.station-button image {
+	border-width: 0;
+	border-style: solid;
+    border-color: #dddddd;
+	box-shadow: 2px 2px 3px grey;
+	background-color: #eee
+}

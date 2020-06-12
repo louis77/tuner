@@ -261,7 +261,6 @@ namespace Tuner.DBus {
         }
 
         private void trigger_metadata_update () {
-            debug ("DBUS TRIGGER METADATA UPDATE");
             if (update_metadata_source != 0) {
                 Source.remove (update_metadata_source);
             }
@@ -277,9 +276,6 @@ namespace Tuner.DBus {
         }
 
         private void queue_property_for_notification (string property, Variant val) {
-            debug (@"DBUS QUEUE PROPERTY CHANGE: $property");
-            // putting the properties into a hashtable works as akind of event compression
-
             if (changed_properties == null) {
                 changed_properties = new HashTable<string, Variant> (str_hash, str_equal);
             }
@@ -292,7 +288,6 @@ namespace Tuner.DBus {
         }
 
         private bool send_property_change () {
-            debug ("DBUG SEND PROPERTY CHANGE");
             if (changed_properties == null) {
                 return false;
             }

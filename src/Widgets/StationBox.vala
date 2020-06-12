@@ -31,6 +31,8 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
             icon: new Gtk.Image()
         );
 
+        get_style_context().add_class("station-button");
+
         this.station = station;
 
         // in Vala nullable strings are always empty
