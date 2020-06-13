@@ -5,7 +5,14 @@ Maintainer: Louis Brauer <louis@brauer.family>
 Build-Depends: cmake (>= 2.8),
                debhelper (>= 9),
                libgtk-3-dev,
-               valac (>= 0.40.0)
+               meson,
+               valac (>= 0.40.0),
+               libgranite-dev,
+               libsoup2.4-dev,
+               libgstreamer1.0-dev,
+               libgstreamer-plugins-bad1.0-dev,
+               libjson-glib-dev,
+               libgee-0.8-dev
 Standards-Version: 3.9.3
 
 Package: com.github.louis77.tuner
