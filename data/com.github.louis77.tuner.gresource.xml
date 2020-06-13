@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/com/github/tuner-elementary/tuner">
+  <gresource prefix="/com/github/louis77/tuner">
     <file alias="Application.css" compressed="true">Application.css</file>
   </gresource>
 </gresources>

@@ -1,5 +1,5 @@
 [X] Load Images in StationBox Asynchronously
-[ ] Enable Favourites Button in HeaderBar
+[X] Enable Favourites Button in HeaderBar
 [ ] Show errors via app notifications
 [X] Radio Browser credits
 [ ] Cache resized station favicons
@@ -7,3 +7,4 @@
 [ ] There are stations playing video. If closed, app is crashing
 [ ] Select local Radio Browser server
 [ ] Implement DBus activation
+[ ] Add Favicon in header bar

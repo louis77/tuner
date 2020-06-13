@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <schemalist>
-    <schema path="/com/github/tuner-elementary/tuner/" id="com.github.tuner-elementary.tuner">
+    <schema path="/com/github/louis77/tuner/" id="com.github.louis77.tuner">
         <key name="pos-x" type="i">
             <default>360</default>
             <summary>Horizontal position</summary>

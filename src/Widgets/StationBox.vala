@@ -41,6 +41,8 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
             var message = new Soup.Message ("GET", station.favicon_url);
 
             session.send_async.begin (message, null, (obj, res) => {
+                // TODO Check server response 200 before rendering the image
+
                 GLib.InputStream? stream;
 
                 try {

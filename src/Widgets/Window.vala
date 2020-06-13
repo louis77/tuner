@@ -28,7 +28,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     private PlayerController _player;
     private DirectoryController _directory;
     private HeaderBar headerbar;
-    private ContentBox content_area;
 
     public Window (Application app, PlayerController player) {
         Object (
@@ -41,7 +40,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     static construct {
         var provider = new Gtk.CssProvider ();
-        provider.load_from_resource ("com/github/tuner-elementary/tuner/Application.css");
+        provider.load_from_resource ("com/github/louis77/tuner/Application.css");
         Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), provider,                 Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
 
@@ -68,23 +67,56 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         _directory = new DirectoryController (new Services.RadioBrowserDirectory());
         _directory.stations_updated.connect (handle_updated_stations);
 
-        content_area = new ContentBox (
+        var primary_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+        var inner_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
+        primary_box.pack_end (inner_box);
+
+        var stack = new Gtk.Stack ();
+        stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
+
+        var c1 = new ContentBox (
             // new Gtk.Image.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.DIALOG),
             null,
             "Discover Stations",
-            _directory.load_top_stations,
+            _directory.load_random_stations,
             handle_station_click
         );
+        stack.add_titled (c1, "discover", "Discover");
 
-        add (content_area);
+        var c2 = new ContentBox (
+            // new Gtk.Image.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.DIALOG),
+            null,
+            "Trending Stations",
+            _directory.load_trending_stations,
+            handle_station_click
+        );
+        stack.add_titled (c2, "trending", "Trending");
+
+        var c3 = new ContentBox (
+            // new Gtk.Image.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.DIALOG),
+            null,
+            "Popular Stations",
+            _directory.load_trending_stations, // vote
+            handle_station_click
+        );
+        stack.add_titled (c3, "popular", "Popular");
+
+        inner_box.pack_start (stack);
+
+        var sidebar = new Gtk.StackSidebar ();
+        sidebar.set_stack (stack);
+        // primary_box.pack_start (sidebar, false);
+        // primary_box.pack_start (new Gtk.Separator (Gtk.Orientation.VERTICAL), false);
+
+        add (primary_box);
+
         show_all ();
 
-        _directory.load_top_stations();
     }
 
-    public void handle_updated_stations (ArrayList<Model.StationModel> stations) {
+    public void handle_updated_stations (ContentBox target, ArrayList<Model.StationModel> stations) {
         debug ("entering handle_updated_stations");
-        content_area.stations = stations;
+        target.stations = stations;
 
         // set_geometry_hints (null, null, Gdk.WindowHints.MIN_SIZE);
         show_all ();
@@ -96,6 +128,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     public void handle_station_click(Tuner.Model.StationModel station) {
         info (@"handle station click for $(station.title)");
+        _directory.count_station_click (station);
         _player.station = station;
     }
 

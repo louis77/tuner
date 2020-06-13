@@ -4,6 +4,8 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
+[![Get it on AppCenter](https://appcenter.elementary.io/badge.svg)](https://appcenter.elementary.io/com.github.louis77.tuner)
+
 Discover and Listen to random radio stations while you work.
 
 ![Screenshot 01](docs/screen_04.png?raw=true)

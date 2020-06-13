@@ -27,36 +27,46 @@ public class Tuner.DirectoryController : Object {
 
     public IDirectoryProvider provider { get; set; }
 
-    public signal void stations_updated (ArrayList<Model.StationModel> stations);
+    public signal void stations_updated (ContentBox target, ArrayList<Model.StationModel> stations);
 
     public DirectoryController (IDirectoryProvider provider) {
         this.provider = provider;
     }
 
-    public void load_top_stations() {
+    public void load_random_stations(ContentBox target) {
         try {
-            var stations = provider.all();
+            var stations = provider.random ();
             if (stations != null) {
                 augment_with_userinfo (stations);
-                stations_updated (stations);
+                stations_updated (target, stations);
             }
         } catch (DataError e) {
             warning ("unable to fetch stations from directory: %s", e.message);
         }
     }
 
+    public void load_trending_stations(ContentBox target) {
+        try {
+            var stations = provider.trending ();
+            if (stations != null) {
+                augment_with_userinfo (stations);
+                stations_updated (target, stations);
+            }
+        } catch (DataError e) {
+            warning ("unable to fetch stations from directory: %s", e.message);
+        }
+    }
+
+
+    // TODO: Station ID should be somehow connected to the provider
+    //       We have only one at the moment, so it's not a problem
     public void augment_with_userinfo (ArrayList<Model.StationModel> stations) {
         var settings = Application.instance.settings;
         var starred = settings.get_strv ("starred-stations");
 
         foreach (Model.StationModel station in stations) {
             foreach (string id in starred) {
-                if (id == station.id) {
-                    debug (@"Station STARRED: $(station.title)");
-                    station.starred = true;
-                } else {
-                    debug (@"Station UNSTARRED: $(station.title)");
-                }
+                station.starred = id == station.id;
             }
         }
     }
@@ -69,6 +79,7 @@ public class Tuner.DirectoryController : Object {
             starred_stations += station.id;
             settings.set_strv ("starred-stations", starred_stations);
             station.starred = true;
+            provider.vote (station);
         } else {
             string[] new_starred = {};
             foreach (string id in starred_stations) {
@@ -80,4 +91,9 @@ public class Tuner.DirectoryController : Object {
             station.starred = false;
         }
     }
+
+    public void count_station_click (Model.StationModel station) {
+        provider.track (station);
+    }
+
 }

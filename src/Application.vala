@@ -26,11 +26,11 @@ public class Tuner.Application : Gtk.Application {
 
     public Application () {
         Object (
-            application_id: "com.github.tuner-elementary.tuner",
+            application_id: "com.github.louis77.tuner",
             flags: ApplicationFlags.FLAGS_NONE
         );
 
-        settings = new GLib.Settings ("com.github.tuner-elementary.tuner");
+        settings = new GLib.Settings ("com.github.louis77.tuner");
         player = new PlayerController ();
 
     }

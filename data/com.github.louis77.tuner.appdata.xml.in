@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2020 Louis Brauer <louis@brauer.family> -->
+<component type="desktop">
+  <id>com.github.louis77.tuner</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_group>tuner-elementary</project_group>
+  <project_license>GPL-3.0+</project_license>
+  <name>Tuner</name>
+  <summary>Discover and lsiten to internet radio stations</summary>
+
+  <description>
+    <p>Listen to your favourite internet radio stations.</p>
+  </description>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_04.png</image>
+    </screenshot>
+  </screenshots>
+
+  <developer_name>Louis Brauer</developer_name>
+  <update_contact>louis_AT_brauer.family</update_contact>
+  <url type="homepage">https://github.com/louis77/tuner</url>
+  <url type="bugtracker">http://github.com/louis77/tuner/issues</url>
+  <url type="help">http://github.com/louis77/tuner/issues</url>
+  <content_rating type="oars-1.1">
+    <content_attribute id="violence-slavery">mild</content_attribute>
+    <content_attribute id="violence-worship">mild</content_attribute>
+    <content_attribute id="drugs-alcohol">mild</content_attribute>
+    <content_attribute id="drugs-narcotics">mild</content_attribute>
+    <content_attribute id="drugs-tobacco">mild</content_attribute>
+    <content_attribute id="sex-themes">mild</content_attribute>
+    <content_attribute id="sex-homosexuality">mild</content_attribute>
+    <content_attribute id="sex-prostitution">mild</content_attribute>
+    <content_attribute id="sex-adultery">mild</content_attribute>
+    <content_attribute id="language-profanity">intense</content_attribute>
+    <content_attribute id="language-humor">intense</content_attribute>
+    <content_attribute id="language-discrimination">intense</content_attribute>
+  </content_rating>
+
+  <provides>
+    <binary>com.github.louis77.tuner</binary>
+    <dbus type="system">org.mpris.MediaPlayer2</dbus>
+    <dbus type="system">org.mpris.MediaPlayer2.Player</dbus>
+  </provides>
+
+  <releases>
+    <release version="1.0" date="2020-06-13">
+      <description>
+        <p>Initial release</p>
+      </description>
+    </release>
+  </releases>
+
+  <custom>
+      <value key="x-appcenter-color-primary">#1EFE89</value>
+      <value key="x-appcenter-color-primary-text">#000</value>
+      <value key="x-appcenter-suggested-price">0</value>
+  </custom>
+</component>

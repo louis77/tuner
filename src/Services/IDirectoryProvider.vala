@@ -29,6 +29,9 @@ public errordomain DataError {
 public interface Tuner.IDirectoryProvider : Object {
 
     // Methods
-    public abstract ArrayList<Model.StationModel> all() throws DataError;
+    public abstract ArrayList<Model.StationModel> random () throws DataError;
+    public abstract ArrayList<Model.StationModel> trending () throws DataError;
+    public abstract void track (Model.StationModel station);
+    public abstract void vote (Model.StationModel station);
 
 }

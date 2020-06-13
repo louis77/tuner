@@ -1,4 +1,4 @@
-Source: com.github.tuner-elementary.tuner
+Source: com.github.louis77.tuner
 Section: x11
 Priority: optional
 Maintainer: Louis Brauer <louis@brauer.family>
@@ -8,7 +8,7 @@ Build-Depends: cmake (>= 2.8),
                valac (>= 0.40.0)
 Standards-Version: 3.9.3
 
-Package: com.github.tuner-elementary.tuner
+Package: com.github.louis77.tuner
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Discover and listen to internet radio stations

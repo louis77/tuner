@@ -1,9 +1,10 @@
-project('com.github.tuner-elementary.tuner', 'vala', 'c')
+project('com.github.louis77.tuner', 'vala', 'c')
 
 gnome = import('gnome')
 i18n = import('i18n')
 
 add_global_arguments('-DGETTEXT_PACKAGE="@0@"'.format (meson.project_name()), language:'c')
+#add_global_arguments('--enable-experimental-non-null', language:'vala')
 
 i18n.merge_file(
     input: join_paths('data', meson.project_name() + '.desktop.in'),

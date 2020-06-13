@@ -23,7 +23,7 @@ using Gee;
 
 public class Tuner.ContentBox : Gtk.Box {
 
-    public delegate void ActionFunc ();
+    public delegate void ActionFunc (ContentBox target);
     public delegate void StationFunc (Model.StationModel station);
 
     private StationFunc _station_func;
@@ -57,7 +57,7 @@ public class Tuner.ContentBox : Gtk.Box {
         shuffle_button.valign = Gtk.Align.CENTER;
         shuffle_button.tooltip_text = "Discover more stations";
         shuffle_button.clicked.connect (() => {
-            action ();
+            action (this);
         });
         header.pack_start (shuffle_button, false, false);
 
@@ -68,6 +68,7 @@ public class Tuner.ContentBox : Gtk.Box {
         content.get_style_context ().add_class ("color-light");
         content.valign = Gtk.Align.START;
         content.get_style_context().add_class("welcome");
+        action (this);
         add (content);
     }
 
