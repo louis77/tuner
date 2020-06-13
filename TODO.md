@@ -8,3 +8,6 @@
 [ ] Select local Radio Browser server
 [ ] Implement DBus activation
 [ ] Add Favicon in header bar
+[ ] Play/Pause control from Dock
+[ ] Load first selection async to increase startup time
+[ ] Dark mode

@@ -16,6 +16,20 @@ I love listening to radio while I work. There are tens of tousands of cool inter
 
 While I hacked on this App, I discovered so many cool and new stations, which makes it even more enjoyable. I hope you enjoy it too.
 
+## Features
+
+- Uses radio-browser.info catalog
+- Presents a random selection of stations
+- Sends a click count to radio-browser.info on station click
+- Sends a vote count to radio-browser.info when you star a station
+- DBus integration to pause/resume playing and show station info
+
+## Upcoming
+
+- List stations you starred
+- More selection screens (Trending, Most Popular, Country-specific)
+- Community-listening: see what other users are listening to right now
+- Other ideas? Create an issue!
 
 ## Dependencies
 
@@ -46,3 +60,9 @@ sudo ninja install
 - [radio-browser.info](http://www.radio-browser.info) for providing a free radio station directory
 - [elementary.io](https://elementary.io) for making Linux enjoyable on the desktop
 - [Vala](https://wiki.gnome.org/Projects/Vala) - a great programming language
+
+## Disclaimer
+
+Tuner uses the community-drive radio station catalog radio-browser.info. Tuner
+is not responsible for the stations shown or the actual streaming audio content.
+
