@@ -6,10 +6,19 @@
   <project_group>tuner-elementary</project_group>
   <project_license>GPL-3.0+</project_license>
   <name>Tuner</name>
-  <summary>Discover and lsiten to internet radio stations</summary>
+  <summary>Discover and listen to internet radio stations</summary>
 
   <description>
-    <p>Listen to your favourite internet radio stations.</p>
+    <p>Make listening to internet radio stations fun again!</p>
+    <p>Instead of providing you with the all the stations you already know,
+       Tuner presents you a new selection of stations from all over the world
+       every time you hit the Shuffle button.</p>
+    <p>Tuner uses the community-driven station catalog radio-browser.info.</p>
+    <ul>
+      <li>Discover new stations every day</li>
+      <li>Star stations you like</li>
+      <li>Control Tuner from your volume indicator</li>
+    </ul>
   </description>
 
   <screenshots>
