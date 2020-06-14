@@ -40,26 +40,14 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
             var session = new Soup.Session ();
             var message = new Soup.Message ("GET", station.favicon_url);
 
-            session.send_async.begin (message, null, (obj, res) => {
-                // TODO Check server response 200 before rendering the image
-
-                GLib.InputStream? stream;
-
-                try {
-                    stream = session.send_async.end(res);
-                } catch (Error e) {
+            session.queue_message (message, (sess, mess) => {
+                if (mess.status_code != 200) {
+                    warning (@"Unexpected status code: $(mess.status_code), will not render $(station.favicon_url)");
+                    this.icon.set_from_icon_name ("folder-music-symbolic", Gtk.IconSize.DIALOG);
                     return;
                 }
 
-                if (stream == null) {
-                    return;
-                }
-
-                var data_stream = new DataInputStream (stream);
-
-                // TODO: use from_stream_async?
-                // TODO: use default image if rendering fails
-
+                var data_stream = new MemoryInputStream.from_data (mess.response_body.data);
                 Gdk.Pixbuf pxbuf;
 
                 try {
@@ -68,6 +56,7 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
                     warning ("Couldn't render favicon: %s (%s)",
                         station.favicon_url ?? "unknown url",
                         e.message);
+                    this.icon.set_from_icon_name ("folder-music-symbolic", Gtk.IconSize.DIALOG);
                     return;
                 }
 
