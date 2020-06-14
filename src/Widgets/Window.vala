@@ -64,7 +64,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
         set_titlebar (headerbar);
 
-        _directory = new DirectoryController (new Services.RadioBrowserDirectory());
+        _directory = new DirectoryController (new RadioBrowser.Client ());
         _directory.stations_updated.connect (handle_updated_stations);
 
         var primary_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);

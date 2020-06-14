@@ -23,93 +23,128 @@ using Gee;
 
 // TODO: handle failures
 // TODO: use async
-// TODO: this should not know anything about other widgets or models
-//       Move that to the DirectoryController
 
-class Tuner.Services.RadioBrowserDirectory : Object, IDirectoryProvider {
+namespace Tuner.RadioBrowser {
+
+public errordomain DataError {
+    PARSE_DATA
+}
+
+public enum SortOrder {
+    NAME,
+    URL,
+    HOMEPAGE,
+    FAVICON,
+    TAGS,
+    COUNTRY,
+    STATE,
+    LANGUAGE,
+    VOTES,
+    CODEC,
+    BITRATE,
+    LASTCHECKOK,
+    LASTCHECKTIME,
+    CLICKTIMESTAMP,
+    CLICKCOUNT,
+    CLICKTREND,
+    RANDOM;
+
+    public string to_string () {
+        switch (this) {
+            case NAME:
+                return "name";
+            case URL:
+                return "url";
+            case HOMEPAGE:
+                return "homepage";
+            case FAVICON:
+                return "favicon";
+            case TAGS:
+                return "tags";
+            case COUNTRY:
+                return "country";
+            case STATE:
+                return "state";
+            case LANGUAGE:
+                return "language";
+            case VOTES:
+                return "votes";
+            case CODEC:
+                return "codec";
+            case BITRATE:
+                return "bitrate";
+            case LASTCHECKOK:
+                return "lastcheckok";
+            case LASTCHECKTIME:
+                return "lastchecktime";
+            case CLICKTIMESTAMP:
+                return "clicktimestamp";
+            case CLICKCOUNT:
+                return "clickcount";
+            case CLICKTREND:
+                return "clicktrend";
+            case RANDOM:
+                return "random";
+            default:
+                assert_not_reached ();
+        }
+    }
+}
+
+public class Station : Object {
+    public string stationuuid { get; set; }
+    public string name { get; set; }
+    public string url_resolved { get; set; }
+    public string country { get; set; }
+    public string favicon { get; set; }
+}
+
+public class Client : Object {
 
     // TODO: choose local server from server list
     private const string API_BASE_URL = "http://de1.api.radio-browser.info";
     private Soup.Session _session;
 
-    public RadioBrowserDirectory() {
+    public Client() {
         _session = new Soup.Session ();
-        // TODO: Get Application ID dynamically
         _session.user_agent = "com.github.louis77.tuner/0.1";
     }
 
-    public ArrayList<Model.StationModel> random () throws DataError {
-        var data = load (10, "random");
-        if (data == null) {
-            throw new DataError.PARSE_DATA("Unable to retrieve data");
-        }
+    private Station jnode_to_station (Json.Node node) {
+        return Json.gobject_deserialize (typeof (Station), node) as Station;
+    }
 
-        var stations = new ArrayList<Model.StationModel>();
+    private ArrayList<Station> jarray_to_stations (Json.Array data) {
+        var stations = new ArrayList<Station> ();
 
         data.foreach_element ((array, index, element) => {
-            var obj = element.get_object ();
-            var id = obj.get_string_member ("stationuuid") ?? "unknown id";
-            var name = obj.get_string_member("name") ?? "unknown name";
-            var url = obj.get_string_member("url_resolved") ?? "unknown url";
-            var location = obj.get_string_member("country") ?? "unknown country";
-            var favicon = obj.get_string_member("favicon");
-
-            var s = new Model.StationModel (id, name, location, url);
-            s.favicon_url = favicon;
-            stations.add(s);
+            Station s = jnode_to_station (element);
+            stations.add (s);
         });
 
         return stations;
-
     }
 
-    public ArrayList<Model.StationModel> trending () throws DataError {
-        var data = load (10, "clicktrend");
-        if (data == null) {
-            throw new DataError.PARSE_DATA("Unable to retrieve data");
-        }
-
-        var stations = new ArrayList<Model.StationModel>();
-
-        data.foreach_element ((array, index, element) => {
-            var obj = element.get_object ();
-            var id = obj.get_string_member ("stationuuid") ?? "unknown id";
-            var name = obj.get_string_member("name") ?? "unknown name";
-            var url = obj.get_string_member("url_resolved") ?? "unknown url";
-            var location = obj.get_string_member("country") ?? "unknown country";
-            var favicon = obj.get_string_member("favicon");
-
-            var s = new Model.StationModel (id, name, location, url);
-            s.favicon_url = favicon;
-            stations.add(s);
-        });
-
-        return stations;
-
-    }
-
-
-    public void track (Model.StationModel station) {
-        debug (@"sending listening event for station $(station.id)");
-        var resource = @"json/url/$(station.id)";
+    public void track (string stationuuid) {
+        debug (@"sending listening event for station $stationuuid");
+        var resource = @"json/url/$stationuuid";
         var message = new Soup.Message ("GET", @"$API_BASE_URL/$resource");
         var response_code = _session.send_message (message);
         debug (@"response: $(response_code)");
     }
 
-    public void vote (Model.StationModel station) {
-        debug (@"sending vote event for station $(station.id)");
-        var resource = @"json/vote/$(station.id)";
+    public void vote (string stationuuid) {
+        debug (@"sending vote event for station $stationuuid");
+        var resource = @"json/vote/$stationuuid)";
         var message = new Soup.Message ("GET", @"$API_BASE_URL/$resource");
         var response_code = _session.send_message (message);
         debug (@"response: $(response_code)");
     }
 
     // TODO: don't use blocking calls here
-    private Json.Array? load (uint rowcount, string order) {
-        //var resource = @"json/stations/topclick/$rowcount";
-
+    public ArrayList<Station> load (uint rowcount, SortOrder order) throws DataError {
         debug ("trying to fetch data from radio-browser");
+
         var resource = @"json/stations/search?language=en&limit=$rowcount&order=$order";
         var message = new Soup.Message ("GET", @"$API_BASE_URL/$resource");
         Json.Node rootnode;
@@ -121,12 +156,13 @@ class Tuner.Services.RadioBrowserDirectory : Object, IDirectoryProvider {
         try {
             rootnode = Json.from_string (body);
         } catch (Error e) {
-            warning ("unable to parse JSON response: %s", e.message);
-            return null;
+            throw new DataError.PARSE_DATA (@"unable to parse JSON response: $(e.message)");
         }
         var rootarray = rootnode.get_array ();
 
-        return rootarray;
+        var stations = jarray_to_stations (rootarray);
+        return stations;
     }
 
+}
 }
