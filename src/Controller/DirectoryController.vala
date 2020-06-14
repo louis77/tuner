@@ -70,11 +70,24 @@ public class Tuner.DirectoryController : Object {
     }
 
     public void load_random_stations (ContentBox target) {
-        load_and_update (target, provider.load (10, RadioBrowser.SortOrder.RANDOM));
+        provider.load.begin (10, RadioBrowser.SortOrder.RANDOM, false, (obj, res) => {
+            var stations = provider.load.end (res);
+            load_and_update (target, stations);
+        });
     }
 
     public void load_trending_stations (ContentBox target) {
-        load_and_update (target, provider.load (10, RadioBrowser.SortOrder.CLICKTREND));
+        provider.load.begin (10, RadioBrowser.SortOrder.CLICKTREND, true, (obj, res) => {
+            var stations = provider.load.end (res);
+            load_and_update (target, stations);
+        });
+    }
+
+    public void load_popular_stations (ContentBox target) {
+        provider.load.begin (10, RadioBrowser.SortOrder.CLICKCOUNT, true, (obj, res) => {
+            var stations = provider.load.end (res);
+            load_and_update (target, stations);
+        });
     }
 
     public void star_station (Model.StationModel station, bool starred) {
