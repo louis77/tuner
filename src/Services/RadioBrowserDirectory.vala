@@ -102,12 +102,22 @@ public class Station : Object {
 public class Client : Object {
 
     // TODO: choose local server from server list
-    private const string API_BASE_URL = "http://de1.api.radio-browser.info";
+    private const string API_BASE_URL = "https://de1.api.radio-browser.info";
     private Soup.Session _session;
 
     public Client() {
         _session = new Soup.Session ();
+        // TODO: Automatically generate this
         _session.user_agent = "com.github.louis77.tuner/0.1";
+
+        /*
+        Resolver resolver = Resolver.get_default ();
+        GLib.List<InetAddress> addresses = resolver.lookup_by_name ("all.api.radio-browser.info");
+        foreach (var address in addresses) {
+            var host = resolver.lookup_by_address (address);
+            debug (@"Found RB host: $address with name $host");
+        }
+        */
     }
 
     private Station jnode_to_station (Json.Node node) {
@@ -142,10 +152,12 @@ public class Client : Object {
     }
 
     // TODO: don't use blocking calls here
-    public ArrayList<Station> load (uint rowcount, SortOrder order) throws DataError {
+    public async ArrayList<Station> load (uint rowcount,
+                                    SortOrder order,
+                                    bool reverse = false) throws DataError {
         debug ("trying to fetch data from radio-browser");
 
-        var resource = @"json/stations/search?language=en&limit=$rowcount&order=$order";
+        var resource = @"json/stations/search?language=en&limit=$rowcount&order=$order&reverse=$reverse";
         var message = new Soup.Message ("GET", @"$API_BASE_URL/$resource");
         Json.Node rootnode;
 
