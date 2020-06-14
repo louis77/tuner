@@ -57,6 +57,7 @@ sudo ninja install
 
 ## Credits
 
+- [faleksandar.com](https://faleksandar.com/) for icons and colors
 - [radio-browser.info](http://www.radio-browser.info) for providing a free radio station directory
 - [elementary.io](https://elementary.io) for making Linux enjoyable on the desktop
 - [Vala](https://wiki.gnome.org/Projects/Vala) - a great programming language
