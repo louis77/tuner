@@ -27,6 +27,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     private Gtk.Button star_button;
     private bool _starred = false;
     private Model.StationModel _station;
+    private Gtk.Label _title_label;
+    private Gtk.Label _subtitle_label;
+    private Gtk.Image _favicon_image;
 
     public signal void stop_clicked ();
     public signal void star_clicked (bool starred);
@@ -39,8 +42,23 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
     construct {
         show_close_button = true;
-        title = "Choose a station";
-        subtitle = "Paused";
+
+        var station_info = new Gtk.Grid ();
+        station_info.column_spacing = 10;
+
+        _title_label = new Gtk.Label ("Choose a station");
+        _title_label.get_style_context ().add_class (Granite.STYLE_CLASS_H4_LABEL);
+        _subtitle_label = new Gtk.Label ("Paused");
+        _favicon_image = new Gtk.Image.from_icon_name ("multimedia-player", Gtk.IconSize.DIALOG);
+
+        station_info.attach (_favicon_image, 0, 0, 1, 2);
+        station_info.attach (_title_label, 1, 0, 1, 1);
+        station_info.attach (_subtitle_label, 1, 1, 1, 1);
+
+        // title = "Choose a station";
+        // subtitle = "Paused";
+
+        custom_title = station_info;
 
         play_button = new Gtk.Button.from_icon_name (
             "media-playback-pause-symbolic",
@@ -67,10 +85,39 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         pack_end (star_button);
     }
 
+    public new string title {
+        get {
+            return _title_label.label;
+        }
+        set {
+            _title_label.label = value;
+        }
+    }
+
+    public new string subtitle {
+        get {
+            return _subtitle_label.label;
+        }
+        set {
+            _subtitle_label.label = value;
+        }
+    }
+
+    public Gtk.Image favicon {
+        get {
+            return _favicon_image;
+        }
+        set {
+            _favicon_image = value;
+        }
+    }
+
+
     public void update_from_station (Model.StationModel station) {
         _station = station;
         title = station.title;
         subtitle = "Connecting";
+        load_favicon (station.favicon_url);
         starred = station.starred;
         debug (@"Station $(title) starred? $starred");
     }
@@ -88,6 +135,34 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 star_button.image = new Gtk.Image.from_icon_name ("starred",    Gtk.IconSize.LARGE_TOOLBAR);
             }
         }
+    }
+
+    private void load_favicon (string url) {
+        var session = new Soup.Session ();
+        var message = new Soup.Message ("GET", url);
+
+        session.queue_message (message, (sess, mess) => {
+            if (mess.status_code != 200) {
+                warning (@"Unexpected status code: $(mess.status_code), will not render $(url)");
+                favicon.clear ();
+                return;
+            }
+
+            var data_stream = new MemoryInputStream.from_data (mess.response_body.data);
+            Gdk.Pixbuf pxbuf;
+
+            try {
+                pxbuf = new Gdk.Pixbuf.from_stream_at_scale (data_stream, 48, 48, true, null);
+            } catch (Error e) {
+                warning ("Couldn't render favicon: %s (%s)",
+                    url ?? "unknown url",
+                    e.message);
+                favicon.clear ();
+                return;
+            }
+
+            favicon.set_from_pixbuf (pxbuf);
+        });
     }
 
 }

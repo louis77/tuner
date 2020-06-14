@@ -30,7 +30,7 @@ public class Tuner.Application : Gtk.Application {
             flags: ApplicationFlags.FLAGS_NONE
         );
 
-        settings = new GLib.Settings ("com.github.louis77.tuner");
+        settings = new GLib.Settings (this.application_id);
         player = new PlayerController ();
 
     }

@@ -75,8 +75,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
 
         var c1 = new ContentBox (
-            // new Gtk.Image.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.DIALOG),
-            null,
+            new Gtk.Image.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.DIALOG),
+            // null,
             "Discover Stations",
             _directory.load_random_stations,
             handle_station_click
@@ -84,8 +84,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         stack.add_titled (c1, "discover", "Discover");
 
         var c2 = new ContentBox (
-            // new Gtk.Image.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.DIALOG),
-            null,
+            new Gtk.Image.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.DIALOG),
+            // null,
             "Trending Stations",
             _directory.load_trending_stations,
             handle_station_click
@@ -93,10 +93,10 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         stack.add_titled (c2, "trending", "Trending");
 
         var c3 = new ContentBox (
-            // new Gtk.Image.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.DIALOG),
-            null,
+            new Gtk.Image.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.DIALOG),
+            // null,
             "Popular Stations",
-            _directory.load_trending_stations, // vote
+            _directory.load_popular_stations,
             handle_station_click
         );
         stack.add_titled (c3, "popular", "Popular");
@@ -105,8 +105,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         var sidebar = new Gtk.StackSidebar ();
         sidebar.set_stack (stack);
-        // primary_box.pack_start (sidebar, false);
-        // primary_box.pack_start (new Gtk.Separator (Gtk.Orientation.VERTICAL), false);
+        primary_box.pack_start (sidebar, false);
+        primary_box.pack_start (new Gtk.Separator (Gtk.Orientation.VERTICAL), false);
 
         add (primary_box);
 
