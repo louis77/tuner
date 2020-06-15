@@ -176,7 +176,11 @@ public class Client : Object {
                                       SortOrder order,
                                       bool reverse = false,
                                       uint offset = 0) {
-        var resource = @"json/stations/search?language=en&limit=$rowcount&order=$order&reverse=$reverse&offset=$offset";
+        var resource = @"json/stations/search?language=en&limit=$rowcount&order=$order&offset=$offset";
+        if (order != SortOrder.RANDOM) {
+            // random and reverse doesn't make sense
+            resource += @"&reverse=$reverse";
+        }
         return get_stations (resource);
     }
 

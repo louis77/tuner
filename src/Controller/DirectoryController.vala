@@ -71,10 +71,11 @@ public class Tuner.DirectoryController : Object {
         }
     }
 
-    // Random hat naturally no offset
+    private uint load_random_offset = 0;
     public void load_random_stations (ContentBox target) {
-        var stations = provider.search (PAGE_SIZE, RadioBrowser.SortOrder.RANDOM, false, 0);
+        var stations = provider.search (PAGE_SIZE, RadioBrowser.SortOrder.RANDOM, false, load_random_offset);
         load_and_update (target, stations);
+        load_random_offset += PAGE_SIZE;
     }
 
     private uint load_trending_offset = 0;

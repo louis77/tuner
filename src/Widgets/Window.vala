@@ -28,6 +28,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     private PlayerController _player;
     private DirectoryController _directory;
     private HeaderBar headerbar;
+    private delegate void ActionFunc (ContentBox target);
 
     public const string ACTION_PREFIX = "win.";
     public const string ACTION_PAUSE = "action_pause";
@@ -84,80 +85,34 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var stack = new Gtk.Stack ();
         stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
 
-        var c1 = new ContentBox (
-            // new Gtk.Image.from_icon_name ("face-smile-symbolic", Gtk.IconSize.DIALOG),
-            null,
-            "Discover Stations",
-            _directory.load_random_stations,
-            "media-playlist-shuffle-symbolic",
-            "Discover more stations"
-        );
-        c1.selection_changed.connect (handle_station_click);
-        stack.add_titled (c1, "discover", "Discover");
-
-        var c2 = new ContentBox (
-            // new Gtk.Image.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.DIALOG),
-            null,
-            "Trending Stations",
-            _directory.load_trending_stations,
-            "go-next",
-            "Load more stations"
-        );
-        c2.selection_changed.connect (handle_station_click);
-        stack.add_titled (c2, "trending", "Trending");
-
-        var c3 = new ContentBox (
-            // new Gtk.Image.from_icon_name ("playlist-similar-symbolic", Gtk.IconSize.DIALOG),
-            null,
-            "Popular Stations",
-            _directory.load_popular_stations,
-            "go-next",
-            "Load more stations"
-        );
-        c3.selection_changed.connect (handle_station_click);
-        stack.add_titled (c3, "popular", "Popular");
-
-        var c4 = new ContentBox (
-            // new Gtk.Image.from_icon_name ("playlist-automatic-symbolic", Gtk.IconSize.DIALOG),
-            null,
-            "Starred by You",
-            _directory.load_favourite_stations,
-            "view-refresh-symbolic",
-            "Refresh"
-        );
-        c4.selection_changed.connect (handle_station_click);
-        stack.add_titled (c4, "starred", "Starred by You");
-
-        var sidebar = new Gtk.StackSidebar ();
-        sidebar.set_stack (stack);
-
         var selections_category = new Granite.Widgets.SourceList.ExpandableItem ("Selections");
         selections_category.collapsible = false;
         selections_category.expanded = true;
 
-        var discover_item = new Granite.Widgets.SourceList.Item ("Discover");
-        discover_item.icon = new ThemedIcon ("face-smile-symbolic");
-        discover_item.set_data<string> ("stack_child", "discover");
-        selections_category.add (discover_item);
+        create_content_box ("discover", "Discover", "face-smile",
+                            "Discover Stations", "media-playlist-shuffle-symbolic",
+                            "Discover more stations",
+                            _directory.load_random_stations, stack, selections_category);
 
-        var trending_item = new Granite.Widgets.SourceList.Item ("Trending");
-        trending_item.icon = new ThemedIcon ("playlist-queue");
-        trending_item.set_data<string> ("stack_child", "trending");
-        selections_category.add (trending_item);
+        create_content_box ("trending", "Trending", "playlist-queue",
+                            "Trending Stations", "go-next",
+                            "Load more stations",
+                            _directory.load_trending_stations, stack, selections_category);
 
-        var popular_item = new Granite.Widgets.SourceList.Item ("Popular");
-        popular_item.icon = new ThemedIcon ("playlist-similar");
-        popular_item.set_data<string> ("stack_child", "popular");
-        selections_category.add (popular_item);
+        create_content_box ("popular", "Popular", "playlist-similar",
+                            "Popular Stations", "go-next",
+                            "Load more stations",
+                            _directory.load_popular_stations, stack, selections_category);
 
-        var starred_item = new Granite.Widgets.SourceList.Item ("Starred by You");
-        starred_item.icon = new ThemedIcon ("starred");
-        starred_item.set_data<string> ("stack_child", "starred");
-        selections_category.add (starred_item);
+        create_content_box ("starred", "Starred by You", "starred",
+                            "Starred by You", "view-refresh-symbolic",
+                            "Refresh",
+                            _directory.load_favourite_stations, stack, selections_category);
 
         var source_list = new Granite.Widgets.SourceList ();
         source_list.root.add (selections_category);
         source_list.set_size_request (150, -1);
+        source_list.selected = source_list.get_first_child (selections_category);
         source_list.item_selected.connect  ((item) => {
             var selected_item = item.get_data<string> ("stack_child");
             debug (@"selected $selected_item");
@@ -171,6 +126,40 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         show_all ();
     }
 
+    private void create_content_box (string name,
+                                     string list_title,
+                                     string list_icon_name,
+                                     string full_title,
+                                     string action_icon_name,
+                                     string action_tooltip_text,
+                                     ActionFunc action_func,
+                                     Gtk.Stack stack,
+                                     Granite.Widgets.SourceList.ExpandableItem category_item) {
+        var c = new ContentBox (
+            null,
+            full_title,
+            action_icon_name,
+            action_tooltip_text
+        );
+        c.selection_changed.connect (handle_station_click);
+        c.map.connect (() => {
+            if (!c.get_data<bool> ("has_stations")) {
+                action_func (c);
+                c.set_data<bool> ("has_stations", true);
+            }
+        });
+        c.action_activated.connect (() => {
+            action_func (c);
+        });
+
+        stack.add_named (c, name);
+
+        var item = new Granite.Widgets.SourceList.Item (list_title);
+        item.icon = new ThemedIcon (list_icon_name);
+        item.set_data<string> ("stack_child", name);
+        category_item.add (item);
+    }
+
     private void action_quit () {
         destroy ();
     }
@@ -181,7 +170,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         // set_geometry_hints (null, null, Gdk.WindowHints.MIN_SIZE);
         show_all ();
-        resize (default_width, default_height);
+        // resize (default_width, default_height);
         // var scrolled_window = new Gtk.ScrolledWindow (null, null);
         // scrolled_window.add (content);
         // add (scrolled_window);

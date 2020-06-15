@@ -7,10 +7,12 @@
 [ ] Implement DBus activation
 [X] Add Favicon in header bar
 [ ] Play/Pause control from Dock
-[ ] Load first selection async to increase startup time
+[X] Load first selection async to increase startup time
 [ ] Dark mode
 [ ] Add station info on headerbar click
 [X] Customize sidebar with custom widgets
 [ ] Add settings and status bar to disable usage tracking
 [ ] Move app icon up a little bit
 [ ] Starred stations uuid seems to change which is an issue for starred by you
+    (Workaround in place)
+[ ] implement notify signals...
