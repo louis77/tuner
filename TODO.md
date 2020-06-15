@@ -16,3 +16,4 @@
 [ ] Starred stations uuid seems to change which is an issue for starred by you
     (Workaround in place)
 [ ] implement notify signals...
+[ ] Refresh starred when stations starred/unstarred

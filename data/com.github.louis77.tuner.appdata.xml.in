@@ -59,6 +59,11 @@
         <p>Initial release</p>
       </description>
     </release>
+    <release version="1.1" date="2020-06-16">
+      <description>
+        <p>New sidebar menu with different selections and your favourite stations.</p>
+      </description>
+    </release>
   </releases>
 
   <custom>

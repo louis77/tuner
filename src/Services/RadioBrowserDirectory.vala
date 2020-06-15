@@ -108,7 +108,7 @@ public class Client : Object {
     public Client() {
         _session = new Soup.Session ();
         // TODO: Automatically generate this
-        _session.user_agent = "com.github.louis77.tuner/0.1";
+        _session.user_agent = "com.github.louis77.tuner/1.1";
 
         /*
         Resolver resolver = Resolver.get_default ();
