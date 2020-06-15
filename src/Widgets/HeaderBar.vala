@@ -79,7 +79,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         );
         star_button.valign = Gtk.Align.CENTER;
         star_button.sensitive = true;
-        star_button.tooltip_text = "Star this station to see it more often";
+        star_button.tooltip_text = "Star this station";
         star_button.clicked.connect (() => {
             starred = !starred;
             star_clicked (starred);

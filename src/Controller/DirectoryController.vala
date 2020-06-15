@@ -49,22 +49,22 @@ public class Tuner.DirectoryController : Object {
         return stations;
     }
 
-    private void augment_with_userinfo (ArrayList<Model.StationModel> stations) {
+    private void augment_with_userinfo (ArrayList<Model.StationModel> stations, bool star_always = false) {
         var settings = Application.instance.settings;
         var starred = settings.get_strv ("starred-stations");
 
         foreach (Model.StationModel station in stations) {
             foreach (string id in starred) {
-                station.starred = id == station.id;
+                station.starred = star_always || id == station.id;
             }
         }
     }
 
 
-    public void load_and_update (ContentBox target, ArrayList<RadioBrowser.Station> raw_stations) {
+    public void load_and_update (ContentBox target, ArrayList<RadioBrowser.Station> raw_stations, bool star_always = false) {
         try {
             var stations = convert_stations (raw_stations);
-            augment_with_userinfo (stations);
+            augment_with_userinfo (stations, star_always);
             stations_updated (target, stations);
         } catch (RadioBrowser.DataError e) {
             warning ("unable to fetch stations from directory: %s", e.message);
@@ -104,7 +104,7 @@ public class Tuner.DirectoryController : Object {
                 stations.add (result[0]);
             }
         }
-        load_and_update (target, stations);
+        load_and_update (target, stations, true);
     }
 
     public void star_station (Model.StationModel station, bool starred) {

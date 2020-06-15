@@ -13,3 +13,4 @@
 [X] Customize sidebar with custom widgets
 [ ] Add settings and status bar to disable usage tracking
 [ ] Move app icon up a little bit
+[ ] Starred stations uuid seems to change which is an issue for starred by you
