@@ -1,13 +1,16 @@
 [X] Load Images in StationBox Asynchronously
 [X] Enable Favourites Button in HeaderBar
-[ ] Show errors via app notifications
 [X] Radio Browser credits
-[ ] Cache resized station favicons
 [X] Make StationBox a custom Widget
 [ ] There are stations playing video. If closed, app is crashing
 [ ] Select local Radio Browser server
 [ ] Implement DBus activation
-[ ] Add Favicon in header bar
+[X] Add Favicon in header bar
 [ ] Play/Pause control from Dock
 [ ] Load first selection async to increase startup time
 [ ] Dark mode
+[ ] Add station info on headerbar click
+[ ] Customize sidebar with custom widgets
+[ ] Add settings and status bar to disable usage tracking
+[ ] Add custom action for selection screen (pager etc.)
+[ ] Move app icon up a little bit

@@ -21,6 +21,13 @@
 
 public class Tuner.HeaderBar : Gtk.HeaderBar {
 
+    public enum PlayState {
+        PAUSE_ACTIVE,
+        PAUSE_INACTIVE,
+        PLAY_ACTIVE,
+        PLAY_INACTIVE
+    }
+
     public Tuner.Window main_window { get; construct; }
     public Gtk.Button play_button { get; set; }
 
@@ -59,14 +66,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         // subtitle = "Paused";
 
         custom_title = station_info;
-
-        play_button = new Gtk.Button.from_icon_name (
-            "media-playback-pause-symbolic",
-            Gtk.IconSize.LARGE_TOOLBAR
-        );
+        play_button = new Gtk.Button ();
         play_button.valign = Gtk.Align.CENTER;
-        play_button.sensitive = false;
         play_button.clicked.connect (() => { stop_clicked (); });
+        set_playstate (PlayState.PAUSE_INACTIVE);
 
         pack_start (play_button);
 
@@ -163,6 +166,39 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
             favicon.set_from_pixbuf (pxbuf);
         });
+    }
+
+    public void set_playstate (PlayState state) {
+        switch (state) {
+            case PlayState.PLAY_ACTIVE:
+                play_button.image = new Gtk.Image.from_icon_name (
+                    "media-playback-start-symbolic",
+                    Gtk.IconSize.LARGE_TOOLBAR
+                );
+                play_button.sensitive = true;
+                break;
+            case PlayState.PLAY_INACTIVE:
+                play_button.image = new Gtk.Image.from_icon_name (
+                    "media-playback-start-symbolic",
+                    Gtk.IconSize.LARGE_TOOLBAR
+                );
+                play_button.sensitive = false;
+                break;
+            case PlayState.PAUSE_ACTIVE:
+                play_button.image = new Gtk.Image.from_icon_name (
+                    "media-playback-pause-symbolic",
+                    Gtk.IconSize.LARGE_TOOLBAR
+                );
+                play_button.sensitive = true;
+                break;
+            case PlayState.PAUSE_INACTIVE:
+                play_button.image = new Gtk.Image.from_icon_name (
+                    "media-playback-pause-symbolic",
+                    Gtk.IconSize.LARGE_TOOLBAR
+                );
+                play_button.sensitive = false;
+                break;
+        }
     }
 
 }

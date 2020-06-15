@@ -134,7 +134,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     public void handle_stop_playback() {
         info ("Stop Playback requested");
-        _player.player.stop ();
+        _player.play_pause ();
     }
 
     public void handle_player_state_changed (Gst.PlayerState state) {
@@ -143,7 +143,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 debug ("player state changed to Buffering");
                 Gdk.threads_add_idle (() => {
                     headerbar.subtitle = "Buffering";
-                    headerbar.play_button.sensitive = true;
+                    headerbar.set_playstate (headerbar.PAUSE_ACTIVE);
                     return false;
                 });
                 break;;
@@ -151,7 +151,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 debug ("player state changed to Paused");
                 Gdk.threads_add_idle (() => {
                     headerbar.subtitle = "Paused";
-                    headerbar.play_button.sensitive = false;
+                    if (_player.can_play()) {
+                        headerbar.set_playstate (headerbar.PLAY_ACTIVE);
+                    } else {
+                        headerbar.set_playstate (headerbar.PLAY_INACTIVE);
+                    }
                     return false;
                 });
                 break;;
@@ -159,7 +163,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 debug ("player state changed to Playing");
                 Gdk.threads_add_idle (() => {
                     headerbar.subtitle = _("Playing");
-                    headerbar.play_button.sensitive = true;
+                    headerbar.set_playstate (headerbar.PAUSE_ACTIVE);
                     return false;
                 });
                 break;;
@@ -167,7 +171,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 debug ("player state changed to Stopped");
                 Gdk.threads_add_idle (() => {
                     headerbar.subtitle = _("Stopped");
-                    headerbar.play_button.sensitive = false;
+                    if (_player.can_play()) {
+                        headerbar.set_playstate (headerbar.PLAY_ACTIVE);
+                    } else {
+                        headerbar.set_playstate (headerbar.PLAY_INACTIVE);
+                    }
                     return false;
                 });
                 break;
