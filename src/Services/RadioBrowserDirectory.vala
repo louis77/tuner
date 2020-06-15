@@ -154,10 +154,11 @@ public class Client : Object {
     // TODO: don't use blocking calls here
     public async ArrayList<Station> load (uint rowcount,
                                     SortOrder order,
-                                    bool reverse = false) throws DataError {
+                                    bool reverse = false,
+                                    uint offset = 0) throws DataError {
         debug ("trying to fetch data from radio-browser");
 
-        var resource = @"json/stations/search?language=en&limit=$rowcount&order=$order&reverse=$reverse";
+        var resource = @"json/stations/search?language=en&limit=$rowcount&order=$order&reverse=$reverse&offset=$offset";
         var message = new Soup.Message ("GET", @"$API_BASE_URL/$resource");
         Json.Node rootnode;
 

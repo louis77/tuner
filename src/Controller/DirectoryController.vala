@@ -25,6 +25,8 @@ using Gee;
 
 public class Tuner.DirectoryController : Object {
 
+    private const uint PAGE_SIZE = 10;
+
     public RadioBrowser.Client provider { get; set; }
 
     public signal void stations_updated (ContentBox target, ArrayList<Model.StationModel> stations);
@@ -69,24 +71,29 @@ public class Tuner.DirectoryController : Object {
         }
     }
 
+    // Random hat naturally no offset
     public void load_random_stations (ContentBox target) {
-        provider.load.begin (10, RadioBrowser.SortOrder.RANDOM, false, (obj, res) => {
+        provider.load.begin (PAGE_SIZE, RadioBrowser.SortOrder.RANDOM, false, 0, (obj, res) => {
             var stations = provider.load.end (res);
             load_and_update (target, stations);
         });
     }
 
+    private uint load_trending_offset = 0;
     public void load_trending_stations (ContentBox target) {
-        provider.load.begin (10, RadioBrowser.SortOrder.CLICKTREND, true, (obj, res) => {
+        provider.load.begin (PAGE_SIZE, RadioBrowser.SortOrder.CLICKTREND, true, load_trending_offset, (obj, res) => {
             var stations = provider.load.end (res);
             load_and_update (target, stations);
+            load_trending_offset += PAGE_SIZE;
         });
     }
 
+    private uint load_popular_offset = 0;
     public void load_popular_stations (ContentBox target) {
-        provider.load.begin (10, RadioBrowser.SortOrder.CLICKCOUNT, true, (obj, res) => {
+        provider.load.begin (PAGE_SIZE, RadioBrowser.SortOrder.CLICKCOUNT, true, load_popular_offset, (obj, res) => {
             var stations = provider.load.end (res);
             load_and_update (target, stations);
+            load_popular_offset += PAGE_SIZE;
         });
     }
 

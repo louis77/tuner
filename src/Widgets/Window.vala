@@ -79,6 +79,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             // null,
             "Discover Stations",
             _directory.load_random_stations,
+            "media-playlist-shuffle-symbolic",
+            "Discover more stations",
             handle_station_click
         );
         stack.add_titled (c1, "discover", "Discover");
@@ -88,6 +90,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             // null,
             "Trending Stations",
             _directory.load_trending_stations,
+            "go-next",
+            "Load more stations",
             handle_station_click
         );
         stack.add_titled (c2, "trending", "Trending");
@@ -97,6 +101,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             // null,
             "Popular Stations",
             _directory.load_popular_stations,
+            "go-next",
+            "Load more stations",
             handle_station_click
         );
         stack.add_titled (c3, "popular", "Popular");

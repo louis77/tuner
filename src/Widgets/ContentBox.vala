@@ -30,7 +30,12 @@ public class Tuner.ContentBox : Gtk.Box {
     private Gtk.Box header;
     public Gtk.Box content;
 
-    public ContentBox (Gtk.Image? icon, string title, ActionFunc action, StationFunc sfunc) {
+    public ContentBox (Gtk.Image? icon,
+                       string title,
+                       ActionFunc action,
+                       string action_icon_name,
+                       string action_tooltip_text,
+                       StationFunc sfunc) {
         Object (
             orientation: Gtk.Orientation.VERTICAL,
             spacing: 0
@@ -51,11 +56,11 @@ public class Tuner.ContentBox : Gtk.Box {
         header.pack_start (header_label, false, false);
 
         var shuffle_button = new Gtk.Button.from_icon_name (
-            "media-playlist-shuffle-symbolic",
+            action_icon_name,
             Gtk.IconSize.LARGE_TOOLBAR
         );
         shuffle_button.valign = Gtk.Align.CENTER;
-        shuffle_button.tooltip_text = "Discover more stations";
+        shuffle_button.tooltip_text = action_tooltip_text;
         shuffle_button.clicked.connect (() => {
             action (this);
         });
