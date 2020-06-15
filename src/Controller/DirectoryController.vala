@@ -73,28 +73,38 @@ public class Tuner.DirectoryController : Object {
 
     // Random hat naturally no offset
     public void load_random_stations (ContentBox target) {
-        provider.load.begin (PAGE_SIZE, RadioBrowser.SortOrder.RANDOM, false, 0, (obj, res) => {
-            var stations = provider.load.end (res);
-            load_and_update (target, stations);
-        });
+        var stations = provider.search (PAGE_SIZE, RadioBrowser.SortOrder.RANDOM, false, 0);
+        load_and_update (target, stations);
     }
 
     private uint load_trending_offset = 0;
     public void load_trending_stations (ContentBox target) {
-        provider.load.begin (PAGE_SIZE, RadioBrowser.SortOrder.CLICKTREND, true, load_trending_offset, (obj, res) => {
-            var stations = provider.load.end (res);
-            load_and_update (target, stations);
-            load_trending_offset += PAGE_SIZE;
-        });
+        var stations = provider.search (PAGE_SIZE, RadioBrowser.SortOrder.CLICKTREND, true, load_trending_offset);
+        load_and_update (target, stations);
+        load_trending_offset += PAGE_SIZE;
     }
 
     private uint load_popular_offset = 0;
     public void load_popular_stations (ContentBox target) {
-        provider.load.begin (PAGE_SIZE, RadioBrowser.SortOrder.CLICKCOUNT, true, load_popular_offset, (obj, res) => {
-            var stations = provider.load.end (res);
-            load_and_update (target, stations);
-            load_popular_offset += PAGE_SIZE;
-        });
+        var stations = provider.search (PAGE_SIZE, RadioBrowser.SortOrder.CLICKCOUNT, true, load_popular_offset);
+        load_and_update (target, stations);
+        load_popular_offset += PAGE_SIZE;
+    }
+
+    public void load_favourite_stations (ContentBox target) {
+        var settings = Application.instance.settings;
+        var starred_stations = settings.get_strv ("starred-stations");
+        var stations = new ArrayList<RadioBrowser.Station> ();
+
+        debug (@"Number of favourite stations: $(starred_stations.length)");
+
+        foreach (var s in starred_stations) {
+            var result = provider.by_uuid (s);
+            if (result.size == 1) {
+                stations.add (result[0]);
+            }
+        }
+        load_and_update (target, stations);
     }
 
     public void star_station (Model.StationModel station, bool starred) {

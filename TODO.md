@@ -10,7 +10,6 @@
 [ ] Load first selection async to increase startup time
 [ ] Dark mode
 [ ] Add station info on headerbar click
-[ ] Customize sidebar with custom widgets
+[X] Customize sidebar with custom widgets
 [ ] Add settings and status bar to disable usage tracking
-[ ] Add custom action for selection screen (pager etc.)
 [ ] Move app icon up a little bit

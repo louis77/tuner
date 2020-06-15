@@ -151,14 +151,9 @@ public class Client : Object {
         debug (@"response: $(response_code)");
     }
 
-    // TODO: don't use blocking calls here
-    public async ArrayList<Station> load (uint rowcount,
-                                    SortOrder order,
-                                    bool reverse = false,
-                                    uint offset = 0) throws DataError {
-        debug ("trying to fetch data from radio-browser");
+    public ArrayList<Station> get_stations (string resource) throws DataError {
+        debug (@"RB $resource");
 
-        var resource = @"json/stations/search?language=en&limit=$rowcount&order=$order&reverse=$reverse&offset=$offset";
         var message = new Soup.Message ("GET", @"$API_BASE_URL/$resource");
         Json.Node rootnode;
 
@@ -175,6 +170,19 @@ public class Client : Object {
 
         var stations = jarray_to_stations (rootarray);
         return stations;
+    }
+
+    public ArrayList<Station> search (uint rowcount,
+                                      SortOrder order,
+                                      bool reverse = false,
+                                      uint offset = 0) {
+        var resource = @"json/stations/search?language=en&limit=$rowcount&order=$order&reverse=$reverse&offset=$offset";
+        return get_stations (resource);
+    }
+
+    public ArrayList<Station> by_uuid (string uuid) {
+        var resource = @"json/stations/byuuid/$uuid";
+        return get_stations (resource);
     }
 
 }
