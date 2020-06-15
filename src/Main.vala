@@ -22,10 +22,6 @@
 public static int main (string[] args) {
     Gst.init (ref args);
 
-    debug ("Config Dir: " + GLib.Environment.get_user_config_dir ());
-
-    debug ("Paths Config Dir: " + Granite.Services.Paths.user_config_folder.get_basename ());
-
     var app = Tuner.Application.instance;
     return app.run (args);
 }

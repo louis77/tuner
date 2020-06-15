@@ -90,9 +90,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             "Discover Stations",
             _directory.load_random_stations,
             "media-playlist-shuffle-symbolic",
-            "Discover more stations",
-            handle_station_click
+            "Discover more stations"
         );
+        c1.selection_changed.connect (handle_station_click);
         stack.add_titled (c1, "discover", "Discover");
 
         var c2 = new ContentBox (
@@ -101,9 +101,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             "Trending Stations",
             _directory.load_trending_stations,
             "go-next",
-            "Load more stations",
-            handle_station_click
+            "Load more stations"
         );
+        c2.selection_changed.connect (handle_station_click);
         stack.add_titled (c2, "trending", "Trending");
 
         var c3 = new ContentBox (
@@ -112,9 +112,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             "Popular Stations",
             _directory.load_popular_stations,
             "go-next",
-            "Load more stations",
-            handle_station_click
+            "Load more stations"
         );
+        c3.selection_changed.connect (handle_station_click);
         stack.add_titled (c3, "popular", "Popular");
 
         var c4 = new ContentBox (
@@ -123,9 +123,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             "Starred by You",
             _directory.load_favourite_stations,
             "view-refresh-symbolic",
-            "Refresh",
-            handle_station_click
+            "Refresh"
         );
+        c4.selection_changed.connect (handle_station_click);
         stack.add_titled (c4, "starred", "Starred by You");
 
         var sidebar = new Gtk.StackSidebar ();

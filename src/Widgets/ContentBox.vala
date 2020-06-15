@@ -24,9 +24,8 @@ using Gee;
 public class Tuner.ContentBox : Gtk.Box {
 
     public delegate void ActionFunc (ContentBox target);
-    public delegate void StationFunc (Model.StationModel station);
+    public signal void selection_changed (Model.StationModel station);
 
-    private StationFunc _station_func;
     private Gtk.Box header;
     public Gtk.Box content;
 
@@ -34,14 +33,11 @@ public class Tuner.ContentBox : Gtk.Box {
                        string title,
                        ActionFunc action,
                        string action_icon_name,
-                       string action_tooltip_text,
-                       StationFunc sfunc) {
+                       string action_tooltip_text) {
         Object (
             orientation: Gtk.Orientation.VERTICAL,
             spacing: 0
         );
-
-        _station_func = sfunc;
 
         header = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
         header.homogeneous = false;
@@ -92,7 +88,7 @@ public class Tuner.ContentBox : Gtk.Box {
             foreach (var s in value) {
                 var box = new StationBox (s);
                 box.clicked.connect (() => {
-                    _station_func (box.station);
+                    selection_changed (box.station);
                 });
                 station_list.add (box);
             }
