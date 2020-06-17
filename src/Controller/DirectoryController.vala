@@ -139,7 +139,7 @@ public class Tuner.DirectoryController : Object {
                 }
             }
             var stations = convert_stations (raw_stations);
-            augment_with_userinfo (stations, false);
+            augment_with_userinfo (stations, true);
             return stations;
         });
         return source;

@@ -41,6 +41,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     public signal void stop_clicked ();
     public signal void star_clicked (bool starred);
     public signal void searched_for (string text);
+    public signal void search_focused ();
 
     public HeaderBar (Tuner.Window window) {
         Object (
@@ -72,9 +73,12 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
         var searchentry = new Gtk.SearchEntry ();
         searchentry.valign = Gtk.Align.CENTER;
-        searchentry.placeholder_text = "Search stations";
+        searchentry.placeholder_text = "Station name";
         searchentry.search_changed.connect (() => {
             searched_for (searchentry.text);
+        });
+        searchentry.focus_in_event.connect ((e) => {
+            search_focused ();
         });
         pack_end (searchentry);
 

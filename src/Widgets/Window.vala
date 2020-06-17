@@ -170,10 +170,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         headerbar.searched_for.connect ( (text) => {
             if (text.length > 0) {
-                stack.visible_child_name = "searched";
                 s5 = _directory.load_search_stations (text); 
                 c5.stations = s5.next ();
             }
+        });
+
+        headerbar.search_focused.connect (() => {
+            stack.visible_child_name = "searched";
         });
 
         primary_box.pack1 (source_list, true, false);
