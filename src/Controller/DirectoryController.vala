@@ -45,6 +45,7 @@ public class Tuner.DirectoryController : Object {
                 station.country,
                 station.url_resolved);
             s.favicon_url = station.favicon;
+            s.clickcount = station.clickcount;
             stations.add (s);
         }
         return stations;
@@ -72,8 +73,8 @@ public class Tuner.DirectoryController : Object {
         }
     }
 
-    public StationSource load_random_stations () {
-        var source = new StationSource();
+    public StationSource load_random_stations (uint limit) {
+        var source = new StationSource(limit);
         source.fetch.connect( (offset, limit) => {
             var raw_stations = provider.search ("", limit, RadioBrowser.SortOrder.RANDOM, false, offset);
             var stations = convert_stations (raw_stations);
@@ -83,8 +84,8 @@ public class Tuner.DirectoryController : Object {
         return source;
     }
 
-    public StationSource load_trending_stations () {
-        var source = new StationSource();
+    public StationSource load_trending_stations (uint limit) {
+        var source = new StationSource(limit);
         source.fetch.connect( (offset, limit) => {
             var raw_stations = provider.search (null, limit, RadioBrowser.SortOrder.CLICKTREND, true, offset);
             var stations = convert_stations (raw_stations);
@@ -94,8 +95,8 @@ public class Tuner.DirectoryController : Object {
         return source;
     }
 
-    public StationSource load_popular_stations () {
-        var source = new StationSource();
+    public StationSource load_popular_stations (uint limit) {
+        var source = new StationSource(limit);
         source.fetch.connect( (offset, limit) => {
             var raw_stations = provider.search (null, limit, RadioBrowser.SortOrder.CLICKCOUNT, true, offset);
             var stations = convert_stations (raw_stations);
@@ -105,25 +106,20 @@ public class Tuner.DirectoryController : Object {
         return source;
     }
 
-    public StationSource load_search_stations (string utext) {
-        var text = utext;
-        var ltext = "info";
-        var source = new StationSource();
+    public StationSource load_search_stations (string utext, uint limit) {
+        var source = new StationSource(limit);
         source.fetch.connect( (offset, limit) => {
             var l2text = "info";
-            debug (@"get raw_stations for $text");
             var raw_stations = provider.search (utext, limit, RadioBrowser.SortOrder.CLICKCOUNT, true, offset);
-            debug ("convert stations");
             var stations = convert_stations (raw_stations);
-            debug ("augment stations");
             augment_with_userinfo (stations, false);
             return stations;
         });
         return source;
     }
 
-    public StationSource load_favourite_stations () {
-        var source = new StationSource();
+    public StationSource load_favourite_stations (uint limit) {
+        var source = new StationSource(limit);
         source.fetch.connect( (offset, limit) => {
             // TODO Implement offset
             var settings = Application.instance.settings;
@@ -179,13 +175,15 @@ public class Tuner.DirectoryController : Object {
 
 public class Tuner.StationSource : Object {
     private uint _offset = 0;
-    private uint _page_size = 10;
+    private uint _page_size = 20;
     private uint _page = 0;
     private bool _more = true;
     public signal ArrayList<Model.StationModel> fetch(uint offset, uint limit);
 
-    public StationSource () {
+    public StationSource (uint limit) {
         Object ();
+        // This disables paging for now
+        _page_size = limit;
     }
 
     public ArrayList<Model.StationModel>? next () {

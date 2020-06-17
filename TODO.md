@@ -20,4 +20,5 @@
 [ ] Add Tags selections
 [ ] Add station info on headerbar click
 [ ] Refresh starred when stations starred/unstarred
-{ } Don't limit starred stations
+[ ] Don't limit starred stations
+[ ] Recently listend, My Library

@@ -95,6 +95,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         });
 
         pack_start (star_button);
+
     }
 
     public new string title {
@@ -127,7 +128,11 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
     public void update_from_station (Model.StationModel station) {
         _station = station;
-        title = station.title;
+        var short_title = station.title;
+        if (short_title.length > 50) {
+            short_title = short_title[0:30] + "...";
+        }
+        title = short_title;
         subtitle = "Connecting";
         load_favicon (station.favicon_url);
         starred = station.starred;

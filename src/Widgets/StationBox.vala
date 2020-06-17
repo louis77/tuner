@@ -29,7 +29,8 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
             title = title[0:30] + "...";
         }
         Object (
-            description: station.location,
+            description: @"$(station.location) ($(station.clickcount))",
+            description: @"$(station.location)",
             title: title,
             icon: new Gtk.Image()
         );
@@ -67,7 +68,6 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
             });
 
         }
-
     }
 
     construct {

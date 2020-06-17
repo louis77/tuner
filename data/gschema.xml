@@ -8,12 +8,12 @@
             <description>Saved horizontal position of main window</description>
         </key>
         <key name="pos-y" type="i">
-            <default>360</default>
+            <default>640</default>
             <summary>Vertical position</summary>
             <description>Saved vertical position of main window</description>
         </key>
         <key name="window-width" type="i">
-            <default>600</default>
+            <default>1040</default>
             <summary>Window width</summary>
             <description>Saved width of main window</description>
         </key>

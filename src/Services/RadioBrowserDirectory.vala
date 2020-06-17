@@ -97,6 +97,7 @@ public class Station : Object {
     public string url_resolved { get; set; }
     public string country { get; set; }
     public string favicon { get; set; }
+    public uint clickcount { get; set; }
 }
 
 public class Tag : Object {

@@ -25,6 +25,7 @@ public class Tuner.ContentBox : Gtk.Box {
 
     public signal void selection_changed (Model.StationModel station);
     public signal void action_activated ();
+    public signal void station_count_changed (uint count);
 
     private Gtk.Box header;
     public Gtk.Box content;
@@ -32,8 +33,8 @@ public class Tuner.ContentBox : Gtk.Box {
 
     public ContentBox (Gtk.Image? icon,
                        string title,
-                       string action_icon_name,
-                       string action_tooltip_text) {
+                       string? action_icon_name,
+                       string? action_tooltip_text) {
         Object (
             orientation: Gtk.Orientation.VERTICAL,
             spacing: 0
@@ -51,14 +52,16 @@ public class Tuner.ContentBox : Gtk.Box {
         header_label.ypad = 20;
         header.pack_start (header_label, false, false);
 
-        var shuffle_button = new Gtk.Button.from_icon_name (
-            action_icon_name,
-            Gtk.IconSize.LARGE_TOOLBAR
-        );
-        shuffle_button.valign = Gtk.Align.CENTER;
-        shuffle_button.tooltip_text = action_tooltip_text;
-        shuffle_button.clicked.connect (() => { action_activated (); });
-        header.pack_start (shuffle_button, false, false);
+        if (action_icon_name != null && action_tooltip_text != null) {
+            var shuffle_button = new Gtk.Button.from_icon_name (
+                action_icon_name,
+                Gtk.IconSize.LARGE_TOOLBAR
+            );
+            shuffle_button.valign = Gtk.Align.CENTER;
+            shuffle_button.tooltip_text = action_tooltip_text;
+            shuffle_button.clicked.connect (() => { action_activated (); });
+            header.pack_start (shuffle_button, false, false);            
+        }
 
         pack_start (header, false, false);
         pack_start (new Gtk.Separator (Gtk.Orientation.HORIZONTAL), false, false);
@@ -67,7 +70,20 @@ public class Tuner.ContentBox : Gtk.Box {
         content.get_style_context ().add_class ("color-light");
         content.valign = Gtk.Align.START;
         content.get_style_context().add_class("welcome");
-        add (content);
+
+        var scroller = new Gtk.ScrolledWindow (null, null);
+        scroller.hscrollbar_policy = Gtk.PolicyType.NEVER;
+        scroller.add (content);
+        scroller.propagate_natural_height = true;
+
+        /* not a fan right now
+        scroller.edge_reached.connect ((pos_type) => {
+            if (pos_type == Gtk.PositionType.BOTTOM) {
+                action_activated ();
+            }
+        });
+        */
+        add (scroller);
     }
 
     public ArrayList<Model.StationModel> stations {
@@ -96,10 +112,11 @@ public class Tuner.ContentBox : Gtk.Box {
             content.add (station_list);
             station_list.unselect_all ();
             content.show_all ();
+            station_count_changed (value.size);
         }
     }
 
-    private void clear_content () {
+    public void clear_content () {
         var childs = content.get_children();
         foreach (var c in childs) {
             c.destroy();

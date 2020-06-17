@@ -60,10 +60,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         add_action_entries (ACTION_ENTRIES, this);
 
         window_position = Gtk.WindowPosition.CENTER;
-        set_default_size (350, 80);
+        set_default_size (1040, 640);
         settings = Application.instance.settings;
         move (settings.get_int ("pos-x"), settings.get_int ("pos-y"));
-        resize (default_width, default_height);
+
+        set_geometry_hints (null, Gdk.Geometry() {min_height = 440, min_width = 1040}, Gdk.WindowHints.MIN_SIZE);
+        resize (settings.get_int ("window-width"), settings.get_int ("window-height"));
 
         delete_event.connect (e => {
             return before_destroy ();
@@ -76,9 +78,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         headerbar.stop_clicked.connect ( () => {
             handle_stop_playback ();
         });
-        headerbar.star_clicked.connect ( (starred) => {
-            _directory.star_station (_player.station, starred);
-        });
+
 
         set_titlebar (headerbar);
 
@@ -102,8 +102,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                             "Discover Stations", "media-playlist-shuffle-symbolic",
                             "Discover more stations",
                             stack, selections_category, source_list);
-        var s1 = _directory.load_random_stations();
-        c1.realize.connect (() => {
+        var s1 = _directory.load_random_stations(10);
+        c1.show.connect (() => {
             c1.stations = s1.next ();
         });
         c1.action_activated.connect (() => {
@@ -111,56 +111,45 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
 
         var c2 = create_content_box ("trending", "Trending", "playlist-queue",
-                            "Trending Stations", "go-next",
-                            "Load more stations",
+                            "Trending in the last 24 hours", null, null,
                             stack, selections_category, source_list);
-        var s2 = _directory.load_trending_stations();
-        c2.realize.connect (() => {
-            c2.stations = s2.next ();
-        });
-        c2.action_activated.connect (() => {
+        var s2 = _directory.load_trending_stations(40);
+        c2.show.connect (() => {
             c2.stations = s2.next ();
         });
         
         var c3 = create_content_box ("popular", "Popular", "playlist-similar",
-                            "Popular Stations", "go-next",
-                            "Load more stations",
+                            "Most-listened over 24 hours", null, null,
                             stack, selections_category, source_list);
-        var s3 = _directory.load_popular_stations();
-        c3.realize.connect (() => {
-            c3.stations = s3.next ();
-        });
-        c3.action_activated.connect (() => {
+        var s3 = _directory.load_popular_stations(40);
+        c3.show.connect (() => {
             c3.stations = s3.next ();
         });
 
         var c4 = create_content_box ("starred", "Starred by You", "starred",
-                            "Starred by You", "view-refresh-symbolic",
-                            "Refresh",
+                            "Starred by You", null, null,
                             stack, selections_category, source_list);
-        var s4 = _directory.load_favourite_stations();
-        c4.realize.connect (() => {
-            c4.stations = s4.next ();
-        });
-        c4.action_activated.connect (() => {
+        
+        c4.show.connect (() => {
+            var s4 = _directory.load_favourite_stations(1000);
             c4.stations = s4.next ();
         });
 
         var c5 = create_content_box ("searched", "Search Result", "folder-saved-search",
-                            "Search", "go-next",
-                            "Load more stations",
+                            "Search", null, null,
                             stack, searched_category, source_list);
-        var s5 = _directory.load_search_stations("");
-        c5.realize.connect (() => {
-            // NOOP
-        });
-        c5.action_activated.connect (() => {
-            c5.stations = s5.next ();
+        var s5 = _directory.load_search_stations("", 100);
+
+        headerbar.star_clicked.connect ( (starred) => {
+            _directory.star_station (_player.station, starred);
+            c4.clear_content ();
+            var s = _directory.load_favourite_stations(1000);
+            c4.stations = s.next ();
         });
 
         source_list.root.add (selections_category);
         source_list.root.add (searched_category);
-        source_list.set_size_request (150, -1);
+        source_list.set_size_request (180, -1);
         source_list.selected = source_list.get_first_child (selections_category);
         source_list.item_selected.connect  ((item) => {
             var selected_item = item.get_data<string> ("stack_child");
@@ -170,7 +159,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         headerbar.searched_for.connect ( (text) => {
             if (text.length > 0) {
-                s5 = _directory.load_search_stations (text); 
+                c5.clear_content ();
+                s5 = _directory.load_search_stations (text, 100); 
                 c5.stations = s5.next ();
             }
         });
@@ -193,8 +183,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
              string list_title,
              string list_icon_name,
              string full_title,
-             string action_icon_name,
-             string action_tooltip_text,
+             string? action_icon_name,
+             string? action_tooltip_text,
              Gtk.Stack stack,
              Granite.Widgets.SourceList.ExpandableItem category_item,
              Granite.Widgets.SourceList source_list) {
@@ -212,13 +202,20 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         c.map.connect (() => {
             source_list.selected = item;
         });
+        c.station_count_changed.connect ((count) => {
+            var badge = @"$count";
+            if (count == 100) {
+                badge = "99+";
+            }
+            item.badge = badge;
+        });
         stack.add_named (c, name);
 
         return c;
     }
 
     private void action_quit () {
-        destroy ();
+        close ();
     }
 
     public void handle_station_click(Tuner.Model.StationModel station) {

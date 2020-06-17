@@ -27,6 +27,7 @@ public class Tuner.Model.StationModel : Object {
     public bool starred { get; set; }
 
     public string? favicon_url { get; set; }
+    public uint clickcount = 0;
 
     public StationModel (string id, string title, string location, string url) {
         this.id = id;
