@@ -40,6 +40,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
     public signal void stop_clicked ();
     public signal void star_clicked (bool starred);
+    public signal void searched_for (string text);
 
     public HeaderBar (Tuner.Window window) {
         Object (
@@ -62,16 +63,20 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         station_info.attach (_title_label, 1, 0, 1, 1);
         station_info.attach (_subtitle_label, 1, 1, 1, 1);
 
-        // title = "Choose a station";
-        // subtitle = "Paused";
-
         custom_title = station_info;
         play_button = new Gtk.Button ();
         play_button.valign = Gtk.Align.CENTER;
         play_button.clicked.connect (() => { stop_clicked (); });
         set_playstate (PlayState.PAUSE_INACTIVE);
-
         pack_start (play_button);
+
+        var searchentry = new Gtk.SearchEntry ();
+        searchentry.valign = Gtk.Align.CENTER;
+        searchentry.placeholder_text = "Search stations";
+        searchentry.search_changed.connect (() => {
+            searched_for (searchentry.text);
+        });
+        pack_end (searchentry);
 
         star_button = new Gtk.Button.from_icon_name (
             "non-starred",
@@ -85,7 +90,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             star_clicked (starred);
         });
 
-        pack_end (star_button);
+        pack_start (star_button);
     }
 
     public new string title {

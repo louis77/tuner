@@ -9,11 +9,15 @@
 [ ] Play/Pause control from Dock
 [X] Load first selection async to increase startup time
 [ ] Dark mode
-[ ] Add station info on headerbar click
 [X] Customize sidebar with custom widgets
 [ ] Add settings and status bar to disable usage tracking
 [ ] Move app icon up a little bit
-[ ] Starred stations uuid seems to change which is an issue for starred by you
-    (Workaround in place)
 [ ] implement notify signals...
+[ ] Startup still needs async load !
+
+## Release 1.2
+
+[ ] Add Tags selections
+[ ] Add station info on headerbar click
 [ ] Refresh starred when stations starred/unstarred
+{ } Don't limit starred stations

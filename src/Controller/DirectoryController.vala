@@ -30,6 +30,7 @@ public class Tuner.DirectoryController : Object {
     public RadioBrowser.Client provider { get; set; }
 
     public signal void stations_updated (ContentBox target, ArrayList<Model.StationModel> stations);
+    public signal void tags_updated (ArrayList<RadioBrowser.Tag> tags);
 
     public DirectoryController (RadioBrowser.Client provider) {
         this.provider = provider;
@@ -71,41 +72,77 @@ public class Tuner.DirectoryController : Object {
         }
     }
 
-    private uint load_random_offset = 0;
-    public void load_random_stations (ContentBox target) {
-        var stations = provider.search (PAGE_SIZE, RadioBrowser.SortOrder.RANDOM, false, load_random_offset);
-        load_and_update (target, stations);
-        load_random_offset += PAGE_SIZE;
+    public StationSource load_random_stations () {
+        var source = new StationSource();
+        source.fetch.connect( (offset, limit) => {
+            var raw_stations = provider.search ("", limit, RadioBrowser.SortOrder.RANDOM, false, offset);
+            var stations = convert_stations (raw_stations);
+            augment_with_userinfo (stations, false);
+            return stations;
+        });
+        return source;
     }
 
-    private uint load_trending_offset = 0;
-    public void load_trending_stations (ContentBox target) {
-        var stations = provider.search (PAGE_SIZE, RadioBrowser.SortOrder.CLICKTREND, true, load_trending_offset);
-        load_and_update (target, stations);
-        load_trending_offset += PAGE_SIZE;
+    public StationSource load_trending_stations () {
+        var source = new StationSource();
+        source.fetch.connect( (offset, limit) => {
+            var raw_stations = provider.search (null, limit, RadioBrowser.SortOrder.CLICKTREND, true, offset);
+            var stations = convert_stations (raw_stations);
+            augment_with_userinfo (stations, false);
+            return stations;
+        });
+        return source;
     }
 
-    private uint load_popular_offset = 0;
-    public void load_popular_stations (ContentBox target) {
-        var stations = provider.search (PAGE_SIZE, RadioBrowser.SortOrder.CLICKCOUNT, true, load_popular_offset);
-        load_and_update (target, stations);
-        load_popular_offset += PAGE_SIZE;
+    public StationSource load_popular_stations () {
+        var source = new StationSource();
+        source.fetch.connect( (offset, limit) => {
+            var raw_stations = provider.search (null, limit, RadioBrowser.SortOrder.CLICKCOUNT, true, offset);
+            var stations = convert_stations (raw_stations);
+            augment_with_userinfo (stations, false);
+            return stations;
+        });
+        return source;
     }
 
-    public void load_favourite_stations (ContentBox target) {
-        var settings = Application.instance.settings;
-        var starred_stations = settings.get_strv ("starred-stations");
-        var stations = new ArrayList<RadioBrowser.Station> ();
+    public StationSource load_search_stations (string utext) {
+        var text = utext;
+        var ltext = "info";
+        var source = new StationSource();
+        source.fetch.connect( (offset, limit) => {
+            var l2text = "info";
+            debug (@"get raw_stations for $text");
+            var raw_stations = provider.search (utext, limit, RadioBrowser.SortOrder.CLICKCOUNT, true, offset);
+            debug ("convert stations");
+            var stations = convert_stations (raw_stations);
+            debug ("augment stations");
+            augment_with_userinfo (stations, false);
+            return stations;
+        });
+        return source;
+    }
 
-        debug (@"Number of favourite stations: $(starred_stations.length)");
+    public StationSource load_favourite_stations () {
+        var source = new StationSource();
+        source.fetch.connect( (offset, limit) => {
+            // TODO Implement offset
+            var settings = Application.instance.settings;
+            var starred_stations = settings.get_strv ("starred-stations");
+            var raw_stations = new ArrayList<RadioBrowser.Station> ();
 
-        foreach (var s in starred_stations) {
-            var result = provider.by_uuid (s);
-            if (result.size == 1) {
-                stations.add (result[0]);
+            debug (@"Number of favourite stations: $(starred_stations.length)");
+
+            foreach (var s in starred_stations) {
+                var result = provider.by_uuid (s);
+                if (result.size == 1) {
+                    raw_stations.add (result[0]);
+                }
             }
-        }
-        load_and_update (target, stations, true);
+            var stations = convert_stations (raw_stations);
+            augment_with_userinfo (stations, false);
+            return stations;
+        });
+        return source;
     }
 
     public void star_station (Model.StationModel station, bool starred) {
@@ -133,4 +170,34 @@ public class Tuner.DirectoryController : Object {
         provider.track (station.id);
     }
 
+    public void load_tags () {
+        var tags = provider.get_tags ();
+        tags_updated (tags);
+    }
+
+}
+
+public class Tuner.StationSource : Object {
+    private uint _offset = 0;
+    private uint _page_size = 10;
+    private uint _page = 0;
+    private bool _more = true;
+    public signal ArrayList<Model.StationModel> fetch(uint offset, uint limit);
+
+    public StationSource () {
+        Object ();
+    }
+
+    public ArrayList<Model.StationModel>? next () {
+        // Fetch one more to determine if source has more items than page size
+        var stations = fetch (_offset, _page_size + 1);
+        _offset += _page_size;
+        _more = stations.size > _page_size;
+        if (_more) stations.remove_at( (int)_page_size);
+        return stations;
+    }
+
+    public bool has_more () {
+        return _more;
+    }
 }

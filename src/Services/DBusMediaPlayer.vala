@@ -130,7 +130,6 @@ namespace Tuner.DBus {
         public MediaPlayerPlayer (DBusConnection conn) {
             Object (conn: conn);
             Application.instance.player.state_changed.connect ((state) => {
-                debug ("DBUS PLAYER STATE CHANGED");
                 switch (state) {
                 case Gst.PlayerState.PLAYING:
                 case Gst.PlayerState.BUFFERING:

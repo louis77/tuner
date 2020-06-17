@@ -28,6 +28,7 @@ public class Tuner.ContentBox : Gtk.Box {
 
     private Gtk.Box header;
     public Gtk.Box content;
+    public Model.StationModel selected_station;
 
     public ContentBox (Gtk.Image? icon,
                        string title,
@@ -71,10 +72,12 @@ public class Tuner.ContentBox : Gtk.Box {
 
     public ArrayList<Model.StationModel> stations {
         set {
+            debug (@"Entered contentbox stations setter $(value.size)");
             clear_content ();
             var station_list = new Gtk.FlowBox ();
             station_list.homogeneous = false;
             station_list.min_children_per_line = 2;
+            station_list.max_children_per_line = 2;
             station_list.column_spacing = 5;
             station_list.row_spacing = 5;
             station_list.border_width = 20;
@@ -85,12 +88,14 @@ public class Tuner.ContentBox : Gtk.Box {
                 var box = new StationBox (s);
                 box.clicked.connect (() => {
                     selection_changed (box.station);
+                    selected_station = box.station;
                 });
                 station_list.add (box);
             }
 
             content.add (station_list);
             station_list.unselect_all ();
+            content.show_all ();
         }
     }
 

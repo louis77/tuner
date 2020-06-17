@@ -28,8 +28,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     private PlayerController _player;
     private DirectoryController _directory;
     private HeaderBar headerbar;
-    private delegate void ActionFunc (ContentBox target);
-
+    private Granite.Widgets.SourceList source_list;
+    
     public const string ACTION_PREFIX = "win.";
     public const string ACTION_PAUSE = "action_pause";
     public const string ACTION_QUIT = "action_quit";
@@ -69,6 +69,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             return before_destroy ();
         });
 
+        var stack = new Gtk.Stack ();
+        stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
+
         headerbar = new HeaderBar (this);
         headerbar.stop_clicked.connect ( () => {
             handle_stop_playback ();
@@ -76,65 +79,126 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         headerbar.star_clicked.connect ( (starred) => {
             _directory.star_station (_player.station, starred);
         });
+
         set_titlebar (headerbar);
 
         _directory = new DirectoryController (new RadioBrowser.Client ());
-        _directory.stations_updated.connect (handle_updated_stations);
+        _directory.tags_updated.connect (handle_updated_tags);
 
         var primary_box = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);
-        var stack = new Gtk.Stack ();
-        stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
+
 
         var selections_category = new Granite.Widgets.SourceList.ExpandableItem ("Selections");
         selections_category.collapsible = false;
         selections_category.expanded = true;
 
-        create_content_box ("discover", "Discover", "face-smile",
+        var searched_category = new Granite.Widgets.SourceList.ExpandableItem ("Search");
+        searched_category.collapsible = false;
+        searched_category.expanded = true;
+
+        source_list = new Granite.Widgets.SourceList ();
+
+        var c1 = create_content_box ("discover", "Discover", "face-smile",
                             "Discover Stations", "media-playlist-shuffle-symbolic",
                             "Discover more stations",
-                            _directory.load_random_stations, stack, selections_category);
+                            stack, selections_category, source_list);
+        var s1 = _directory.load_random_stations();
+        c1.realize.connect (() => {
+            c1.stations = s1.next ();
+        });
+        c1.action_activated.connect (() => {
+            c1.stations = s1.next ();
+        });
 
-        create_content_box ("trending", "Trending", "playlist-queue",
+        var c2 = create_content_box ("trending", "Trending", "playlist-queue",
                             "Trending Stations", "go-next",
                             "Load more stations",
-                            _directory.load_trending_stations, stack, selections_category);
-
-        create_content_box ("popular", "Popular", "playlist-similar",
+                            stack, selections_category, source_list);
+        var s2 = _directory.load_trending_stations();
+        c2.realize.connect (() => {
+            c2.stations = s2.next ();
+        });
+        c2.action_activated.connect (() => {
+            c2.stations = s2.next ();
+        });
+        
+        var c3 = create_content_box ("popular", "Popular", "playlist-similar",
                             "Popular Stations", "go-next",
                             "Load more stations",
-                            _directory.load_popular_stations, stack, selections_category);
+                            stack, selections_category, source_list);
+        var s3 = _directory.load_popular_stations();
+        c3.realize.connect (() => {
+            c3.stations = s3.next ();
+        });
+        c3.action_activated.connect (() => {
+            c3.stations = s3.next ();
+        });
 
-        create_content_box ("starred", "Starred by You", "starred",
+        var c4 = create_content_box ("starred", "Starred by You", "starred",
                             "Starred by You", "view-refresh-symbolic",
                             "Refresh",
-                            _directory.load_favourite_stations, stack, selections_category);
+                            stack, selections_category, source_list);
+        var s4 = _directory.load_favourite_stations();
+        c4.realize.connect (() => {
+            c4.stations = s4.next ();
+        });
+        c4.action_activated.connect (() => {
+            c4.stations = s4.next ();
+        });
 
-        var source_list = new Granite.Widgets.SourceList ();
+        var c5 = create_content_box ("searched", "Search Result", "folder-saved-search",
+                            "Search", "go-next",
+                            "Load more stations",
+                            stack, searched_category, source_list);
+        var s5 = _directory.load_search_stations("");
+        c5.realize.connect (() => {
+            // NOOP
+        });
+        c5.action_activated.connect (() => {
+            c5.stations = s5.next ();
+        });
+
         source_list.root.add (selections_category);
+        source_list.root.add (searched_category);
         source_list.set_size_request (150, -1);
         source_list.selected = source_list.get_first_child (selections_category);
         source_list.item_selected.connect  ((item) => {
             var selected_item = item.get_data<string> ("stack_child");
             debug (@"selected $selected_item");
             stack.visible_child_name = selected_item;
+        });
 
+        headerbar.searched_for.connect ( (text) => {
+            if (text.length > 0) {
+                stack.visible_child_name = "searched";
+                s5 = _directory.load_search_stations (text); 
+                c5.stations = s5.next ();
+            }
         });
 
         primary_box.pack1 (source_list, true, false);
         primary_box.pack2 (stack, true, false);
         add (primary_box);
         show_all ();
+
+        // not yet
+        // _directory.load_tags ();
     }
 
-    private void create_content_box (string name,
-                                     string list_title,
-                                     string list_icon_name,
-                                     string full_title,
-                                     string action_icon_name,
-                                     string action_tooltip_text,
-                                     ActionFunc action_func,
-                                     Gtk.Stack stack,
-                                     Granite.Widgets.SourceList.ExpandableItem category_item) {
+    private ContentBox create_content_box (
+             string name,
+             string list_title,
+             string list_icon_name,
+             string full_title,
+             string action_icon_name,
+             string action_tooltip_text,
+             Gtk.Stack stack,
+             Granite.Widgets.SourceList.ExpandableItem category_item,
+             Granite.Widgets.SourceList source_list) {
+        var item = new Granite.Widgets.SourceList.Item (list_title);
+        item.icon = new ThemedIcon (list_icon_name);
+        item.set_data<string> ("stack_child", name);
+        category_item.add (item);
         var c = new ContentBox (
             null,
             full_title,
@@ -143,37 +207,15 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         );
         c.selection_changed.connect (handle_station_click);
         c.map.connect (() => {
-            if (!c.get_data<bool> ("has_stations")) {
-                action_func (c);
-                c.set_data<bool> ("has_stations", true);
-            }
+            source_list.selected = item;
         });
-        c.action_activated.connect (() => {
-            action_func (c);
-        });
-
         stack.add_named (c, name);
 
-        var item = new Granite.Widgets.SourceList.Item (list_title);
-        item.icon = new ThemedIcon (list_icon_name);
-        item.set_data<string> ("stack_child", name);
-        category_item.add (item);
+        return c;
     }
 
     private void action_quit () {
         destroy ();
-    }
-
-    public void handle_updated_stations (ContentBox target, ArrayList<Model.StationModel> stations) {
-        debug ("entering handle_updated_stations");
-        target.stations = stations;
-
-        // set_geometry_hints (null, null, Gdk.WindowHints.MIN_SIZE);
-        show_all ();
-        // resize (default_width, default_height);
-        // var scrolled_window = new Gtk.ScrolledWindow (null, null);
-        // scrolled_window.add (content);
-        // add (scrolled_window);
     }
 
     public void handle_station_click(Tuner.Model.StationModel station) {
@@ -232,6 +274,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         }
 
         return;
+    }
+
+    public void handle_updated_tags (ArrayList<RadioBrowser.Tag> tags) {
+        foreach (var t in tags) {
+            debug (@"Updated tag: $(t.name) scount $(t.stationcount)");
+        }
     }
 
     public bool before_destroy () {

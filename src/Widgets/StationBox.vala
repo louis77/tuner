@@ -24,10 +24,13 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
     public Model.StationModel station { get; private set; }
 
     public StationBox (Model.StationModel station) {
-
+        var title = station.title;
+        if (title.length > 30) {
+            title = title[0:30] + "...";
+        }
         Object (
             description: station.location,
-            title: station.title,
+            title: title,
             icon: new Gtk.Image()
         );
 

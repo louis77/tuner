@@ -99,6 +99,11 @@ public class Station : Object {
     public string favicon { get; set; }
 }
 
+public class Tag : Object {
+    public string name { get; set; }
+    public uint stationcount { get; set; }
+}
+
 public class Client : Object {
 
     // TODO: choose local server from server list
@@ -112,7 +117,7 @@ public class Client : Object {
 
         /*
         Resolver resolver = Resolver.get_default ();
-        GLib.List<InetAddress> addresses = resolver.lookup_by_name ("all.api.radio-browser.info");
+        GLib.ArrayList<InetAddress> addresses = resolver.lookup_by_name ("all.api.radio-browser.info");
         foreach (var address in addresses) {
             var host = resolver.lookup_by_address (address);
             debug (@"Found RB host: $address with name $host");
@@ -133,6 +138,21 @@ public class Client : Object {
         });
 
         return stations;
+    }
+
+    private Tag jnode_to_tag (Json.Node node) {
+        return Json.gobject_deserialize (typeof (Tag), node) as Tag;
+    }
+
+    private ArrayList<Tag> jarray_to_tags (Json.Array data) {
+        var tags = new ArrayList<Tag> ();
+
+        data.foreach_element ((array, index, element) => {
+            Tag s = jnode_to_tag (element);
+            tags.add (s);
+        });
+
+        return tags;
     }
 
     public void track (string stationuuid) {
@@ -172,11 +192,15 @@ public class Client : Object {
         return stations;
     }
 
-    public ArrayList<Station> search (uint rowcount,
+    public ArrayList<Station> search (string? name,
+                                      uint rowcount,
                                       SortOrder order,
                                       bool reverse = false,
                                       uint offset = 0) {
-        var resource = @"json/stations/search?language=en&limit=$rowcount&order=$order&offset=$offset";
+        var resource = @"json/stations/search?limit=$rowcount&order=$order&offset=$offset";
+        if (name != "") { 
+            resource += @"&name=$name";
+        }
         if (order != SortOrder.RANDOM) {
             // random and reverse doesn't make sense
             resource += @"&reverse=$reverse";
@@ -187,6 +211,27 @@ public class Client : Object {
     public ArrayList<Station> by_uuid (string uuid) {
         var resource = @"json/stations/byuuid/$uuid";
         return get_stations (resource);
+    }
+
+    public ArrayList<Tag> get_tags () {
+        var resource = @"json/tags";
+        var message = new Soup.Message ("GET", @"$API_BASE_URL/$resource");
+        Json.Node rootnode;
+
+        var response_code = _session.send_message (message);
+        debug (@"response from radio-browser.info: $response_code");
+        var body = (string) message.response_body.data;
+
+        try {
+            rootnode = Json.from_string (body);
+        } catch (Error e) {
+            throw new DataError.PARSE_DATA (@"unable to parse JSON response: $(e.message)");
+        }
+        var rootarray = rootnode.get_array ();
+
+        var tags = jarray_to_tags (rootarray);
+        return tags;
+
     }
 
 }
