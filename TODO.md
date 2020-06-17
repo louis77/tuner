@@ -11,7 +11,7 @@
 [ ] Dark mode
 [X] Customize sidebar with custom widgets
 [ ] Add settings and status bar to disable usage tracking
-[ ] Move app icon up a little bit
+[X] Move app icon up a little bit
 [ ] implement notify signals...
 [ ] Startup still needs async load !
 
@@ -19,6 +19,6 @@
 
 [ ] Add Tags selections
 [ ] Add station info on headerbar click
-[ ] Refresh starred when stations starred/unstarred
-[ ] Don't limit starred stations
+[X] Refresh starred when stations starred/unstarred
+[X] ~~Don't limit~~ Extended limit for starred stations
 [ ] Recently listend, My Library
