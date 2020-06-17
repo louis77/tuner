@@ -23,6 +23,7 @@ public class Tuner.Application : Gtk.Application {
     public GLib.Settings settings;
     public PlayerController player;
     public Window window;
+    public string? cache_dir;
 
     public Application () {
         Object (
@@ -32,7 +33,7 @@ public class Tuner.Application : Gtk.Application {
 
         settings = new GLib.Settings (this.application_id);
         player = new PlayerController ();
-
+        ensure_cache_dir ();
     }
 
     public static Application _instance = null;
@@ -51,6 +52,25 @@ public class Tuner.Application : Gtk.Application {
         add_window (window);
 
         DBus.initialize ();
+    }
+
+    private void ensure_cache_dir () {
+        var user_cache_dir = Environment.get_user_cache_dir ();
+        cache_dir = Path.build_filename (user_cache_dir, application_id);
+
+        debug (@"App Cache Dir: $cache_dir");
+        var f_cache_dir = File.new_for_path (cache_dir);
+        
+        try {
+            debug (@"Ensuring cache_dir exists...");
+            f_cache_dir.make_directory ();
+
+        } catch (IOError e) {
+            if (!(e is IOError.EXISTS)) {
+                warning (@"cache_dir couldn't be created: %s", e.message);
+                cache_dir = null;
+            }
+        }
     }
 
 }

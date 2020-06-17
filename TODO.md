@@ -22,3 +22,4 @@
 [X] Refresh starred when stations starred/unstarred
 [X] ~~Don't limit~~ Extended limit for starred stations
 [ ] Recently listend, My Library
+[ ] Context-menu to exclude countries from ...

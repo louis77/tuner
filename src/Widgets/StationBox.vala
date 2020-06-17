@@ -39,6 +39,25 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
 
         this.station = station;
 
+        // TODO: REFACTOR in separate class
+        var favicon_cache_file = Path.build_filename (Application.instance.cache_dir, station.id);
+        debug (@"cache file for favicon assumed: %s", favicon_cache_file);
+        if (FileUtils.test (favicon_cache_file, FileTest.EXISTS | FileTest.IS_REGULAR)) {
+            var file = File.new_for_path (favicon_cache_file);
+            try {
+                var favicon_stream = file.read ();
+                if (!set_favicon_from_stream (favicon_stream)) {
+                    set_default_favicon ();
+                };
+                favicon_stream.close ();
+                return;
+            } catch (Error e) {
+                warning (@"unable to read local favicon: %s %s", favicon_cache_file, e.message);
+            }
+        } else {
+            debug (@"favicon cache file doesn't exist: %s", favicon_cache_file);
+        }
+
         // in Vala nullable strings are always empty
         if (station.favicon_url != "") {
             var session = new Soup.Session ();
@@ -52,26 +71,53 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
                 }
 
                 var data_stream = new MemoryInputStream.from_data (mess.response_body.data);
-                Gdk.Pixbuf pxbuf;
+                //set_favicon_from_stream (data_stream);
 
+                var file = File.new_for_path (favicon_cache_file);
                 try {
-                    pxbuf = new Gdk.Pixbuf.from_stream_at_scale (data_stream, 48, 48, true, null);
-                } catch (Error e) {
-                    warning ("Couldn't render favicon: %s (%s)",
-                        station.favicon_url ?? "unknown url",
-                        e.message);
-                    this.icon.set_from_icon_name ("folder-music-symbolic", Gtk.IconSize.DIALOG);
-                    return;
+                    var stream = file.create_readwrite (FileCreateFlags.PRIVATE);
+                    var cache_file = File.new_for_path (favicon_cache_file);
+                    stream.output_stream.splice (data_stream, 0);
+                    stream.close ();    
+                } catch (IOError e) {
+                    // File already created by another stationbox
+                    // TODO: possible race condition
+                    // TODO: Create stationboxes as singletons?
                 }
 
-                this.icon.set_from_pixbuf (pxbuf);
+                var favicon_stream = file.read ();
+                if (!set_favicon_from_stream (favicon_stream)) {
+                    set_default_favicon ();
+                };
             });
 
+        } else {
+            debug (@"station has no favicon url");
+            set_default_favicon ();
         }
     }
 
     construct {
         always_show_image = true;
+    }
+
+    private bool set_favicon_from_stream (InputStream stream) {
+        Gdk.Pixbuf pxbuf;
+
+        try {
+            pxbuf = new Gdk.Pixbuf.from_stream_at_scale (stream, 48, 48, true, null);
+            this.icon.set_from_pixbuf (pxbuf);
+            return true;
+        } catch (Error e) {
+            warning ("Couldn't render favicon: %s (%s)",
+                station.favicon_url ?? "unknown url",
+                e.message);
+            return false;
+        }
+    }
+
+    private void set_default_favicon () {
+        this.icon.set_from_icon_name ("folder-music-symbolic", Gtk.IconSize.DIALOG);
     }
 
 }

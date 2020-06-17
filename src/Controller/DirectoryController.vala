@@ -25,8 +25,6 @@ using Gee;
 
 public class Tuner.DirectoryController : Object {
 
-    private const uint PAGE_SIZE = 10;
-
     public RadioBrowser.Client provider { get; set; }
 
     public signal void stations_updated (ContentBox target, ArrayList<Model.StationModel> stations);
