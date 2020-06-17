@@ -8,7 +8,7 @@
 
 Discover and Listen to random radio stations while you work.
 
-![Screenshot 01](docs/screen_07.png?raw=true)
+![Screenshot 01](docs/screen_08.png?raw=true)
 
 ## Motivation
 
