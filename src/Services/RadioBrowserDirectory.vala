@@ -194,13 +194,21 @@ public class Client : Object {
     }
 
     public ArrayList<Station> search (string? name,
+                                      string[] tags,
                                       uint rowcount,
                                       SortOrder order,
                                       bool reverse = false,
                                       uint offset = 0) {
         var resource = @"json/stations/search?limit=$rowcount&order=$order&offset=$offset";
-        if (name != "") { 
+        if (name != null && name != "") { 
             resource += @"&name=$name";
+        }
+        if (tags != null ) {
+            string tag_list = tags[0];
+            if (tags.length > 1) {
+                tag_list = string.joinv (",", tags);
+            }
+            resource += @"&tagList=$tag_list&tagExact=true";
         }
         if (order != SortOrder.RANDOM) {
             // random and reverse doesn't make sense

@@ -38,10 +38,19 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
         get_style_context().add_class("station-button");
 
         this.station = station;
+        realize.connect (() => {
+            realize_favicon ();
+        });
 
+    }
+
+    construct {
+        always_show_image = true;
+    }
+
+    private void realize_favicon () {
         // TODO: REFACTOR in separate class
         var favicon_cache_file = Path.build_filename (Application.instance.cache_dir, station.id);
-        debug (@"cache file for favicon assumed: %s", favicon_cache_file);
         if (FileUtils.test (favicon_cache_file, FileTest.EXISTS | FileTest.IS_REGULAR)) {
             var file = File.new_for_path (favicon_cache_file);
             try {
@@ -95,10 +104,6 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
             debug (@"station has no favicon url");
             set_default_favicon ();
         }
-    }
-
-    construct {
-        always_show_image = true;
     }
 
     private bool set_favicon_from_stream (InputStream stream) {

@@ -39,7 +39,7 @@ public class Tuner.PlayerController : Object {
         });
     }
 
-    public Gst.PlayerState? current_state {
+    public Gst.PlayerState? current_state { 
         get {
             return _current_state;
         }

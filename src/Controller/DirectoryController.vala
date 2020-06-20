@@ -78,7 +78,7 @@ public class Tuner.DirectoryController : Object {
     public StationSource load_random_stations (uint limit) {
         var source = new StationSource(limit);
         source.fetch.connect( (offset, limit) => {
-            var raw_stations = provider.search ("", limit, RadioBrowser.SortOrder.RANDOM, false, offset);
+            var raw_stations = provider.search ("", {}, limit, RadioBrowser.SortOrder.RANDOM, false, offset);
             var stations = convert_stations (raw_stations);
             augment_with_userinfo (stations);
             return stations;
@@ -89,7 +89,7 @@ public class Tuner.DirectoryController : Object {
     public StationSource load_trending_stations (uint limit) {
         var source = new StationSource(limit);
         source.fetch.connect( (offset, limit) => {
-            var raw_stations = provider.search (null, limit, RadioBrowser.SortOrder.CLICKTREND, true, offset);
+            var raw_stations = provider.search ("", {}, limit, RadioBrowser.SortOrder.CLICKTREND, true, offset);
             var stations = convert_stations (raw_stations);
             augment_with_userinfo (stations);
             return stations;
@@ -100,7 +100,7 @@ public class Tuner.DirectoryController : Object {
     public StationSource load_popular_stations (uint limit) {
         var source = new StationSource(limit);
         source.fetch.connect( (offset, limit) => {
-            var raw_stations = provider.search (null, limit, RadioBrowser.SortOrder.CLICKCOUNT, true, offset);
+            var raw_stations = provider.search ("", {}, limit, RadioBrowser.SortOrder.CLICKCOUNT, true, offset);
             var stations = convert_stations (raw_stations);
             augment_with_userinfo (stations);
             return stations;
@@ -111,8 +111,7 @@ public class Tuner.DirectoryController : Object {
     public StationSource load_search_stations (string utext, uint limit) {
         var source = new StationSource(limit);
         source.fetch.connect( (offset, limit) => {
-            var l2text = "info";
-            var raw_stations = provider.search (utext, limit, RadioBrowser.SortOrder.CLICKCOUNT, true, offset);
+            var raw_stations = provider.search (utext, {}, limit, RadioBrowser.SortOrder.CLICKCOUNT, true, offset);
             var stations = convert_stations (raw_stations);
             augment_with_userinfo (stations);
             return stations;
@@ -136,6 +135,18 @@ public class Tuner.DirectoryController : Object {
                     raw_stations.add (result[0]);
                 }
             }
+            var stations = convert_stations (raw_stations);
+            augment_with_userinfo (stations);
+            return stations;
+        });
+        return source;
+    }
+
+    public StationSource load_by_tags (string[] utags) {
+        var tags = utags;
+        var source = new StationSource(40);
+        source.fetch.connect( (offset, limit) => {
+            var raw_stations = provider.search ("", tags, limit, RadioBrowser.SortOrder.VOTES, true, offset);
             var stations = convert_stations (raw_stations);
             augment_with_userinfo (stations);
             return stations;

@@ -136,7 +136,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         subtitle = "Connecting";
         load_favicon (station.favicon_url);
         starred = station.starred;
-        debug (@"Station $(title) starred? $starred");
     }
 
     private bool starred {

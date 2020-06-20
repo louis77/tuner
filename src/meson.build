@@ -10,6 +10,7 @@ executable(
     'Controller/PlayerController.vala',
     'Controller/DirectoryController.vala',
     'Model/StationModel.vala',
+    'Model/Genre.vala',
     'Services/RadioBrowserDirectory.vala',
     'Services/DBusInterface.vala',
     'Services/DBusMediaPlayer.vala',

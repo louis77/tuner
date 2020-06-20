@@ -83,7 +83,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         set_titlebar (headerbar);
 
         _directory = new DirectoryController (new RadioBrowser.Client ());
-        _directory.tags_updated.connect (handle_updated_tags);
 
         var primary_box = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);
 
@@ -96,14 +95,19 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         searched_category.collapsible = false;
         searched_category.expanded = true;
 
+        var genres_category = new Granite.Widgets.SourceList.ExpandableItem ("Genres");
+        genres_category.collapsible = true;
+        genres_category.expanded = true;
+        
         source_list = new Granite.Widgets.SourceList ();
+
 
         var c1 = create_content_box ("discover", "Discover", "face-smile",
                             "Discover Stations", "media-playlist-shuffle-symbolic",
                             "Discover more stations",
                             stack, selections_category, source_list);
         var s1 = _directory.load_random_stations(10);
-        c1.show.connect (() => {
+        c1.realize.connect (() => {
             c1.stations = s1.next ();
         });
         c1.action_activated.connect (() => {
@@ -114,7 +118,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                             "Trending in the last 24 hours", null, null,
                             stack, selections_category, source_list);
         var s2 = _directory.load_trending_stations(40);
-        c2.show.connect (() => {
+        c2.realize.connect (() => {
             c2.stations = s2.next ();
         });
         
@@ -122,23 +126,33 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                             "Most-listened over 24 hours", null, null,
                             stack, selections_category, source_list);
         var s3 = _directory.load_popular_stations(40);
-        c3.show.connect (() => {
+        c3.realize.connect (() => {
             c3.stations = s3.next ();
         });
 
         var c4 = create_content_box ("starred", "Starred by You", "starred",
                             "Starred by You", null, null,
-                            stack, selections_category, source_list);
+                            stack, selections_category, source_list, true);
         
-        c4.show.connect (() => {
+        c4.realize.connect (() => {
             var s4 = _directory.load_favourite_stations(1000);
             c4.stations = s4.next ();
         });
 
         var c5 = create_content_box ("searched", "Search Result", "folder-saved-search",
                             "Search", null, null,
-                            stack, searched_category, source_list);
+                            stack, searched_category, source_list, true);
         var s5 = _directory.load_search_stations("", 100);
+
+
+        foreach (var genre in Model.genres ()) {
+            var cb = create_content_box (genre.name, genre.name, "playlist", 
+                genre.name, null, null, stack, genres_category, source_list);
+            var ds = _directory.load_by_tags (genre.tags);
+            cb.realize.connect (() => {
+                cb.stations = ds.next ();
+            });
+        }
 
         headerbar.star_clicked.connect ( (starred) => {
             _directory.star_station (_player.station, starred);
@@ -149,6 +163,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         source_list.root.add (selections_category);
         source_list.root.add (searched_category);
+        source_list.root.add (genres_category);
+
         source_list.set_size_request (180, -1);
         source_list.selected = source_list.get_first_child (selections_category);
         source_list.item_selected.connect  ((item) => {
@@ -169,13 +185,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             stack.visible_child_name = "searched";
         });
 
+        stack.visible_child_name = "discover";
         primary_box.pack1 (source_list, true, false);
         primary_box.pack2 (stack, true, false);
         add (primary_box);
         show_all ();
-
-        // not yet
-        // _directory.load_tags ();
     }
 
     private ContentBox create_content_box (
@@ -187,7 +201,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
              string? action_tooltip_text,
              Gtk.Stack stack,
              Granite.Widgets.SourceList.ExpandableItem category_item,
-             Granite.Widgets.SourceList source_list) {
+             Granite.Widgets.SourceList source_list,
+             bool enable_count = false) {
         var item = new Granite.Widgets.SourceList.Item (list_title);
         item.icon = new ThemedIcon (list_icon_name);
         item.set_data<string> ("stack_child", name);
@@ -202,13 +217,15 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         c.map.connect (() => {
             source_list.selected = item;
         });
-        c.station_count_changed.connect ((count) => {
-            var badge = @"$count";
-            if (count == 100) {
-                badge = "99+";
-            }
-            item.badge = badge;
-        });
+        if (enable_count) {
+            c.station_count_changed.connect ((count) => {
+                var badge = @"$count";
+                if (count == 100) {
+                    badge = "99+";
+                }
+                item.badge = badge;
+            });
+        }
         stack.add_named (c, name);
 
         return c;
@@ -274,12 +291,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         }
 
         return;
-    }
-
-    public void handle_updated_tags (ArrayList<RadioBrowser.Tag> tags) {
-        foreach (var t in tags) {
-            debug (@"Updated tag: $(t.name) scount $(t.stationcount)");
-        }
     }
 
     public bool before_destroy () {

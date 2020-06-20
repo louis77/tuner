@@ -146,42 +146,42 @@ namespace Tuner.DBus {
         }
 
         public void next() throws DBusError, IOError {
-            debug ("DBus Next() requested");
+            // debug ("DBus Next() requested");
         }
 
         public void previous() throws DBusError, IOError {
-            debug ("DBus Previous() requested");
+            // debug ("DBus Previous() requested");
         }
 
         public void pause() throws DBusError, IOError {
-            debug ("DBus Pause() requested");
+            //  debug ("DBus Pause() requested");
         }
 
         public void play_pause() throws DBusError, IOError {
-            debug ("DBus PlayPause() requested");
+            //  debug ("DBus PlayPause() requested");
             Application.instance.player.play_pause();
         }
 
         public void stop() throws DBusError, IOError {
-            debug ("DBus stop() requested");
+            //  debug ("DBus stop() requested");
             Application.instance.player.player.stop();
         }
 
         public void play() throws DBusError, IOError {
-            debug ("DBus Play() requested");
+            //  debug ("DBus Play() requested");
             Application.instance.player.play_pause ();
         }
 
         public void seek(int64 Offset) throws DBusError, IOError {
-            debug ("DBus Seek() requested");
+            //  debug ("DBus Seek() requested");
         }
 
         public void set_position(ObjectPath TrackId, int64 Position) throws DBusError, IOError {
-            debug ("DBus SetPosition() requested");
+            //  debug ("DBus SetPosition() requested");
         }
 
         public void open_uri(string uri) throws DBusError, IOError {
-            debug ("DBus OpenUri() requested");
+            //  debug ("DBus OpenUri() requested");
         }
 
         // Already defined in the interface
@@ -189,7 +189,7 @@ namespace Tuner.DBus {
 
         public string playback_status {
             owned get {
-                debug ("DBus PlaybackStatus() requested");
+                //  debug ("DBus PlaybackStatus() requested");
                 return _playback_status;
             }
             set {
@@ -209,7 +209,7 @@ namespace Tuner.DBus {
 
         public HashTable<string, Variant>? metadata {
             owned get {
-                debug ("DBus metadata requested");
+                //  debug ("DBus metadata requested");
                 var table = new HashTable<string, Variant> (str_hash, str_equal);
                 table.insert ("xesam:title", "Tuner");
 
@@ -231,21 +231,21 @@ namespace Tuner.DBus {
 
 	    public bool can_go_next {
 	        get {
-    	        debug ("CanGoNext() requested");
+    	        //  debug ("CanGoNext() requested");
 	            return false;
 	        }
 	    }
 
 	    public bool can_go_previous {
 	        get {
-    	        debug ("CanGoPrevious() requested");
+    	        //  debug ("CanGoPrevious() requested");
 	            return false;
 	        }
 	    }
 
         public bool can_play {
             get {
-                debug ("CanPlay() requested");
+                //  debug ("CanPlay() requested");
                 return Application.instance.player.can_play ();
             }
         }
@@ -254,7 +254,7 @@ namespace Tuner.DBus {
 
 	    public bool can_control {
 	        get {
-                debug ("CanControl() requested");
+                //  debug ("CanControl() requested");
                 return true;
             }
         }
@@ -312,7 +312,7 @@ namespace Tuner.DBus {
                                              invalidated_builder)
                                  );
             } catch (Error e) {
-                print ("Could not send MPRIS property change: %s\n", e.message);
+                debug (@"Could not send MPRIS property change: $(e.message)");
             }
             send_property_source = 0;
             return false;
