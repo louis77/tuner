@@ -17,6 +17,7 @@
 [ ] Search with 0 results - better screen
 [ ] on station click: (com.github.louis77.tuner:29078): libsoup-CRITICAL **: 01:53:43.173: soup_session_queue_message: assertion 'SOUP_IS_MESSAGE (msg)' failed
     probably when listening event fails, prevents station from playing
+[ ] Update station count (starred) on load
 
 ## Release 1.2
 
