@@ -55,12 +55,12 @@
   </provides>
 
   <releases>
-    <release version="1.2.1" date="2020-06-24">
+    <release version="1.2.2" date="2020-06-24">
       <description>
         <p>New features:</p>
         <ul>
           <li>Search for radion stations</li>
-          <li>New "Genres" section with select popular genres</lI>
+          <li>New "Genres" section with select popular genres</li>
         </ul>
         <p>Other improvements:</p>
         <ul>
