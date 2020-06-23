@@ -1,5 +1,10 @@
-com.github.louis77.tuner (1.0) RELEASED; urgency=low
+com.github.louis77.tuner (1.2.1) RELEASED; urgency=low
 
-  * Initial Release.
+  * Added: Search for radion stations
+  * Added: New "Genres" section with select popular genres
+  * Improved: Each section now displays the most-voted-for 40 stations
+  * Improved: Station images are now cached
+  * Improved: The app icon now appears more vertically centered
+  * Fixed: a bug where starred stations appeared as unstarred
 
--- Louis Brauer <louis@brauer.family>  Wednesday, 13 Jun 2020 23:52:39 -0500
+-- Louis Brauer <louis@brauer.family>  Wednesday, 24 Jun 2020 11:00:00 -0500
