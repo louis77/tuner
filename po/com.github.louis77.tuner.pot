@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-08 01:44+0200\n"
+"POT-Creation-Date: 2020-06-26 14:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,39 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/Widgets/Window.vala:49
+#: src/Widgets/Window.vala:274
 msgid "Playing"
 msgstr ""
 
-#: src/Widgets/Window.vala:53
+#: src/Widgets/Window.vala:282
 msgid "Stopped"
-msgstr ""
-
-#: data/com.github.louis77.tuner.desktop.in:3
-#: data/com.github.louis77.tuner.appdata.xml.in:6
-msgid "Tuner"
-msgstr ""
-
-#: data/com.github.louis77.tuner.desktop.in:4
-msgid "Internet Radio Station Receiver"
-msgstr ""
-
-#: data/com.github.louis77.tuner.desktop.in:5
-msgid "Listen to Radio Stations all over the world."
-msgstr ""
-
-#: data/com.github.louis77.tuner.desktop.in:8
-msgid "application-default-icon"
-msgstr ""
-
-#: data/com.github.louis77.tuner.desktop.in:11
-msgid "Radio;Audio;Listen;Stations;Receiver;"
-msgstr ""
-
-#: data/com.github.louis77.tuner.appdata.xml.in:7
-msgid "Listen to your favourite internet radio stations"
-msgstr ""
-
-#: data/com.github.louis77.tuner.appdata.xml.in:9
-msgid "Listen to your favourite internet radio stations."
 msgstr ""
