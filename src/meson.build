@@ -1,29 +1,22 @@
-executable(
-    meson.project_name(),
-    'Main.vala',
-    'Application.vala',
-    'Widgets/Window.vala',
-    'Widgets/HeaderBar.vala',
-    'Widgets/StationBox.vala',
-    'Widgets/HeaderLabel.vala',
-    'Widgets/ContentBox.vala',
-    'Controller/PlayerController.vala',
-    'Controller/DirectoryController.vala',
-    'Model/StationModel.vala',
-    'Model/Genre.vala',
-    'Services/RadioBrowserDirectory.vala',
-    'Services/DBusInterface.vala',
+# Listing files to compile
+sources = files (
+    'Controllers/DirectoryController.vala',
+    'Controllers/PlayerController.vala',
+
+    'Models/Genre.vala',
+    'Models/StationModel.vala',
+
     'Services/DBusMediaPlayer.vala',
-    code_resources,
-    dependencies: [
-        dependency('gtk+-3.0'),
-        dependency('gee-0.8'),
-        dependency('gio-2.0'),
-        dependency('granite'),
-        dependency('gstreamer-1.0'),
-        dependency('gstreamer-player-1.0'),
-        dependency('libsoup-2.4'),
-        dependency('json-glib-1.0'),
-    ],
-    install: true
+    'Services/DBusInterface.vala',
+    'Services/RadioBrowserDirectory.vala',
+
+    'Widgets/ContentBox.vala',
+    'Widgets/HeaderBar.vala',
+    'Widgets/HeaderLabel.vala',
+    'Widgets/StationBox.vala',
+
+    'Widgets/Window.vala',
+
+    'Application.vala',
+    'Main.vala'
 )
