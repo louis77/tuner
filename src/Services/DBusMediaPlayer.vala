@@ -23,14 +23,22 @@ namespace Tuner.DBus {
 
     const string ServerName = "org.mpris.MediaPlayer2.Tuner";
     const string ServerPath = "/org/mpris/MediaPlayer2";
+    private bool is_initialized = false;
 
     public void initialize () {
+        if (is_initialized) {
+            // App is already running, do nothing
+            return;
+        }
+
         var owner_id = Bus.own_name(
             BusType.SESSION,
             ServerName,
             BusNameOwnerFlags.NONE,
             onBusAcquired,
-            () => {},
+            () => {
+                is_initialized = true;
+            },
             () => warning (@"Could not acquire name $ServerName, the DBus interface will not be available")
         );
 

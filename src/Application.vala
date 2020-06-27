@@ -48,10 +48,14 @@ public class Tuner.Application : Gtk.Application {
     }
 
     protected override void activate() {
-        window = new Window (this, player);
-        add_window (window);
+        if (window == null) {
+            window = new Window (this, player);
+            add_window (window);
+            DBus.initialize ();
+        } else {
+            window.present ();
+        }
 
-        DBus.initialize ();
     }
 
     private void ensure_cache_dir () {
