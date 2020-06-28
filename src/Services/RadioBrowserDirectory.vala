@@ -198,7 +198,7 @@ public class Client : Object {
                                       uint rowcount,
                                       SortOrder order,
                                       bool reverse = false,
-                                      uint offset = 0) {
+                                      uint offset = 0) throws DataError {
         var resource = @"json/stations/search?limit=$rowcount&order=$order&offset=$offset";
         if (name != null && name != "") { 
             resource += @"&name=$name";
@@ -217,12 +217,12 @@ public class Client : Object {
         return get_stations (resource);
     }
 
-    public ArrayList<Station> by_uuid (string uuid) {
+    public ArrayList<Station> by_uuid (string uuid) throws DataError {
         var resource = @"json/stations/byuuid/$uuid";
         return get_stations (resource);
     }
 
-    public ArrayList<Tag> get_tags () {
+    public ArrayList<Tag> get_tags () throws DataError {
         var resource = @"json/tags";
         var message = new Soup.Message ("GET", @"$API_BASE_URL/$resource");
         Json.Node rootnode;

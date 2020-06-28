@@ -21,67 +21,22 @@
 
 using Gee;
 
-// TODO: Provide cache facility for favicons
 
 public class Tuner.DirectoryController : Object {
-
     public RadioBrowser.Client provider { get; set; }
 
-    public signal void stations_updated (ContentBox target, ArrayList<Model.StationModel> stations);
     public signal void tags_updated (ArrayList<RadioBrowser.Tag> tags);
 
     public DirectoryController (RadioBrowser.Client provider) {
         this.provider = provider;
     }
 
-    private ArrayList<Model.StationModel> convert_stations (ArrayList<RadioBrowser.Station> raw_stations) {
-        var stations = new ArrayList<Model.StationModel> ();
-        foreach (var station in raw_stations) {
-            var s = new Model.StationModel (
-                station.stationuuid,
-                station.name,
-                station.country,
-                station.url_resolved);
-            s.favicon_url = station.favicon;
-            s.clickcount = station.clickcount;
-            stations.add (s);
-        }
-        return stations;
-    }
-
-    private void augment_with_userinfo (ArrayList<Model.StationModel> stations) {
-        var settings = Application.instance.settings;
-        var starred = settings.get_strv ("starred-stations");
-
-        foreach (Model.StationModel station in stations) {
-            foreach (string id in starred) {
-                var is_starred = (id == station.id);
-                if (is_starred) {
-                    station.starred = (id == station.id);
-                    break;
-                }
-            }
-        }
-    }
-
-
-    public void load_and_update (ContentBox target, ArrayList<RadioBrowser.Station> raw_stations) {
-        try {
-            var stations = convert_stations (raw_stations);
-            augment_with_userinfo (stations);
-            stations_updated (target, stations);
-        } catch (RadioBrowser.DataError e) {
-            warning ("unable to fetch stations from directory: %s", e.message);
-        }
-    }
 
     public StationSource load_random_stations (uint limit) {
         var source = new StationSource(limit);
         source.fetch.connect( (offset, limit) => {
             var raw_stations = provider.search ("", {}, limit, RadioBrowser.SortOrder.RANDOM, false, offset);
-            var stations = convert_stations (raw_stations);
-            augment_with_userinfo (stations);
-            return stations;
+            return raw_stations;
         });
         return source;
     }
@@ -90,9 +45,7 @@ public class Tuner.DirectoryController : Object {
         var source = new StationSource(limit);
         source.fetch.connect( (offset, limit) => {
             var raw_stations = provider.search ("", {}, limit, RadioBrowser.SortOrder.CLICKTREND, true, offset);
-            var stations = convert_stations (raw_stations);
-            augment_with_userinfo (stations);
-            return stations;
+            return raw_stations;
         });
         return source;
     }
@@ -101,9 +54,7 @@ public class Tuner.DirectoryController : Object {
         var source = new StationSource(limit);
         source.fetch.connect( (offset, limit) => {
             var raw_stations = provider.search ("", {}, limit, RadioBrowser.SortOrder.CLICKCOUNT, true, offset);
-            var stations = convert_stations (raw_stations);
-            augment_with_userinfo (stations);
-            return stations;
+            return raw_stations;
         });
         return source;
     }
@@ -112,9 +63,7 @@ public class Tuner.DirectoryController : Object {
         var source = new StationSource(limit);
         source.fetch.connect( (offset, limit) => {
             var raw_stations = provider.search (utext, {}, limit, RadioBrowser.SortOrder.CLICKCOUNT, true, offset);
-            var stations = convert_stations (raw_stations);
-            augment_with_userinfo (stations);
-            return stations;
+            return raw_stations;
         });
         return source;
     }
@@ -130,14 +79,17 @@ public class Tuner.DirectoryController : Object {
             debug (@"Number of favourite stations: $(starred_stations.length)");
 
             foreach (var s in starred_stations) {
+                try {
                 var result = provider.by_uuid (s);
                 if (result.size == 1) {
                     raw_stations.add (result[0]);
                 }
+                } catch (RadioBrowser.DataError e) {
+                    warning (@"Station $s could not be loaded: $(e.message)");
             }
-            var stations = convert_stations (raw_stations);
-            augment_with_userinfo (stations);
-            return stations;
+            }
+
+            return raw_stations;
         });
         return source;
     }
@@ -147,9 +99,7 @@ public class Tuner.DirectoryController : Object {
         var source = new StationSource(40);
         source.fetch.connect( (offset, limit) => {
             var raw_stations = provider.search ("", tags, limit, RadioBrowser.SortOrder.VOTES, true, offset);
-            var stations = convert_stations (raw_stations);
-            augment_with_userinfo (stations);
-            return stations;
+            return raw_stations;
         });
         return source;
     }
@@ -180,8 +130,12 @@ public class Tuner.DirectoryController : Object {
     }
 
     public void load_tags () {
+        try {
         var tags = provider.get_tags ();
         tags_updated (tags);
+        } catch (RadioBrowser.DataError e) {
+            warning (@"unable to load tags: $(e.message)");
+    }
     }
 
 }
@@ -189,9 +143,8 @@ public class Tuner.DirectoryController : Object {
 public class Tuner.StationSource : Object {
     private uint _offset = 0;
     private uint _page_size = 20;
-    private uint _page = 0;
     private bool _more = true;
-    public signal ArrayList<Model.StationModel> fetch(uint offset, uint limit);
+    public signal ArrayList<RadioBrowser.Station> fetch(uint offset, uint limit);
 
     public StationSource (uint limit) {
         Object ();
@@ -199,9 +152,11 @@ public class Tuner.StationSource : Object {
         _page_size = limit;
     }
 
-    public ArrayList<Model.StationModel>? next () {
+    public ArrayList<Model.StationModel>? next () throws Error {
         // Fetch one more to determine if source has more items than page size
-        var stations = fetch (_offset, _page_size + 1);
+        var raw_stations = fetch (_offset, _page_size + 1);
+        var stations = convert_stations (raw_stations);
+        augment_with_userinfo (stations);
         _offset += _page_size;
         _more = stations.size > _page_size;
         if (_more) stations.remove_at( (int)_page_size);
@@ -210,5 +165,35 @@ public class Tuner.StationSource : Object {
 
     public bool has_more () {
         return _more;
+    }
+
+    private ArrayList<Model.StationModel> convert_stations (ArrayList<RadioBrowser.Station> raw_stations) {
+        var stations = new ArrayList<Model.StationModel> ();
+        foreach (var station in raw_stations) {
+            var s = new Model.StationModel (
+                station.stationuuid,
+                station.name,
+                station.country,
+                station.url_resolved);
+            s.favicon_url = station.favicon;
+            s.clickcount = station.clickcount;
+            stations.add (s);
+        }
+        return stations;
+}
+
+    private void augment_with_userinfo (ArrayList<Model.StationModel> stations) {
+        var settings = Application.instance.settings;
+        var starred = settings.get_strv ("starred-stations");
+
+        foreach (Model.StationModel station in stations) {
+            foreach (string id in starred) {
+                var is_starred = (id == station.id);
+                if (is_starred) {
+                    station.starred = (id == station.id);
+                    break;
+                }
+            }
+        }
     }
 }
