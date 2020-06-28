@@ -128,7 +128,6 @@ namespace Tuner.DBus {
         private uint update_metadata_source = 0;
         private uint send_property_source = 0;
         private HashTable<string,Variant> changed_properties = null;
-        private HashTable<string,Variant> _metadata;
 
         [DBus (visible = false)]
         public unowned DBusConnection conn { get; construct set; }

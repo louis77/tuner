@@ -85,19 +85,22 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
                 var file = File.new_for_path (favicon_cache_file);
                 try {
                     var stream = file.create_readwrite (FileCreateFlags.PRIVATE);
-                    var cache_file = File.new_for_path (favicon_cache_file);
                     stream.output_stream.splice (data_stream, 0);
                     stream.close ();    
-                } catch (IOError e) {
+                } catch (Error e) {
                     // File already created by another stationbox
                     // TODO: possible race condition
                     // TODO: Create stationboxes as singletons?
                 }
 
-                var favicon_stream = file.read ();
-                if (!set_favicon_from_stream (favicon_stream)) {
-                    set_default_favicon ();
-                };
+                try {
+                    var favicon_stream = file.read ();
+                    if (!set_favicon_from_stream (favicon_stream)) {
+                        set_default_favicon ();
+                    };
+                } catch (Error e) {
+                    warning (@"Error while reading icon file stream: $(e.message)");
+                }
             });
 
         } else {
