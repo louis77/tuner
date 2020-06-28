@@ -66,7 +66,7 @@ public class Tuner.Application : Gtk.Application {
         var f_cache_dir = File.new_for_path (cache_dir);
         
         try {
-            debug (@"Ensuring cache_dir exists...");
+            debug (@"Ensuring cache_dir exists…");
             f_cache_dir.make_directory ();
 
         } catch (IOError e) {

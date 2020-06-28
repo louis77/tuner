@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-26 14:27+0200\n"
+"POT-Creation-Date: 2020-06-28 12:22+0200\n"
 "PO-Revision-Date: 2020-06-07 23:58+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,6 +16,122 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/Models/Genre.vala:35
+msgid "70s"
+msgstr ""
+
+#: src/Models/Genre.vala:36
+msgid "80s"
+msgstr ""
+
+#: src/Models/Genre.vala:37
+msgid "90s"
+msgstr ""
+
+#: src/Models/Genre.vala:38
+msgid "Classical"
+msgstr ""
+
+#: src/Models/Genre.vala:39
+msgid "Country"
+msgstr ""
+
+#: src/Models/Genre.vala:40
+msgid "Dance"
+msgstr ""
+
+#: src/Models/Genre.vala:41
+msgid "Electronic"
+msgstr ""
+
+#: src/Models/Genre.vala:42
+msgid "House"
+msgstr ""
+
+#: src/Models/Genre.vala:43
+msgid "Jazz"
+msgstr ""
+
+#: src/Models/Genre.vala:44
+msgid "Pop"
+msgstr ""
+
+#: src/Models/Genre.vala:45
+msgid "Rock"
+msgstr ""
+
+#: src/Widgets/HeaderBar.vala:58
+msgid "Choose a station"
+msgstr ""
+
+#: src/Widgets/HeaderBar.vala:60 src/Widgets/Window.vala:262
+msgid "Paused"
+msgstr ""
+
+#: src/Widgets/HeaderBar.vala:76
+msgid "Station name"
+msgstr ""
+
+#: src/Widgets/HeaderBar.vala:91
+msgid "Star this station"
+msgstr ""
+
+#: src/Widgets/HeaderBar.vala:136
+msgid "Connecting"
+msgstr ""
+
+#: src/Widgets/Window.vala:90
+msgid "Selections"
+msgstr ""
+
+#: src/Widgets/Window.vala:94 src/Widgets/Window.vala:143
+msgid "Search"
+msgstr ""
+
+#: src/Widgets/Window.vala:98
+msgid "Genres"
+msgstr ""
+
+#: src/Widgets/Window.vala:105
+msgid "Discover"
+msgstr ""
+
+#: src/Widgets/Window.vala:106
+msgid "Discover Stations"
+msgstr ""
+
+#: src/Widgets/Window.vala:107
+msgid "Discover more stations"
+msgstr ""
+
+#: src/Widgets/Window.vala:117
+msgid "Trending"
+msgstr ""
+
+#: src/Widgets/Window.vala:118
+msgid "Trending in the last 24 hours"
+msgstr ""
+
+#: src/Widgets/Window.vala:125
+msgid "Popular"
+msgstr ""
+
+#: src/Widgets/Window.vala:126
+msgid "Most-listened over 24 hours"
+msgstr ""
+
+#: src/Widgets/Window.vala:133 src/Widgets/Window.vala:134
+msgid "Starred by You"
+msgstr ""
+
+#: src/Widgets/Window.vala:142
+msgid "Search Result"
+msgstr ""
+
+#: src/Widgets/Window.vala:254
+msgid "Buffering"
+msgstr ""
 
 #: src/Widgets/Window.vala:274
 msgid "Playing"

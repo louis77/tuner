@@ -13,7 +13,7 @@
 [ ] Play/Pause control from Dock
 [ ] Dark mode
 [ ] Add settings and status bar to disable usage tracking
-[ ] implement notify signals...
+[ ] implement notify signals…
 [ ] Startup still needs async load !
 [ ] Search with 0 results - better screen
 [ ] on station click: (com.github.louis77.tuner:29078): libsoup-CRITICAL **: 01:53:43.173: soup_session_queue_message: assertion 'SOUP_IS_MESSAGE (msg)' failed
@@ -27,5 +27,5 @@
 [X] ~~Don't limit~~ Extended limit for starred stations
 [ ] Add station info on headerbar click
 [ ] Recently listend, My Library
-[ ] Context-menu to exclude countries from ...
+[ ] Context-menu to exclude countries from …
 [ ] better default window size 900x540
