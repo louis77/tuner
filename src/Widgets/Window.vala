@@ -108,10 +108,18 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                             stack, selections_category, source_list);
         var s1 = _directory.load_random_stations(10);
         c1.realize.connect (() => {
-            c1.stations = s1.next ();
+            try {
+                c1.stations = s1.next ();
+            } catch (SourceError e) {
+                c1.show_alert ();
+            }
         });
         c1.action_activated.connect (() => {
-            c1.stations = s1.next ();
+            try {
+                c1.stations = s1.next ();
+            } catch (SourceError e) {
+                c1.show_alert ();
+            }
         });
 
         var c2 = create_content_box ("trending", "Trending", "playlist-queue",
@@ -119,7 +127,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                             stack, selections_category, source_list);
         var s2 = _directory.load_trending_stations(40);
         c2.realize.connect (() => {
-            c2.stations = s2.next ();
+            try {
+                c2.stations = s2.next ();
+            } catch (SourceError e) {
+                c2.show_alert ();
+            }
+
         });
         
         var c3 = create_content_box ("popular", "Popular", "playlist-similar",
@@ -127,7 +140,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                             stack, selections_category, source_list);
         var s3 = _directory.load_popular_stations(40);
         c3.realize.connect (() => {
-            c3.stations = s3.next ();
+            try {
+                c3.stations = s3.next ();
+            } catch (SourceError e) {
+                c3.show_alert ();
+            }
         });
 
         var c4 = create_content_box ("starred", "Starred by You", "starred",
@@ -136,7 +153,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         
         c4.realize.connect (() => {
             var s4 = _directory.load_favourite_stations(1000);
-            c4.stations = s4.next ();
+            try {
+                c4.stations = s4.next ();
+            } catch (SourceError e) {
+                c4.show_alert ();
+            }
         });
 
         var c5 = create_content_box ("searched", "Search Result", "folder-saved-search",
@@ -148,9 +169,15 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         foreach (var genre in Model.genres ()) {
             var cb = create_content_box (genre.name, genre.name, "playlist", 
                 genre.name, null, null, stack, genres_category, source_list);
-            var ds = _directory.load_by_tags (genre.tags);
+            var tags = new ArrayList<string>.wrap (genre.tags);
+            var ds = _directory.load_by_tags (tags);
             cb.realize.connect (() => {
-                cb.stations = ds.next ();
+                try {
+                    warning ("cb realize before next");
+                    cb.stations = ds.next ();
+                } catch (SourceError e) {
+                    cb.show_alert ();
+                }
             });
         }
 
@@ -158,7 +185,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             _directory.star_station (_player.station, starred);
             c4.clear_content ();
             var s = _directory.load_favourite_stations(1000);
-            c4.stations = s.next ();
+            try {
+                c4.stations = s.next ();
+            } catch (SourceError e) {
+                c4.show_alert ();
+            }
+
         });
 
         source_list.root.add (selections_category);
@@ -176,8 +208,18 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         headerbar.searched_for.connect ( (text) => {
             if (text.length > 0) {
                 c5.clear_content ();
-                s5 = _directory.load_search_stations (text, 100); 
-                c5.stations = s5.next ();
+                string mytext = text;
+                s5 = _directory.load_search_stations (mytext, 100); 
+                try {
+                    var stations = s5.next ();
+                    if (stations == null || stations.size == 0) {
+                        c5.show_nothing_found ();
+                    } else {
+                        c5.stations = stations;
+                    }
+                } catch (SourceError e) {
+                    c5.show_alert ();
+                }    
             }
         });
 
@@ -185,7 +227,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             stack.visible_child_name = "searched";
         });
 
-        stack.visible_child_name = "discover";
         primary_box.pack1 (source_list, true, false);
         primary_box.pack2 (stack, true, false);
         add (primary_box);
@@ -252,7 +293,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 debug ("player state changed to Buffering");
                 Gdk.threads_add_idle (() => {
                     headerbar.subtitle = "Buffering";
-                    headerbar.set_playstate (headerbar.PAUSE_ACTIVE);
+                    headerbar.set_playstate (HeaderBar.PlayState.PAUSE_ACTIVE);
                     return false;
                 });
                 break;;
@@ -261,9 +302,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 Gdk.threads_add_idle (() => {
                     headerbar.subtitle = "Paused";
                     if (_player.can_play()) {
-                        headerbar.set_playstate (headerbar.PLAY_ACTIVE);
+                        headerbar.set_playstate (HeaderBar.PlayState.PLAY_ACTIVE);
                     } else {
-                        headerbar.set_playstate (headerbar.PLAY_INACTIVE);
+                        headerbar.set_playstate (HeaderBar.PlayState.PLAY_INACTIVE);
                     }
                     return false;
                 });
@@ -272,7 +313,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 debug ("player state changed to Playing");
                 Gdk.threads_add_idle (() => {
                     headerbar.subtitle = _("Playing");
-                    headerbar.set_playstate (headerbar.PAUSE_ACTIVE);
+                    headerbar.set_playstate (HeaderBar.PlayState.PAUSE_ACTIVE);
                     return false;
                 });
                 break;;
@@ -281,9 +322,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 Gdk.threads_add_idle (() => {
                     headerbar.subtitle = _("Stopped");
                     if (_player.can_play()) {
-                        headerbar.set_playstate (headerbar.PLAY_ACTIVE);
+                        headerbar.set_playstate (HeaderBar.PlayState.PLAY_ACTIVE);
                     } else {
-                        headerbar.set_playstate (headerbar.PLAY_INACTIVE);
+                        headerbar.set_playstate (HeaderBar.PlayState.PLAY_INACTIVE);
                     }
                     return false;
                 });

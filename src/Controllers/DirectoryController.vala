@@ -21,6 +21,11 @@
 
 using Gee;
 
+public errordomain SourceError {
+    UNAVAILABEL
+}
+
+public delegate ArrayList<RadioBrowser.Station> Tuner.FetchType(uint offset, uint limit) throws SourceError;
 
 public class Tuner.DirectoryController : Object {
     public RadioBrowser.Client provider { get; set; }
@@ -33,74 +38,68 @@ public class Tuner.DirectoryController : Object {
 
 
     public StationSource load_random_stations (uint limit) {
-        var source = new StationSource(limit);
-        source.fetch.connect( (offset, limit) => {
-            var raw_stations = provider.search ("", {}, limit, RadioBrowser.SortOrder.RANDOM, false, offset);
-            return raw_stations;
-        });
+        var params = RadioBrowser.SearchParams() {
+            text  = "",
+            tags  = new ArrayList<string>(),
+            order = RadioBrowser.SortOrder.RANDOM
+        };
+        var source = new StationSource(limit, params, provider);
         return source;
     }
 
     public StationSource load_trending_stations (uint limit) {
-        var source = new StationSource(limit);
-        source.fetch.connect( (offset, limit) => {
-            var raw_stations = provider.search ("", {}, limit, RadioBrowser.SortOrder.CLICKTREND, true, offset);
-            return raw_stations;
-        });
+        var params = RadioBrowser.SearchParams() {
+            text    = "",
+            tags    = new ArrayList<string>(),
+            order   = RadioBrowser.SortOrder.CLICKTREND,
+            reverse = true
+        };
+        var source = new StationSource(limit, params, provider);
         return source;
     }
 
     public StationSource load_popular_stations (uint limit) {
-        var source = new StationSource(limit);
-        source.fetch.connect( (offset, limit) => {
-            var raw_stations = provider.search ("", {}, limit, RadioBrowser.SortOrder.CLICKCOUNT, true, offset);
-            return raw_stations;
-        });
+        var params = RadioBrowser.SearchParams() {
+            text    = "",
+            tags    = new ArrayList<string>(),
+            order   = RadioBrowser.SortOrder.CLICKCOUNT,
+            reverse = true
+        };
+        var source = new StationSource(limit, params, provider);
         return source;
     }
 
-    public StationSource load_search_stations (string utext, uint limit) {
-        var source = new StationSource(limit);
-        source.fetch.connect( (offset, limit) => {
-            var raw_stations = provider.search (utext, {}, limit, RadioBrowser.SortOrder.CLICKCOUNT, true, offset);
-            return raw_stations;
-        });
+    public StationSource load_search_stations (owned string utext, uint limit) {
+        warning (@"SEACHING: $utext");
+        var params = RadioBrowser.SearchParams() {
+            text    = utext,
+            tags    = new ArrayList<string>(),
+            order   = RadioBrowser.SortOrder.CLICKCOUNT,
+            reverse = true
+        };
+        var source = new StationSource(limit, params, provider); 
         return source;
     }
 
     public StationSource load_favourite_stations (uint limit) {
-        var source = new StationSource(limit);
-        source.fetch.connect( (offset, limit) => {
-            // TODO Implement offset
-            var settings = Application.instance.settings;
-            var starred_stations = settings.get_strv ("starred-stations");
-            var raw_stations = new ArrayList<RadioBrowser.Station> ();
-
-            debug (@"Number of favourite stations: $(starred_stations.length)");
-
-            foreach (var s in starred_stations) {
-                try {
-                var result = provider.by_uuid (s);
-                if (result.size == 1) {
-                    raw_stations.add (result[0]);
-                }
-                } catch (RadioBrowser.DataError e) {
-                    warning (@"Station $s could not be loaded: $(e.message)");
-            }
-            }
-
-            return raw_stations;
-        });
+        var settings = Application.instance.settings;
+        var starred_stations = settings.get_strv ("starred-stations");
+        var params = RadioBrowser.SearchParams() {
+            uuids = new ArrayList<string>.wrap (starred_stations)
+        };
+        var source = new StationSource(limit, params, provider);
         return source;
     }
 
-    public StationSource load_by_tags (string[] utags) {
-        var tags = utags;
-        var source = new StationSource(40);
-        source.fetch.connect( (offset, limit) => {
-            var raw_stations = provider.search ("", tags, limit, RadioBrowser.SortOrder.VOTES, true, offset);
-            return raw_stations;
-        });
+    public StationSource load_by_tags (owned ArrayList<string> utags) {
+        warning ("in load by tags");
+        var params = RadioBrowser.SearchParams() {
+            text    = "",
+            tags    = utags,
+            order   = RadioBrowser.SortOrder.VOTES,
+            reverse = true
+        };
+        var source = new StationSource(40, params, provider);
         return source;
     }
 
@@ -131,11 +130,11 @@ public class Tuner.DirectoryController : Object {
 
     public void load_tags () {
         try {
-        var tags = provider.get_tags ();
-        tags_updated (tags);
+            var tags = provider.get_tags ();
+            tags_updated (tags);
         } catch (RadioBrowser.DataError e) {
             warning (@"unable to load tags: $(e.message)");
-    }
+        }
     }
 
 }
@@ -144,23 +143,30 @@ public class Tuner.StationSource : Object {
     private uint _offset = 0;
     private uint _page_size = 20;
     private bool _more = true;
-    public signal ArrayList<RadioBrowser.Station> fetch(uint offset, uint limit);
+    private RadioBrowser.SearchParams _params;
+    private RadioBrowser.Client _client;
 
-    public StationSource (uint limit) {
+    public StationSource (uint limit, RadioBrowser.SearchParams params, RadioBrowser.Client client) {
         Object ();
         // This disables paging for now
         _page_size = limit;
+        _params = params;
+        _client = client;
     }
 
-    public ArrayList<Model.StationModel>? next () throws Error {
-        // Fetch one more to determine if source has more items than page size
-        var raw_stations = fetch (_offset, _page_size + 1);
-        var stations = convert_stations (raw_stations);
-        augment_with_userinfo (stations);
-        _offset += _page_size;
-        _more = stations.size > _page_size;
-        if (_more) stations.remove_at( (int)_page_size);
-        return stations;
+    public ArrayList<Model.StationModel>? next () throws SourceError {
+        // Fetch one more to determine if source has more items than page size 
+        try {
+            var raw_stations = _client.search (_params, _page_size + 1, _offset);
+            var stations = convert_stations (raw_stations);
+            augment_with_userinfo (stations);
+            _offset += _page_size;
+            _more = stations.size > _page_size;
+            if (_more) stations.remove_at( (int)_page_size);
+            return stations;    
+        } catch (RadioBrowser.DataError e) {
+            throw new SourceError.UNAVAILABEL("Directory Error");
+        }
     }
 
     public bool has_more () {
