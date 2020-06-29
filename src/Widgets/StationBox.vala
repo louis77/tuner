@@ -74,8 +74,8 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
 
             session.queue_message (message, (sess, mess) => {
                 if (mess.status_code != 200) {
-                    warning (@"Unexpected status code: $(mess.status_code), will not render $(station.favicon_url)");
-                    this.icon.set_from_icon_name ("folder-music-symbolic", Gtk.IconSize.DIALOG);
+                    debug (@"Unexpected status code: $(mess.status_code), will not render $(station.favicon_url)");
+                    set_default_favicon ();
                     return;
                 }
 
@@ -85,19 +85,22 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
                 var file = File.new_for_path (favicon_cache_file);
                 try {
                     var stream = file.create_readwrite (FileCreateFlags.PRIVATE);
-                    var cache_file = File.new_for_path (favicon_cache_file);
                     stream.output_stream.splice (data_stream, 0);
                     stream.close ();    
-                } catch (IOError e) {
+                } catch (Error e) {
                     // File already created by another stationbox
                     // TODO: possible race condition
                     // TODO: Create stationboxes as singletons?
                 }
 
-                var favicon_stream = file.read ();
-                if (!set_favicon_from_stream (favicon_stream)) {
-                    set_default_favicon ();
-                };
+                try {
+                    var favicon_stream = file.read ();
+                    if (!set_favicon_from_stream (favicon_stream)) {
+                        set_default_favicon ();
+                    };
+                } catch (Error e) {
+                    warning (@"Error while reading icon file stream: $(e.message)");
+                }
             });
 
         } else {
@@ -112,9 +115,10 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
         try {
             pxbuf = new Gdk.Pixbuf.from_stream_at_scale (stream, 48, 48, true, null);
             this.icon.set_from_pixbuf (pxbuf);
+            this.icon.set_size_request (48, 48);
             return true;
         } catch (Error e) {
-            warning ("Couldn't render favicon: %s (%s)",
+            debug ("Couldn't render favicon: %s (%s)",
                 station.favicon_url ?? "unknown url",
                 e.message);
             return false;
@@ -122,7 +126,7 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
     }
 
     private void set_default_favicon () {
-        this.icon.set_from_icon_name ("folder-music-symbolic", Gtk.IconSize.DIALOG);
+        this.icon.set_from_icon_name ("internet-radio", Gtk.IconSize.DIALOG);
     }
 
 }

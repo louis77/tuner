@@ -69,7 +69,7 @@ public class Tuner.Application : Gtk.Application {
             debug (@"Ensuring cache_dir exists…");
             f_cache_dir.make_directory ();
 
-        } catch (IOError e) {
+        } catch (Error e) {
             if (!(e is IOError.EXISTS)) {
                 warning (@"cache_dir couldn't be created: %s", e.message);
                 cache_dir = null;

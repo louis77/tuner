@@ -28,9 +28,10 @@ public class Tuner.ContentBox : Gtk.Box {
     public signal void station_count_changed (uint count);
 
     private Gtk.Box header;
+    private Gtk.Stack stack;
     public Gtk.Box content;
     public Model.StationModel selected_station;
-
+    
     public ContentBox (Gtk.Image? icon,
                        string title,
                        string? action_icon_name,
@@ -39,6 +40,21 @@ public class Tuner.ContentBox : Gtk.Box {
             orientation: Gtk.Orientation.VERTICAL,
             spacing: 0
         );
+
+        stack = new Gtk.Stack ();
+
+        var alert = new Granite.Widgets.AlertView ("Nothing here", "Something went wrong loading radio stations data from radio-browser.info. Please try again later", "dialog-warning");
+        /* 
+        alert.show_action ("Try again");
+        alert.action_activated.connect (() => {
+            // alert.hide_action ();
+            realize ();
+        });
+        */
+        stack.add_named (alert, "alert");
+
+        var no_results = new Granite.Widgets.AlertView ("Nothing found", "Please try a different search term.", "dialog-warning");
+        stack.add_named (no_results, "nothing-found");
 
         header = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
         header.homogeneous = false;
@@ -83,12 +99,25 @@ public class Tuner.ContentBox : Gtk.Box {
             }
         });
         */
-        add (scroller);
+        stack.add_named (scroller, "content");
+        add (stack);
+        
+        show.connect (() => {
+            stack.set_visible_child_full ("content", Gtk.StackTransitionType.NONE);            
+        });
     }
 
+    public void show_alert () {
+        stack.set_visible_child_full ("alert", Gtk.StackTransitionType.NONE);
+    }
+
+    public void show_nothing_found () {
+        stack.set_visible_child_full ("nothing-found", Gtk.StackTransitionType.NONE);
+    }
+    
     public ArrayList<Model.StationModel> stations {
         set {
-            debug (@"Entered contentbox stations setter $(value.size)");
+            stack.set_visible_child_full ("content", Gtk.StackTransitionType.NONE);
             clear_content ();
             var station_list = new Gtk.FlowBox ();
             station_list.homogeneous = false;
@@ -115,7 +144,7 @@ public class Tuner.ContentBox : Gtk.Box {
             station_count_changed (value.size);
         }
     }
-
+    
     public void clear_content () {
         var childs = content.get_children();
         foreach (var c in childs) {

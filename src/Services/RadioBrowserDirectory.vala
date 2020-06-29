@@ -21,10 +21,15 @@
 
 using Gee;
 
-// TODO: handle failures
-// TODO: use async
-
 namespace Tuner.RadioBrowser {
+
+public struct SearchParams {
+    string text;
+    ArrayList<string> tags;
+    ArrayList<string> uuids;
+    SortOrder order;
+    bool reverse;
+}
 
 public errordomain DataError {
     PARSE_DATA
@@ -193,36 +198,53 @@ public class Client : Object {
         return stations;
     }
 
-    public ArrayList<Station> search (string? name,
-                                      string[] tags,
+    public ArrayList<Station> search (SearchParams params,
                                       uint rowcount,
-                                      SortOrder order,
-                                      bool reverse = false,
-                                      uint offset = 0) {
-        var resource = @"json/stations/search?limit=$rowcount&order=$order&offset=$offset";
-        if (name != null && name != "") { 
-            resource += @"&name=$name";
+                                      uint offset = 0) throws DataError {
+        // by uuids
+        if (params.uuids != null) {
+            var stations = new ArrayList<Station> ();
+            foreach (var uuid in params.uuids) {
+                var station = this.by_uuid(uuid);
+                if (station != null) {
+                    stations.add (station);
+                }
+            }
+            return stations;
         }
-        if (tags != null ) {
-            string tag_list = tags[0];
-            if (tags.length > 1) {
-                tag_list = string.joinv (",", tags);
+
+        // by text or tags
+        var resource = @"json/stations/search?limit=$rowcount&order=$(params.order)&offset=$offset";
+        if (params.text != null && params.text != "") { 
+            resource += @"&name=$(params.text)";
+        }
+        if (params.tags == null) {
+            warning ("param tags is null");
+        }
+        if (params.tags.size > 0 ) {
+            string tag_list = params.tags[0];
+            if (params.tags.size > 1) {
+                tag_list = string.joinv (",", params.tags.to_array());
             }
             resource += @"&tagList=$tag_list&tagExact=true";
         }
-        if (order != SortOrder.RANDOM) {
+        if (params.order != SortOrder.RANDOM) {
             // random and reverse doesn't make sense
-            resource += @"&reverse=$reverse";
+            resource += @"&reverse=$(params.reverse)";
         }
         return get_stations (resource);
     }
 
-    public ArrayList<Station> by_uuid (string uuid) {
+    public Station? by_uuid (string uuid) throws DataError {
         var resource = @"json/stations/byuuid/$uuid";
-        return get_stations (resource);
+        var result = get_stations (resource);
+        if (result.size == 0) {
+            return null;
+        }
+        return result[0];
     }
 
-    public ArrayList<Tag> get_tags () {
+    public ArrayList<Tag> get_tags () throws DataError {
         var resource = @"json/tags";
         var message = new Soup.Message ("GET", @"$API_BASE_URL/$resource");
         Json.Node rootnode;
