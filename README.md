@@ -19,15 +19,16 @@ While I hacked on this App, I discovered so many cool and new stations, which ma
 ## Features
 
 - Uses radio-browser.info catalog
-- Presents a random selection of stations
+- Presents a various selection of stations (random, top, trending, genres)
+- Save favourite stations 
 - Sends a click count to radio-browser.info on station click
 - Sends a vote count to radio-browser.info when you star a station
 - DBus integration to pause/resume playing and show station info
 
 ## Upcoming
 
-- List stations you starred
-- More selection screens (Trending, Most Popular, Country-specific)
+- More selection screens (Popular networks, Country-specific)
+- More filter options (country)
 - Community-listening: see what other users are listening to right now
 - Other ideas? Create an issue!
 
@@ -61,6 +62,8 @@ sudo ninja install
 - [radio-browser.info](http://www.radio-browser.info) for providing a free radio station directory
 - [elementary.io](https://elementary.io) for making Linux enjoyable on the desktop
 - [Vala](https://wiki.gnome.org/Projects/Vala) - a great programming language
+- [Vala Language Server](https://github.com/benwaffle/vala-language-server) - makes Vala even better
+- [NathanBnm](https://github.com/NathanBnm) - provided French translations
 
 ## Disclaimer
 
