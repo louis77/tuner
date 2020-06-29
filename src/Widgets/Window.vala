@@ -87,24 +87,24 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var primary_box = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);
 
 
-        var selections_category = new Granite.Widgets.SourceList.ExpandableItem ("Selections");
+        var selections_category = new Granite.Widgets.SourceList.ExpandableItem (_("Selections"));
         selections_category.collapsible = false;
         selections_category.expanded = true;
 
-        var searched_category = new Granite.Widgets.SourceList.ExpandableItem ("Search");
+        var searched_category = new Granite.Widgets.SourceList.ExpandableItem (_("Search"));
         searched_category.collapsible = false;
         searched_category.expanded = true;
 
-        var genres_category = new Granite.Widgets.SourceList.ExpandableItem ("Genres");
+        var genres_category = new Granite.Widgets.SourceList.ExpandableItem (_("Genres"));
         genres_category.collapsible = true;
         genres_category.expanded = true;
         
         source_list = new Granite.Widgets.SourceList ();
 
 
-        var c1 = create_content_box ("discover", "Discover", "face-smile",
-                            "Discover Stations", "media-playlist-shuffle-symbolic",
-                            "Discover more stations",
+        var c1 = create_content_box ("discover", _("Discover"), "face-smile",
+                            _("Discover Stations"), "media-playlist-shuffle-symbolic",
+                            _("Discover more stations"),
                             stack, selections_category, source_list);
         var s1 = _directory.load_random_stations(10);
         c1.realize.connect (() => {
@@ -122,8 +122,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             }
         });
 
-        var c2 = create_content_box ("trending", "Trending", "playlist-queue",
-                            "Trending in the last 24 hours", null, null,
+        var c2 = create_content_box ("trending", _("Trending"), "playlist-queue",
+                            _("Trending in the last 24 hours"), null, null,
                             stack, selections_category, source_list);
         var s2 = _directory.load_trending_stations(40);
         c2.realize.connect (() => {
@@ -135,8 +135,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         });
         
-        var c3 = create_content_box ("popular", "Popular", "playlist-similar",
-                            "Most-listened over 24 hours", null, null,
+        var c3 = create_content_box ("popular", _("Popular"), "playlist-similar",
+                            _("Most-listened over 24 hours"), null, null,
                             stack, selections_category, source_list);
         var s3 = _directory.load_popular_stations(40);
         c3.realize.connect (() => {
@@ -147,8 +147,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             }
         });
 
-        var c4 = create_content_box ("starred", "Starred by You", "starred",
-                            "Starred by You", null, null,
+        var c4 = create_content_box ("starred", _("Starred by You"), "starred",
+                            _("Starred by You"), null, null,
                             stack, selections_category, source_list, true);
         
         c4.realize.connect (() => {
@@ -160,8 +160,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             }
         });
 
-        var c5 = create_content_box ("searched", "Search Result", "folder-saved-search",
-                            "Search", null, null,
+        var c5 = create_content_box ("searched", _("Search Result"), "folder-saved-search",
+                            _("Search"), null, null,
                             stack, searched_category, source_list, true);
         var s5 = _directory.load_search_stations("", 100);
 
@@ -291,7 +291,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             case Gst.PlayerState.BUFFERING:
                 debug ("player state changed to Buffering");
                 Gdk.threads_add_idle (() => {
-                    headerbar.subtitle = "Buffering";
+                    headerbar.subtitle = _("Buffering");
                     headerbar.set_playstate (HeaderBar.PlayState.PAUSE_ACTIVE);
                     return false;
                 });
@@ -299,7 +299,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             case Gst.PlayerState.PAUSED:
                 debug ("player state changed to Paused");
                 Gdk.threads_add_idle (() => {
-                    headerbar.subtitle = "Paused";
+                    headerbar.subtitle = _("Paused");
                     if (_player.can_play()) {
                         headerbar.set_playstate (HeaderBar.PlayState.PLAY_ACTIVE);
                     } else {

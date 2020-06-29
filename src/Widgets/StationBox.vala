@@ -26,7 +26,7 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
     public StationBox (Model.StationModel station) {
         var title = station.title;
         if (title.length > 30) {
-            title = title[0:30] + "...";
+            title = title[0:30] + "…";
         }
         Object (
             description: @"$(station.location) ($(station.clickcount))",

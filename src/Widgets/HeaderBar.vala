@@ -56,9 +56,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         var station_info = new Gtk.Grid ();
         station_info.column_spacing = 10;
 
-        _title_label = new Gtk.Label ("Choose a station");
+        _title_label = new Gtk.Label (_("Choose a station"));
         _title_label.get_style_context ().add_class (Granite.STYLE_CLASS_H4_LABEL);
-        _subtitle_label = new Gtk.Label ("Paused");
+        _subtitle_label = new Gtk.Label (_("Paused"));
         _favicon_image = new Gtk.Image.from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG);
 
         station_info.attach (_favicon_image, 0, 0, 1, 2);
@@ -73,7 +73,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
         var searchentry = new Gtk.SearchEntry ();
         searchentry.valign = Gtk.Align.CENTER;
-        searchentry.placeholder_text = "Station name";
+        searchentry.placeholder_text = _("Station name");
         searchentry.search_changed.connect (() => {
             searched_for (searchentry.text);
         });
@@ -87,7 +87,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             Gtk.IconSize.LARGE_TOOLBAR
         );
         star_button.valign = Gtk.Align.CENTER;
-        star_button.tooltip_text = "Star this station";
+        star_button.sensitive = true;
+        star_button.tooltip_text = _("Star this station");
         star_button.clicked.connect (() => {
             starred = !starred;
             star_clicked (starred);
@@ -129,10 +130,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         _station = station;
         var short_title = station.title;
         if (short_title.length > 50) {
-            short_title = short_title[0:30] + "...";
+            short_title = short_title[0:30] + "…";
         }
         title = short_title;
-        subtitle = "Connecting";
+        subtitle = _("Connecting");
         load_favicon (station.favicon_url);
         starred = station.starred;
     }
