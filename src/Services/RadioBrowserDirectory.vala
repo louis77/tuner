@@ -202,7 +202,7 @@ public class Client : Object {
                                       uint rowcount,
                                       uint offset = 0) throws DataError {
         // by uuids
-        if (params.uuids != null && params.uuids.size > 0) {
+        if (params.uuids != null) {
             var stations = new ArrayList<Station> ();
             foreach (var uuid in params.uuids) {
                 var station = this.by_uuid(uuid);
