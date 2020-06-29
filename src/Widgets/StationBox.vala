@@ -115,6 +115,7 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
         try {
             pxbuf = new Gdk.Pixbuf.from_stream_at_scale (stream, 48, 48, true, null);
             this.icon.set_from_pixbuf (pxbuf);
+            this.icon.set_size_request (48, 48);
             return true;
         } catch (Error e) {
             debug ("Couldn't render favicon: %s (%s)",

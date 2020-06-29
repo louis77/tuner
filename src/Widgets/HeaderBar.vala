@@ -181,6 +181,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             }
 
             favicon.set_from_pixbuf (pxbuf);
+            favicon.set_size_request (48, 48);
         });
     }
 
