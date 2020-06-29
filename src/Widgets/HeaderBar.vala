@@ -87,7 +87,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             Gtk.IconSize.LARGE_TOOLBAR
         );
         star_button.valign = Gtk.Align.CENTER;
-        star_button.sensitive = true;
         star_button.tooltip_text = "Star this station";
         star_button.clicked.connect (() => {
             starred = !starred;
@@ -95,7 +94,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         });
 
         pack_start (star_button);
-
+        set_playstate (PlayState.PLAY_INACTIVE);
     }
 
     public new string title {
@@ -189,6 +188,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                     Gtk.IconSize.LARGE_TOOLBAR
                 );
                 play_button.sensitive = true;
+                star_button.sensitive = true;
                 break;
             case PlayState.PLAY_INACTIVE:
                 play_button.image = new Gtk.Image.from_icon_name (
@@ -196,6 +196,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                     Gtk.IconSize.LARGE_TOOLBAR
                 );
                 play_button.sensitive = false;
+                star_button.sensitive = false;
                 break;
             case PlayState.PAUSE_ACTIVE:
                 play_button.image = new Gtk.Image.from_icon_name (
@@ -203,6 +204,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                     Gtk.IconSize.LARGE_TOOLBAR
                 );
                 play_button.sensitive = true;
+                star_button.sensitive = true;
                 break;
             case PlayState.PAUSE_INACTIVE:
                 play_button.image = new Gtk.Image.from_icon_name (
@@ -210,6 +212,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                     Gtk.IconSize.LARGE_TOOLBAR
                 );
                 play_button.sensitive = false;
+                star_button.sensitive = false;
                 break;
         }
     }
