@@ -60,7 +60,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         add_action_entries (ACTION_ENTRIES, this);
 
         window_position = Gtk.WindowPosition.CENTER;
-        set_default_size (1040, 640);
+        set_default_size (900, 540);
         settings = Application.instance.settings;
         move (settings.get_int ("pos-x"), settings.get_int ("pos-y"));
 
@@ -73,7 +73,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         var stack = new Gtk.Stack ();
         stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
-
+        
         headerbar = new HeaderBar (this);
         headerbar.stop_clicked.connect ( () => {
             handle_stop_playback ();
