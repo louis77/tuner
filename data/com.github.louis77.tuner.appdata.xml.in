@@ -67,6 +67,7 @@
           <li>Each section now displays the most-voted-for 40 stations</li>
           <li>Station images are now cached</li>
           <li>The app icon now appears more vertically centered</li>
+          <li>Station images are now always the same size</li>
         </ul>
         <p>Bugfixes:</p>
         <ul>
