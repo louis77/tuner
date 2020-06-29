@@ -2,49 +2,51 @@
 # Copyright (C) 2020 THE com.github.louis77.tuner'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the com.github.louis77.tuner package.
 # Automatically generated, 2020.
+# Louis Brauer <louis@brauer.family>, 2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-28 12:22+0200\n"
-"PO-Revision-Date: 2020-06-07 23:58+0200\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"POT-Creation-Date: 2020-06-29 21:55+0200\n"
+"PO-Revision-Date: 2020-06-29 21:57+0200\n"
+"Last-Translator: Louis Brauer <louis@brauer.family>\n"
+"Language-Team: Deutsch <>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Gtranslator 2.91.7\n"
 
 #: data/com.github.louis77.tuner.desktop.in:4
 #: data/com.github.louis77.tuner.appdata.xml.in:8
 msgid "Tuner"
-msgstr ""
+msgstr "Tuner"
 
 #: data/com.github.louis77.tuner.desktop.in:5
 msgid "Internet Radio Station Receiver"
-msgstr ""
+msgstr "Internet Radio Empfänger"
 
 #: data/com.github.louis77.tuner.desktop.in:6
 msgid "Listen to Radio Stations all over the world"
-msgstr ""
+msgstr "Empfange Radio-Stationen aus aller Welt"
 
 #: data/com.github.louis77.tuner.desktop.in:9
 msgid "com.github.louis77.tuner"
-msgstr ""
+msgstr "com.github.louis77.tuner"
 
 #: data/com.github.louis77.tuner.desktop.in:11
 msgid "Radio;Audio;Listen;Stations;Receiver;"
-msgstr ""
+msgstr "Radio;Audio;Listen;Stations;Receiver;"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:9
 msgid "Discover and listen to internet radio stations"
-msgstr ""
+msgstr "Entdecke und empfange Internet Radio-Stationen"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:12
 msgid "Make listening to internet radio stations fun again!"
-msgstr ""
+msgstr "Endlich wieder Spass beim Empfangen von Internet Radio-Stationen!"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:13
 msgid ""
@@ -52,70 +54,96 @@ msgid ""
 "presents you a new selection of stations from all over the world every time "
 "you hit the Shuffle button."
 msgstr ""
+"Statt dir immer nur die Radio-Stationen anzuzeigen die Du bereits kennst, "
+"zeigt Dir Tuner bei jedem Start eine neue Auswahl von Stationen aus aller "
+"Welt. Drücke einfach den Mischen-Button um eine neue Auswahl zu erhalten."
 
 #: data/com.github.louis77.tuner.appdata.xml.in:16
 msgid "Tuner uses the community-driven station catalog radio-browser.info."
 msgstr ""
+"Tuner benutzt das offene Community-Radio-Verzeichnis von radio-browser.info"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:18
 msgid "Discover new stations every day"
-msgstr ""
+msgstr "Entdecke jeden Tag neue Radio-Stationen"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:19
 msgid "Star stations you like"
-msgstr ""
+msgstr "Markiere deine Favoriten"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:20
 msgid "Control Tuner from your volume indicator"
-msgstr ""
+msgstr "Steuere Tuner von deinem System-Lautstärkeregler"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:30
 msgid "Louis Brauer"
-msgstr ""
+msgstr "Louis Brauer"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:60
 msgid "New features:"
-msgstr ""
+msgstr "Neue Funktionen:"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:62
 msgid "Search for radion stations"
-msgstr ""
+msgstr "Suche nach Radio-Stationen"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:63
 msgid "New \"Genres\" section with select popular genres"
-msgstr ""
+msgstr "Neuer \"Genre\"-Abschnitt mit ausgewählten Genre"
+
+#: data/com.github.louis77.tuner.appdata.xml.in:64
+msgid "Added French translation"
+msgstr "Französisch-Übersetzung hinzugefügt"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:65
-msgid "Other improvements:"
-msgstr ""
+msgid "Added German translation"
+msgstr "Deutsch-Übersetzung hinzugefügt"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:67
-msgid "Each section now displays the most-voted-for 40 stations"
-msgstr ""
-
-#: data/com.github.louis77.tuner.appdata.xml.in:68
-msgid "Station images are now cached"
-msgstr ""
+msgid "Other improvements:"
+msgstr "Sonstige Verbesserungen:"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:69
-msgid "The app icon now appears more vertically centered"
-msgstr ""
+msgid "Each section now displays the most-voted-for 40 stations"
+msgstr "Jeder Abschnitt zeigt"
+
+#: data/com.github.louis77.tuner.appdata.xml.in:70
+msgid "Station images are now being cached"
+msgstr "Stations-Bilder werden nun zwischengespeichert"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:71
-msgid "Bugfixes:"
-msgstr ""
+msgid "The app icon now appears more vertically centered"
+msgstr "Das App-Icon ist nun vertikal ausgerichtet"
 
-#: data/com.github.louis77.tuner.appdata.xml.in:73
+#: data/com.github.louis77.tuner.appdata.xml.in:72
+msgid "Station images are now always the same size"
+msgstr "Stations-Bilder haben nun eine konsistente Grösse"
+
+#: data/com.github.louis77.tuner.appdata.xml.in:74
+msgid "Bugfixes:"
+msgstr "Fehlerbehebungen:"
+
+#: data/com.github.louis77.tuner.appdata.xml.in:76
 msgid "Fixed a bug where starred stations appeared as unstarred"
 msgstr ""
+"Einen Fehler behoben, bei dem markierte Stationen als nicht markiert "
+"angezeigt wurden"
 
-#: data/com.github.louis77.tuner.appdata.xml.in:79
+#: data/com.github.louis77.tuner.appdata.xml.in:77
+msgid "Display a nice API error screen"
+msgstr "Zeige Hinweis falls Datenabruf fehlschlägt"
+
+#: data/com.github.louis77.tuner.appdata.xml.in:83
 msgid "New sidebar menu with different selections and your favourite stations."
-msgstr ""
+msgstr "Neue Seitenleiste mit verschiedenen Vorauswahlen und deinen Favoriten"
 
-#: data/com.github.louis77.tuner.appdata.xml.in:84
+#: data/com.github.louis77.tuner.appdata.xml.in:88
 msgid "Initial release"
-msgstr ""
+msgstr "Erste Ausgabe"
+
+#, fuzzy
+#~ msgid "Station images are now cached and have a consistent size"
+#~ msgstr "Stations-Bilder werden nun zwischengespeichert"
 
 #~ msgid "Playing"
 #~ msgstr "Läuft"

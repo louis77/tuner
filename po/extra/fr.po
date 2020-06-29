@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-28 12:22+0200\n"
+"POT-Creation-Date: 2020-06-29 21:55+0200\n"
 "PO-Revision-Date: 2020-06-28 12:08+0200\n"
 "Last-Translator: Nathan Bonnemains (@NathanBnm)\n"
 "Language-Team: none\n"
@@ -89,38 +89,60 @@ msgstr "Recherchez des stations de radio"
 msgid "New \"Genres\" section with select popular genres"
 msgstr "Nouvelle section « Genres » avec une sélection de genres populaires"
 
+#: data/com.github.louis77.tuner.appdata.xml.in:64
+msgid "Added French translation"
+msgstr ""
+
 #: data/com.github.louis77.tuner.appdata.xml.in:65
+msgid "Added German translation"
+msgstr ""
+
+#: data/com.github.louis77.tuner.appdata.xml.in:67
 msgid "Other improvements:"
 msgstr "Autres améliorations :"
 
-#: data/com.github.louis77.tuner.appdata.xml.in:67
+#: data/com.github.louis77.tuner.appdata.xml.in:69
 msgid "Each section now displays the most-voted-for 40 stations"
 msgstr "Chaque section affiche désormais les 40 stations les plus votées"
 
-#: data/com.github.louis77.tuner.appdata.xml.in:68
-msgid "Station images are now cached"
+#: data/com.github.louis77.tuner.appdata.xml.in:70
+#, fuzzy
+msgid "Station images are now being cached"
 msgstr "Les images de station sont désormais mises en cache"
 
-#: data/com.github.louis77.tuner.appdata.xml.in:69
+#: data/com.github.louis77.tuner.appdata.xml.in:71
 msgid "The app icon now appears more vertically centered"
 msgstr "L'icône de l'application est désormais mieux centrée verticalement"
 
-#: data/com.github.louis77.tuner.appdata.xml.in:71
+#: data/com.github.louis77.tuner.appdata.xml.in:72
+#, fuzzy
+msgid "Station images are now always the same size"
+msgstr "Les images de station sont désormais mises en cache"
+
+#: data/com.github.louis77.tuner.appdata.xml.in:74
 msgid "Bugfixes:"
 msgstr "Corrections de bug :"
 
-#: data/com.github.louis77.tuner.appdata.xml.in:73
+#: data/com.github.louis77.tuner.appdata.xml.in:76
 msgid "Fixed a bug where starred stations appeared as unstarred"
 msgstr ""
 "Correction d'un bug où les stations marquées comme favorites "
 "n'apparaissaient pas comme telles"
 
-#: data/com.github.louis77.tuner.appdata.xml.in:79
+#: data/com.github.louis77.tuner.appdata.xml.in:77
+msgid "Display a nice API error screen"
+msgstr ""
+
+#: data/com.github.louis77.tuner.appdata.xml.in:83
 msgid "New sidebar menu with different selections and your favourite stations."
 msgstr ""
 "Nouveau menu dans la barre latérale avec différentes sélections et vos "
 "stations favorites."
 
-#: data/com.github.louis77.tuner.appdata.xml.in:84
+#: data/com.github.louis77.tuner.appdata.xml.in:88
 msgid "Initial release"
 msgstr "Version initiale"
+
+#, fuzzy
+#~ msgid "Station images are now cached and have a consistent size"
+#~ msgstr "Les images de station sont désormais mises en cache"

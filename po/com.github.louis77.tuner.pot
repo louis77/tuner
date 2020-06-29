@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-28 12:22+0200\n"
+"POT-Creation-Date: 2020-06-29 21:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -61,11 +61,29 @@ msgstr ""
 msgid "Rock"
 msgstr ""
 
-#: src/Widgets/HeaderBar.vala:58
+#: src/Widgets/ContentBox.vala:46
+msgid "Nothing here"
+msgstr ""
+
+#: src/Widgets/ContentBox.vala:46
+msgid ""
+"Something went wrong loading radio stations data from radio-browser.info. "
+"Please try again later."
+msgstr ""
+
+#: src/Widgets/ContentBox.vala:56
+msgid "No stations found"
+msgstr ""
+
+#: src/Widgets/ContentBox.vala:56
+msgid "Please try a different search term."
+msgstr ""
+
+#: src/Widgets/HeaderBar.vala:59
 msgid "Choose a station"
 msgstr ""
 
-#: src/Widgets/HeaderBar.vala:60 src/Widgets/Window.vala:262
+#: src/Widgets/HeaderBar.vala:61 src/Widgets/Window.vala:302
 msgid "Paused"
 msgstr ""
 
@@ -85,7 +103,7 @@ msgstr ""
 msgid "Selections"
 msgstr ""
 
-#: src/Widgets/Window.vala:94 src/Widgets/Window.vala:143
+#: src/Widgets/Window.vala:94 src/Widgets/Window.vala:164
 msgid "Search"
 msgstr ""
 
@@ -105,38 +123,38 @@ msgstr ""
 msgid "Discover more stations"
 msgstr ""
 
-#: src/Widgets/Window.vala:117
+#: src/Widgets/Window.vala:125
 msgid "Trending"
 msgstr ""
 
-#: src/Widgets/Window.vala:118
+#: src/Widgets/Window.vala:126
 msgid "Trending in the last 24 hours"
 msgstr ""
 
-#: src/Widgets/Window.vala:125
+#: src/Widgets/Window.vala:138
 msgid "Popular"
 msgstr ""
 
-#: src/Widgets/Window.vala:126
+#: src/Widgets/Window.vala:139
 msgid "Most-listened over 24 hours"
 msgstr ""
 
-#: src/Widgets/Window.vala:133 src/Widgets/Window.vala:134
+#: src/Widgets/Window.vala:150 src/Widgets/Window.vala:151
 msgid "Starred by You"
 msgstr ""
 
-#: src/Widgets/Window.vala:142
+#: src/Widgets/Window.vala:163
 msgid "Search Result"
 msgstr ""
 
-#: src/Widgets/Window.vala:254
+#: src/Widgets/Window.vala:294
 msgid "Buffering"
 msgstr ""
 
-#: src/Widgets/Window.vala:274
+#: src/Widgets/Window.vala:314
 msgid "Playing"
 msgstr ""
 
-#: src/Widgets/Window.vala:282
+#: src/Widgets/Window.vala:322
 msgid "Stopped"
 msgstr ""

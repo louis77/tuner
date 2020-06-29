@@ -2,141 +2,163 @@
 # Copyright (C) 2020 THE com.github.louis77.tuner'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the com.github.louis77.tuner package.
 # Automatically generated, 2020.
+# Louis Brauer <louis@brauer.family>, 2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-28 12:22+0200\n"
-"PO-Revision-Date: 2020-06-07 23:58+0200\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"POT-Creation-Date: 2020-06-29 21:51+0200\n"
+"PO-Revision-Date: 2020-06-29 21:47+0200\n"
+"Last-Translator: Louis Brauer <louis@brauer.family>\n"
+"Language-Team: Deutsch <>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Gtranslator 2.91.7\n"
 
 #: src/Models/Genre.vala:35
 msgid "70s"
-msgstr ""
+msgstr "70er"
 
 #: src/Models/Genre.vala:36
 msgid "80s"
-msgstr ""
+msgstr "80er"
 
 #: src/Models/Genre.vala:37
 msgid "90s"
-msgstr ""
+msgstr "90er"
 
 #: src/Models/Genre.vala:38
 msgid "Classical"
-msgstr ""
+msgstr "Klassik"
 
 #: src/Models/Genre.vala:39
 msgid "Country"
-msgstr ""
+msgstr "Country"
 
 #: src/Models/Genre.vala:40
 msgid "Dance"
-msgstr ""
+msgstr "Dance"
 
 #: src/Models/Genre.vala:41
 msgid "Electronic"
-msgstr ""
+msgstr "Electronic"
 
 #: src/Models/Genre.vala:42
 msgid "House"
-msgstr ""
+msgstr "House"
 
 #: src/Models/Genre.vala:43
 msgid "Jazz"
-msgstr ""
+msgstr "Jazz"
 
 #: src/Models/Genre.vala:44
 msgid "Pop"
-msgstr ""
+msgstr "Pop"
 
 #: src/Models/Genre.vala:45
 msgid "Rock"
-msgstr ""
+msgstr "Rock"
 
-#: src/Widgets/HeaderBar.vala:58
+#: src/Widgets/ContentBox.vala:46
+msgid "Nothing here"
+msgstr "Hier ist nichts"
+
+#: src/Widgets/ContentBox.vala:46
+msgid ""
+"Something went wrong loading radio stations data from radio-browser.info. "
+"Please try again later."
+msgstr ""
+"Beim Abrufen der Radio-Stationen von radio-browser.info ist etwas schief "
+"gelaufen. Bitte versuche es später nochmals."
+
+#: src/Widgets/ContentBox.vala:56
+msgid "No stations found"
+msgstr "Keine Stationen gefunden"
+
+#: src/Widgets/ContentBox.vala:56
+msgid "Please try a different search term."
+msgstr "Bitte versuche es mit einem anderen Suchbegriff."
+
+#: src/Widgets/HeaderBar.vala:59
 msgid "Choose a station"
-msgstr ""
+msgstr "Wähle eine Station"
 
-#: src/Widgets/HeaderBar.vala:60 src/Widgets/Window.vala:262
+#: src/Widgets/HeaderBar.vala:61 src/Widgets/Window.vala:302
 msgid "Paused"
-msgstr ""
+msgstr "Angehalten"
 
 #: src/Widgets/HeaderBar.vala:76
 msgid "Station name"
-msgstr ""
+msgstr "Stationsname"
 
 #: src/Widgets/HeaderBar.vala:91
 msgid "Star this station"
-msgstr ""
+msgstr "Als Favorit markieren"
 
 #: src/Widgets/HeaderBar.vala:136
 msgid "Connecting"
-msgstr ""
+msgstr "Verbinde"
 
 #: src/Widgets/Window.vala:90
 msgid "Selections"
-msgstr ""
+msgstr "Ausgewählt"
 
-#: src/Widgets/Window.vala:94 src/Widgets/Window.vala:143
+#: src/Widgets/Window.vala:94 src/Widgets/Window.vala:164
 msgid "Search"
-msgstr ""
+msgstr "Suche"
 
 #: src/Widgets/Window.vala:98
 msgid "Genres"
-msgstr ""
+msgstr "Genre"
 
 #: src/Widgets/Window.vala:105
 msgid "Discover"
-msgstr ""
+msgstr "Entdecken"
 
 #: src/Widgets/Window.vala:106
 msgid "Discover Stations"
-msgstr ""
+msgstr "Entdecke Radio Stationen"
 
 #: src/Widgets/Window.vala:107
 msgid "Discover more stations"
-msgstr ""
-
-#: src/Widgets/Window.vala:117
-msgid "Trending"
-msgstr ""
-
-#: src/Widgets/Window.vala:118
-msgid "Trending in the last 24 hours"
-msgstr ""
+msgstr "Entdecke mehr Stationen"
 
 #: src/Widgets/Window.vala:125
-msgid "Popular"
-msgstr ""
+msgid "Trending"
+msgstr "Im Trend"
 
 #: src/Widgets/Window.vala:126
+msgid "Trending in the last 24 hours"
+msgstr "Im Trend in den letzten 24 Stunden"
+
+#: src/Widgets/Window.vala:138
+msgid "Popular"
+msgstr "Populär"
+
+#: src/Widgets/Window.vala:139
 msgid "Most-listened over 24 hours"
-msgstr ""
+msgstr "Am meisten gehört in den letzten 24 Stunden"
 
-#: src/Widgets/Window.vala:133 src/Widgets/Window.vala:134
+#: src/Widgets/Window.vala:150 src/Widgets/Window.vala:151
 msgid "Starred by You"
-msgstr ""
+msgstr "Von Dir markiert"
 
-#: src/Widgets/Window.vala:142
+#: src/Widgets/Window.vala:163
 msgid "Search Result"
-msgstr ""
+msgstr "Suchergebnis"
 
-#: src/Widgets/Window.vala:254
+#: src/Widgets/Window.vala:294
 msgid "Buffering"
-msgstr ""
+msgstr "Puffere"
 
-#: src/Widgets/Window.vala:274
+#: src/Widgets/Window.vala:314
 msgid "Playing"
 msgstr "Läuft"
 
-#: src/Widgets/Window.vala:282
+#: src/Widgets/Window.vala:322
 msgid "Stopped"
 msgstr "Angehalten"

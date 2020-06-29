@@ -61,11 +61,13 @@
         <ul>
           <li>Search for radion stations</li>
           <li>New "Genres" section with select popular genres</li>
+          <li>Added French translation</li>
+          <li>Added German translation</li>
         </ul>
         <p>Other improvements:</p>
         <ul>
           <li>Each section now displays the most-voted-for 40 stations</li>
-          <li>Station images are now cached</li>
+          <li>Station images are now being cached</li>
           <li>The app icon now appears more vertically centered</li>
           <li>Station images are now always the same size</li>
         </ul>

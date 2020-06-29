@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-28 12:22+0200\n"
+"POT-Creation-Date: 2020-06-29 21:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -85,34 +85,50 @@ msgstr ""
 msgid "New \"Genres\" section with select popular genres"
 msgstr ""
 
+#: data/com.github.louis77.tuner.appdata.xml.in:64
+msgid "Added French translation"
+msgstr ""
+
 #: data/com.github.louis77.tuner.appdata.xml.in:65
-msgid "Other improvements:"
+msgid "Added German translation"
 msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:67
-msgid "Each section now displays the most-voted-for 40 stations"
-msgstr ""
-
-#: data/com.github.louis77.tuner.appdata.xml.in:68
-msgid "Station images are now cached"
+msgid "Other improvements:"
 msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:69
-msgid "The app icon now appears more vertically centered"
+msgid "Each section now displays the most-voted-for 40 stations"
+msgstr ""
+
+#: data/com.github.louis77.tuner.appdata.xml.in:70
+msgid "Station images are now being cached"
 msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:71
+msgid "The app icon now appears more vertically centered"
+msgstr ""
+
+#: data/com.github.louis77.tuner.appdata.xml.in:72
+msgid "Station images are now always the same size"
+msgstr ""
+
+#: data/com.github.louis77.tuner.appdata.xml.in:74
 msgid "Bugfixes:"
 msgstr ""
 
-#: data/com.github.louis77.tuner.appdata.xml.in:73
+#: data/com.github.louis77.tuner.appdata.xml.in:76
 msgid "Fixed a bug where starred stations appeared as unstarred"
 msgstr ""
 
-#: data/com.github.louis77.tuner.appdata.xml.in:79
+#: data/com.github.louis77.tuner.appdata.xml.in:77
+msgid "Display a nice API error screen"
+msgstr ""
+
+#: data/com.github.louis77.tuner.appdata.xml.in:83
 msgid "New sidebar menu with different selections and your favourite stations."
 msgstr ""
 
-#: data/com.github.louis77.tuner.appdata.xml.in:84
+#: data/com.github.louis77.tuner.appdata.xml.in:88
 msgid "Initial release"
 msgstr ""
