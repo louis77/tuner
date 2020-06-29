@@ -173,7 +173,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             var ds = _directory.load_by_tags (tags);
             cb.realize.connect (() => {
                 try {
-                    warning ("cb realize before next");
                     cb.stations = ds.next ();
                 } catch (SourceError e) {
                     cb.show_alert ();

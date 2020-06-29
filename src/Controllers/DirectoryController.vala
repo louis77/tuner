@@ -22,7 +22,7 @@
 using Gee;
 
 public errordomain SourceError {
-    UNAVAILABEL
+    UNAVAILABLE
 }
 
 public delegate ArrayList<RadioBrowser.Station> Tuner.FetchType(uint offset, uint limit) throws SourceError;
@@ -70,7 +70,6 @@ public class Tuner.DirectoryController : Object {
     }
 
     public StationSource load_search_stations (owned string utext, uint limit) {
-        warning (@"SEACHING: $utext");
         var params = RadioBrowser.SearchParams() {
             text    = utext,
             tags    = new ArrayList<string>(),
@@ -92,7 +91,6 @@ public class Tuner.DirectoryController : Object {
     }
 
     public StationSource load_by_tags (owned ArrayList<string> utags) {
-        warning ("in load by tags");
         var params = RadioBrowser.SearchParams() {
             text    = "",
             tags    = utags,
@@ -165,7 +163,7 @@ public class Tuner.StationSource : Object {
             if (_more) stations.remove_at( (int)_page_size);
             return stations;    
         } catch (RadioBrowser.DataError e) {
-            throw new SourceError.UNAVAILABEL("Directory Error");
+            throw new SourceError.UNAVAILABLE("Directory Error");
         }
     }
 
