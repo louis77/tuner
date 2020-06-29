@@ -2,7 +2,7 @@
 project (
     'com.github.louis77.tuner',
     'vala', 'c',
-    version: '1.2.2'
+    version: '1.2.3'
 )
 
 # Translation module

@@ -55,7 +55,7 @@
   </provides>
 
   <releases>
-    <release version="1.2.2" date="2020-06-24">
+    <release version="1.2.3" date="2020-06-29">
       <description>
         <p>New features:</p>
         <ul>
@@ -71,6 +71,7 @@
         <p>Bugfixes:</p>
         <ul>
           <li>Fixed a bug where starred stations appeared as unstarred</li>
+          <li>Display a nice API error screen</li>
         </ul>
       </description>
     </release>
