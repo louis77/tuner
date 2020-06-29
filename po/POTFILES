@@ -1,3 +1,6 @@
-src/Application.vala
-src/Widgets/Window.vala
+src/Models/Genre.vala
+
 src/Widgets/HeaderBar.vala
+src/Widgets/Window.vala
+
+src/Application.vala

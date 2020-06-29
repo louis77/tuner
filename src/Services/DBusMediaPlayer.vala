@@ -54,7 +54,7 @@ namespace Tuner.DBus {
         } catch (IOError e) {
             error (@"Could not acquire path $ServerPath: $(e.message)");
         }
-        info (@"DBus Server is now listening on $ServerName $ServerPath...\n");
+        info (@"DBus Server is now listening on $ServerName $ServerPath…\n");
     }
 
     public class MediaPlayer : Object, DBus.IMediaPlayer2 {
