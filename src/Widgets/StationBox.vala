@@ -75,7 +75,7 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
             session.queue_message (message, (sess, mess) => {
                 if (mess.status_code != 200) {
                     debug (@"Unexpected status code: $(mess.status_code), will not render $(station.favicon_url)");
-                    this.icon.set_from_icon_name ("folder-music-symbolic", Gtk.IconSize.DIALOG);
+                    set_default_favicon ();
                     return;
                 }
 
@@ -125,7 +125,7 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
     }
 
     private void set_default_favicon () {
-        this.icon.set_from_icon_name ("folder-music-symbolic", Gtk.IconSize.DIALOG);
+        this.icon.set_from_icon_name ("internet-radio", Gtk.IconSize.DIALOG);
     }
 
 }

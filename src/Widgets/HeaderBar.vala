@@ -21,6 +21,7 @@
 
 public class Tuner.HeaderBar : Gtk.HeaderBar {
 
+    private const string DEFAULT_ICON_NAME = "internet-radio-symbolic";
     public enum PlayState {
         PAUSE_ACTIVE,
         PAUSE_INACTIVE,
@@ -58,7 +59,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         _title_label = new Gtk.Label ("Choose a station");
         _title_label.get_style_context ().add_class (Granite.STYLE_CLASS_H4_LABEL);
         _subtitle_label = new Gtk.Label ("Paused");
-        _favicon_image = new Gtk.Image.from_icon_name ("multimedia-player", Gtk.IconSize.DIALOG);
+        _favicon_image = new Gtk.Image.from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG);
 
         station_info.attach (_favicon_image, 0, 0, 1, 2);
         station_info.attach (_title_label, 1, 0, 1, 1);
@@ -68,7 +69,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         play_button = new Gtk.Button ();
         play_button.valign = Gtk.Align.CENTER;
         play_button.clicked.connect (() => { stop_clicked (); });
-        set_playstate (PlayState.PAUSE_INACTIVE);
         pack_start (play_button);
 
         var searchentry = new Gtk.SearchEntry ();
@@ -94,7 +94,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         });
 
         pack_start (star_button);
-        set_playstate (PlayState.PLAY_INACTIVE);
+        set_playstate (PlayState.PAUSE_INACTIVE);
     }
 
     public new string title {
@@ -153,13 +153,18 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     }
 
     private void load_favicon (string url) {
+        // Set default icon first, in case loading takes long or fails
+        favicon.set_from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG);
+        if (url.length == 0) {
+            return;
+        }
+
         var session = new Soup.Session ();
         var message = new Soup.Message ("GET", url);
 
         session.queue_message (message, (sess, mess) => {
             if (mess.status_code != 200) {
                 warning (@"Unexpected status code: $(mess.status_code), will not render $(url)");
-                favicon.clear ();
                 return;
             }
 
@@ -172,7 +177,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 warning ("Couldn't render favicon: %s (%s)",
                     url ?? "unknown url",
                     e.message);
-                favicon.clear ();
                 return;
             }
 
