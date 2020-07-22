@@ -16,7 +16,7 @@
 * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 * Boston, MA 02110-1301 USA
 *
-* Authored by: Louis Brauer <louis@brauer.family>
+* Authored by: Louis Brauer <louis77@member.fsf.org>
 */
 
 using Gee;
