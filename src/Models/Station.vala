@@ -30,10 +30,21 @@ public class Tuner.Model.Station : Object {
     public uint clickcount = 0;
 
     public Station (string id, string title, string location, string url) {
+        Object ();
+
         this.id = id;
         this.title = title;
         this.location = location;
         this.url = url;
+        this.starred = starred;
+    }
+
+    public void toggle_starred () {
+        this.starred = !this.starred;
+    }
+
+    public string to_string() {
+        return @"[$(this.id)] $(this.title)";
     }
 
 }

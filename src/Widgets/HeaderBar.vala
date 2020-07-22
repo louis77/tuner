@@ -90,7 +90,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         star_button.sensitive = true;
         star_button.tooltip_text = _("Star this station");
         star_button.clicked.connect (() => {
-            starred = !starred;
+            // starred = !starred;
             star_clicked (starred);
         });
 
@@ -125,9 +125,18 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         }
     }
 
+    public void handle_station_change () {
+        starred = _station.starred;
+    }
 
     public void update_from_station (Model.Station station) {
+        if (_station != null) {
+            _station.notify.disconnect (handle_station_change);
+        }
         _station = station;
+        _station.notify.connect ( (sender, property) => {
+            handle_station_change ();
+        });
         var short_title = station.title;
         if (short_title.length > 50) {
             short_title = short_title[0:30] + "…";

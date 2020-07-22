@@ -26,6 +26,7 @@ public class Tuner.ContentBox : Gtk.Box {
     public signal void selection_changed (Model.Station station);
     public signal void action_activated ();
     public signal void station_count_changed (uint count);
+    public signal void favourites_changed ();
 
     private Gtk.Box header;
     private Gtk.Stack stack;
@@ -130,6 +131,9 @@ public class Tuner.ContentBox : Gtk.Box {
             station_list.selection_mode = Gtk.SelectionMode.NONE;
 
             foreach (var s in value) {
+                s.notify["starred"].connect ( () => {
+                    favourites_changed ();
+                });
                 var box = new StationBox (s);
                 box.clicked.connect (() => {
                     selection_changed (box.station);

@@ -85,6 +85,10 @@ public class Tuner.DirectoryController : Object {
         return source;
     }
 
+    public ArrayList<Model.Station> get_stored () {
+        return _store.get_all ();
+    }
+
     public void migrate_favourites () {
         var settings = Application.instance.settings;
         var starred_stations = settings.get_strv ("starred-stations");
@@ -115,16 +119,6 @@ public class Tuner.DirectoryController : Object {
         };
         var source = new StationSource(40, params, provider, store);
         return source;
-    }
-
-    public void star_station (Model.Station station) {
-        station.starred = true;
-        store.add (station);
-    }
-
-    public void unstar_station (Model.Station station) {
-        station.starred = false;
-        store.remove (station);
     }
 
     public void count_station_click (Model.Station station) {
@@ -167,7 +161,6 @@ public class Tuner.StationSource : Object {
         try {
             var raw_stations = _client.search (_params, _page_size + 1, _offset);
             var stations = convert_stations (raw_stations);
-            augment_with_userinfo (stations);
             _offset += _page_size;
             _more = stations.size > _page_size;
             if (_more) stations.remove_at( (int)_page_size);
@@ -189,18 +182,21 @@ public class Tuner.StationSource : Object {
                 station.name,
                 station.country,
                 station.url_resolved);
+            if (_store.contains (s)) {
+                s.starred = true;
+            }
             s.favicon_url = station.favicon;
             s.clickcount = station.clickcount;
+            s.notify["starred"].connect ( (sender, property) => {
+                if (s.starred) {
+                    _store.add (s);
+                } else {
+                    _store.remove (s);
+                }
+            });
             stations.add (s);
         }
         return stations;
 }
 
-    private void augment_with_userinfo (ArrayList<Model.Station> stations) {
-        foreach (Model.Station station in stations) {
-            if (_store.contains (station)) {
-                station.starred = true;
-            }
-        }
-    }
 }

@@ -22,16 +22,20 @@
 // StationStore can store and retrieve a collection of stations
 // in a JSON file
 
+using Gee;
+
 namespace Tuner.Model {
 
+// TODO make this a singleton
+
 public class StationStore : Object {
-    private List<Station> _store;
+    private ArrayList<Station> _store;
     private File _data_file;
 
     public StationStore (string data_path) {
         Object ();
         
-        _store = new List<Station> ();
+        _store = new ArrayList<Station> ();
         _data_file = File.new_for_path (data_path);
         debug (@"store initialized in path $data_path");
         load ();
@@ -43,11 +47,8 @@ public class StationStore : Object {
     }
 
     private void _add (Station station) {
-        _store.insert_sorted_with_data (station, (a, b) => {
-            if (a.title < b.title) return -1;
-            if (a.title == b.title) return 0;
-            return 1;
-        });
+        _store.add (station);
+        // TODO Should we do a sorted insert?
     }
 
     public void remove (Station station) {
@@ -71,10 +72,18 @@ public class StationStore : Object {
         Json.Array array = node.get_array ();
         array.foreach_element ((a, i, elem) => {
             Station station = Json.gobject_deserialize (typeof (Station), elem) as Station;
+            station.notify["starred"].connect ( (sender, property) => {
+                if (station.starred) {
+                    this.add (station);
+                } else {
+                    this.remove (station);
+                }
+            });
+    
             _add (station);
         });
 
-        debug (@"loaded store size: $(_store.length ())");
+        debug (@"loaded store size: $(_store.size)");
     }
 
     private void persist () {
@@ -110,16 +119,8 @@ public class StationStore : Object {
         return data;
     }
 
-    public List<weak Station> get_all () {
-        return _store.copy ();
-    }
-
-    public Gee.ArrayList<Station> get_all_as_arraylist () {
-        Gee.ArrayList<Station> alist = new Gee.ArrayList<Station> ();
-        foreach (var station in _store) {
-            alist.add (station);
-        }
-        return alist;
+    public ArrayList<Station> get_all () {
+        return _store;
     }
 
     public bool contains (Station station) {

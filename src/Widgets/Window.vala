@@ -27,13 +27,14 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     private PlayerController _player;
     private DirectoryController _directory;
-    private Model.StationStore _store;
     private HeaderBar headerbar;
     private Granite.Widgets.SourceList source_list;
     
     public const string ACTION_PREFIX = "win.";
     public const string ACTION_PAUSE = "action_pause";
     public const string ACTION_QUIT = "action_quit";
+
+    private signal void refresh_favourites ();
 
     private const ActionEntry[] ACTION_ENTRIES = {
         { ACTION_PAUSE, handle_stop_playback },
@@ -88,8 +89,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         set_titlebar (headerbar);
 
         var data_file = Path.build_filename (Application.instance.data_dir, "favorites.json");
-        _store = new Model.StationStore (data_file);
-        _directory = new DirectoryController (new RadioBrowser.Client (), _store);
+        var store = new Model.StationStore (data_file);
+        _directory = new DirectoryController (new RadioBrowser.Client (), store);
 
         var primary_box = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);
 
@@ -158,7 +159,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                             _("Starred by You"), null, null,
                             stack, selections_category, source_list, true);
         
-        c4.stations = _store.get_all_as_arraylist();;
+        c4.stations = _directory.get_stored ();
 
         var c5 = create_content_box ("searched", _("Search Result"), "folder-saved-search",
                             _("Search"), null, null,
@@ -181,14 +182,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         }
 
         headerbar.star_clicked.connect ( (starred) => {
-            if (starred) {
-                _directory.star_station (_player.station);
-            } else {
-                _directory.unstar_station (_player.station);
-            }
+            _player.station.toggle_starred ();
+        });
 
+        refresh_favourites.connect ( () => {
             c4.clear_content ();
-            c4.stations = _store.get_all_as_arraylist ();
+            c4.stations = _directory.get_stored ();
         });
 
         source_list.root.add (selections_category);
@@ -253,6 +252,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             action_tooltip_text
         );
         c.selection_changed.connect (handle_station_click);
+        c.favourites_changed.connect (handle_favourites_changed);
         c.map.connect (() => {
             source_list.selected = item;
         });
@@ -274,10 +274,14 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         close ();
     }
 
-    public void handle_station_click(Tuner.Model.Station station) {
+    public void handle_station_click (Tuner.Model.Station station) {
         info (@"handle station click for $(station.title)");
         _directory.count_station_click (station);
         _player.station = station;
+    }
+
+    public void handle_favourites_changed () {
+        refresh_favourites ();
     }
 
     public void handle_stop_playback() {

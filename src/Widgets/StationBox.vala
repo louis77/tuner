@@ -22,24 +22,39 @@
 public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
 
     public Model.Station station { get; private set; }
+    public StationContextMenu menu { get; private set; }
 
     public StationBox (Model.Station station) {
         var title = station.title;
         if (title.length > 30) {
             title = title[0:30] + "…";
+            // TODO ellipsize
         }
         Object (
-            description: @"$(station.location) ($(station.clickcount))",
+            // TODO
+            // description: @"$(station.location) ($(station.clickcount))",
             description: @"$(station.location)",
             title: title,
             icon: new Gtk.Image()
         );
 
         get_style_context().add_class("station-button");
+        
 
         this.station = station;
         realize.connect (() => {
             realize_favicon ();
+        });
+
+        menu = new StationContextMenu (this.station);
+        menu.attach_to_widget (this, null);
+        menu.show_all ();
+        event.connect ((e) => {
+            if (e.type == Gdk.EventType.BUTTON_PRESS && e.button.button == 3) {
+                menu.popup_at_pointer ();
+                return true;
+            }
+            return false;
         });
 
     }
