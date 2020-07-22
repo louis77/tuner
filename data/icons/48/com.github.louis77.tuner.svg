@@ -5,16 +5,39 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
    x="0px"
    y="0px"
    viewBox="0 0 48 48"
    style="enable-background:new 0 0 48 48;"
    xml:space="preserve"
-   id="svg1768"><metadata
+   id="svg1768"
+   sodipodi:docname="com.github.louis77.tuner.svg"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="640"
+   inkscape:window-height="480"
+   id="namedview99"
+   showgrid="false"
+   inkscape:zoom="4.9166667"
+   inkscape:cx="39.316695"
+   inkscape:cy="21.575922"
+   inkscape:window-x="2448"
+   inkscape:window-y="248"
+   inkscape:window-maximized="0"
+   inkscape:current-layer="svg1768" /><metadata
    id="metadata1774"><rdf:RDF><cc:Work
        rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
    id="defs1772" />
 <style
    type="text/css"
@@ -50,7 +73,8 @@
    id="path1598" />
 </g>
 <g
-   id="Layer_2">
+   id="Layer_2"
+   transform="translate(0,-4)">
 	<g
    id="g1624">
 		
@@ -58,10 +82,10 @@
    id="SVGID_1_"
    gradientUnits="userSpaceOnUse"
    x1="4826.8174"
-   y1="-16680.3184"
+   y1="-16680.318"
    x2="4826.8174"
    y2="-16844.252"
-   gradientTransform="matrix(0.1018 0 0 -2.745000e-02 -467.37 -415.1248)">
+   gradientTransform="matrix(0.1018,0,0,-0.02745,-467.37,-415.1248)">
 			<stop
    offset="0"
    style="stop-color:#000000;stop-opacity:0"
@@ -77,15 +101,17 @@
 		</linearGradient>
 		<path
    class="st2"
-   d="M7,42.8h34v4.5H7V42.8z"
-   id="path1608" />
+   d="m 7,42.8 h 34 v 4.5 H 7 Z"
+   id="path1608"
+   style="opacity:0.3;fill:url(#SVGID_1_);enable-background:new"
+   inkscape:connector-curvature="0" />
 		
 			<radialGradient
    id="SVGID_2_"
    cx="8441.6689"
-   cy="-16761.2891"
-   r="80.0922"
-   gradientTransform="matrix(5.980000e-02 0 0 -2.745000e-02 -463.684 -415.1248)"
+   cy="-16761.289"
+   r="80.092201"
+   gradientTransform="matrix(0.0598,0,0,-0.02745,-463.684,-415.1248)"
    gradientUnits="userSpaceOnUse">
 			<stop
    offset="0"
@@ -98,15 +124,17 @@
 		</radialGradient>
 		<path
    class="st3"
-   d="M41,42.8v4.5c2.1,0,5.2-1.1,5.2-2.4S43.8,42.8,41,42.8z"
-   id="path1615" />
+   d="m 41,42.8 v 4.5 c 2.1,0 5.2,-1.1 5.2,-2.4 0,-1.3 -2.4,-2.1 -5.2,-2.1 z"
+   id="path1615"
+   style="opacity:0.3;fill:url(#SVGID_2_);enable-background:new"
+   inkscape:connector-curvature="0" />
 		
 			<radialGradient
    id="SVGID_3_"
    cx="-8514.8477"
-   cy="-16761.2891"
+   cy="-16761.289"
    r="80.0924"
-   gradientTransform="matrix(-5.980000e-02 0 0 -2.745000e-02 -502.315 -415.1248)"
+   gradientTransform="matrix(-0.0598,0,0,-0.02745,-502.315,-415.1248)"
    gradientUnits="userSpaceOnUse">
 			<stop
    offset="0"
@@ -119,16 +147,18 @@
 		</radialGradient>
 		<path
    class="st4"
-   d="M7,42.8v4.5c-2.1,0-5.2-1.1-5.2-2.4S4.2,42.8,7,42.8z"
-   id="path1622" />
+   d="m 7,42.8 v 4.5 c -2.1,0 -5.2,-1.1 -5.2,-2.4 0,-1.3 2.4,-2.1 5.2,-2.1 z"
+   id="path1622"
+   style="opacity:0.3;fill:url(#SVGID_3_);enable-background:new"
+   inkscape:connector-curvature="0" />
 	</g>
 	
 		<radialGradient
    id="SVGID_4_"
    cx="23.8629"
-   cy="44.6097"
-   r="64.3454"
-   gradientTransform="matrix(0.9981 6.409753e-03 -2.608957e-03 0.4005 -5.653071e-02 25.9301)"
+   cy="44.609699"
+   r="64.345398"
+   gradientTransform="matrix(0.9981,0.00640975,-0.00260896,0.4005,-0.05653071,25.9301)"
    gradientUnits="userSpaceOnUse">
 		<stop
    offset="0"
@@ -141,8 +171,10 @@
 	</radialGradient>
 	<path
    class="st5"
-   d="M40.7,44.5H7.3c-2.7,0-4.8-2.2-4.8-4.8V19.3c0-2.7,2.2-4.8,4.8-4.8h33.3c2.7,0,4.8,2.2,4.8,4.8v20.3   C45.5,42.3,43.3,44.5,40.7,44.5z"
-   id="path1631" />
+   d="M 40.7,44.5 H 7.3 C 4.6,44.5 2.5,42.3 2.5,39.7 V 19.3 c 0,-2.7 2.2,-4.8 4.8,-4.8 h 33.3 c 2.7,0 4.8,2.2 4.8,4.8 v 20.3 c 0.1,2.7 -2.1,4.9 -4.7,4.9 z"
+   id="path1631"
+   style="fill:url(#SVGID_4_);stroke:#910e38"
+   inkscape:connector-curvature="0" />
 	
 		<linearGradient
    id="SVGID_5_"
@@ -151,7 +183,7 @@
    y1="30"
    x2="24.7344"
    y2="17.111"
-   gradientTransform="matrix(1.0987 0 0 1 -3.1753 0)">
+   gradientTransform="matrix(1.0987,0,0,1,-3.1753,0)">
 		<stop
    offset="0"
    style="stop-color:#DE3E80"
@@ -163,8 +195,10 @@
 	</linearGradient>
 	<path
    class="st6"
-   d="M5,26.5v-6c0-1.9,1.6-3.5,3.5-3.5h31.1c1.9,0,3.5,1.6,3.5,3.5v6c0,1.9-1.6,3.5-3.5,3.5H8.5   C6.6,30,5,28.4,5,26.5z"
-   id="path1638" />
+   d="m 5,26.5 v -6 C 5,18.6 6.6,17 8.5,17 h 31.1 c 1.9,0 3.5,1.6 3.5,3.5 v 6 c 0,1.9 -1.6,3.5 -3.5,3.5 H 8.5 C 6.6,30 5,28.4 5,26.5 Z"
+   id="path1638"
+   style="fill:url(#SVGID_5_)"
+   inkscape:connector-curvature="0" />
 	<linearGradient
    id="SVGID_6_"
    gradientUnits="userSpaceOnUse"
@@ -183,108 +217,124 @@
 	</linearGradient>
 	<path
    class="st7"
-   d="M39.4,28.5H8.6c-1.2,0-2.2-1-2.2-2.2V21c0-1.2,1-2.2,2.2-2.2h30.8c1.2,0,2.2,1,2.2,2.2v5.3   C41.6,27.5,40.6,28.5,39.4,28.5z"
-   id="path1645" />
+   d="M 39.4,28.5 H 8.6 c -1.2,0 -2.2,-1 -2.2,-2.2 V 21 c 0,-1.2 1,-2.2 2.2,-2.2 h 30.8 c 1.2,0 2.2,1 2.2,2.2 v 5.3 c 0,1.2 -1,2.2 -2.2,2.2 z"
+   id="path1645"
+   style="fill:url(#SVGID_6_)"
+   inkscape:connector-curvature="0" />
 	<g
    id="g1675">
 		<line
    class="st8"
-   x1="8.7"
+   x1="8.6999998"
    y1="20"
-   x2="8.7"
+   x2="8.6999998"
    y2="27"
-   id="line1647" />
+   id="line1647"
+   style="fill:none;stroke:#abacae;stroke-width:0.67030001;stroke-miterlimit:10" />
 		<line
    class="st8"
    x1="11.7"
    y1="21"
    x2="11.7"
    y2="26"
-   id="line1649" />
+   id="line1649"
+   style="fill:none;stroke:#abacae;stroke-width:0.67030001;stroke-miterlimit:10" />
 		<line
    class="st8"
    x1="13.7"
    y1="21"
    x2="13.7"
    y2="26"
-   id="line1651" />
+   id="line1651"
+   style="fill:none;stroke:#abacae;stroke-width:0.67030001;stroke-miterlimit:10" />
 		<line
    class="st8"
-   x1="16.7"
+   x1="16.700001"
    y1="20"
-   x2="16.7"
+   x2="16.700001"
    y2="27"
-   id="line1653" />
+   id="line1653"
+   style="fill:none;stroke:#abacae;stroke-width:0.67030001;stroke-miterlimit:10" />
 		<line
    class="st8"
-   x1="18.7"
+   x1="18.700001"
    y1="21"
-   x2="18.7"
+   x2="18.700001"
    y2="26"
-   id="line1655" />
+   id="line1655"
+   style="fill:none;stroke:#abacae;stroke-width:0.67030001;stroke-miterlimit:10" />
 		<line
    class="st8"
-   x1="21.7"
+   x1="21.700001"
    y1="21"
-   x2="21.7"
+   x2="21.700001"
    y2="26"
-   id="line1657" />
+   id="line1657"
+   style="fill:none;stroke:#abacae;stroke-width:0.67030001;stroke-miterlimit:10" />
 		<line
    class="st8"
-   x1="24.7"
+   x1="24.700001"
    y1="20"
-   x2="24.7"
+   x2="24.700001"
    y2="27"
-   id="line1659" />
+   id="line1659"
+   style="fill:none;stroke:#abacae;stroke-width:0.67030001;stroke-miterlimit:10" />
 		<line
    class="st8"
-   x1="26.7"
+   x1="26.700001"
    y1="21"
-   x2="26.7"
+   x2="26.700001"
    y2="26"
-   id="line1661" />
+   id="line1661"
+   style="fill:none;stroke:#abacae;stroke-width:0.67030001;stroke-miterlimit:10" />
 		<line
    class="st8"
-   x1="29.7"
+   x1="29.700001"
    y1="21"
-   x2="29.7"
+   x2="29.700001"
    y2="26"
-   id="line1663" />
+   id="line1663"
+   style="fill:none;stroke:#abacae;stroke-width:0.67030001;stroke-miterlimit:10" />
 		<line
    class="st8"
-   x1="31.7"
+   x1="31.700001"
    y1="20"
-   x2="31.7"
+   x2="31.700001"
    y2="27"
-   id="line1665" />
+   id="line1665"
+   style="fill:none;stroke:#abacae;stroke-width:0.67030001;stroke-miterlimit:10" />
 		<line
    class="st8"
-   x1="39.7"
+   x1="39.700001"
    y1="20"
-   x2="39.7"
+   x2="39.700001"
    y2="27"
-   id="line1667" />
+   id="line1667"
+   style="fill:none;stroke:#abacae;stroke-width:0.67030001;stroke-miterlimit:10" />
 		<line
    class="st8"
-   x1="34.7"
+   x1="34.700001"
    y1="21"
-   x2="34.7"
+   x2="34.700001"
    y2="26"
-   id="line1669" />
+   id="line1669"
+   style="fill:none;stroke:#abacae;stroke-width:0.67030001;stroke-miterlimit:10" />
 		<line
    class="st8"
-   x1="36.7"
+   x1="36.700001"
    y1="21"
-   x2="36.7"
+   x2="36.700001"
    y2="26"
-   id="line1671" />
+   id="line1671"
+   style="fill:none;stroke:#abacae;stroke-width:0.67030001;stroke-miterlimit:10" />
 		<line
    class="st9"
-   x1="20.7"
-   y1="18.8"
-   x2="20.7"
-   y2="28.8"
-   id="line1673" />
+   x1="20.700001"
+   y1="18.799999"
+   x2="20.700001"
+   y2="28.799999"
+   id="line1673"
+   style="fill:none;stroke:#de3e80;stroke-width:0.8215;stroke-miterlimit:10" />
 	</g>
 	<g
    id="g1695">
@@ -294,7 +344,7 @@
    cx="23.4902"
    cy="40.9716"
    r="10.615"
-   gradientTransform="matrix(1.0041 0 0 0.757 0.2355 9.4441)"
+   gradientTransform="matrix(1.0041,0,0,0.757,0.2355,9.4441)"
    gradientUnits="userSpaceOnUse">
 			<stop
    offset="0"
@@ -310,20 +360,22 @@
    cx="23.5"
    cy="36.5"
    r="6.5"
-   id="circle1682" />
+   id="circle1682"
+   style="fill:url(#SVGID_7_)" />
 		<circle
    class="st11"
    cx="23.5"
    cy="36.5"
    r="4.5"
-   id="circle1684" />
+   id="circle1684"
+   style="fill:#273445" />
 		
 			<radialGradient
    id="SVGID_8_"
    cx="23.1926"
-   cy="37.6406"
+   cy="37.640598"
    r="7.6264"
-   gradientTransform="matrix(0.9834 0 0 0.5716 0.7364 16.8672)"
+   gradientTransform="matrix(0.9834,0,0,0.5716,0.7364,16.8672)"
    gradientUnits="userSpaceOnUse">
 			<stop
    offset="0"
@@ -338,12 +390,14 @@
    class="st12"
    cx="23.5"
    cy="36.5"
-   r="3.6"
-   id="circle1691" />
+   r="3.5999999"
+   id="circle1691"
+   style="fill:url(#SVGID_8_);stroke:#abacae;stroke-width:0.1992;stroke-linecap:round;stroke-linejoin:round" />
 		<path
    class="st13"
-   d="M23.5,35c-0.1,0-0.2-0.1-0.2-0.2v-1.5c0-0.1,0.1-0.2,0.2-0.2c0.1,0,0.2,0.1,0.2,0.2v1.5    C23.7,34.9,23.6,35,23.5,35z"
-   id="path1693" />
+   d="m 23.5,35 c -0.1,0 -0.2,-0.1 -0.2,-0.2 v -1.5 c 0,-0.1 0.1,-0.2 0.2,-0.2 0.1,0 0.2,0.1 0.2,0.2 v 1.5 c 0,0.1 -0.1,0.2 -0.2,0.2 z"
+   id="path1693"
+   inkscape:connector-curvature="0" />
 	</g>
 	<g
    id="g1730">
@@ -352,9 +406,9 @@
 			<linearGradient
    id="SVGID_9_"
    gradientUnits="userSpaceOnUse"
-   x1="37.4862"
-   y1="35.4583"
-   x2="37.4862"
+   x1="37.486198"
+   y1="35.458302"
+   x2="37.486198"
    y2="32.5">
 				<stop
    offset="0"
@@ -367,21 +421,25 @@
 			</linearGradient>
 			<path
    class="st14"
-   d="M33.4,35.5c-0.8,0-1.5-0.8-1.4-1.8c0.1-0.7,0.8-1.2,1.4-1.2h7.9c0.7,0,1.3,0.5,1.4,1.2     c0.2,0.9-0.5,1.8-1.4,1.8H33.4z"
-   id="path1702" />
+   d="m 33.4,35.5 c -0.8,0 -1.5,-0.8 -1.4,-1.8 0.1,-0.7 0.8,-1.2 1.4,-1.2 h 7.9 c 0.7,0 1.3,0.5 1.4,1.2 0.2,0.9 -0.5,1.8 -1.4,1.8 z"
+   id="path1702"
+   style="fill:url(#SVGID_9_)"
+   inkscape:connector-curvature="0" />
 			<path
    class="st15"
-   d="M41.1,34.9h-7.2c-0.5,0-0.9-0.4-0.9-0.9v-0.1c0-0.5,0.4-0.9,0.9-0.9h7.2c0.5,0,0.9,0.4,0.9,0.9V34     C42,34.5,41.6,34.9,41.1,34.9z"
-   id="path1704" />
+   d="M 41.1,34.9 H 33.9 C 33.4,34.9 33,34.5 33,34 V 33.9 C 33,33.4 33.4,33 33.9,33 h 7.2 c 0.5,0 0.9,0.4 0.9,0.9 V 34 c 0,0.5 -0.4,0.9 -0.9,0.9 z"
+   id="path1704"
+   inkscape:connector-curvature="0"
+   style="fill:#0e141f" />
 		</g>
 		<g
    id="g1717">
 			<linearGradient
    id="SVGID_10_"
    gradientUnits="userSpaceOnUse"
-   x1="37.9531"
+   x1="37.953098"
    y1="38.5312"
-   x2="37.9531"
+   x2="37.953098"
    y2="35.5">
 				<stop
    offset="0"
@@ -394,12 +452,16 @@
 			</linearGradient>
 			<path
    class="st16"
-   d="M34.3,38.5c-0.8,0-1.5-0.8-1.3-1.8c0.1-0.7,0.7-1.2,1.4-1.2h7.2c0.7,0,1.3,0.5,1.4,1.2     c0.2,1-0.5,1.8-1.3,1.8H34.3z"
-   id="path1713" />
+   d="m 34.3,38.5 c -0.8,0 -1.5,-0.8 -1.3,-1.8 0.1,-0.7 0.7,-1.2 1.4,-1.2 h 7.2 c 0.7,0 1.3,0.5 1.4,1.2 0.2,1 -0.5,1.8 -1.3,1.8 z"
+   id="path1713"
+   style="fill:url(#SVGID_10_)"
+   inkscape:connector-curvature="0" />
 			<path
    class="st15"
-   d="M41.2,37.9h-6.3c-0.5,0-0.9-0.4-0.9-0.9v-0.1c0-0.5,0.4-0.9,0.9-0.9h6.3c0.5,0,0.9,0.4,0.9,0.9V37     C42,37.5,41.6,37.9,41.2,37.9z"
-   id="path1715" />
+   d="M 41.2,37.9 H 34.9 C 34.4,37.9 34,37.5 34,37 V 36.9 C 34,36.4 34.4,36 34.9,36 h 6.3 c 0.5,0 0.9,0.4 0.9,0.9 V 37 c -0.1,0.5 -0.5,0.9 -0.9,0.9 z"
+   id="path1715"
+   inkscape:connector-curvature="0"
+   style="fill:#0e141f" />
 		</g>
 		<g
    id="g1728">
@@ -421,12 +483,16 @@
 			</linearGradient>
 			<path
    class="st17"
-   d="M33.4,41.6c-0.9,0-1.5-0.8-1.4-1.8c0.1-0.7,0.8-1.2,1.4-1.2h8c0.7,0,1.3,0.5,1.4,1.2c0.2,1-0.5,1.8-1.4,1.8     H33.4z"
-   id="path1724" />
+   d="m 33.4,41.6 c -0.9,0 -1.5,-0.8 -1.4,-1.8 0.1,-0.7 0.8,-1.2 1.4,-1.2 h 8 c 0.7,0 1.3,0.5 1.4,1.2 0.2,1 -0.5,1.8 -1.4,1.8 z"
+   id="path1724"
+   style="fill:url(#SVGID_11_)"
+   inkscape:connector-curvature="0" />
 			<path
    class="st15"
-   d="M41.1,40.9h-7.2c-0.5,0-0.9-0.4-0.9-0.9v-0.1c0-0.5,0.4-0.9,0.9-0.9h7.2c0.5,0,0.9,0.4,0.9,0.9V40     C42,40.5,41.6,40.9,41.1,40.9z"
-   id="path1726" />
+   d="M 41.1,40.9 H 33.9 C 33.4,40.9 33,40.5 33,40 V 39.9 C 33,39.4 33.4,39 33.9,39 h 7.2 c 0.5,0 0.9,0.4 0.9,0.9 V 40 c 0,0.5 -0.4,0.9 -0.9,0.9 z"
+   id="path1726"
+   inkscape:connector-curvature="0"
+   style="fill:#0e141f" />
 		</g>
 	</g>
 	<g
@@ -437,11 +503,11 @@
 				<linearGradient
    id="SVGID_12_"
    gradientUnits="userSpaceOnUse"
-   x1="64.5551"
-   y1="35.4583"
-   x2="64.5551"
+   x1="64.555099"
+   y1="35.458302"
+   x2="64.555099"
    y2="32.5"
-   gradientTransform="matrix(-1 0 0 1 75 0)">
+   gradientTransform="matrix(-1,0,0,1,75,0)">
 				<stop
    offset="0"
    style="stop-color:#DE3E80"
@@ -453,12 +519,16 @@
 			</linearGradient>
 			<path
    class="st18"
-   d="M14.5,35.5c0.8,0,1.5-0.8,1.4-1.8c-0.1-0.7-0.8-1.2-1.4-1.2H6.5c-0.7,0-1.3,0.5-1.4,1.2     c-0.2,0.9,0.5,1.8,1.4,1.8H14.5z"
-   id="path1737" />
+   d="m 14.5,35.5 c 0.8,0 1.5,-0.8 1.4,-1.8 -0.1,-0.7 -0.8,-1.2 -1.4,-1.2 h -8 c -0.7,0 -1.3,0.5 -1.4,1.2 -0.2,0.9 0.5,1.8 1.4,1.8 z"
+   id="path1737"
+   style="fill:url(#SVGID_12_)"
+   inkscape:connector-curvature="0" />
 			<path
    class="st15"
-   d="M6.8,34.9H14c0.5,0,0.9-0.4,0.9-0.9v-0.1c0-0.5-0.4-0.9-0.9-0.9H6.8c-0.5,0-0.9,0.4-0.9,0.9V34     C5.9,34.5,6.3,34.9,6.8,34.9z"
-   id="path1739" />
+   d="M 6.8,34.9 H 14 c 0.5,0 0.9,-0.4 0.9,-0.9 V 33.9 C 14.9,33.4 14.5,33 14,33 H 6.8 C 6.3,33 5.9,33.4 5.9,33.9 V 34 c 0,0.5 0.4,0.9 0.9,0.9 z"
+   id="path1739"
+   inkscape:connector-curvature="0"
+   style="fill:#0e141f" />
 		</g>
 		<g
    id="g1752">
@@ -466,11 +536,11 @@
 				<linearGradient
    id="SVGID_13_"
    gradientUnits="userSpaceOnUse"
-   x1="65.0221"
+   x1="65.022102"
    y1="38.5312"
-   x2="65.0221"
+   x2="65.022102"
    y2="35.5"
-   gradientTransform="matrix(-1 0 0 1 75 0)">
+   gradientTransform="matrix(-1,0,0,1,75,0)">
 				<stop
    offset="0"
    style="stop-color:#DE3E80"
@@ -482,12 +552,16 @@
 			</linearGradient>
 			<path
    class="st19"
-   d="M13.6,38.5c0.8,0,1.5-0.8,1.3-1.8c-0.1-0.7-0.7-1.2-1.4-1.2H6.4c-0.7,0-1.3,0.5-1.4,1.2     c-0.2,1,0.5,1.8,1.3,1.8H13.6z"
-   id="path1748" />
+   d="m 13.6,38.5 c 0.8,0 1.5,-0.8 1.3,-1.8 C 14.8,36 14.2,35.5 13.5,35.5 H 6.4 c -0.7,0 -1.3,0.5 -1.4,1.2 -0.2,1 0.5,1.8 1.3,1.8 z"
+   id="path1748"
+   style="fill:url(#SVGID_13_)"
+   inkscape:connector-curvature="0" />
 			<path
    class="st15"
-   d="M6.8,37.9h6.3c0.5,0,0.9-0.4,0.9-0.9v-0.1c0-0.5-0.4-0.9-0.9-0.9H6.8c-0.5,0-0.9,0.4-0.9,0.9V37     C5.9,37.5,6.3,37.9,6.8,37.9z"
-   id="path1750" />
+   d="m 6.8,37.9 h 6.3 C 13.6,37.9 14,37.5 14,37 V 36.9 C 14,36.4 13.6,36 13.1,36 H 6.8 C 6.3,36 5.9,36.4 5.9,36.9 V 37 c 0,0.5 0.4,0.9 0.9,0.9 z"
+   id="path1750"
+   inkscape:connector-curvature="0"
+   style="fill:#0e141f" />
 		</g>
 		<g
    id="g1763">
@@ -499,7 +573,7 @@
    y1="41.5882"
    x2="64.569"
    y2="38.5312"
-   gradientTransform="matrix(-1 0 0 1 75 0)">
+   gradientTransform="matrix(-1,0,0,1,75,0)">
 				<stop
    offset="0"
    style="stop-color:#DE3E80"
@@ -511,12 +585,16 @@
 			</linearGradient>
 			<path
    class="st20"
-   d="M14.5,41.6c0.9,0,1.5-0.8,1.4-1.8c-0.1-0.7-0.8-1.2-1.4-1.2h-8c-0.7,0-1.3,0.5-1.4,1.2     c-0.2,1,0.5,1.8,1.4,1.8H14.5z"
-   id="path1759" />
+   d="m 14.5,41.6 c 0.9,0 1.5,-0.8 1.4,-1.8 -0.1,-0.7 -0.8,-1.2 -1.4,-1.2 h -8 c -0.7,0 -1.3,0.5 -1.4,1.2 -0.2,1 0.5,1.8 1.4,1.8 z"
+   id="path1759"
+   style="fill:url(#SVGID_14_)"
+   inkscape:connector-curvature="0" />
 			<path
    class="st15"
-   d="M6.9,40.9H14c0.5,0,0.9-0.4,0.9-0.9v-0.1c0-0.5-0.4-0.9-0.9-0.9H6.9C6.4,39,6,39.4,6,39.9V40     C6,40.5,6.4,40.9,6.9,40.9z"
-   id="path1761" />
+   d="M 6.9,40.9 H 14 c 0.5,0 0.9,-0.4 0.9,-0.9 V 39.9 C 14.9,39.4 14.5,39 14,39 H 6.9 C 6.4,39 6,39.4 6,39.9 V 40 c 0,0.5 0.4,0.9 0.9,0.9 z"
+   id="path1761"
+   inkscape:connector-curvature="0"
+   style="fill:#0e141f" />
 		</g>
 	</g>
 </g>

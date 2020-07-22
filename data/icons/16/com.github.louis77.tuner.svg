@@ -5,16 +5,39 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
    x="0px"
    y="0px"
    viewBox="0 0 16 16"
    style="enable-background:new 0 0 16 16;"
    xml:space="preserve"
-   id="svg3473"><metadata
+   id="svg3473"
+   sodipodi:docname="com.github.louis77.tuner.svg"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="640"
+   inkscape:window-height="480"
+   id="namedview60"
+   showgrid="false"
+   inkscape:zoom="14.75"
+   inkscape:cx="8"
+   inkscape:cy="8"
+   inkscape:window-x="0"
+   inkscape:window-y="360"
+   inkscape:window-maximized="0"
+   inkscape:current-layer="svg3473" /><metadata
    id="metadata3479"><rdf:RDF><cc:Work
        rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
    id="defs3477" />
 <style
    type="text/css"
@@ -43,7 +66,8 @@
    id="path3375" />
 </g>
 <g
-   id="Layer_2">
+   id="Layer_2"
+   transform="translate(0,-2)">
 	<g
    id="g3401">
 		
@@ -51,10 +75,10 @@
    id="SVGID_1_"
    gradientUnits="userSpaceOnUse"
    x1="4810.8174"
-   y1="-15642.0664"
+   y1="-15642.066"
    x2="4810.8174"
-   y2="-15696.7119"
-   gradientTransform="matrix(0.1018 0 0 -2.745000e-02 -481.7412 -415.1248)">
+   y2="-15696.712"
+   gradientTransform="matrix(0.1018,0,0,-0.02745,-481.7412,-415.1248)">
 			<stop
    offset="0"
    style="stop-color:#000000;stop-opacity:0"
@@ -70,15 +94,17 @@
 		</linearGradient>
 		<path
    class="st2"
-   d="M2.4,14.2h11.2v1.5H2.4V14.2z"
-   id="path3385" />
+   d="m 2.4,14.2 h 11.2 v 1.5 H 2.4 Z"
+   id="path3385"
+   style="opacity:0.3;fill:url(#SVGID_1_);enable-background:new"
+   inkscape:connector-curvature="0" />
 		
 			<radialGradient
    id="SVGID_2_"
    cx="8234.0273"
-   cy="-15667.1953"
+   cy="-15667.195"
    r="27.0229"
-   gradientTransform="matrix(5.980000e-02 0 0 -2.745000e-02 -478.7272 -415.1248)"
+   gradientTransform="matrix(0.0598,0,0,-0.02745,-478.7272,-415.1248)"
    gradientUnits="userSpaceOnUse">
 			<stop
    offset="0"
@@ -91,15 +117,17 @@
 		</radialGradient>
 		<path
    class="st3"
-   d="M13.6,14.2v1.5c0.7,0,1.7-0.3,1.7-0.8S14.5,14.2,13.6,14.2z"
-   id="path3392" />
+   d="m 13.6,14.2 v 1.5 c 0.7,0 1.7,-0.3 1.7,-0.8 0,-0.5 -0.8,-0.7 -1.7,-0.7 z"
+   id="path3392"
+   style="opacity:0.3;fill:url(#SVGID_2_);enable-background:new"
+   inkscape:connector-curvature="0" />
 		
 			<radialGradient
    id="SVGID_3_"
    cx="-8722.4824"
-   cy="-15667.1953"
+   cy="-15667.195"
    r="27.0229"
-   gradientTransform="matrix(-5.980000e-02 0 0 -2.745000e-02 -519.2718 -415.1248)"
+   gradientTransform="matrix(-0.0598,0,0,-0.02745,-519.2718,-415.1248)"
    gradientUnits="userSpaceOnUse">
 			<stop
    offset="0"
@@ -112,16 +140,18 @@
 		</radialGradient>
 		<path
    class="st4"
-   d="M2.4,14.2v1.5c-0.7,0-1.7-0.3-1.7-0.8S1.5,14.2,2.4,14.2z"
-   id="path3399" />
+   d="m 2.4,14.2 v 1.5 c -0.7,0 -1.7,-0.3 -1.7,-0.8 0,-0.5 0.8,-0.7 1.7,-0.7 z"
+   id="path3399"
+   style="opacity:0.3;fill:url(#SVGID_3_);enable-background:new"
+   inkscape:connector-curvature="0" />
 	</g>
 	
 		<radialGradient
    id="SVGID_4_"
-   cx="7.7649"
+   cx="7.7649002"
    cy="15.2054"
    r="21.7917"
-   gradientTransform="matrix(1.0281 6.331585e-03 -2.687296e-03 0.3957 -6.592959e-02 8.2518)"
+   gradientTransform="matrix(1.0281,0.00633158,-0.0026873,0.3957,-0.06592959,8.2518)"
    gradientUnits="userSpaceOnUse">
 		<stop
    offset="0"
@@ -134,17 +164,19 @@
 	</radialGradient>
 	<path
    class="st5"
-   d="M13.9,14.5H2.1c-0.9,0-1.6-0.7-1.6-1.6V6.1c0-0.9,0.7-1.6,1.6-1.6h11.7c0.9,0,1.6,0.7,1.6,1.6v6.7   C15.5,13.8,14.8,14.5,13.9,14.5z"
-   id="path3408" />
+   d="M 13.9,14.5 H 2.1 C 1.2,14.5 0.5,13.8 0.5,12.9 V 6.1 C 0.5,5.2 1.2,4.5 2.1,4.5 h 11.7 c 0.9,0 1.6,0.7 1.6,1.6 v 6.7 c 0.1,1 -0.6,1.7 -1.5,1.7 z"
+   id="path3408"
+   style="fill:url(#SVGID_4_);stroke:#910e38;stroke-width:1.00100005"
+   inkscape:connector-curvature="0" />
 	
 		<linearGradient
    id="SVGID_5_"
    gradientUnits="userSpaceOnUse"
-   x1="8.7344"
+   x1="8.7343998"
    y1="9.875"
-   x2="8.7344"
+   x2="8.7343998"
    y2="5.875"
-   gradientTransform="matrix(1.0987 0 0 1 -1.5964 0)">
+   gradientTransform="matrix(1.0987,0,0,1,-1.5964,0)">
 		<stop
    offset="0"
    style="stop-color:#DE3E80"
@@ -156,8 +188,10 @@
 	</linearGradient>
 	<path
    class="st6"
-   d="M1.8,8.8V7c0-0.6,0.5-1.1,1.1-1.1h10.3c0.6,0,1.1,0.5,1.1,1.1v1.8c0,0.6-0.5,1.1-1.1,1.1H2.9   C2.2,9.9,1.8,9.4,1.8,8.8z"
-   id="path3415" />
+   d="M 1.8,8.8 V 7 C 1.8,6.4 2.3,5.9 2.9,5.9 h 10.3 c 0.6,0 1.1,0.5 1.1,1.1 v 1.8 c 0,0.6 -0.5,1.1 -1.1,1.1 H 2.9 C 2.2,9.9 1.8,9.4 1.8,8.8 Z"
+   id="path3415"
+   style="fill:url(#SVGID_5_)"
+   inkscape:connector-curvature="0" />
 	<linearGradient
    id="SVGID_6_"
    gradientUnits="userSpaceOnUse"
@@ -176,8 +210,10 @@
 	</linearGradient>
 	<path
    class="st7"
-   d="M13.1,9.5H2.9c-0.4,0-0.7-0.3-0.7-0.7V7c0-0.4,0.3-0.7,0.7-0.7h10.3c0.4,0,0.7,0.3,0.7,0.7v1.8   C13.9,9.2,13.5,9.5,13.1,9.5z"
-   id="path3422" />
+   d="M 13.1,9.5 H 2.9 C 2.5,9.5 2.2,9.2 2.2,8.8 V 7 C 2.2,6.6 2.5,6.3 2.9,6.3 h 10.3 c 0.4,0 0.7,0.3 0.7,0.7 v 1.8 c 0,0.4 -0.4,0.7 -0.8,0.7 z"
+   id="path3422"
+   style="fill:url(#SVGID_6_)"
+   inkscape:connector-curvature="0" />
 	<g
    id="g3436">
 		<line
@@ -186,52 +222,58 @@
    y1="7"
    x2="4"
    y2="9"
-   id="line3424" />
+   id="line3424"
+   style="fill:none;stroke:#abacae;stroke-width:0.2234;stroke-miterlimit:10" />
 		<line
    class="st8"
-   x1="6.2"
+   x1="6.1999998"
    y1="7"
-   x2="6.2"
+   x2="6.1999998"
    y2="9"
-   id="line3426" />
+   id="line3426"
+   style="fill:none;stroke:#abacae;stroke-width:0.2234;stroke-miterlimit:10" />
 		<line
    class="st8"
    x1="8"
    y1="7"
    x2="8"
    y2="9"
-   id="line3428" />
+   id="line3428"
+   style="fill:none;stroke:#abacae;stroke-width:0.2234;stroke-miterlimit:10" />
 		<line
    class="st8"
    x1="10"
    y1="7"
    x2="10"
    y2="9"
-   id="line3430" />
+   id="line3430"
+   style="fill:none;stroke:#abacae;stroke-width:0.2234;stroke-miterlimit:10" />
 		<line
    class="st8"
    x1="12"
    y1="7"
    x2="12"
    y2="9"
-   id="line3432" />
+   id="line3432"
+   style="fill:none;stroke:#abacae;stroke-width:0.2234;stroke-miterlimit:10" />
 		<line
    class="st9"
-   x1="6.8"
-   y1="6.2"
-   x2="6.8"
+   x1="6.8000002"
+   y1="6.1999998"
+   x2="6.8000002"
    y2="9.5"
-   id="line3434" />
+   id="line3434"
+   style="fill:none;stroke:#de3e80;stroke-width:0.27379999;stroke-miterlimit:10" />
 	</g>
 	<g
    id="g3454">
 		
 			<radialGradient
    id="SVGID_7_"
-   cx="7.8376"
+   cx="7.8376002"
    cy="14.2666"
-   r="3.5724"
-   gradientTransform="matrix(1.0041 0 0 0.757 0.3012 2.8452)"
+   r="3.5724001"
+   gradientTransform="matrix(1.0041,0,0,0.757,0.3012,2.8452)"
    gradientUnits="userSpaceOnUse">
 			<stop
    offset="0"
@@ -244,23 +286,25 @@
 		</radialGradient>
 		<circle
    class="st10"
-   cx="8.1"
+   cx="8.1000004"
    cy="12.3"
    r="2.2"
-   id="circle3443" />
+   id="circle3443"
+   style="fill:url(#SVGID_7_)" />
 		<circle
    class="st11"
-   cx="8.1"
+   cx="8.1000004"
    cy="12.3"
    r="1.8"
-   id="circle3445" />
+   id="circle3445"
+   style="fill:#273445" />
 		
 			<radialGradient
    id="SVGID_8_"
-   cx="7.7386"
+   cx="7.7385998"
    cy="11.918"
-   r="3.139"
-   gradientTransform="matrix(0.9834 0 0 0.5716 0.4704 6.275)"
+   r="3.1389999"
+   gradientTransform="matrix(0.9834,0,0,0.5716,0.4704,6.275)"
    gradientUnits="userSpaceOnUse">
 			<stop
    offset="0"
@@ -273,7 +317,7 @@
 		</radialGradient>
 		<circle
    class="st12"
-   cx="8.1"
+   cx="8.1000004"
    cy="12.3"
    r="1.5"
    id="circle3452" />
@@ -282,29 +326,37 @@
    id="g3458">
 		<path
    class="st13"
-   d="M13.8,11.6h-2.6c-0.2,0-0.3-0.1-0.3-0.3l0,0c0-0.2,0.1-0.3,0.3-0.3h2.6c0.2,0,0.3,0.1,0.3,0.3l0,0    C14.1,11.5,14,11.6,13.8,11.6z"
-   id="path3456" />
+   d="m 13.8,11.6 h -2.6 c -0.2,0 -0.3,-0.1 -0.3,-0.3 v 0 C 10.9,11.1 11,11 11.2,11 h 2.6 c 0.2,0 0.3,0.1 0.3,0.3 v 0 c 0,0.2 -0.1,0.3 -0.3,0.3 z"
+   id="path3456"
+   inkscape:connector-curvature="0"
+   style="fill:#0e141f" />
 	</g>
 	<g
    id="g3462">
 		<path
    class="st13"
-   d="M13.8,13.6h-2.6c-0.2,0-0.3-0.1-0.3-0.3l0,0c0-0.2,0.1-0.3,0.3-0.3h2.6c0.2,0,0.3,0.1,0.3,0.3l0,0    C14.1,13.5,14,13.6,13.8,13.6z"
-   id="path3460" />
+   d="m 13.8,13.6 h -2.6 c -0.2,0 -0.3,-0.1 -0.3,-0.3 v 0 C 10.9,13.1 11,13 11.2,13 h 2.6 c 0.2,0 0.3,0.1 0.3,0.3 v 0 c 0,0.2 -0.1,0.3 -0.3,0.3 z"
+   id="path3460"
+   inkscape:connector-curvature="0"
+   style="fill:#0e141f" />
 	</g>
 	<g
    id="g3466">
 		<path
    class="st13"
-   d="M2.2,11.6h2.6c0.2,0,0.3-0.1,0.3-0.3l0,0C5.1,11.1,5,11,4.8,11H2.2c-0.2,0-0.3,0.1-0.3,0.3l0,0    C1.9,11.5,2,11.6,2.2,11.6z"
-   id="path3464" />
+   d="m 2.2,11.6 h 2.6 c 0.2,0 0.3,-0.1 0.3,-0.3 v 0 C 5.1,11.1 5,11 4.8,11 H 2.2 C 2,11 1.9,11.1 1.9,11.3 v 0 c 0,0.2 0.1,0.3 0.3,0.3 z"
+   id="path3464"
+   inkscape:connector-curvature="0"
+   style="fill:#0e141f" />
 	</g>
 	<g
    id="g3470">
 		<path
    class="st13"
-   d="M2.2,13.6h2.6c0.2,0,0.3-0.1,0.3-0.3l0,0C5.1,13.1,5,13,4.8,13H2.2c-0.2,0-0.3,0.1-0.3,0.3l0,0    C1.9,13.5,2,13.6,2.2,13.6z"
-   id="path3468" />
+   d="m 2.2,13.6 h 2.6 c 0.2,0 0.3,-0.1 0.3,-0.3 v 0 C 5.1,13.1 5,13 4.8,13 H 2.2 C 2,13 1.9,13.1 1.9,13.3 v 0 c 0,0.2 0.1,0.3 0.3,0.3 z"
+   id="path3468"
+   inkscape:connector-curvature="0"
+   style="fill:#0e141f" />
 	</g>
 </g>
 </svg>
