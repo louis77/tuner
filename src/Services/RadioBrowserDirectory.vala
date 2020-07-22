@@ -118,8 +118,8 @@ public class Client : Object {
 
     public Client() {
         _session = new Soup.Session ();
-        // TODO: Automatically generate this
-        _session.user_agent = "com.github.louis77.tuner/1.1";
+        // TODO: Automatically find mirror list
+        _session.user_agent = "com.github.louis77.tuner/1.2";
 
         /*
         Resolver resolver = Resolver.get_default ();
@@ -186,7 +186,6 @@ public class Client : Object {
         var response_code = _session.send_message (message);
         debug (@"response from radio-browser.info: $response_code");
         var body = (string) message.response_body.data;
-
         try {
             rootnode = Json.from_string (body);
         } catch (Error e) {
