@@ -4,7 +4,8 @@ sources = files (
     'Controllers/PlayerController.vala',
 
     'Models/Genre.vala',
-    'Models/StationModel.vala',
+    'Models/Station.vala',
+    'Models/StationStore.vala',
 
     'Services/DBusMediaPlayer.vala',
     'Services/DBusInterface.vala',

@@ -21,11 +21,11 @@
 
 
 public class Tuner.PlayerController : Object {
-    private Model.StationModel _station;
+    private Model.Station _station;
     private Gst.PlayerState? _current_state = Gst.PlayerState.STOPPED;
     public Gst.Player player;
 
-    public signal void station_changed (Model.StationModel station);
+    public signal void station_changed (Model.Station station);
     public signal void state_changed (Gst.PlayerState state);
 
     construct {
@@ -49,7 +49,7 @@ public class Tuner.PlayerController : Object {
         }
     }
 
-    public Model.StationModel station {
+    public Model.Station station {
         get {
             return _station;
         }
@@ -60,7 +60,7 @@ public class Tuner.PlayerController : Object {
         }
     }
 
-    public void play_station (Model.StationModel station) {
+    public void play_station (Model.Station station) {
         player.uri = station.url;
         player.play ();
         station_changed (station);

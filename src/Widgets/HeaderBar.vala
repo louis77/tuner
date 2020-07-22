@@ -34,7 +34,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
     private Gtk.Button star_button;
     private bool _starred = false;
-    private Model.StationModel _station;
+    private Model.Station _station;
     private Gtk.Label _title_label;
     private Gtk.Label _subtitle_label;
     private Gtk.Image _favicon_image;
@@ -126,7 +126,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     }
 
 
-    public void update_from_station (Model.StationModel station) {
+    public void update_from_station (Model.Station station) {
         _station = station;
         var short_title = station.title;
         if (short_title.length > 50) {

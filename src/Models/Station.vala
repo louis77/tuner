@@ -19,17 +19,17 @@
 * Authored by: Louis Brauer <louis@brauer.family>
 */
 
-public class Tuner.Model.StationModel : Object {
+public class Tuner.Model.Station : Object {
     public string id { get; set; }
-    public string title { get; private set; }
-    public string location { get; private set; }
-    public string url { get; private set; }
+    public string title { get; set; }
+    public string location { get; set; }
+    public string url { get; set; }
     public bool starred { get; set; }
 
     public string? favicon_url { get; set; }
     public uint clickcount = 0;
 
-    public StationModel (string id, string title, string location, string url) {
+    public Station (string id, string title, string location, string url) {
         this.id = id;
         this.title = title;
         this.location = location;

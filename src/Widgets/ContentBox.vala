@@ -23,14 +23,14 @@ using Gee;
 
 public class Tuner.ContentBox : Gtk.Box {
 
-    public signal void selection_changed (Model.StationModel station);
+    public signal void selection_changed (Model.Station station);
     public signal void action_activated ();
     public signal void station_count_changed (uint count);
 
     private Gtk.Box header;
     private Gtk.Stack stack;
     public Gtk.Box content;
-    public Model.StationModel selected_station;
+    public Model.Station selected_station;
     
     public ContentBox (Gtk.Image? icon,
                        string title,
@@ -115,7 +115,7 @@ public class Tuner.ContentBox : Gtk.Box {
         stack.set_visible_child_full ("nothing-found", Gtk.StackTransitionType.NONE);
     }
     
-    public ArrayList<Model.StationModel> stations {
+    public ArrayList<Model.Station> stations {
         set {
             stack.set_visible_child_full ("content", Gtk.StackTransitionType.NONE);
             clear_content ();
@@ -137,7 +137,6 @@ public class Tuner.ContentBox : Gtk.Box {
                 });
                 station_list.add (box);
             }
-
             content.add (station_list);
             station_list.unselect_all ();
             content.show_all ();

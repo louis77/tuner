@@ -21,9 +21,9 @@
 
 public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
 
-    public Model.StationModel station { get; private set; }
+    public Model.Station station { get; private set; }
 
-    public StationBox (Model.StationModel station) {
+    public StationBox (Model.Station station) {
         var title = station.title;
         if (title.length > 30) {
             title = title[0:30] + "…";
@@ -64,7 +64,7 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
                 warning (@"unable to read local favicon: %s %s", favicon_cache_file, e.message);
             }
         } else {
-            debug (@"favicon cache file doesn't exist: %s", favicon_cache_file);
+            // debug (@"favicon cache file doesn't exist: %s", favicon_cache_file);
         }
 
         // in Vala nullable strings are always empty
@@ -74,7 +74,7 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
 
             session.queue_message (message, (sess, mess) => {
                 if (mess.status_code != 200) {
-                    debug (@"Unexpected status code: $(mess.status_code), will not render $(station.favicon_url)");
+                    //debug (@"Unexpected status code: $(mess.status_code), will not render $(station.favicon_url)");
                     set_default_favicon ();
                     return;
                 }
@@ -104,7 +104,6 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
             });
 
         } else {
-            debug (@"station has no favicon url");
             set_default_favicon ();
         }
     }
@@ -118,9 +117,9 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
             this.icon.set_size_request (48, 48);
             return true;
         } catch (Error e) {
-            debug ("Couldn't render favicon: %s (%s)",
-                station.favicon_url ?? "unknown url",
-                e.message);
+            //debug ("Couldn't render favicon: %s (%s)",
+            //    station.favicon_url ?? "unknown url",
+            //    e.message);
             return false;
         }
     }

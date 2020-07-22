@@ -27,6 +27,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     private PlayerController _player;
     private DirectoryController _directory;
+    private Model.StationStore _store;
     private HeaderBar headerbar;
     private Granite.Widgets.SourceList source_list;
     
@@ -53,7 +54,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     static construct {
         var provider = new Gtk.CssProvider ();
         provider.load_from_resource ("com/github/louis77/tuner/Application.css");
-        Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), provider,                 Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+        Gtk.StyleContext.add_provider_for_screen (
+            Gdk.Screen.get_default (), 
+            provider, 
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        );
     }
 
     construct {
@@ -82,7 +87,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         set_titlebar (headerbar);
 
-        _directory = new DirectoryController (new RadioBrowser.Client ());
+        var data_file = Path.build_filename (Application.instance.data_dir, "favorites.json");
+        _store = new Model.StationStore (data_file);
+        _directory = new DirectoryController (new RadioBrowser.Client (), _store);
 
         var primary_box = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);
 
@@ -151,14 +158,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                             _("Starred by You"), null, null,
                             stack, selections_category, source_list, true);
         
-        c4.realize.connect (() => {
-            var s4 = _directory.load_favourite_stations(1000);
-            try {
-                c4.stations = s4.next ();
-            } catch (SourceError e) {
-                c4.show_alert ();
-            }
-        });
+        c4.stations = _store.get_all_as_arraylist();;
 
         var c5 = create_content_box ("searched", _("Search Result"), "folder-saved-search",
                             _("Search"), null, null,
@@ -181,15 +181,14 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         }
 
         headerbar.star_clicked.connect ( (starred) => {
-            _directory.star_station (_player.station, starred);
-            c4.clear_content ();
-            var s = _directory.load_favourite_stations(1000);
-            try {
-                c4.stations = s.next ();
-            } catch (SourceError e) {
-                c4.show_alert ();
+            if (starred) {
+                _directory.star_station (_player.station);
+            } else {
+                _directory.unstar_station (_player.station);
             }
 
+            c4.clear_content ();
+            c4.stations = _store.get_all_as_arraylist ();
         });
 
         source_list.root.add (selections_category);
@@ -260,7 +259,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         if (enable_count) {
             c.station_count_changed.connect ((count) => {
                 var badge = @"$count";
-                if (count == 100) {
+                if (count >= 100) {
                     badge = "99+";
                 }
                 item.badge = badge;
@@ -270,12 +269,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         return c;
     }
-
+    
     private void action_quit () {
         close ();
     }
 
-    public void handle_station_click(Tuner.Model.StationModel station) {
+    public void handle_station_click(Tuner.Model.Station station) {
         info (@"handle station click for $(station.title)");
         _directory.count_station_click (station);
         _player.station = station;

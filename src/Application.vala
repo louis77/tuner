@@ -24,6 +24,7 @@ public class Tuner.Application : Gtk.Application {
     public PlayerController player;
     public Window window;
     public string? cache_dir;
+    public string? data_dir;
 
     public Application () {
         Object (
@@ -33,7 +34,12 @@ public class Tuner.Application : Gtk.Application {
 
         settings = new GLib.Settings (this.application_id);
         player = new PlayerController ();
-        ensure_cache_dir ();
+
+        cache_dir = Path.build_filename (Environment.get_user_cache_dir (), application_id);
+        ensure_dir (cache_dir);
+
+        data_dir = Path.build_filename (Environment.get_user_data_dir (), application_id);
+        ensure_dir (data_dir);
     }
 
     public static Application _instance = null;
@@ -58,21 +64,18 @@ public class Tuner.Application : Gtk.Application {
 
     }
 
-    private void ensure_cache_dir () {
-        var user_cache_dir = Environment.get_user_cache_dir ();
-        cache_dir = Path.build_filename (user_cache_dir, application_id);
-
-        debug (@"App Cache Dir: $cache_dir");
-        var f_cache_dir = File.new_for_path (cache_dir);
+    private void ensure_dir (string path) {
+        var dir = File.new_for_path (path);
         
         try {
-            debug (@"Ensuring cache_dir exists…");
-            f_cache_dir.make_directory ();
+            debug (@"Ensuring dir exists: $path");
+            dir.make_directory ();
 
         } catch (Error e) {
+            // TODO not enough error handling
+            // What should happen when there is another IOERROR?
             if (!(e is IOError.EXISTS)) {
-                warning (@"cache_dir couldn't be created: %s", e.message);
-                cache_dir = null;
+                warning (@"dir couldn't be created: %s", e.message);
             }
         }
     }
