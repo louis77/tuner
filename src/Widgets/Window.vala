@@ -33,12 +33,16 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public const string ACTION_PREFIX = "win.";
     public const string ACTION_PAUSE = "action_pause";
     public const string ACTION_QUIT = "action_quit";
+    public const string ACTION_ABOUT = "action_about";
+    public const string ACTION_DISABLE_TRACKING = "action_disable_tracking";
 
     private signal void refresh_favourites ();
 
     private const ActionEntry[] ACTION_ENTRIES = {
-        { ACTION_PAUSE, handle_stop_playback },
-        { ACTION_QUIT, action_quit }
+        { ACTION_PAUSE, on_toggle_playback },
+        { ACTION_QUIT , on_action_quit },
+        { ACTION_ABOUT, on_action_about },
+        { ACTION_DISABLE_TRACKING, on_action_disable_tracking, null, "false" }
     };
 
     public Window (Application app, PlayerController player) {
@@ -68,6 +72,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         window_position = Gtk.WindowPosition.CENTER;
         set_default_size (900, 540);
         settings = Application.instance.settings;
+        change_action_state (ACTION_DISABLE_TRACKING, settings.get_boolean ("do-not-track"));
         move (settings.get_int ("pos-x"), settings.get_int ("pos-y"));
 
         set_geometry_hints (null, Gdk.Geometry() {min_height = 440, min_width = 1040}, Gdk.WindowHints.MIN_SIZE);
@@ -81,11 +86,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
         
         headerbar = new HeaderBar (this);
-        headerbar.stop_clicked.connect ( () => {
-            handle_stop_playback ();
-        });
-
-
         set_titlebar (headerbar);
 
         var data_file = Path.build_filename (Application.instance.data_dir, "favorites.json");
@@ -198,7 +198,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         source_list.selected = source_list.get_first_child (selections_category);
         source_list.item_selected.connect  ((item) => {
             var selected_item = item.get_data<string> ("stack_child");
-            debug (@"selected $selected_item");
             stack.visible_child_name = selected_item;
         });
 
@@ -270,8 +269,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         return c;
     }
     
-    private void action_quit () {
+    private void on_action_quit () {
         close ();
+    }
+
+    private void on_action_about () {
+        var dialog = new AboutDialog (this);
+        dialog.present ();
     }
 
     public void handle_station_click (Tuner.Model.Station station) {
@@ -284,9 +288,16 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         refresh_favourites ();
     }
 
-    public void handle_stop_playback() {
+    public void on_toggle_playback() {
         info ("Stop Playback requested");
         _player.play_pause ();
+    }
+
+    public void on_action_disable_tracking (SimpleAction action, Variant? parameter) {
+        var new_state = !settings.get_boolean ("do-not-track");
+        action.set_state (new_state);
+        settings.set_boolean ("do-not-track", new_state);
+        debug (@"on_action_disable_tracking: $new_state");
     }
 
     public void handle_player_state_changed (Gst.PlayerState state) {

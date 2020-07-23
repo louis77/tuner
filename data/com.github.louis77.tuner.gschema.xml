@@ -27,5 +27,10 @@
             <summary>Starred stations</summary>
             <description>All station starred by the user</description>
         </key>
+        <key name="do-not-track" type="b">
+            <default>false</default>
+            <summary>Do not track</summary>
+            <description>If enabled, do not send usage information to radio-browser.org</description>
+        </key>
     </schema>
 </schemalist>

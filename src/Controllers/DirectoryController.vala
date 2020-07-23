@@ -128,7 +128,12 @@ public class Tuner.DirectoryController : Object {
     }
 
     public void count_station_click (Model.Station station) {
-        provider.track (station.id);
+        if (!Application.instance.settings.get_boolean ("do-not-track")) {
+            debug (@"Send listening event for station $(station.id)");
+            provider.track (station.id);
+        } else {
+            debug ("do-not-track enabled, will not send listening event");
+        }
     }
 
     public void load_tags () {

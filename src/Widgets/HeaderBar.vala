@@ -39,7 +39,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     private Gtk.Label _subtitle_label;
     private Gtk.Image _favicon_image;
 
-    public signal void stop_clicked ();
     public signal void star_clicked (bool starred);
     public signal void searched_for (string text);
     public signal void search_focused ();
@@ -48,9 +47,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         Object (
             main_window: window
         );
-    }
 
-    construct {
         show_close_button = true;
 
         var station_info = new Gtk.Grid ();
@@ -68,22 +65,23 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         custom_title = station_info;
         play_button = new Gtk.Button ();
         play_button.valign = Gtk.Align.CENTER;
-        play_button.clicked.connect (() => { stop_clicked (); });
+        play_button.action_name = Window.ACTION_PREFIX + Window.ACTION_PAUSE;
         pack_start (play_button);
 
         var about_menuitem = new Gtk.ModelButton ();
         about_menuitem.text = _("About");
-        about_menuitem.clicked.connect (() => {
-            var dialog = new AboutDialog (main_window);
-            dialog.present ();
-        });
-        // about_menuitem.action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_PREFERENCES;
+        about_menuitem.action_name = Window.ACTION_PREFIX + Window.ACTION_ABOUT;
+
+        var disable_tracking_item = new Gtk.ModelButton ();
+        disable_tracking_item.text = _("Do not track");
+        disable_tracking_item.action_name = Window.ACTION_PREFIX + Window.ACTION_DISABLE_TRACKING;
+        disable_tracking_item.tooltip_text = _("If enabled, we will not send usage info to radio-browser.org");
 
         var menu_grid = new Gtk.Grid ();
         menu_grid.margin_bottom = 3;
         menu_grid.orientation = Gtk.Orientation.VERTICAL;
-        // menu_grid.width_request = 200;
-        menu_grid.attach (about_menuitem, 0, 0, 3, 1);
+        menu_grid.attach (disable_tracking_item, 0, 0, 3, 1);
+        menu_grid.attach (about_menuitem, 0, 1, 3, 1);
         menu_grid.show_all ();
 
         var menu = new Gtk.Popover (null);
@@ -105,6 +103,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         });
         searchentry.focus_in_event.connect ((e) => {
             search_focused ();
+            return true;
         });
         pack_end (searchentry);
 
