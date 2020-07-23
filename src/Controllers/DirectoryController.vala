@@ -28,13 +28,19 @@ public errordomain SourceError {
 public delegate ArrayList<RadioBrowser.Station> Tuner.FetchType(uint offset, uint limit) throws SourceError;
 
 public class Tuner.DirectoryController : Object {
-    public RadioBrowser.Client provider { get; set; }
+    public RadioBrowser.Client? provider { get; set; }
     public Model.StationStore store { get; set; }
 
     public signal void tags_updated (ArrayList<RadioBrowser.Tag> tags);
 
-    public DirectoryController (RadioBrowser.Client provider, Model.StationStore store) {
-        this.provider = provider;
+    public DirectoryController (Model.StationStore store) {
+        try {
+            var client = new RadioBrowser.Client ();
+            this.provider = client;
+        } catch (RadioBrowser.DataError e) {
+            critical (@"RadioBrowser unavailable");
+        }
+        
         this.store = store;
 
         // migrate from <= 1.2.3 settings to json based store

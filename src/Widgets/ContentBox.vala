@@ -45,13 +45,13 @@ public class Tuner.ContentBox : Gtk.Box {
         stack = new Gtk.Stack ();
 
         var alert = new Granite.Widgets.AlertView (_("Nothing here"), _("Something went wrong loading radio stations data from radio-browser.info. Please try again later."), "dialog-warning");
-        /* 
+        /*
         alert.show_action ("Try again");
         alert.action_activated.connect (() => {
-            // alert.hide_action ();
             realize ();
         });
         */
+
         stack.add_named (alert, "alert");
 
         var no_results = new Granite.Widgets.AlertView (_("No stations found"), _("Please try a different search term."), "dialog-warning");

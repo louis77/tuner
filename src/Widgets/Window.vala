@@ -90,7 +90,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         var data_file = Path.build_filename (Application.instance.data_dir, "favorites.json");
         var store = new Model.StationStore (data_file);
-        _directory = new DirectoryController (new RadioBrowser.Client (), store);
+        _directory = new DirectoryController (store);
 
         var primary_box = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);
 

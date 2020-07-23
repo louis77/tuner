@@ -32,7 +32,8 @@ public struct SearchParams {
 }
 
 public errordomain DataError {
-    PARSE_DATA
+    PARSE_DATA,
+    NO_CONNECTION
 }
 
 public enum SortOrder {
@@ -113,22 +114,46 @@ public class Tag : Object {
 public class Client : Object {
 
     // TODO: choose local server from server list
-    private const string API_BASE_URL = "https://de1.api.radio-browser.info";
+    private const string[] SERVER_POOL = {
+        "de1.api.radio-browser.info",
+        "fr1.api.radio-browser.info",
+        "nl1.api.radio-browser.info"
+    };
+
+    private string API_BASE_URL = "https://de1.api.radio-browser.info";
+    private string USER_AGENT = @"$(Application.APP_ID)/$(Application.APP_VERSION)";
     private Soup.Session _session;
 
-    public Client() {
+    public Client() throws DataError {
+        Object();
         _session = new Soup.Session ();
-        // TODO: Automatically find mirror list
-        _session.user_agent = @"$(Application.APP_ID)/$(Application.APP_VERSION)";
+        _session.user_agent = USER_AGENT;
+        _session.timeout = 3;
+        
+        /* Official recommendation of radio-browser.info is to do a DNS lookup and then
+           reverse lookup the hostnames. This takes very long, so we use a fixed pool
+           of known servers for now
 
-        /*
         Resolver resolver = Resolver.get_default ();
-        GLib.ArrayList<InetAddress> addresses = resolver.lookup_by_name ("all.api.radio-browser.info");
+        GLib.List<InetAddress> addresses = resolver.lookup_by_name ("all.api.radio-browser.info");
         foreach (var address in addresses) {
-            var host = resolver.lookup_by_address (address);
+            var host = resolver.lookup_by_address_async (address);
             debug (@"Found RB host: $address with name $host");
         }
         */
+
+        foreach (var server in SERVER_POOL) {
+            var message = new Soup.Message ("GET", @"https://$server/json/stats");
+            var response_code = _session.send_message (message);
+            if (response_code == 200) {
+                API_BASE_URL = @"https://$server";
+                debug (@"Chosen radio-browser.info server: $server");
+                break;
+            }
+
+            // When reached here, all servers were unreachable
+            critical ("radio-browser.info server unreachable");
+        }
     }
 
     private Station jnode_to_station (Json.Node node) {
@@ -186,6 +211,9 @@ public class Client : Object {
         var response_code = _session.send_message (message);
         debug (@"response from radio-browser.info: $response_code");
         var body = (string) message.response_body.data;
+        if (body == null) {
+            throw new DataError.NO_CONNECTION (@"unable to read response");
+        }
         try {
             rootnode = Json.from_string (body);
         } catch (Error e) {
