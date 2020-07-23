@@ -26,9 +26,12 @@ public class Tuner.Application : Gtk.Application {
     public string? cache_dir;
     public string? data_dir;
 
+    public const string APP_VERSION = "1.2.4";
+    public const string APP_ID = "com.github.louis77.tuner";
+
     public Application () {
         Object (
-            application_id: "com.github.louis77.tuner",
+            application_id: APP_ID,
             flags: ApplicationFlags.FLAGS_NONE
         );
 

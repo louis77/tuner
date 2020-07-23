@@ -119,7 +119,7 @@ public class Client : Object {
     public Client() {
         _session = new Soup.Session ();
         // TODO: Automatically find mirror list
-        _session.user_agent = "com.github.louis77.tuner/1.2";
+        _session.user_agent = @"$(Application.APP_ID)/$(Application.APP_VERSION)";
 
         /*
         Resolver resolver = Resolver.get_default ();

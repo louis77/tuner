@@ -26,8 +26,6 @@ using Gee;
 
 namespace Tuner.Model {
 
-// TODO make this a singleton
-
 public class StationStore : Object {
     private ArrayList<Station> _store;
     private File _data_file;
@@ -72,6 +70,8 @@ public class StationStore : Object {
         Json.Array array = node.get_array ();
         array.foreach_element ((a, i, elem) => {
             Station station = Json.gobject_deserialize (typeof (Station), elem) as Station;
+            // TODO This should probably not be here but in 
+            // DirectoryController
             station.notify["starred"].connect ( (sender, property) => {
                 if (station.starred) {
                     this.add (station);

@@ -71,6 +71,32 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         play_button.clicked.connect (() => { stop_clicked (); });
         pack_start (play_button);
 
+        var about_menuitem = new Gtk.ModelButton ();
+        about_menuitem.text = _("About");
+        about_menuitem.clicked.connect (() => {
+            var dialog = new AboutDialog (main_window);
+            dialog.present ();
+        });
+        // about_menuitem.action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_PREFERENCES;
+
+        var menu_grid = new Gtk.Grid ();
+        menu_grid.margin_bottom = 3;
+        menu_grid.orientation = Gtk.Orientation.VERTICAL;
+        // menu_grid.width_request = 200;
+        menu_grid.attach (about_menuitem, 0, 0, 3, 1);
+        menu_grid.show_all ();
+
+        var menu = new Gtk.Popover (null);
+        menu.add (menu_grid);
+
+        var prefs_button = new Gtk.MenuButton ();
+        prefs_button.image = new Gtk.Image.from_icon_name ("open-menu", Gtk.IconSize.LARGE_TOOLBAR);
+        prefs_button.valign = Gtk.Align.CENTER;
+        prefs_button.sensitive = true;
+        prefs_button.tooltip_text = _("Preferences");
+        prefs_button.popover = menu;
+        pack_end (prefs_button);
+
         var searchentry = new Gtk.SearchEntry ();
         searchentry.valign = Gtk.Align.CENTER;
         searchentry.placeholder_text = _("Station name");
@@ -90,7 +116,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         star_button.sensitive = true;
         star_button.tooltip_text = _("Star this station");
         star_button.clicked.connect (() => {
-            // starred = !starred;
             star_clicked (starred);
         });
 
