@@ -74,7 +74,8 @@ sudo ninja install
 - [elementary.io](https://elementary.io) for making Linux enjoyable on the desktop
 - [Vala](https://wiki.gnome.org/Projects/Vala) - a great programming language
 - [Vala Language Server](https://github.com/benwaffle/vala-language-server) - makes Vala even better
-- [NathanBnm](https://github.com/NathanBnm) - provided French translations
+- [@NathanBnm](https://github.com/NathanBnm) - provided French translations
+- [@btd1337](https://github.com/btd1337) - supports Tuner on Arch Linux / AUR
 
 ## Disclaimer
 
