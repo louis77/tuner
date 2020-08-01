@@ -19,11 +19,11 @@ While I hacked on this App, I discovered so many cool and new stations, which ma
 ## Features
 
 - Uses radio-browser.info catalog
-- Presents a various selection of stations (random, top, trending, genres)
+- Presets various selection of stations (random, top, trending, genres)
 - Save favourite stations 
 - Sends a click count to radio-browser.info on station click
 - Sends a vote count to radio-browser.info when you star a station
-- DBus integration to pause/resume playing and show station info
+- DBus integration to pause/resume playing and show station info in Wingpanel
 
 ## Upcoming
 

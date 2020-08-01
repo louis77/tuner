@@ -8,17 +8,16 @@
 [X] Move app icon up a little bit
 [X] Update station count (starred) on load
 [ ] There are rare stations playing video. If closed, app is crashing
-[ ] Select local Radio Browser server 
+[X] Select local Radio Browser server 
 [ ] Implement DBus activation
 [ ] Play/Pause control from Dock
 [ ] Dark mode
-[ ] Add settings and status bar to disable usage tracking
-[ ] implement notify signals…
-[ ] Startup still needs async load !
+[X] Add settings and status bar to disable usage tracking
+[X] implement notify signals…
+[X] Startup still needs async load !
 [X] Search with 0 results - better screen
-[ ] on station click: (com.github.louis77.tuner:29078): libsoup-CRITICAL **: 01:53:43.173: soup_session_queue_message: assertion 'SOUP_IS_MESSAGE (msg)' failed
-    probably when listening event fails, prevents station from playing
 [ ] Add timeout for favicon load
+[ ] Send vote on station star
 
 ## Release 1.2
 
@@ -28,4 +27,4 @@
 [ ] Add station info on headerbar click
 [ ] Recently listend, My Library
 [ ] Context-menu to exclude countries from …
-[ ] better default window size 900x540
+[ ] Add FSF claim in App Stream Data
