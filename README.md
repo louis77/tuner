@@ -1,14 +1,25 @@
 # ![icon](docs/logo_01.png) Tuner
 
 ## Minimalist radio station player
-
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
-
-[![Get it on AppCenter](https://appcenter.elementary.io/badge.svg)](https://appcenter.elementary.io/com.github.louis77.tuner)
-
 Discover and Listen to random radio stations while you work.
 
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 ![Screenshot 01](docs/screen_09.png?raw=true)
+
+## Installation
+
+### elementary OS
+[![Get it on AppCenter](https://appcenter.elementary.io/badge.svg)](https://appcenter.elementary.io/com.github.louis77.tuner)
+
+### Arch Linux
+Arch Linux users can find `Tuner` under the name [tuner-git](https://aur.archlinux.org/packages/tuner-git/) in the **AUR**:
+
+```sh
+$ yay -S tuner-git`
+```
+Thanks to [@btd1377](https://github.com/btd1337) for supporting Tuner on Arch Linux!
+Arch users, I still have to do some tweaks on Tuner to make it look proper on Arch (missing icons, dark theme support).
+
 
 ## Motivation
 
@@ -63,7 +74,8 @@ sudo ninja install
 - [elementary.io](https://elementary.io) for making Linux enjoyable on the desktop
 - [Vala](https://wiki.gnome.org/Projects/Vala) - a great programming language
 - [Vala Language Server](https://github.com/benwaffle/vala-language-server) - makes Vala even better
-- [NathanBnm](https://github.com/NathanBnm) - provided French translations
+- [@NathanBnm](https://github.com/NathanBnm) - provided French translations
+- [@btd1337](https://github.com/btd1337) - supports Tuner on Arch Linux / AUR
 
 ## Disclaimer
 
