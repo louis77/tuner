@@ -51,7 +51,7 @@ public class Tuner.StationContextMenu : Gtk.Menu {
     }
 
     private void set_star_context (Gtk.MenuItem item) {
-        item.label = station.starred ? _("Unstar this station") : _("Star this station");
+        item.label = station.starred ? Application.UNSTAR_CHAR + _("Unstar this station") : Application.STAR_CHAR + _("Star this station");
     }
 
 }
