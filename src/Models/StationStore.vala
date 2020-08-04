@@ -35,8 +35,9 @@ public class StationStore : Object {
         
         _store = new ArrayList<Station> ();
         _data_file = File.new_for_path (data_path);
-        debug (@"store initialized in path $data_path");
+        ensure ();
         load ();
+        debug (@"store initialized in path $data_path");
     }
 
     public void add (Station station) {
@@ -52,6 +53,16 @@ public class StationStore : Object {
     public void remove (Station station) {
         _store.remove (station);
         persist ();
+    }
+
+    private void ensure () {
+        try {
+            var df = _data_file.create (FileCreateFlags.PRIVATE);
+            df.close ();
+            debug (@"store created");
+        } catch (Error e) {
+            // Ignore, file already existed, which is good
+        }
     }
 
     private void load () {
