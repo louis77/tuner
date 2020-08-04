@@ -97,6 +97,12 @@ public enum SortOrder {
     }
 }
 
+private const string[] BOOTSTRAP_SERVERS = {
+    "de1.api.radio-browser.info",
+    "fr1.api.radio-browser.info",
+    "nl1.api.radio-browser.info"
+};
+
 public class Station : Object {
     public string stationuuid { get; set; }
     public string name { get; set; }
@@ -111,49 +117,32 @@ public class Tag : Object {
     public uint stationcount { get; set; }
 }
 
+public bool EqualCompareString (string a, string b) {
+    return a == b;
+}
+
+public int RandomSortFunc (string a, string b) {
+    return Random.int_range (-1, 1);
+}
+
 public class Client : Object {
-
-    // TODO: choose local server from server list
-    private const string[] SERVER_POOL = {
-        "de1.api.radio-browser.info",
-        "fr1.api.radio-browser.info",
-        "nl1.api.radio-browser.info"
-    };
-
-    private string API_BASE_URL = "https://de1.api.radio-browser.info";
+    private string current_server;
     private string USER_AGENT = @"$(Application.APP_ID)/$(Application.APP_VERSION)";
     private Soup.Session _session;
+    private ArrayList<string> randomized_servers;
 
     public Client() throws DataError {
         Object();
         _session = new Soup.Session ();
         _session.user_agent = USER_AGENT;
         _session.timeout = 3;
-        
-        /* Official recommendation of radio-browser.info is to do a DNS lookup and then
-           reverse lookup the hostnames. This takes very long, so we use a fixed pool
-           of known servers for now
 
-        Resolver resolver = Resolver.get_default ();
-        GLib.List<InetAddress> addresses = resolver.lookup_by_name ("all.api.radio-browser.info");
-        foreach (var address in addresses) {
-            var host = resolver.lookup_by_address_async (address);
-            debug (@"Found RB host: $address with name $host");
-        }
-        */
+        randomized_servers = new ArrayList<string>.wrap (BOOTSTRAP_SERVERS, EqualCompareString);
+        randomized_servers.sort (RandomSortFunc);
 
-        foreach (var server in SERVER_POOL) {
-            var message = new Soup.Message ("GET", @"https://$server/json/stats");
-            var response_code = _session.send_message (message);
-            if (response_code == 200) {
-                API_BASE_URL = @"https://$server";
-                debug (@"Chosen radio-browser.info server: $server");
-                break;
-            }
-
-            // When reached here, all servers were unreachable
-            critical ("radio-browser.info server unreachable");
-        }
+        current_server = @"https://$(randomized_servers[0])";
+        debug (@"Chosen radio-browser.info server: $current_server");
+        // TODO: Implement server rotation on error
     }
 
     private Station jnode_to_station (Json.Node node) {
@@ -189,7 +178,7 @@ public class Client : Object {
     public void track (string stationuuid) {
         debug (@"sending listening event for station $stationuuid");
         var resource = @"json/url/$stationuuid";
-        var message = new Soup.Message ("GET", @"$API_BASE_URL/$resource");
+        var message = new Soup.Message ("GET", @"$current_server/$resource");
         var response_code = _session.send_message (message);
         debug (@"response: $(response_code)");
     }
@@ -197,7 +186,7 @@ public class Client : Object {
     public void vote (string stationuuid) {
         debug (@"sending vote event for station $stationuuid");
         var resource = @"json/vote/$stationuuid)";
-        var message = new Soup.Message ("GET", @"$API_BASE_URL/$resource");
+        var message = new Soup.Message ("GET", @"$current_server/$resource");
         var response_code = _session.send_message (message);
         debug (@"response: $(response_code)");
     }
@@ -205,7 +194,7 @@ public class Client : Object {
     public ArrayList<Station> get_stations (string resource) throws DataError {
         debug (@"RB $resource");
 
-        var message = new Soup.Message ("GET", @"$API_BASE_URL/$resource");
+        var message = new Soup.Message ("GET", @"$current_server/$resource");
         Json.Node rootnode;
 
         var response_code = _session.send_message (message);
@@ -273,7 +262,7 @@ public class Client : Object {
 
     public ArrayList<Tag> get_tags () throws DataError {
         var resource = @"json/tags";
-        var message = new Soup.Message ("GET", @"$API_BASE_URL/$resource");
+        var message = new Soup.Message ("GET", @"$current_server/$resource");
         Json.Node rootnode;
 
         var response_code = _session.send_message (message);
