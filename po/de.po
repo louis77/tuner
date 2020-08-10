@@ -1,23 +1,11 @@
-# German translations for com.github.louis77.tuner package.
-# Copyright (C) 2020 THE com.github.louis77.tuner'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the com.github.louis77.tuner package.
-# Automatically generated, 2020.
-# Louis Brauer <louis77@member.fsf.org>, 2020.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: com.github.louis77.tuner\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-10 17:19+0200\n"
-"PO-Revision-Date: 2020-06-29 21:47+0200\n"
-"Last-Translator: Louis Brauer <louis77@member.fsf.org>\n"
-"Language-Team: Deutsch <>\n"
-"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Tuner\n"
+"Language: de\n"
 
 #: src/Models/Genre.vala:35
 msgid "70s"
@@ -68,12 +56,8 @@ msgid "Nothing here"
 msgstr "Hier ist nichts"
 
 #: src/Widgets/ContentBox.vala:47
-msgid ""
-"Something went wrong loading radio stations data from radio-browser.info. "
-"Please try again later."
-msgstr ""
-"Beim Abrufen der Radio-Stationen von radio-browser.info ist etwas schief "
-"gelaufen. Bitte versuche es später nochmals."
+msgid "Something went wrong loading radio stations data from radio-browser.info. Please try again later."
+msgstr "Beim Abrufen der Radio-Stationen von radio-browser.info ist etwas schief gelaufen. Bitte versuche es später nochmals."
 
 #: src/Widgets/ContentBox.vala:57
 msgid "No stations found"
@@ -90,22 +74,6 @@ msgstr "Wähle eine Station"
 #: src/Widgets/HeaderBar.vala:58 src/Widgets/Window.vala:316
 msgid "Paused"
 msgstr "Angehalten"
-
-#: src/Widgets/HeaderBar.vala:72
-msgid "About"
-msgstr "Über"
-
-#: src/Widgets/HeaderBar.vala:76
-msgid "Do not track"
-msgstr "Do Not Track"
-
-#: src/Widgets/HeaderBar.vala:78
-msgid "If enabled, we will not send usage info to radio-browser.org"
-msgstr "Einschaltung, um zu verhindern, dass radio-browser.org über das Hören von Stationen informiert wird"
-
-#: src/Widgets/HeaderBar.vala:94
-msgid "Preferences"
-msgstr "Einstellungen"
 
 #: src/Widgets/HeaderBar.vala:100
 msgid "Station name"
@@ -178,3 +146,20 @@ msgstr "Läuft"
 #: src/Widgets/Window.vala:336
 msgid "Stopped"
 msgstr "Angehalten"
+
+#: src/Widgets/HeaderBar.vala:72
+msgid "About"
+msgstr "Über"
+
+#: src/Widgets/HeaderBar.vala:76
+msgid "Do not track"
+msgstr "Do Not Track"
+
+#: src/Widgets/HeaderBar.vala:78
+msgid "If enabled, we will not send usage info to radio-browser.org"
+msgstr "Einschaltung, um zu verhindern, dass radio-browser.org über das Hören von Stationen informiert wird"
+
+#: src/Widgets/HeaderBar.vala:94
+msgid "Preferences"
+msgstr "Einstellungen"
+
