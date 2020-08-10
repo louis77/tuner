@@ -1,23 +1,11 @@
-# German translations for com.github.louis77.tuner package.
-# Copyright (C) 2020 THE com.github.louis77.tuner'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the com.github.louis77.tuner package.
-# Automatically generated, 2020.
-# Louis Brauer <louis77@member.fsf.org>, 2020.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: com.github.louis77.tuner\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-10 17:51+0200\n"
-"PO-Revision-Date: 2020-06-29 21:57+0200\n"
-"Last-Translator: Louis Brauer <louis77@member.fsf.org>\n"
-"Language-Team: Deutsch <>\n"
-"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Tuner AppStream\n"
+"Language: de\n"
 
 #: data/com.github.louis77.tuner.desktop.in:4
 #: data/com.github.louis77.tuner.appdata.xml.in:8
@@ -49,19 +37,12 @@ msgid "Make listening to internet radio stations fun again!"
 msgstr "Endlich wieder Spass beim Empfangen von Internet Radio-Stationen!"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:13
-msgid ""
-"Instead of providing you with the all the stations you already know, Tuner "
-"presents you a new selection of stations from all over the world every time "
-"you hit the Shuffle button."
-msgstr ""
-"Statt dir immer nur die Radio-Stationen anzuzeigen die Du bereits kennst, "
-"zeigt Dir Tuner bei jedem Start eine neue Auswahl von Stationen aus aller "
-"Welt. Drücke einfach den Mischen-Button um eine neue Auswahl zu erhalten."
+msgid "Instead of providing you with the all the stations you already know, Tuner presents you a new selection of stations from all over the world every time you hit the Shuffle button."
+msgstr "Statt dir immer nur die Radio-Stationen anzuzeigen die Du bereits kennst, zeigt Dir Tuner bei jedem Start eine neue Auswahl von Stationen aus aller Welt. Drücke einfach den Mischen-Button um eine neue Auswahl zu erhalten."
 
 #: data/com.github.louis77.tuner.appdata.xml.in:16
 msgid "Tuner uses the community-driven station catalog radio-browser.info."
-msgstr ""
-"Tuner benutzt das offene Community-Radio-Verzeichnis von radio-browser.info"
+msgstr "Tuner benutzt das offene Community-Radio-Verzeichnis von radio-browser.info"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:18
 msgid "Discover new stations every day"
@@ -125,9 +106,7 @@ msgstr "Fehlerbehebungen:"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:97
 msgid "Fixed a bug where starred stations appeared as unstarred"
-msgstr ""
-"Einen Fehler behoben, bei dem markierte Stationen als nicht markiert "
-"angezeigt wurden"
+msgstr "Einen Fehler behoben, bei dem markierte Stationen als nicht markiert angezeigt wurden"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:98
 msgid "Display a nice API error screen"
@@ -141,12 +120,3 @@ msgstr "Neue Seitenleiste mit verschiedenen Vorauswahlen und deinen Favoriten"
 msgid "Initial release"
 msgstr "Erste Ausgabe"
 
-#, fuzzy
-#~ msgid "Station images are now cached and have a consistent size"
-#~ msgstr "Stations-Bilder werden nun zwischengespeichert"
-
-#~ msgid "Playing"
-#~ msgstr "Läuft"
-
-#~ msgid "Stopped"
-#~ msgstr "Angehalten"
