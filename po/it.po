@@ -1,0 +1,176 @@
+# Italian translations for com.github.louis77.tuner package.
+# Copyright (C) 2020 THE com.github.louis77.tuner'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the com.github.louis77.tuner package.
+# Automatically generated, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: com.github.louis77.tuner\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-08-10 17:40+0200\n"
+"PO-Revision-Date: 2020-08-10 17:40+0200\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ASCII\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/Models/Genre.vala:35
+msgid "70s"
+msgstr ""
+
+#: src/Models/Genre.vala:36
+msgid "80s"
+msgstr ""
+
+#: src/Models/Genre.vala:37
+msgid "90s"
+msgstr ""
+
+#: src/Models/Genre.vala:38
+msgid "Classical"
+msgstr ""
+
+#: src/Models/Genre.vala:39
+msgid "Country"
+msgstr ""
+
+#: src/Models/Genre.vala:40
+msgid "Dance"
+msgstr ""
+
+#: src/Models/Genre.vala:41
+msgid "Electronic"
+msgstr ""
+
+#: src/Models/Genre.vala:42
+msgid "House"
+msgstr ""
+
+#: src/Models/Genre.vala:43
+msgid "Jazz"
+msgstr ""
+
+#: src/Models/Genre.vala:44
+msgid "Pop"
+msgstr ""
+
+#: src/Models/Genre.vala:45
+msgid "Rock"
+msgstr ""
+
+#: src/Widgets/ContentBox.vala:47
+msgid "Nothing here"
+msgstr ""
+
+#: src/Widgets/ContentBox.vala:47
+msgid ""
+"Something went wrong loading radio stations data from radio-browser.info. "
+"Please try again later."
+msgstr ""
+
+#: src/Widgets/ContentBox.vala:57
+msgid "No stations found"
+msgstr ""
+
+#: src/Widgets/ContentBox.vala:57
+msgid "Please try a different search term."
+msgstr ""
+
+#: src/Widgets/HeaderBar.vala:56
+msgid "Choose a station"
+msgstr ""
+
+#: src/Widgets/HeaderBar.vala:58 src/Widgets/Window.vala:316
+msgid "Paused"
+msgstr ""
+
+#: src/Widgets/HeaderBar.vala:72
+msgid "About"
+msgstr ""
+
+#: src/Widgets/HeaderBar.vala:76
+msgid "Do not track"
+msgstr ""
+
+#: src/Widgets/HeaderBar.vala:78
+msgid "If enabled, we will not send usage info to radio-browser.org"
+msgstr ""
+
+#: src/Widgets/HeaderBar.vala:94
+msgid "Preferences"
+msgstr ""
+
+#: src/Widgets/HeaderBar.vala:100
+msgid "Station name"
+msgstr ""
+
+#: src/Widgets/HeaderBar.vala:116
+msgid "Star this station"
+msgstr ""
+
+#: src/Widgets/HeaderBar.vala:169
+msgid "Connecting"
+msgstr ""
+
+#: src/Widgets/Window.vala:98
+msgid "Selections"
+msgstr ""
+
+#: src/Widgets/Window.vala:102 src/Widgets/Window.vala:165
+msgid "Search"
+msgstr ""
+
+#: src/Widgets/Window.vala:106
+msgid "Genres"
+msgstr ""
+
+#: src/Widgets/Window.vala:113
+msgid "Discover"
+msgstr ""
+
+#: src/Widgets/Window.vala:114
+msgid "Discover Stations"
+msgstr ""
+
+#: src/Widgets/Window.vala:115
+msgid "Discover more stations"
+msgstr ""
+
+#: src/Widgets/Window.vala:133
+msgid "Trending"
+msgstr ""
+
+#: src/Widgets/Window.vala:134
+msgid "Trending in the last 24 hours"
+msgstr ""
+
+#: src/Widgets/Window.vala:146
+msgid "Popular"
+msgstr ""
+
+#: src/Widgets/Window.vala:147
+msgid "Most-listened over 24 hours"
+msgstr ""
+
+#: src/Widgets/Window.vala:158 src/Widgets/Window.vala:159
+msgid "Starred by You"
+msgstr ""
+
+#: src/Widgets/Window.vala:164
+msgid "Search Result"
+msgstr ""
+
+#: src/Widgets/Window.vala:308
+msgid "Buffering"
+msgstr ""
+
+#: src/Widgets/Window.vala:328
+msgid "Playing"
+msgstr ""
+
+#: src/Widgets/Window.vala:336
+msgid "Stopped"
+msgstr ""
