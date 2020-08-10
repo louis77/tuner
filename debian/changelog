@@ -1,3 +1,15 @@
+com.github.louis77.tuner (1.2.4ubuntu1) RELEASED; urgency=medium
+
+  * Right-click a station to add or remove to favourites directly
+  * Add settings menu with "Do-Not-Track" option, disables sending station listening events to radio-browser.org
+  * Add About dialog
+  * If a station is already in your favourites, you'll see a little star in the title
+  * Randomly selects one of the available radio-browser.org servers (was always de1 before)
+  * Favourites are now stored in a local favourites.json file to improve app startup time
+  * Fix broken dark theme support (elementary and Adwaita dark look fine now)
+
+ -- Louis Brauer <louis77@member.fsf.org>  Mon, 10 Aug 2020 17:10:46 +0200
+
 com.github.louis77.tuner (1.2.3) RELEASED; urgency=low
 
   * Added Search for radion stations

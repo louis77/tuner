@@ -23,8 +23,11 @@
 
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_09.png</image>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_light_1.2.4.png</image>
     </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_dark_1.2.4.png</image>
+    </screenshot>  
   </screenshots>
 
   <developer_name>Louis Brauer</developer_name>
@@ -55,6 +58,24 @@
   </provides>
 
   <releases>
+    <release version="1.2.4" date="2020-08-10">
+        <p>New features:</p>
+        <ul>
+          <li>Right-click a station to add or remove to favourites directly</li>
+          <li>Add settings menu with "Do-Not-Track" option, disables sending station listening events to radio-browser.org</li>
+          <li>Add About dialog</li>
+        </ul>
+        <p>Other improvements:</p>
+        <ul>
+          <li>If a station is already in your favourites, you'll see a little star in the title</li>
+          <li>Randomly selects one of the available radio-browser.org servers (was always de1 before)</li>
+          <li>Favourites are now stored in a local favourites.json file to improve app startup time
+        </ul>
+        <p>Bugfixes:</p>
+        <ul>
+          <li>Fix broken dark theme support (elementary and Adwaita dark look fine now)</li>
+        </ul>        
+    </release>
     <release version="1.2.3" date="2020-06-29">
       <description>
         <p>New features:</p>
