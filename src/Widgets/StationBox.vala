@@ -19,17 +19,13 @@
 * Authored by: Louis Brauer <louis77@member.fsf.org>
 */
 
-public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
+public class Tuner.StationBox : Tuner.WelcomeButton {
 
     public Model.Station station { get; private set; }
     public StationContextMenu menu { get; private set; }
 
     public StationBox (Model.Station station) {
-        var title = station.title;
-        if (title.length > 30) {
-            title = title[0:30] + "…";
-            // TODO ellipsize
-        }
+        var title = make_title (station.title, station.starred);
         Object (
             // TODO
             // description: @"$(station.location) ($(station.clickcount))",
@@ -42,6 +38,10 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
         
 
         this.station = station;
+        this.station.notify["starred"].connect ( (sender, prop) => {
+            this.title = make_title (this.station.title, this.station.starred);
+        });
+
         realize.connect (() => {
             realize_favicon ();
         });
@@ -61,6 +61,11 @@ public class Tuner.StationBox : Granite.Widgets.WelcomeButton {
 
     construct {
         always_show_image = true;
+    }
+
+    private static string make_title (string title, bool starred) {
+        if (!starred) return title;
+        return Application.STAR_CHAR + title;
     }
 
     private void realize_favicon () {

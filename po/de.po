@@ -1,23 +1,11 @@
-# German translations for com.github.louis77.tuner package.
-# Copyright (C) 2020 THE com.github.louis77.tuner'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the com.github.louis77.tuner package.
-# Automatically generated, 2020.
-# Louis Brauer <louis77@member.fsf.org>, 2020.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: com.github.louis77.tuner\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-29 21:51+0200\n"
-"PO-Revision-Date: 2020-06-29 21:47+0200\n"
-"Last-Translator: Louis Brauer <louis77@member.fsf.org>\n"
-"Language-Team: Deutsch <>\n"
-"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Tuner\n"
+"Language: de\n"
 
 #: src/Models/Genre.vala:35
 msgid "70s"
@@ -63,102 +51,115 @@ msgstr "Pop"
 msgid "Rock"
 msgstr "Rock"
 
-#: src/Widgets/ContentBox.vala:46
+#: src/Widgets/ContentBox.vala:47
 msgid "Nothing here"
 msgstr "Hier ist nichts"
 
-#: src/Widgets/ContentBox.vala:46
-msgid ""
-"Something went wrong loading radio stations data from radio-browser.info. "
-"Please try again later."
-msgstr ""
-"Beim Abrufen der Radio-Stationen von radio-browser.info ist etwas schief "
-"gelaufen. Bitte versuche es später nochmals."
+#: src/Widgets/ContentBox.vala:47
+msgid "Something went wrong loading radio stations data from radio-browser.info. Please try again later."
+msgstr "Beim Abrufen der Radio-Stationen von radio-browser.info ist etwas schief gelaufen. Bitte versuche es später nochmals."
 
-#: src/Widgets/ContentBox.vala:56
+#: src/Widgets/ContentBox.vala:57
 msgid "No stations found"
 msgstr "Keine Stationen gefunden"
 
-#: src/Widgets/ContentBox.vala:56
+#: src/Widgets/ContentBox.vala:57
 msgid "Please try a different search term."
 msgstr "Bitte versuche es mit einem anderen Suchbegriff."
 
-#: src/Widgets/HeaderBar.vala:59
+#: src/Widgets/HeaderBar.vala:56
 msgid "Choose a station"
 msgstr "Wähle eine Station"
 
-#: src/Widgets/HeaderBar.vala:61 src/Widgets/Window.vala:302
+#: src/Widgets/HeaderBar.vala:58 src/Widgets/Window.vala:316
 msgid "Paused"
 msgstr "Angehalten"
 
-#: src/Widgets/HeaderBar.vala:76
+#: src/Widgets/HeaderBar.vala:100
 msgid "Station name"
 msgstr "Stationsname"
 
-#: src/Widgets/HeaderBar.vala:91
+#: src/Widgets/HeaderBar.vala:116
 msgid "Star this station"
 msgstr "Als Favorit markieren"
 
-#: src/Widgets/HeaderBar.vala:136
+#: src/Widgets/HeaderBar.vala:169
 msgid "Connecting"
 msgstr "Verbinde"
 
-#: src/Widgets/Window.vala:90
+#: src/Widgets/Window.vala:98
 msgid "Selections"
 msgstr "Ausgewählt"
 
-#: src/Widgets/Window.vala:94 src/Widgets/Window.vala:164
+#: src/Widgets/Window.vala:102 src/Widgets/Window.vala:165
 msgid "Search"
 msgstr "Suche"
 
-#: src/Widgets/Window.vala:98
+#: src/Widgets/Window.vala:106
 msgid "Genres"
 msgstr "Genre"
 
-#: src/Widgets/Window.vala:105
+#: src/Widgets/Window.vala:113
 msgid "Discover"
 msgstr "Entdecken"
 
-#: src/Widgets/Window.vala:106
+#: src/Widgets/Window.vala:114
 msgid "Discover Stations"
 msgstr "Entdecke Radio Stationen"
 
-#: src/Widgets/Window.vala:107
+#: src/Widgets/Window.vala:115
 msgid "Discover more stations"
 msgstr "Entdecke mehr Stationen"
 
-#: src/Widgets/Window.vala:125
+#: src/Widgets/Window.vala:133
 msgid "Trending"
 msgstr "Im Trend"
 
-#: src/Widgets/Window.vala:126
+#: src/Widgets/Window.vala:134
 msgid "Trending in the last 24 hours"
 msgstr "Im Trend in den letzten 24 Stunden"
 
-#: src/Widgets/Window.vala:138
+#: src/Widgets/Window.vala:146
 msgid "Popular"
 msgstr "Populär"
 
-#: src/Widgets/Window.vala:139
+#: src/Widgets/Window.vala:147
 msgid "Most-listened over 24 hours"
 msgstr "Am meisten gehört in den letzten 24 Stunden"
 
-#: src/Widgets/Window.vala:150 src/Widgets/Window.vala:151
+#: src/Widgets/Window.vala:158 src/Widgets/Window.vala:159
 msgid "Starred by You"
 msgstr "Von Dir markiert"
 
-#: src/Widgets/Window.vala:163
+#: src/Widgets/Window.vala:164
 msgid "Search Result"
 msgstr "Suchergebnis"
 
-#: src/Widgets/Window.vala:294
+#: src/Widgets/Window.vala:308
 msgid "Buffering"
 msgstr "Puffere"
 
-#: src/Widgets/Window.vala:314
+#: src/Widgets/Window.vala:328
 msgid "Playing"
 msgstr "Läuft"
 
-#: src/Widgets/Window.vala:322
+#: src/Widgets/Window.vala:336
 msgid "Stopped"
 msgstr "Angehalten"
+
+#: src/Widgets/HeaderBar.vala:72
+msgid "About"
+msgstr "Über"
+
+#: src/Widgets/HeaderBar.vala:76
+msgid "Do not track"
+msgstr "Do Not Track"
+
+#: src/Widgets/HeaderBar.vala:78
+msgid "If enabled, we will not send usage info to radio-browser.org"
+msgstr "Einschaltung, um zu verhindern, dass radio-browser.org über das Hören von Stationen informiert wird"
+
+#: src/Widgets/HeaderBar.vala:94
+msgid "Preferences"
+msgstr "Einstellungen"
+

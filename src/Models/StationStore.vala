@@ -56,6 +56,8 @@ public class StationStore : Object {
     }
 
     private void ensure () {
+        // Non-racy approach is to try to create the file first
+        // and ignore errors if it already exists
         try {
             var df = _data_file.create (FileCreateFlags.PRIVATE);
             df.close ();

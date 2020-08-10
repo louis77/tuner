@@ -4,7 +4,7 @@
 Discover and Listen to random radio stations while you work.
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
-![Screenshot 01](docs/screen_09.png?raw=true)
+![Screenshot 01](docs/screen_dark_1.2.4.png?raw=true)
 
 ## Installation
 
@@ -12,13 +12,12 @@ Discover and Listen to random radio stations while you work.
 [![Get it on AppCenter](https://appcenter.elementary.io/badge.svg)](https://appcenter.elementary.io/com.github.louis77.tuner)
 
 ### Arch Linux
-Arch Linux users can find `Tuner` under the name [tuner-git](https://aur.archlinux.org/packages/tuner-git/) in the **AUR**:
+Arch-based Linux users can find `Tuner` under the name [tuner-git](https://aur.archlinux.org/packages/tuner-git/) in the **AUR**:
 
 ```sh
 $ yay -S tuner-git`
 ```
 Thanks to [@btd1377](https://github.com/btd1337) for supporting Tuner on Arch Linux!
-Arch users, I still have to do some tweaks on Tuner to make it look proper on Arch (missing icons, dark theme support).
 
 
 ## Motivation
@@ -76,6 +75,16 @@ sudo ninja install
 - [Vala Language Server](https://github.com/benwaffle/vala-language-server) - makes Vala even better
 - [@NathanBnm](https://github.com/NathanBnm) - provided French translations
 - [@btd1337](https://github.com/btd1337) - supports Tuner on Arch Linux / AUR
+
+### Free Software Foundation
+
+![FSF Member badge](https://static.fsf.org/nosvn/associate/crm/4989673.png)
+
+I'm a member of the Free Software Foundation. Without GNU/Linux and all the great
+work from people all over the world producing free software, this project would 
+not have been possible.
+
+Consider joining the FSF, [here is why](https://my.fsf.org/join?referrer=4989673).
 
 ## Disclaimer
 

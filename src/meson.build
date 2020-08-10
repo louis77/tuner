@@ -18,6 +18,7 @@ sources = files (
     'Widgets/StationContextMenu.vala',
     'Widgets/Window.vala',
     'Widgets/AboutDialog.vala',
+    'Widgets/WelcomeButton.vala',
 
     'Application.vala',
     'Main.vala'

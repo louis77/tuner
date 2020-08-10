@@ -19,28 +19,8 @@
 * Authored by: Louis Brauer <louis77@member.fsf.org>
 */
 
-
-.color-dark {
-    background: #f3f3f3;
-    border-color: #151B1C;
-    color: #000;
-}
-
-.color-light {
-    background: #fefdff;
-    color: #4d4d4d;
-}
-
-.station-icon {
-    border-color: #fff;
-    border: 1px;
-}
-
-.station-button {
-}
-
 .station-button:hover {
-        background-color: #dddddd;
+        background-color: darker(@bg_color);
 }
 
 .station-button image {

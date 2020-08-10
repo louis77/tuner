@@ -28,3 +28,4 @@
 [ ] Recently listend, My Library
 [ ] Context-menu to exclude countries from …
 [ ] Add FSF claim in App Stream Data
+[ ] Move window to center if screen resolution changed and now outside visible area
