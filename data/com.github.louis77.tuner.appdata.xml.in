@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2020 Louis Brauer <louis77@member.fsf.org> -->
+<!-- Copyright 2020 Louis Brauer / <louis77@member.fsf.org> -->
 <component type="desktop">
   <id>com.github.louis77.tuner</id>
   <metadata_license>CC0-1.0</metadata_license>
@@ -69,7 +69,7 @@
         <ul>
           <li>If a station is already in your favourites, you'll see a little star in the title</li>
           <li>Randomly selects one of the available radio-browser.org servers (was always de1 before)</li>
-          <li>Favourites are now stored in a local favourites.json file to improve app startup time
+          <li>Favourites are now stored in a local favourites.json file to improve app startup time</li>
         </ul>
         <p>Bugfixes:</p>
         <ul>
@@ -98,7 +98,8 @@
           <li>Display a nice API error screen</li>
         </ul>
       </description>
-    </release>
+    </release><!-- Copyright 2020 Louis Brauer / louis77@member.fsf.org -->
+
     <release version="1.1" date="2020-06-16">
       <description>
         <p>New sidebar menu with different selections and your favourite stations.</p>

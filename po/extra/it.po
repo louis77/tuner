@@ -1,50 +1,50 @@
-# French translations for extra package.
+# Italian translations for extra package.
 # Copyright (C) 2020 THE extra'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the extra package.
-# Nathan Bonnemains (@NathanBnm), 2020.
+# Automatically generated, 2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-10 17:51+0200\n"
-"PO-Revision-Date: 2020-06-28 12:08+0200\n"
-"Last-Translator: Nathan Bonnemains (@NathanBnm)\n"
+"PO-Revision-Date: 2020-08-10 17:51+0200\n"
+"Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
-"Language: fr\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=ASCII\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: data/com.github.louis77.tuner.desktop.in:4
 #: data/com.github.louis77.tuner.appdata.xml.in:8
 msgid "Tuner"
-msgstr "Tuner"
+msgstr ""
 
 #: data/com.github.louis77.tuner.desktop.in:5
 msgid "Internet Radio Station Receiver"
-msgstr "Récepteur de stations de radio en ligne"
+msgstr ""
 
 #: data/com.github.louis77.tuner.desktop.in:6
 msgid "Listen to Radio Stations all over the world"
-msgstr "Écoutez les stations de radio du monde entier"
+msgstr ""
 
 #: data/com.github.louis77.tuner.desktop.in:9
 msgid "com.github.louis77.tuner"
-msgstr "com.github.louis77.tuner"
+msgstr ""
 
 #: data/com.github.louis77.tuner.desktop.in:11
 msgid "Radio;Audio;Listen;Stations;Receiver;"
-msgstr "Radio;Audio;Écouter;Stations;Récepteur;"
+msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:9
 msgid "Discover and listen to internet radio stations"
-msgstr "Découvrez et écoutez des stations de radio en ligne"
+msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:12
 msgid "Make listening to internet radio stations fun again!"
-msgstr "Rendons de nouveau fun l'écoute des stations de radio en ligne !"
+msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:13
 msgid ""
@@ -52,42 +52,38 @@ msgid ""
 "presents you a new selection of stations from all over the world every time "
 "you hit the Shuffle button."
 msgstr ""
-"Plutôt que de vous proposer toutes les stations que vous connaissez déjà, "
-"Tuner vous présente une nouvelle sélection de stations du monde entier à "
-"chaque fois que vous appuyez sur le bouton « Aléatoire »."
 
 #: data/com.github.louis77.tuner.appdata.xml.in:16
 msgid "Tuner uses the community-driven station catalog radio-browser.info."
 msgstr ""
-"Tuner utilise le catalogue communautaire de stations radio-browser.info."
 
 #: data/com.github.louis77.tuner.appdata.xml.in:18
 msgid "Discover new stations every day"
-msgstr "Découvrez de nouvelles stations chaque jour"
+msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:19
 msgid "Star stations you like"
-msgstr "Marquez les stations que vous aimez comme favorites"
+msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:20
 msgid "Control Tuner from your volume indicator"
-msgstr "Contrôlez la lecture de Tuner depuis votre indicateur de volume"
+msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:33
 msgid "Louis Brauer"
-msgstr "Louis Brauer"
+msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:81
 msgid "New features:"
-msgstr "Nouvelles fonctionnalités"
+msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:83
 msgid "Search for radion stations"
-msgstr "Recherchez des stations de radio"
+msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:84
 msgid "New \"Genres\" section with select popular genres"
-msgstr "Nouvelle section « Genres » avec une sélection de genres populaires"
+msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:85
 msgid "Added French translation"
@@ -99,35 +95,31 @@ msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:88
 msgid "Other improvements:"
-msgstr "Autres améliorations :"
+msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:90
 msgid "Each section now displays the most-voted-for 40 stations"
-msgstr "Chaque section affiche désormais les 40 stations les plus votées"
+msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:91
-#, fuzzy
 msgid "Station images are now being cached"
-msgstr "Les images de station sont désormais mises en cache"
+msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:92
 msgid "The app icon now appears more vertically centered"
-msgstr "L'icône de l'application est désormais mieux centrée verticalement"
+msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:93
-#, fuzzy
 msgid "Station images are now always the same size"
-msgstr "Les images de station sont désormais mises en cache"
+msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:95
 msgid "Bugfixes:"
-msgstr "Corrections de bug :"
+msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:97
 msgid "Fixed a bug where starred stations appeared as unstarred"
 msgstr ""
-"Correction d'un bug où les stations marquées comme favorites "
-"n'apparaissaient pas comme telles"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:98
 msgid "Display a nice API error screen"
@@ -136,13 +128,7 @@ msgstr ""
 #: data/com.github.louis77.tuner.appdata.xml.in:105
 msgid "New sidebar menu with different selections and your favourite stations."
 msgstr ""
-"Nouveau menu dans la barre latérale avec différentes sélections et vos "
-"stations favorites."
 
 #: data/com.github.louis77.tuner.appdata.xml.in:110
 msgid "Initial release"
-msgstr "Version initiale"
-
-#, fuzzy
-#~ msgid "Station images are now cached and have a consistent size"
-#~ msgstr "Les images de station sont désormais mises en cache"
+msgstr ""
