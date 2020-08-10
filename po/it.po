@@ -81,7 +81,7 @@ msgstr "Nome stazione"
 
 #: src/Widgets/HeaderBar.vala:116
 msgid "Star this station"
-msgstr "Inizia questa stazione"
+msgstr "Aggiungi ai preferiti"
 
 #: src/Widgets/HeaderBar.vala:169
 msgid "Connecting"
@@ -97,7 +97,7 @@ msgstr "Ricerca"
 
 #: src/Widgets/Window.vala:106
 msgid "Genres"
-msgstr "generi"
+msgstr "Generi"
 
 #: src/Widgets/Window.vala:113
 msgid "Discover"
@@ -129,7 +129,7 @@ msgstr "I più ascoltati per 24 ore"
 
 #: src/Widgets/Window.vala:158 src/Widgets/Window.vala:159
 msgid "Starred by You"
-msgstr "Starred by You"
+msgstr "I tuoi preferiti"
 
 #: src/Widgets/Window.vala:164
 msgid "Search Result"
