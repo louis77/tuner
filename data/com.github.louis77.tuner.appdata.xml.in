@@ -59,6 +59,7 @@
 
   <releases>
     <release version="1.2.4" date="2020-08-10">
+      <description>
         <p>New features:</p>
         <ul>
           <li>Right-click a station to add or remove to favourites directly</li>
@@ -75,6 +76,7 @@
         <ul>
           <li>Fix broken dark theme support (elementary and Adwaita dark look fine now)</li>
         </ul>        
+      </description>
     </release>
     <release version="1.2.3" date="2020-06-29">
       <description>
