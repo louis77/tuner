@@ -37,7 +37,7 @@ msgid "Make listening to internet radio stations fun again!"
 msgstr "Rendons de nouveau fun l'écoute des stations de radio en ligne !"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:13
-msgid "Instead of providing you with the all the stations you already know, Tuner presents you a new selection of stations from all over the world every time you hit the Shuffle button."
+msgid "Instead of providing you with all the stations you already know, Tuner presents you a new selection of stations from all over the world every time you hit the Shuffle button."
 msgstr "Plutôt que de vous proposer toutes les stations que vous connaissez déjà, Tuner vous présente une nouvelle sélection de stations du monde entier à chaque fois que vous appuyez sur le bouton « Aléatoire »."
 
 #: data/com.github.louis77.tuner.appdata.xml.in:16
@@ -66,7 +66,7 @@ msgid "New features:"
 msgstr "Nouvelles fonctionnalités"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:85
-msgid "Search for radion stations"
+msgid "Search for radio stations"
 msgstr "Recherchez des stations de radio"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:86

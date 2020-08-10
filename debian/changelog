@@ -12,7 +12,7 @@ com.github.louis77.tuner (1.2.4ubuntu1) RELEASED; urgency=medium
 
 com.github.louis77.tuner (1.2.3) RELEASED; urgency=low
 
-  * Added Search for radion stations
+  * Added Search for radio stations
   * Added New "Genres" section with select popular genres
   * Each section now displays the most-voted-for 40 stations
   * Station images are now cached

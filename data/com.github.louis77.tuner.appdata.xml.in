@@ -10,7 +10,7 @@
 
   <description>
     <p>Make listening to internet radio stations fun again!</p>
-    <p>Instead of providing you with the all the stations you already know,
+    <p>Instead of providing you with all the stations you already know,
        Tuner presents you a new selection of stations from all over the world
        every time you hit the Shuffle button.</p>
     <p>Tuner uses the community-driven station catalog radio-browser.info.</p>
@@ -82,7 +82,7 @@
       <description>
         <p>New features:</p>
         <ul>
-          <li>Search for radion stations</li>
+          <li>Search for radio stations</li>
           <li>New "Genres" section with select popular genres</li>
           <li>Added French translation</li>
           <li>Added German translation</li>

@@ -48,7 +48,7 @@ msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:13
 msgid ""
-"Instead of providing you with the all the stations you already know, Tuner "
+"Instead of providing you with all the stations you already know, Tuner "
 "presents you a new selection of stations from all over the world every time "
 "you hit the Shuffle button."
 msgstr ""
@@ -126,7 +126,7 @@ msgid ""
 msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:85
-msgid "Search for radion stations"
+msgid "Search for radio stations"
 msgstr ""
 
 #: data/com.github.louis77.tuner.appdata.xml.in:86
