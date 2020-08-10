@@ -76,6 +76,16 @@ sudo ninja install
 - [@NathanBnm](https://github.com/NathanBnm) - provided French translations
 - [@btd1337](https://github.com/btd1337) - supports Tuner on Arch Linux / AUR
 
+### Free Software Foundation
+
+![FSF Member badge](https://static.fsf.org/nosvn/associate/crm/4989673.png)
+
+I'm a member of the Free Software Foundation. Without GNU/Linux and all the great
+work from people all over the world producing free software, this project would 
+not have been possible.
+
+Consider joining the FSF, [here is why](https://my.fsf.org/join?referrer=4989673).
+
 ## Disclaimer
 
 Tuner uses the community-drive radio station catalog radio-browser.info. Tuner
