@@ -110,6 +110,7 @@ public class Station : Object {
     public string country { get; set; }
     public string favicon { get; set; }
     public uint clickcount { get; set; }
+    public string homepage { get; set; }
 }
 
 public class Tag : Object {
