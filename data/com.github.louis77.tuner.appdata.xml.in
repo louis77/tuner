@@ -71,6 +71,7 @@
           <li>If a station is already in your favourites, you'll see a little star in the title</li>
           <li>Randomly selects one of the available radio-browser.org servers (was always de1 before)</li>
           <li>Favourites are now stored in a local favourites.json file to improve app startup time</li>
+          <li>Added Italian translation</li>
         </ul>
         <p>Bugfixes:</p>
         <ul>
