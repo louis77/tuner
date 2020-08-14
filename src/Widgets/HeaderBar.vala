@@ -107,6 +107,26 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         });
         pack_end (searchentry);
 
+        var gtk_settings = Gtk.Settings.get_default ();
+
+        var mode_switch = new Granite.ModeSwitch.from_icon_name (
+            "display-brightness-symbolic",
+            "weather-clear-night-symbolic"
+        );
+        mode_switch.primary_icon_tooltip_text = _("Light mode");
+        mode_switch.secondary_icon_tooltip_text = _("Dark mode");
+        mode_switch.valign = Gtk.Align.CENTER;
+        mode_switch.bind_property ("active", gtk_settings, "gtk-application-prefer-dark-theme", GLib.BindingFlags.BIDIRECTIONAL);
+
+        var granite_settings = Granite.Settings.get_default ();
+        gtk_settings.gtk_application_prefer_dark_theme = granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK;
+ 
+        granite_settings.notify["prefers-color-scheme"].connect (() => {
+            gtk_settings.gtk_application_prefer_dark_theme = granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK;
+        });
+        
+        pack_end (mode_switch);
+
         star_button = new Gtk.Button.from_icon_name (
             "non-starred",
             Gtk.IconSize.LARGE_TOOLBAR

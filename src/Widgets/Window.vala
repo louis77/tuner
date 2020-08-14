@@ -54,6 +54,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         _player = player;
         _player.state_changed.connect (handle_player_state_changed);
         _player.station_changed.connect (headerbar.update_from_station);
+
+        var dark = new Theme ().is_theme_dark ();
+        warning (@"Theme settings: $dark");
     }
 
     static construct {
