@@ -1,3 +1,10 @@
+com.github.louis77.tuner (1.2.5) RELEASED; urgency=medium
+
+  * Add manual dark mode switch in settings
+  * Fix missing icons for non-elementary OS systems
+
+ -- Louis Brauer <louis77@member.fsf.org>  Mon, 14 Aug 2020 23:00:00 +0200
+
 com.github.louis77.tuner (1.2.4ubuntu1) RELEASED; urgency=medium
 
   * Right-click a station to add or remove to favourites directly
