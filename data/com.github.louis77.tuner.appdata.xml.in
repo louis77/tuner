@@ -60,9 +60,13 @@
   <releases>
     <release version="1.2.5" date="2020-08-14">
       <description>
+        <p>New features:</p>
+        <ul>
+          <li>"Visit Website" link in station context menu</li>
+          <li>Add manual dark mode switch in settings</li>
+        </ul>
         <p>Other improvements:</p>
         <ul>
-          <li>Add manual dark mode switch in settings</li>
           <li>Compact sidebar and content window</li> 
         </ul>
         <p>Bugfixes:</p>
