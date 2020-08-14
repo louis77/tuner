@@ -77,15 +77,32 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         disable_tracking_item.action_name = Window.ACTION_PREFIX + Window.ACTION_DISABLE_TRACKING;
         disable_tracking_item.tooltip_text = _("If enabled, we will not send usage info to radio-browser.org");
 
+        var gtk_settings = Gtk.Settings.get_default ();
+        var mode_switch = new Granite.ModeSwitch.from_icon_name (
+            "display-brightness-symbolic",
+            "weather-clear-night-symbolic"
+        );
+        mode_switch.primary_icon_tooltip_text = _("Light mode");
+        mode_switch.secondary_icon_tooltip_text = _("Dark mode");
+        mode_switch.valign = Gtk.Align.CENTER;
+        mode_switch.bind_property ("active", gtk_settings, "gtk-application-prefer-dark-theme", GLib.BindingFlags.BIDIRECTIONAL);
+
         var menu_grid = new Gtk.Grid ();
         menu_grid.margin_bottom = 3;
+        menu_grid.margin_top = 5;
+        menu_grid.margin_left = 3;
+        menu_grid.margin_right = 3;
+        menu_grid.row_spacing = 3;
         menu_grid.orientation = Gtk.Orientation.VERTICAL;
-        menu_grid.attach (disable_tracking_item, 0, 0, 3, 1);
-        menu_grid.attach (about_menuitem, 0, 1, 3, 1);
+        menu_grid.attach (mode_switch, 1, 0);
+        menu_grid.attach (new Gtk.SeparatorMenuItem (), 0, 1, 3, 1);
+        menu_grid.attach (disable_tracking_item, 0, 2, 3, 1);
+        menu_grid.attach (about_menuitem, 0, 3, 3, 1);
         menu_grid.show_all ();
 
         var menu = new Gtk.Popover (null);
         menu.add (menu_grid);
+
 
         var prefs_button = new Gtk.MenuButton ();
         prefs_button.image = new Gtk.Image.from_icon_name ("open-menu", Gtk.IconSize.LARGE_TOOLBAR);
@@ -107,24 +124,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         });
         pack_end (searchentry);
 
-        var gtk_settings = Gtk.Settings.get_default ();
 
-        var mode_switch = new Granite.ModeSwitch.from_icon_name (
-            "display-brightness-symbolic",
-            "weather-clear-night-symbolic"
-        );
-        mode_switch.primary_icon_tooltip_text = _("Light mode");
-        mode_switch.secondary_icon_tooltip_text = _("Dark mode");
-        mode_switch.valign = Gtk.Align.CENTER;
-        mode_switch.bind_property ("active", gtk_settings, "gtk-application-prefer-dark-theme", GLib.BindingFlags.BIDIRECTIONAL);
-
-        var granite_settings = Granite.Settings.get_default ();
-        gtk_settings.gtk_application_prefer_dark_theme = granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK;
- 
-        granite_settings.notify["prefers-color-scheme"].connect (() => {
-            gtk_settings.gtk_application_prefer_dark_theme = granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK;
-        });
-        
+       
         pack_end (mode_switch);
 
         star_button = new Gtk.Button.from_icon_name (
