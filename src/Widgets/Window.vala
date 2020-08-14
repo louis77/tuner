@@ -54,6 +54,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         _player = player;
         _player.state_changed.connect (handle_player_state_changed);
         _player.station_changed.connect (headerbar.update_from_station);
+
+        var dark = new Theme ().is_theme_dark ();
+        warning (@"Theme settings: $dark");
     }
 
     static construct {
@@ -70,12 +73,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         add_action_entries (ACTION_ENTRIES, this);
 
         window_position = Gtk.WindowPosition.CENTER;
-        set_default_size (900, 540);
+        set_default_size (800, 540);
         settings = Application.instance.settings;
         change_action_state (ACTION_DISABLE_TRACKING, settings.get_boolean ("do-not-track"));
         move (settings.get_int ("pos-x"), settings.get_int ("pos-y"));
 
-        set_geometry_hints (null, Gdk.Geometry() {min_height = 440, min_width = 1040}, Gdk.WindowHints.MIN_SIZE);
+        set_geometry_hints (null, Gdk.Geometry() {min_height = 440, min_width = 800}, Gdk.WindowHints.MIN_SIZE);
         resize (settings.get_int ("window-width"), settings.get_int ("window-height"));
 
         delete_event.connect (e => {
@@ -168,7 +171,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
 
         foreach (var genre in Model.genres ()) {
-            var cb = create_content_box (genre.name, genre.name, "playlist", 
+            var cb = create_content_box (genre.name, genre.name, "playlist-symbolic", 
                 genre.name, null, null, stack, genres_category, source_list);
             var tags = new ArrayList<string>.wrap (genre.tags);
             var ds = _directory.load_by_tags (tags);
@@ -194,7 +197,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         source_list.root.add (searched_category);
         source_list.root.add (genres_category);
 
-        source_list.set_size_request (180, -1);
+        //source_list.set_size_request (-1, -1);
         source_list.selected = source_list.get_first_child (selections_category);
         source_list.item_selected.connect  ((item) => {
             var selected_item = item.get_data<string> ("stack_child");

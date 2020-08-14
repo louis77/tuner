@@ -3,5 +3,13 @@
   <gresource prefix="/com/github/louis77/tuner">
     <file alias="Application.css" compressed="true">Application.css</file>
   </gresource>
+  <gresource prefix="/com/github/louis77/tuner/icons">
+    <file alias="playlist-queue.svg" compressed="true">icons/16/playlist-queue.svg</file>
+    <file alias="playlist-similar.svg" compressed="true">icons/16/playlist-similar.svg</file>
+    <file alias="playlist.svg" compressed="true">icons/16/playlist.svg</file>
+    <file alias="playlist-symbolic.svg" compressed="true">icons/16/playlist-symbolic.svg</file>
+    <file alias="internet-radio-symbolic.svg" compressed="true">icons/16/internet-radio-symbolic.svg</file>
+    <file alias="internet-radio.svg" compressed="true">icons/16/internet-radio.svg</file>
+  </gresource>
 </gresources>
 

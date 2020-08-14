@@ -19,6 +19,7 @@ sources = files (
     'Widgets/Window.vala',
     'Widgets/AboutDialog.vala',
     'Widgets/WelcomeButton.vala',
+    'Widgets/Theme.vala',
 
     'Application.vala',
     'Main.vala'

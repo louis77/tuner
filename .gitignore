@@ -1,5 +1,7 @@
 build
 builddir
+build-aux
 *~
 .vscode
 .buildconfig
+.flatpak-builder
