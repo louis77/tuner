@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2020 Louis Brauer / <louis77@member.fsf.org> -->
-<component type="desktop">
+<component type="desktop-application">
   <id>com.github.louis77.tuner</id>
-  <metadata_license>CC0-1.0</metadata_license>
+  <metadata_license>FSFAP</metadata_license>
   <project_group>tuner-elementary</project_group>
   <project_license>GPL-3.0+</project_license>
   <name>Tuner</name>
+  <developer_name>Louis Brauer</developer_name>
+  <launchable type="desktop-id">com.github.louis77.tuner</launchable>
   <summary>Discover and listen to internet radio stations</summary>
 
   <description>
