@@ -191,7 +191,7 @@ public class Tuner.StationSource : Object {
             var s = new Model.Station (
                 station.stationuuid,
                 station.name,
-                station.country,
+                Model.Countries.get_by_code(station.countrycode, station.country),
                 station.url_resolved);
             if (_store.contains (s)) {
                 s.starred = true;

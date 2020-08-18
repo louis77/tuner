@@ -108,6 +108,7 @@ public class Station : Object {
     public string name { get; set; }
     public string url_resolved { get; set; }
     public string country { get; set; }
+    public string countrycode { get; set; }
     public string favicon { get; set; }
     public uint clickcount { get; set; }
     public string homepage { get; set; }

@@ -3,6 +3,7 @@ sources = files (
     'Controllers/DirectoryController.vala',
     'Controllers/PlayerController.vala',
 
+    'Models/Countries.vala',
     'Models/Genre.vala',
     'Models/Station.vala',
     'Models/StationStore.vala',
@@ -11,6 +12,7 @@ sources = files (
     'Services/DBusInterface.vala',
     'Services/RadioBrowserDirectory.vala',
 
+    'Widgets/AbstractContentList.vala',
     'Widgets/ContentBox.vala',
     'Widgets/HeaderBar.vala',
     'Widgets/HeaderLabel.vala',
@@ -20,6 +22,8 @@ sources = files (
     'Widgets/AboutDialog.vala',
     'Widgets/WelcomeButton.vala',
     'Widgets/Theme.vala',
+    'Widgets/CountryList.vala',
+    'Widgets/StationList.vala',
 
     'Application.vala',
     'Main.vala'

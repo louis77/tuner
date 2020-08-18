@@ -23,15 +23,13 @@ using Gee;
 
 public class Tuner.ContentBox : Gtk.Box {
 
-    public signal void selection_changed (Model.Station station);
     public signal void action_activated ();
-    public signal void station_count_changed (uint count);
-    public signal void favourites_changed ();
+    public signal void content_changed ();
 
     private Gtk.Box header;
+    private Gtk.Box _content;
+    private AbstractContentList _content_list;
     private Gtk.Stack stack;
-    public Gtk.Box content;
-    public Model.Station selected_station;
     
     public ContentBox (Gtk.Image? icon,
                        string title,
@@ -83,23 +81,16 @@ public class Tuner.ContentBox : Gtk.Box {
         pack_start (header, false, false);
         pack_start (new Gtk.Separator (Gtk.Orientation.HORIZONTAL), false, false);
 
-        content = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
-        content.get_style_context ().add_class ("color-light");
-        content.valign = Gtk.Align.START;
-        content.get_style_context().add_class("welcome");
+        _content = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
+        _content.get_style_context ().add_class ("color-light");
+        _content.valign = Gtk.Align.START;
+        _content.get_style_context().add_class("welcome");
 
         var scroller = new Gtk.ScrolledWindow (null, null);
         scroller.hscrollbar_policy = Gtk.PolicyType.NEVER;
-        scroller.add (content);
+        scroller.add (_content);
         scroller.propagate_natural_height = true;
 
-        /* not a fan right now
-        scroller.edge_reached.connect ((pos_type) => {
-            if (pos_type == Gtk.PositionType.BOTTOM) {
-                action_activated ();
-            }
-        });
-        */
         stack.add_named (scroller, "content");
         add (stack);
         
@@ -116,45 +107,25 @@ public class Tuner.ContentBox : Gtk.Box {
         stack.set_visible_child_full ("nothing-found", Gtk.StackTransitionType.NONE);
     }
     
-    public ArrayList<Model.Station> stations {
+    public AbstractContentList content { 
         set {
-            stack.set_visible_child_full ("content", Gtk.StackTransitionType.NONE);
-            clear_content ();
-            var station_list = new Gtk.FlowBox ();
-            station_list.homogeneous = false;
-            station_list.min_children_per_line = 2;
-            station_list.max_children_per_line = 2;
-            station_list.column_spacing = 5;
-            station_list.row_spacing = 5;
-            station_list.border_width = 20;
-            station_list.valign = Gtk.Align.START;
-            station_list.selection_mode = Gtk.SelectionMode.NONE;
-
-            foreach (var s in value) {
-                s.notify["starred"].connect ( () => {
-                    favourites_changed ();
-                });
-                var box = new StationBox (s);
-                box.clicked.connect (() => {
-                    selection_changed (box.station);
-                    selected_station = box.station;
-                });
-                station_list.add (box);
+            var childs = _content.get_children ();
+            foreach (var c in childs) {
+                c.destroy ();
             }
-            content.add (station_list);
-            station_list.unselect_all ();
-            content.show_all ();
-            station_count_changed (value.size);
+            stack.set_visible_child_full ("content", Gtk.StackTransitionType.NONE);
+            _content_list = value;
+            _content.add (_content_list);
+            _content.show_all ();
+            content_changed ();
         }
-    }
-    
-    public void clear_content () {
-        var childs = content.get_children();
-        foreach (var c in childs) {
-            c.destroy();
+
+        get {
+            return _content_list;
         }
     }
 
+   
     construct {
         get_style_context ().add_class ("color-dark");
     }
