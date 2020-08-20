@@ -57,7 +57,7 @@ namespace Tuner.Model {
                     _map["BJ"] = _("Benin");
                     _map["BM"] = _("Bermuda");
                     _map["BT"] = _("Bhutan");
-                    _map["BO"] = _("Bolivia (Plurinational State of)");
+                    _map["BO"] = _("Bolivia");
                     _map["BQ"] = _("Bonaire, Sint Eustatius and Saba");
                     _map["BA"] = _("Bosnia and Herzegovina");
                     _map["BW"] = _("Botswana");
@@ -136,7 +136,7 @@ namespace Tuner.Model {
                     _map["IS"] = _("Iceland");
                     _map["IN"] = _("India");
                     _map["ID"] = _("Indonesia");
-                    _map["IR"] = _("Iran (Islamic Republic of)");
+                    _map["IR"] = _("Iran");
                     _map["IQ"] = _("Iraq");
                     _map["IE"] = _("Ireland");
                     _map["IM"] = _("Isle of Man");
@@ -175,8 +175,8 @@ namespace Tuner.Model {
                     _map["MU"] = _("Mauritius");
                     _map["YT"] = _("Mayotte");
                     _map["MX"] = _("Mexico");
-                    _map["FM"] = _("Micronesia (Federated States of)");
-                    _map["MD"] = _("Moldova, Republic of");
+                    _map["FM"] = _("Micronesia");
+                    _map["MD"] = _("Moldova");
                     _map["MC"] = _("Monaco");
                     _map["MN"] = _("Mongolia");
                     _map["ME"] = _("Montenegro");
@@ -201,7 +201,7 @@ namespace Tuner.Model {
                     _map["OM"] = _("Oman");
                     _map["PK"] = _("Pakistan");
                     _map["PW"] = _("Palau");
-                    _map["PS"] = _("Palestine, State of");
+                    _map["PS"] = _("Palestine");
                     _map["PA"] = _("Panama");
                     _map["PG"] = _("Papua New Guinea");
                     _map["PY"] = _("Paraguay");
@@ -220,7 +220,7 @@ namespace Tuner.Model {
                     _map["SH"] = _("Saint Helena, Ascension and Tristan da Cunha");
                     _map["KN"] = _("Saint Kitts and Nevis");
                     _map["LC"] = _("Saint Lucia");
-                    _map["MF"] = _("Saint Martin (French part)");
+                    _map["MF"] = _("Saint Martin");
                     _map["PM"] = _("Saint Pierre and Miquelon");
                     _map["VC"] = _("Saint Vincent and the Grenadines");
                     _map["WS"] = _("Samoa");
@@ -232,7 +232,7 @@ namespace Tuner.Model {
                     _map["SC"] = _("Seychelles");
                     _map["SL"] = _("Sierra Leone");
                     _map["SG"] = _("Singapore");
-                    _map["SX"] = _("Sint Maarten (Dutch part)");
+                    _map["SX"] = _("Sint Maarten");
                     _map["SK"] = _("Slovakia");
                     _map["SI"] = _("Slovenia");
                     _map["SB"] = _("Solomon Islands");
@@ -248,9 +248,9 @@ namespace Tuner.Model {
                     _map["SE"] = _("Sweden");
                     _map["CH"] = _("Switzerland");
                     _map["SY"] = _("Syrian Arab Republic");
-                    _map["TW"] = _("Taiwan, Province of China");
+                    _map["TW"] = _("Taiwan");
                     _map["TJ"] = _("Tajikistan");
-                    _map["TZ"] = _("Tanzania, United Republic of");
+                    _map["TZ"] = _("Tanzania");
                     _map["TH"] = _("Thailand");
                     _map["TL"] = _("Timor-Leste");
                     _map["TG"] = _("Togo");
@@ -271,10 +271,10 @@ namespace Tuner.Model {
                     _map["UY"] = _("Uruguay");
                     _map["UZ"] = _("Uzbekistan");
                     _map["VU"] = _("Vanuatu");
-                    _map["VE"] = _("Venezuela (Bolivarian Republic of)");
+                    _map["VE"] = _("Venezuela");
                     _map["VN"] = _("Viet Nam");
-                    _map["VG"] = _("Virgin Islands (British)");
-                    _map["VI"] = _("Virgin Islands (U.S.)");
+                    _map["VG"] = _("Virgin Islands");
+                    _map["VI"] = _("Virgin Islands");
                     _map["WF"] = _("Wallis and Futuna");
                     _map["EH"] = _("Western Sahara");
                     _map["YE"] = _("Yemen");

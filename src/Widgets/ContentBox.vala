@@ -30,9 +30,11 @@ public class Tuner.ContentBox : Gtk.Box {
     private Gtk.Box _content;
     private AbstractContentList _content_list;
     private Gtk.Stack stack;
+    public HeaderLabel header_label;
     
     public ContentBox (Gtk.Image? icon,
                        string title,
+                       string? subtitle,
                        string? action_icon_name,
                        string? action_tooltip_text) {
         Object (
@@ -62,7 +64,7 @@ public class Tuner.ContentBox : Gtk.Box {
             header.pack_start (icon, false, false, 20);
         }
 
-        var header_label = new HeaderLabel (title);
+        header_label = new HeaderLabel (title);
         header_label.xpad = 20;
         header_label.ypad = 20;
         header.pack_start (header_label, false, false);
@@ -79,6 +81,12 @@ public class Tuner.ContentBox : Gtk.Box {
         }
 
         pack_start (header, false, false);
+
+        if (subtitle != null) {
+            var subtitle_label = new Gtk.Label (subtitle);
+            pack_start (subtitle_label);    
+        }
+
         pack_start (new Gtk.Separator (Gtk.Orientation.HORIZONTAL), false, false);
 
         _content = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);

@@ -102,7 +102,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         selections_category.collapsible = false;
         selections_category.expanded = true;
 
-        var searched_category = new Granite.Widgets.SourceList.ExpandableItem (_("Search"));
+        var searched_category = new Granite.Widgets.SourceList.ExpandableItem (_("Library"));
         searched_category.collapsible = false;
         searched_category.expanded = true;
 
@@ -112,11 +112,15 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         
         source_list = new Granite.Widgets.SourceList ();
 
+        // Discover Box
+        var item1 = new Granite.Widgets.SourceList.Item (_("Discover"));
+        item1.icon = new ThemedIcon ("face-smile");
+        selections_category.add (item1);
 
-        var c1 = create_content_box ("discover", _("Discover"), "face-smile",
+        var c1 = create_content_box ("discover", item1,
                             _("Discover Stations"), "media-playlist-shuffle-symbolic",
                             _("Discover more stations"),
-                            stack, selections_category, source_list);
+                            stack, source_list);
         var s1 = _directory.load_random_stations(10);
         c1.realize.connect (() => {
             try {
@@ -139,9 +143,14 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             }
         });
 
-        var c2 = create_content_box ("trending", _("Trending"), "playlist-queue",
+        // Trending Box
+        var item2 = new Granite.Widgets.SourceList.Item (_("Trending"));
+        item2.icon = new ThemedIcon ("playlist-queue");
+        selections_category.add (item2);
+                
+        var c2 = create_content_box ("trending", item2,
                             _("Trending in the last 24 hours"), null, null,
-                            stack, selections_category, source_list);
+                            stack, source_list);
         var s2 = _directory.load_trending_stations(40);
         c2.realize.connect (() => {
             try {
@@ -154,10 +163,15 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             }
 
         });
-        
-        var c3 = create_content_box ("popular", _("Popular"), "playlist-similar",
+
+        // Popular Box
+        var item3 = new Granite.Widgets.SourceList.Item (_("Popular"));
+        item3.icon = new ThemedIcon ("playlist-similar");
+        selections_category.add (item3);
+                                
+        var c3 = create_content_box ("popular", item3,
                             _("Most-listened over 24 hours"), null, null,
-                            stack, selections_category, source_list);
+                            stack, source_list);
         var s3 = _directory.load_popular_stations(40);
         c3.realize.connect (() => {
             try {
@@ -170,28 +184,75 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             }
         });
 
-        var c4 = create_content_box ("starred", _("Starred by You"), "starred",
+        // Country-specific stations list
+        var item4 = new Granite.Widgets.SourceList.Item (_("Your Country"));
+        item4.icon = new ThemedIcon ("emblem-web");
+        ContentBox c_country;
+        c_country = create_content_box ("my-country", item4,
+           "Your Country", null, null, stack, source_list, true);
+        var c_slist = new StationList ();
+        c_slist.selection_changed.connect (handle_station_click);
+        c_slist.favourites_changed.connect (handle_favourites_changed);
+
+        LocationDiscovery.country_code.begin ((obj, res) => {
+            var country = LocationDiscovery.country_code.end(res);
+            var country_name = Model.Countries.get_by_code (country);
+            item4.name = country_name;
+            c_country.header_label.label = _("Greetings to") + " " + country_name;
+            var s_country = _directory.load_by_country (1000, country);
+            selections_category.add (item4);
+            c_country.realize.connect (() => {
+                warning ("Got into c_country.realize");
+                try {
+                    var stations = s_country.next ();
+                    c_slist.stations = stations;
+                    warning (@"Length of country stations: $(stations.size)");
+                    c_country.content = c_slist;
+                } catch (SourceError e) {
+                    c_country.show_alert ();
+                }
+                warning ("End of c_country.realize");
+
+            });
+        });
+ 
+        // Favourites Box
+        var item5 = new Granite.Widgets.SourceList.Item (_("Starred by You"));
+        item5.icon = new ThemedIcon ("starred");
+        searched_category.add (item5);
+        var c4 = create_content_box ("starred", item5,
                             _("Starred by You"), null, null,
-                            stack, selections_category, source_list, true);
+                            stack, source_list, true);
         
         var slist = new StationList (_directory.get_stored ());
         slist.selection_changed.connect (handle_station_click);
         slist.favourites_changed.connect (handle_favourites_changed);
         c4.content = slist;
 
-        var c5 = create_content_box ("searched", _("Search Result"), "folder-saved-search",
+        // Search Results Box
+        var item6 = new Granite.Widgets.SourceList.Item (_("Recent Search"));
+        item6.icon = new ThemedIcon ("folder-saved-search");
+        searched_category.add (item6);
+        var c5 = create_content_box ("searched", item6,
                             _("Search"), null, null,
-                            stack, searched_category, source_list, true);
+                            stack, source_list, true);
 
-        var c6 = create_content_box ("excluded_countries", _("Excluded Countries"), "folder-saved-search",
-        _("Excluded Countries"), null, null,
-        stack, searched_category, source_list, true);
+        // Excluded Countries Box
+        var item7 = new Granite.Widgets.SourceList.Item (_("Excluded Countries"));
+        item7.icon = new ThemedIcon ("folder-saved-search");
+        searched_category.add (item7);
+        var c6 = create_content_box ("excluded_countries", item7,
+            _("Excluded Countries"), null, null,
+            stack, source_list, true);
         c6.content = new CountryList ();
 
-
+        // Genre Boxes
         foreach (var genre in Model.genres ()) {
-            var cb = create_content_box (genre.name, genre.name, "playlist-symbolic", 
-                genre.name, null, null, stack, genres_category, source_list);
+            var item8 = new Granite.Widgets.SourceList.Item (_(genre.name));
+            item8.icon = new ThemedIcon ("playlist-symbolic");
+            genres_category.add (item8);
+            var cb = create_content_box (genre.name, item8, 
+                genre.name, null, null, stack, source_list);
             var tags = new ArrayList<string>.wrap (genre.tags);
             var ds = _directory.load_by_tags (tags);
             cb.realize.connect (() => {
@@ -221,7 +282,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         source_list.root.add (searched_category);
         source_list.root.add (genres_category);
 
-        source_list.set_size_request (-1, -1);
+        source_list.ellipsize_mode = Pango.EllipsizeMode.NONE;
         source_list.selected = source_list.get_first_child (selections_category);
         source_list.item_selected.connect  ((item) => {
             var selected_item = item.get_data<string> ("stack_child");
@@ -252,7 +313,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             stack.visible_child_name = "searched";
         });
 
-        primary_box.pack1 (source_list, true, false);
+        primary_box.pack1 (source_list, false, false);
         primary_box.pack2 (stack, true, false);
         add (primary_box);
         show_all ();
@@ -260,22 +321,23 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     private ContentBox create_content_box (
              string name,
-             string list_title,
-             string list_icon_name,
+             Granite.Widgets.SourceList.Item item,
+             //string list_icon_name,
              string full_title,
              string? action_icon_name,
              string? action_tooltip_text,
              Gtk.Stack stack,
-             Granite.Widgets.SourceList.ExpandableItem category_item,
+             //Granite.Widgets.SourceList.ExpandableItem category_item,
              Granite.Widgets.SourceList source_list,
              bool enable_count = false) {
-        var item = new Granite.Widgets.SourceList.Item (list_title);
-        item.icon = new ThemedIcon (list_icon_name);
+        //var item = new Granite.Widgets.SourceList.Item (list_title);
+        //item.icon = new ThemedIcon (list_icon_name);
         item.set_data<string> ("stack_child", name);
-        category_item.add (item);
+        //category_item.add (item);
         var c = new ContentBox (
             null,
             full_title,
+            null,
             action_icon_name,
             action_tooltip_text
         );

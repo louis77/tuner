@@ -27,6 +27,7 @@ public struct SearchParams {
     string text;
     ArrayList<string> tags;
     ArrayList<string> uuids;
+    string countrycode;
     SortOrder order;
     bool reverse;
 }
@@ -245,6 +246,9 @@ public class Client : Object {
                 tag_list = string.joinv (",", params.tags.to_array());
             }
             resource += @"&tagList=$tag_list&tagExact=true";
+        }
+        if (params.countrycode.length > 0) {
+            resource += @"&countrycode=$(params.countrycode)";
         }
         if (params.order != SortOrder.RANDOM) {
             // random and reverse doesn't make sense

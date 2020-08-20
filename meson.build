@@ -35,7 +35,9 @@ dependencies = [
     dependency ('gstreamer-1.0'),
     dependency ('gstreamer-player-1.0'),
     dependency ('libsoup-2.4'),
-    dependency ('json-glib-1.0')
+    dependency ('json-glib-1.0'),
+    dependency ('libgeoclue-2.0'),
+    dependency ('geocode-glib-1.0')
 ]
 
 subdir ('src')

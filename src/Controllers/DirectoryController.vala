@@ -51,6 +51,7 @@ public class Tuner.DirectoryController : Object {
     public StationSource load_random_stations (uint limit) {
         var params = RadioBrowser.SearchParams() {
             text  = "",
+            countrycode = "",
             tags  = new ArrayList<string>(),
             order = RadioBrowser.SortOrder.RANDOM
         };
@@ -61,6 +62,7 @@ public class Tuner.DirectoryController : Object {
     public StationSource load_trending_stations (uint limit) {
         var params = RadioBrowser.SearchParams() {
             text    = "",
+            countrycode = "",
             tags    = new ArrayList<string>(),
             order   = RadioBrowser.SortOrder.CLICKTREND,
             reverse = true
@@ -72,6 +74,7 @@ public class Tuner.DirectoryController : Object {
     public StationSource load_popular_stations (uint limit) {
         var params = RadioBrowser.SearchParams() {
             text    = "",
+            countrycode = "",
             tags    = new ArrayList<string>(),
             order   = RadioBrowser.SortOrder.CLICKCOUNT,
             reverse = true
@@ -80,9 +83,21 @@ public class Tuner.DirectoryController : Object {
         return source;
     }
 
+    public StationSource load_by_country (uint limit, string countrycode) {
+        var params = RadioBrowser.SearchParams () {
+            text        = "",
+            countrycode = countrycode,
+            tags  = new ArrayList<string>(),
+            order       = RadioBrowser.SortOrder.NAME
+        };
+        var source = new StationSource(limit, params, provider, store);
+        return source;
+    }
+
     public StationSource load_search_stations (owned string utext, uint limit) {
         var params = RadioBrowser.SearchParams() {
             text    = utext,
+            countrycode = "",
             tags    = new ArrayList<string>(),
             order   = RadioBrowser.SortOrder.CLICKCOUNT,
             reverse = true
@@ -119,6 +134,7 @@ public class Tuner.DirectoryController : Object {
     public StationSource load_by_tags (owned ArrayList<string> utags) {
         var params = RadioBrowser.SearchParams() {
             text    = "",
+            countrycode = "",
             tags    = utags,
             order   = RadioBrowser.SortOrder.VOTES,
             reverse = true
@@ -167,11 +183,19 @@ public class Tuner.StationSource : Object {
         _store = store;
     }
 
+    private bool filterByCountry (RadioBrowser.Station s) {
+        return (s.countrycode != "IN" && s.countrycode == "US");
+    }
+
     public ArrayList<Model.Station>? next () throws SourceError {
         // Fetch one more to determine if source has more items than page size 
         try {
             var raw_stations = _client.search (_params, _page_size + 1, _offset);
-            var stations = convert_stations (raw_stations);
+            // TODO Place filter here?
+            //var filtered_stations = raw_stations.filter (filterByCountry);
+            var filtered_stations = raw_stations.iterator ();
+
+            var stations = convert_stations (filtered_stations);
             _offset += _page_size;
             _more = stations.size > _page_size;
             if (_more) stations.remove_at( (int)_page_size);
@@ -185,9 +209,12 @@ public class Tuner.StationSource : Object {
         return _more;
     }
 
-    private ArrayList<Model.Station> convert_stations (ArrayList<RadioBrowser.Station> raw_stations) {
+    private ArrayList<Model.Station> convert_stations (Iterator<RadioBrowser.Station> raw_stations) {
         var stations = new ArrayList<Model.Station> ();
-        foreach (var station in raw_stations) {
+        
+        while (raw_stations.next()) {
+        // foreach (var station in raw_stations) {
+            var station = raw_stations.get ();
             var s = new Model.Station (
                 station.stationuuid,
                 station.name,

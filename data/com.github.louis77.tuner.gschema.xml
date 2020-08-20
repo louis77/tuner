@@ -32,5 +32,10 @@
             <summary>Do not track</summary>
             <description>If enabled, do not send usage information to radio-browser.org</description>
         </key>
+        <key name="excluded-countries" type="as">
+            <default>[]</default>
+            <summary>Excluded Countries</summary>
+            <description>A list of ISO-3166-2 country codes where we don't show you stations from</description>
+        </key>
     </schema>
 </schemalist>

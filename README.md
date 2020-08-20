@@ -52,6 +52,8 @@ gstreamer-player-1.0
 libsoup-2.4
 json-glib-1.0
 libgee-0.8
+libgeoclue-2-0
+libgeocode-glib0
 meson
 vala
 ```
@@ -62,7 +64,7 @@ Make sure you have the dependencies installed:
 
 ```bash
 sudo apt install git valac meson
-sudo apt install libgtk-3-dev libgee-0.8-dev libgranite-dev libgstreamer1.0-dev libgstreamer-plugins-bad1.0-dev libsoup2.4-dev libjson-glib-dev
+sudo apt install libgtk-3-dev libgee-0.8-dev libgranite-dev libgstreamer1.0-dev libgstreamer-plugins-bad1.0-dev libsoup2.4-dev libjson-glib-dev libgeoclue-2-dev libgeocode-glib-dev
 ```
 
 Then clone this repo and build it locally:
