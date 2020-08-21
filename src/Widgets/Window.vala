@@ -347,11 +347,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         if (enable_count) {
             c.content_changed.connect (() => {
                 var count = c.content.item_count;
-                var badge = @"$count";
-                if (count >= 100) {
-                    badge = "99+";
-                }
-                item.badge = badge;
+                item.badge = @"$count";
             });
         }
         stack.add_named (c, name);
