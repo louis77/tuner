@@ -21,30 +21,27 @@
 
 public class Tuner.StationBox : Tuner.WelcomeButton {
 
-    public Model.Station station { get; private set; }
+    public Model.Station station { get; construct; }
     public StationContextMenu menu { get; private set; }
 
     public StationBox (Model.Station station) {
-        var title = make_title (station.title, station.starred);
         Object (
-            // TODO
-            // description: @"$(station.location) ($(station.clickcount))",
             description: @"$(station.location)",
-            title: title,
-            icon: new Gtk.Image()
+            title: make_title (station.title, station.starred),
+            icon: new Gtk.Image(),
+            station: station
         );
+    }
 
+    construct {
         get_style_context().add_class("station-button");
-        
 
-        this.station = station;
         this.station.notify["starred"].connect ( (sender, prop) => {
             this.title = make_title (this.station.title, this.station.starred);
         });
 
-        realize.connect (() => {
-            realize_favicon ();
-        });
+        // TODO Use a AsyncQueue with limited threads
+        new Thread<void> ("station-box", realize_favicon);
 
         menu = new StationContextMenu (this.station);
         menu.attach_to_widget (this, null);
@@ -56,10 +53,6 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
             }
             return false;
         });
-
-    }
-
-    construct {
         always_show_image = true;
     }
 
@@ -126,6 +119,7 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
         } else {
             set_default_favicon ();
         }
+        Thread.exit (0);
     }
 
     private bool set_favicon_from_stream (InputStream stream) {

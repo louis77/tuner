@@ -22,10 +22,11 @@
 using Gee;
 
 public class Tuner.Window : Gtk.ApplicationWindow {
-    public GLib.Settings settings;
-    public Gtk.Stack stack { get; set; }
 
-    private PlayerController _player;
+    public GLib.Settings settings { get; construct; }
+    public Gtk.Stack stack { get; set; }
+    public PlayerController player { get; construct; }
+
     private DirectoryController _directory;
     private HeaderBar headerbar;
     private Granite.Widgets.SourceList source_list;
@@ -45,20 +46,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         { ACTION_DISABLE_TRACKING, on_action_disable_tracking, null, "false" }
     };
 
-    public Window (Application app, PlayerController player) {
-        Object (application: app);
-
-        application.set_accels_for_action (ACTION_PREFIX + ACTION_PAUSE, {"<Control>5"});
-        application.set_accels_for_action (ACTION_PREFIX + ACTION_QUIT, {"<Control>q", "<Control>w"});
-
-        _player = player;
-        _player.state_changed.connect (handle_player_state_changed);
-        _player.station_changed.connect (headerbar.update_from_station);
-
-        var dark = new Theme ().is_theme_dark ();
-        warning (@"Theme settings: $dark");
-    }
-
     static construct {
         var provider = new Gtk.CssProvider ();
         provider.load_from_resource ("com/github/louis77/tuner/Application.css");
@@ -69,12 +56,28 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         );
     }
 
+    public Window (Application app, PlayerController player) {
+        Object (
+            application: app, 
+            player: player,
+            settings: Application.instance.settings
+        );
+    }
+
     construct {
+        application.set_accels_for_action (ACTION_PREFIX + ACTION_PAUSE, {"<Control>5"});
+        application.set_accels_for_action (ACTION_PREFIX + ACTION_QUIT, {"<Control>q", "<Control>w"});
+
+        player.state_changed.connect (handleplayer_state_changed);
+        player.station_changed.connect (headerbar.update_from_station);
+
+        var dark = new Theme ().is_theme_dark ();
+        warning (@"Theme settings: $dark");
+
         add_action_entries (ACTION_ENTRIES, this);
 
         window_position = Gtk.WindowPosition.CENTER;
         set_default_size (800, 540);
-        settings = Application.instance.settings;
         change_action_state (ACTION_DISABLE_TRACKING, settings.get_boolean ("do-not-track"));
         move (settings.get_int ("pos-x"), settings.get_int ("pos-y"));
 
@@ -88,7 +91,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var stack = new Gtk.Stack ();
         stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
         
-        headerbar = new HeaderBar (this);
+        headerbar = new HeaderBar ();
         set_titlebar (headerbar);
 
         var data_file = Path.build_filename (Application.instance.data_dir, "favorites.json");
@@ -124,7 +127,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var s1 = _directory.load_random_stations(10);
         c1.realize.connect (() => {
             try {
-                var slist = new StationList (s1.next ());
+                var slist = new StationList.with_stations (s1.next ());
                 slist.selection_changed.connect (handle_station_click);
                 slist.favourites_changed.connect (handle_favourites_changed);
                 c1.content = slist;
@@ -134,7 +137,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
         c1.action_activated.connect (() => {
             try {
-                var slist = new StationList (s1.next ());
+                var slist = new StationList.with_stations (s1.next ());
                 slist.selection_changed.connect (handle_station_click);
                 slist.favourites_changed.connect (handle_favourites_changed);
                 c1.content = slist;
@@ -154,7 +157,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var s2 = _directory.load_trending_stations(40);
         c2.realize.connect (() => {
             try {
-                var slist = new StationList (s2.next ());
+                var slist = new StationList.with_stations (s2.next ());
                 slist.selection_changed.connect (handle_station_click);
                 slist.favourites_changed.connect (handle_favourites_changed);
                 c2.content = slist;
@@ -175,7 +178,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var s3 = _directory.load_popular_stations(40);
         c3.realize.connect (() => {
             try {
-                var slist = new StationList (s3.next ());
+                var slist = new StationList.with_stations (s3.next ());
                 slist.selection_changed.connect (handle_station_click);
                 slist.favourites_changed.connect (handle_favourites_changed);
                 c3.content = slist;
@@ -224,7 +227,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                             _("Starred by You"), null, null,
                             stack, source_list, true);
         
-        var slist = new StationList (_directory.get_stored ());
+        var slist = new StationList.with_stations (_directory.get_stored ());
         slist.selection_changed.connect (handle_station_click);
         slist.favourites_changed.connect (handle_favourites_changed);
         c4.content = slist;
@@ -257,7 +260,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             var ds = _directory.load_by_tags (tags);
             cb.realize.connect (() => {
                 try {
-                    var slist1 = new StationList (ds.next ());
+                    var slist1 = new StationList.with_stations (ds.next ());
                     slist1.selection_changed.connect (handle_station_click);
                     slist1.favourites_changed.connect (handle_favourites_changed);
                     cb.content = slist1;
@@ -268,11 +271,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         }
 
         headerbar.star_clicked.connect ( (starred) => {
-            _player.station.toggle_starred ();
+            player.station.toggle_starred ();
         });
 
         refresh_favourites.connect ( () => {
-            var _slist = new StationList (_directory.get_stored ()); 
+            var _slist = new StationList.with_stations (_directory.get_stored ()); 
             _slist.selection_changed.connect (handle_station_click);
             _slist.favourites_changed.connect (handle_favourites_changed);
             c4.content = _slist;
@@ -298,7 +301,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                     if (stations == null || stations.size == 0) {
                         c5.show_nothing_found ();
                     } else {
-                        var _slist = new StationList (stations);
+                        var _slist = new StationList.with_stations (stations);
                         _slist.selection_changed.connect (handle_station_click);
                         _slist.favourites_changed.connect (handle_favourites_changed);
                         c5.content = _slist;
@@ -367,7 +370,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public void handle_station_click (Tuner.Model.Station station) {
         info (@"handle station click for $(station.title)");
         _directory.count_station_click (station);
-        _player.station = station;
+        player.station = station;
     }
 
     public void handle_favourites_changed () {
@@ -376,7 +379,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     public void on_toggle_playback() {
         info ("Stop Playback requested");
-        _player.play_pause ();
+        player.play_pause ();
     }
 
     public void on_action_disable_tracking (SimpleAction action, Variant? parameter) {
@@ -386,7 +389,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         debug (@"on_action_disable_tracking: $new_state");
     }
 
-    public void handle_player_state_changed (Gst.PlayerState state) {
+    public void handleplayer_state_changed (Gst.PlayerState state) {
         switch (state) {
             case Gst.PlayerState.BUFFERING:
                 debug ("player state changed to Buffering");
@@ -400,7 +403,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 debug ("player state changed to Paused");
                 Gdk.threads_add_idle (() => {
                     headerbar.subtitle = _("Paused");
-                    if (_player.can_play()) {
+                    if (player.can_play()) {
                         headerbar.set_playstate (HeaderBar.PlayState.PLAY_ACTIVE);
                     } else {
                         headerbar.set_playstate (HeaderBar.PlayState.PLAY_INACTIVE);
@@ -420,7 +423,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 debug ("player state changed to Stopped");
                 Gdk.threads_add_idle (() => {
                     headerbar.subtitle = _("Stopped");
-                    if (_player.can_play()) {
+                    if (player.can_play()) {
                         headerbar.set_playstate (HeaderBar.PlayState.PLAY_ACTIVE);
                     } else {
                         headerbar.set_playstate (HeaderBar.PlayState.PLAY_INACTIVE);

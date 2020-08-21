@@ -29,7 +29,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         PLAY_INACTIVE
     }
 
-    public Tuner.Window main_window { get; construct; }
     public Gtk.Button play_button { get; set; }
 
     private Gtk.Button star_button;
@@ -43,11 +42,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     public signal void searched_for (string text);
     public signal void search_focused ();
 
-    public HeaderBar (Tuner.Window window) {
-        Object (
-            main_window: window
-        );
-
+    construct {
         show_close_button = true;
 
         var station_info = new Gtk.Grid ();

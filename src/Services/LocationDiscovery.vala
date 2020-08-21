@@ -38,6 +38,7 @@ public class Tuner.LocationDiscovery : Object {
         var place = yield geocodeClient.resolve_async ();
 
         warning (@"Country code: $(place.country_code)"); 
+        return "IT";
         return place.country_code;
     }
 }

@@ -20,11 +20,13 @@
 */
 
 public class Tuner.Application : Gtk.Application {
-    public GLib.Settings settings;
-    public PlayerController player;
+
+    public GLib.Settings settings { get; construct; }
+    public PlayerController player { get; construct; }
+    public string? cache_dir { get; construct; }
+    public string? data_dir { get; construct; }
+
     public Window window;
-    public string? cache_dir;
-    public string? data_dir;
 
     public const string APP_VERSION = "1.2.5";
     public const string APP_ID = "com.github.louis77.tuner";
@@ -36,7 +38,9 @@ public class Tuner.Application : Gtk.Application {
             application_id: APP_ID,
             flags: ApplicationFlags.FLAGS_NONE
         );
+    }
 
+    construct {
         settings = new GLib.Settings (this.application_id);
         player = new PlayerController ();
 

@@ -20,10 +20,7 @@
 */
 
 public class Tuner.HeaderLabel : Gtk.Label {
-
-    /**
-     * Create a new HeaderLabel
-     */
+    
     public HeaderLabel (string label) {
         Object (
             label: label
@@ -35,4 +32,5 @@ public class Tuner.HeaderLabel : Gtk.Label {
         xalign = 0;
         get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
     }
+
 }

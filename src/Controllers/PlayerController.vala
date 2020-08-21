@@ -29,6 +29,10 @@ public class Tuner.PlayerController : Object {
     public signal void state_changed (Gst.PlayerState state);
 
     construct {
+        if (Gst.PbUtils.install_plugins_supported ()) {
+            warning (@"GSTREAMER PLUGIN SUPPORTED");
+            Gst.PbUtils.install_plugins_sync ({"icydemux"}, null);
+        }
         player = new Gst.Player (null, null);
         player.state_changed.connect ((state) => {
             // Don't forward flickering between playing and buffering
@@ -36,6 +40,11 @@ public class Tuner.PlayerController : Object {
                 state_changed (state);
                 current_state = state;
             }
+        });
+        player.media_info_updated.connect ((obj, mediainfo) => {
+            warning ("Media Info updated");
+            var tags = obj.media_info.get_tags ();
+            warning (@"Title: $tags");
         });
     }
 
@@ -61,8 +70,15 @@ public class Tuner.PlayerController : Object {
     }
 
     public void play_station (Model.Station station) {
+        /* 
+        var launchline = @"souphttpsrc location=$(station.url) iradio-mode=true ! icydemux ! autoaudiosink";
+        warning (launchline);
+        var pipeline = Gst.parse_launch (launchline);
+        pipeline.set_state(Gst.State.PLAYING);
+        */
         player.uri = station.url;
         player.play ();
+        
         station_changed (station);
     }
 

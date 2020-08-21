@@ -20,12 +20,15 @@
 */
 
 public class Tuner.StationContextMenu : Gtk.Menu {
-    public Model.Station station;
+    public Model.Station station { get; construct; }
 
     public StationContextMenu (Model.Station station) {
-        Object ();
-        this.station = station;
+        Object (
+            station: station
+        );
+    }
 
+    construct {
         var label = new Gtk.MenuItem.with_label (this.station.title);
         label.sensitive = false;
         this.append (label);

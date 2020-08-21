@@ -32,12 +32,13 @@ public class Tuner.CountryList : AbstractContentList {
             valign: Gtk.Align.START,
             selection_mode: Gtk.SelectionMode.NONE
         );
+    }
 
+    construct {
         var button = new Gtk.Button ();
         button.label = "a country";
 
         add (button);
-        // show_all ();
     }
 
     public override uint item_count { get; set; }
