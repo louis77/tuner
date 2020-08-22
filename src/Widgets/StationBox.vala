@@ -43,11 +43,15 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
         // TODO Use a AsyncQueue with limited threads
         new Thread<void> ("station-box", realize_favicon);
 
-        menu = new StationContextMenu (this.station);
-        menu.attach_to_widget (this, null);
-        menu.show_all ();
+
         event.connect ((e) => {
             if (e.type == Gdk.EventType.BUTTON_PRESS && e.button.button == 3) {
+                if (menu == null) {
+                    menu = new StationContextMenu (this.station);
+                    menu.attach_to_widget (this, null);
+                    menu.show_all ();
+                }
+
                 menu.popup_at_pointer ();
                 return true;
             }
