@@ -50,6 +50,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
         _title_label = new Gtk.Label (_("Choose a station"));
         _title_label.get_style_context ().add_class (Granite.STYLE_CLASS_H4_LABEL);
+        _title_label.ellipsize = Pango.EllipsizeMode.MIDDLE;
         _subtitle_label = new Gtk.Label (_("Paused"));
         _favicon_image = new Gtk.Image.from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG);
 
@@ -177,11 +178,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         _station.notify.connect ( (sender, property) => {
             handle_station_change ();
         });
-        var short_title = station.title;
-        if (short_title.length > 50) {
-            short_title = short_title[0:30] + "…";
-        }
-        title = short_title;
+        title = station.title;
         subtitle = _("Connecting");
         load_favicon (station.favicon_url);
         starred = station.starred;

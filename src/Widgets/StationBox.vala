@@ -46,6 +46,9 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
 
         event.connect ((e) => {
             if (e.type == Gdk.EventType.BUTTON_PRESS && e.button.button == 3) {
+                // Optimization:
+                // Create menu on demand not on construction
+                // because it is rarely used for all stations
                 if (menu == null) {
                     menu = new StationContextMenu (this.station);
                     menu.attach_to_widget (this, null);
