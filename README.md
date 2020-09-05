@@ -8,11 +8,15 @@ Discover and Listen to random radio stations while you work.
 
 ## Installation
 
+### Flathub
+
+<a href='https://flathub.org/apps/details/com.github.louis77.tuner'><img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>
+
 ### elementary OS
 [![Get it on AppCenter](https://appcenter.elementary.io/badge.svg)](https://appcenter.elementary.io/com.github.louis77.tuner)
 
-### Arch Linux
-Arch-based Linux users can find `Tuner` under the name [tuner-git](https://aur.archlinux.org/packages/tuner-git/) in the **AUR**:
+### Arch Linux / AUR
+Arch-based GNU/Linux users can find `Tuner` under the name [tuner-git](https://aur.archlinux.org/packages/tuner-git/) in the **AUR**:
 
 ```sh
 $ yay -S tuner-git`
@@ -79,7 +83,7 @@ sudo ninja install
 
 - [faleksandar.com](https://faleksandar.com/) for icons and colors
 - [radio-browser.info](http://www.radio-browser.info) for providing a free radio station directory
-- [elementary.io](https://elementary.io) for making Linux enjoyable on the desktop
+- [elementary.io](https://elementary.io) for making GNU/Linux enjoyable on the desktop
 - [Vala](https://wiki.gnome.org/Projects/Vala) - a great programming language
 - [Vala Language Server](https://github.com/benwaffle/vala-language-server) - makes Vala even better
 - [@NathanBnm](https://github.com/NathanBnm) - provided French translations

@@ -1,5 +1,6 @@
 com.github.louis77.tuner (1.2.5) RELEASED; urgency=medium
 
+  * "Visit Website" link in station context menu
   * Add manual dark mode switch in settings
   * Fix missing icons for non-elementary OS systems
 
