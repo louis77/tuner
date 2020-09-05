@@ -21,7 +21,7 @@
 
 public class Tuner.LocationDiscovery : Object {
 
-    public static async string country_code () {
+    public static async string country_code () throws GLib.Error {
         warning (@"Starting Geo Location service...");
         var geoclueClient = yield new GClue.Simple (
             Application.APP_ID,
@@ -29,16 +29,14 @@ public class Tuner.LocationDiscovery : Object {
             null
         );
 
-        warning ("Created geoclueClient");
         var location = geoclueClient.location;
-        warning (@"Got country: $(location.heading)");
+        warning (@"Got heading: $(location.heading)");
 
         var geoLocation = new Geocode.Location (location.latitude, location.longitude);
         var geocodeClient = new Geocode.Reverse.for_location (geoLocation);
         var place = yield geocodeClient.resolve_async ();
 
         warning (@"Country code: $(place.country_code)"); 
-        return "IT";
         return place.country_code;
     }
 }

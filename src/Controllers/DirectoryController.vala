@@ -88,7 +88,8 @@ public class Tuner.DirectoryController : Object {
             text        = "",
             countrycode = countrycode,
             tags  = new ArrayList<string>(),
-            order       = RadioBrowser.SortOrder.NAME
+            order   = RadioBrowser.SortOrder.CLICKCOUNT,
+            reverse = true
         };
         var source = new StationSource(limit, params, provider, store);
         return source;
@@ -181,10 +182,6 @@ public class Tuner.StationSource : Object {
         _params = params;
         _client = client;
         _store = store;
-    }
-
-    private bool filterByCountry (RadioBrowser.Station s) {
-        return (s.countrycode != "IN" && s.countrycode == "US");
     }
 
     public ArrayList<Model.Station>? next () throws SourceError {

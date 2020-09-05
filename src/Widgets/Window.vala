@@ -62,12 +62,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             player: player,
             settings: Application.instance.settings
         );
+
+        application.set_accels_for_action (ACTION_PREFIX + ACTION_PAUSE, {"<Control>5"});
+        application.set_accels_for_action (ACTION_PREFIX + ACTION_QUIT, {"<Control>q", "<Control>w"});
     }
 
     construct {
-        application.set_accels_for_action (ACTION_PREFIX + ACTION_PAUSE, {"<Control>5"});
-        application.set_accels_for_action (ACTION_PREFIX + ACTION_QUIT, {"<Control>q", "<Control>w"});
-
         headerbar = new HeaderBar ();
         set_titlebar (headerbar);
 
@@ -201,14 +201,21 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         c_slist.favourites_changed.connect (handle_favourites_changed);
 
         LocationDiscovery.country_code.begin ((obj, res) => {
-            var country = LocationDiscovery.country_code.end(res);
+            string country;
+            try {
+                country = LocationDiscovery.country_code.end(res);
+            } catch (GLib.Error e) {
+                // GeoLocation Service might not be available
+                // We don't do anything about it
+                return;
+            }
+
             var country_name = Model.Countries.get_by_code (country);
             item4.name = country_name;
-            c_country.header_label.label = _("Greetings to") + " " + country_name;
-            var s_country = _directory.load_by_country (1000, country);
+            c_country.header_label.label = _("Top 100 in") + " " + country_name;
+            var s_country = _directory.load_by_country (100, country);
             selections_category.add (item4);
             c_country.realize.connect (() => {
-                warning ("Got into c_country.realize");
                 try {
                     var stations = s_country.next ();
                     c_slist.stations = stations;
@@ -217,8 +224,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 } catch (SourceError e) {
                     c_country.show_alert ();
                 }
-                warning ("End of c_country.realize");
-
             });
         });
  
@@ -244,6 +249,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                             stack, source_list, true);
 
         // Excluded Countries Box
+        /* not finished yet 
         var item7 = new Granite.Widgets.SourceList.Item (_("Excluded Countries"));
         item7.icon = new ThemedIcon ("folder-saved-search");
         searched_category.add (item7);
@@ -251,7 +257,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             _("Excluded Countries"), null, null,
             stack, source_list, true);
         c6.content = new CountryList ();
-
+        */
+        
         // Genre Boxes
         foreach (var genre in Model.genres ()) {
             var item8 = new Granite.Widgets.SourceList.Item (_(genre.name));
@@ -352,6 +359,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
         if (enable_count) {
             c.content_changed.connect (() => {
+                if (c.content == null) return;
                 var count = c.content.item_count;
                 item.badge = @"$count";
             });

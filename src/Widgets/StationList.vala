@@ -32,7 +32,8 @@ public class Tuner.StationList : AbstractContentList {
     public ArrayList<Model.Station> stations {
         set construct {
             clear ();
-
+            if (value == null) return;
+            
             foreach (var s in value) {
                 s.notify["starred"].connect ( () => {
                     favourites_changed ();
