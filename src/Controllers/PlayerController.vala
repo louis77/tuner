@@ -92,7 +92,7 @@ public class Tuner.PlayerController : Object {
 
     private string? extract_title_from_stream (Gst.PlayerMediaInfo media_info) {
         string? title = null;
-        unowned var streamlist = media_info.get_stream_list ();
+        var streamlist = media_info.get_stream_list ().copy ();
         foreach (var stream in streamlist) {
             var tags = stream.get_tags ();
             tags.foreach ((list, tag) => {
