@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-10 17:19+0200\n"
+"POT-Creation-Date: 2020-09-06 01:26+0200\n"
 "PO-Revision-Date: 2020-09-01 13:53+0200\n"
+"Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: \n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.4.1\n"
-"Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: nl\n"
 
 #: src/Models/Genre.vala:35
 msgid "70s"
@@ -82,99 +82,125 @@ msgstr "Geen radiostations gevonden"
 msgid "Please try a different search term."
 msgstr "Probeer een andere zoekopdracht."
 
-#: src/Widgets/HeaderBar.vala:56
+#: src/Widgets/HeaderBar.vala:52
 msgid "Choose a station"
 msgstr "Kies een radiostation"
 
-#: src/Widgets/HeaderBar.vala:58 src/Widgets/Window.vala:316
-msgid "Paused"
-msgstr "Onderbroken"
-
-#: src/Widgets/HeaderBar.vala:72
+#: src/Widgets/HeaderBar.vala:69
 msgid "About"
 msgstr "Over"
 
-#: src/Widgets/HeaderBar.vala:76
+#: src/Widgets/HeaderBar.vala:73
 msgid "Do not track"
 msgstr "Niet bijhouden"
 
-#: src/Widgets/HeaderBar.vala:78
+#: src/Widgets/HeaderBar.vala:75
 msgid "If enabled, we will not send usage info to radio-browser.org"
-msgstr ""
-"Schakel in om geen gebruiksinformatie te delen met radio-browser.org"
+msgstr "Schakel in om geen gebruiksinformatie te delen met radio-browser.org"
 
-#: src/Widgets/HeaderBar.vala:94
+#: src/Widgets/HeaderBar.vala:82
+msgid "Light mode"
+msgstr ""
+
+#: src/Widgets/HeaderBar.vala:83
+msgid "Dark mode"
+msgstr ""
+
+#: src/Widgets/HeaderBar.vala:108
 msgid "Preferences"
 msgstr "Voorkeuren"
 
-#: src/Widgets/HeaderBar.vala:100
+#: src/Widgets/HeaderBar.vala:114
 msgid "Station name"
 msgstr "Naam van radiostation"
 
-#: src/Widgets/HeaderBar.vala:116
+#: src/Widgets/HeaderBar.vala:134
 msgid "Star this station"
 msgstr "Toevoegen aan fovorieten"
 
-#: src/Widgets/HeaderBar.vala:169
-msgid "Connecting"
-msgstr "Bezig met verbinden"
-
-#: src/Widgets/Window.vala:98
-msgid "Selections"
-msgstr "Selecties"
-
-#: src/Widgets/Window.vala:102 src/Widgets/Window.vala:165
-msgid "Search"
-msgstr "Zoeken"
-
-#: src/Widgets/Window.vala:106
-msgid "Genres"
-msgstr "Genres"
-
-#: src/Widgets/Window.vala:113
-msgid "Discover"
-msgstr "Bladeren"
-
-#: src/Widgets/Window.vala:114
-msgid "Discover Stations"
-msgstr "Ontdek radiostations"
-
-#: src/Widgets/Window.vala:115
-msgid "Discover more stations"
-msgstr "Meer radiostations tonen"
-
-#: src/Widgets/Window.vala:133
-msgid "Trending"
-msgstr "Populair"
-
-#: src/Widgets/Window.vala:134
-msgid "Trending in the last 24 hours"
-msgstr "Populair in de afgelopen 24 uur"
-
-#: src/Widgets/Window.vala:146
-msgid "Popular"
-msgstr "Populair"
-
-#: src/Widgets/Window.vala:147
-msgid "Most-listened over 24 hours"
-msgstr "Meest beluisterd in de afgelopen 24 uur"
-
-#: src/Widgets/Window.vala:158 src/Widgets/Window.vala:159
-msgid "Starred by You"
-msgstr "Favorieten"
-
-#: src/Widgets/Window.vala:164
-msgid "Search Result"
-msgstr "Zoekresultaat"
-
-#: src/Widgets/Window.vala:308
-msgid "Buffering"
-msgstr "Bezig met bufferen"
-
-#: src/Widgets/Window.vala:328
+#: src/Widgets/HeaderBar.vala:183
 msgid "Playing"
 msgstr "Je luistert naar"
 
-#: src/Widgets/Window.vala:336
-msgid "Stopped"
-msgstr "Gestopt"
+#: src/Widgets/Window.vala:107
+msgid "Selections"
+msgstr "Selecties"
+
+#: src/Widgets/Window.vala:111
+msgid "Library"
+msgstr ""
+
+#: src/Widgets/Window.vala:115
+msgid "Genres"
+msgstr "Genres"
+
+#. Discover Box
+#: src/Widgets/Window.vala:122
+msgid "Discover"
+msgstr "Bladeren"
+
+#: src/Widgets/Window.vala:127
+msgid "Discover Stations"
+msgstr "Ontdek radiostations"
+
+#: src/Widgets/Window.vala:128
+msgid "Discover more stations"
+msgstr "Meer radiostations tonen"
+
+#. Trending Box
+#: src/Widgets/Window.vala:153
+msgid "Trending"
+msgstr "Populair"
+
+#: src/Widgets/Window.vala:158
+msgid "Trending in the last 24 hours"
+msgstr "Populair in de afgelopen 24 uur"
+
+#. Popular Box
+#: src/Widgets/Window.vala:174
+msgid "Popular"
+msgstr "Populair"
+
+#: src/Widgets/Window.vala:179
+msgid "Most-listened over 24 hours"
+msgstr "Meest beluisterd in de afgelopen 24 uur"
+
+#. Country-specific stations list
+#: src/Widgets/Window.vala:194
+#, fuzzy
+msgid "Your Country"
+msgstr "Country"
+
+#: src/Widgets/Window.vala:215
+msgid "Top 100 in"
+msgstr ""
+
+#. Favourites Box
+#: src/Widgets/Window.vala:231 src/Widgets/Window.vala:235
+msgid "Starred by You"
+msgstr "Favorieten"
+
+#. Search Results Box
+#: src/Widgets/Window.vala:244
+#, fuzzy
+msgid "Recent Search"
+msgstr "Zoeken"
+
+#: src/Widgets/Window.vala:248
+msgid "Search"
+msgstr "Zoeken"
+
+#~ msgid "Paused"
+#~ msgstr "Onderbroken"
+
+#~ msgid "Connecting"
+#~ msgstr "Bezig met verbinden"
+
+#~ msgid "Search Result"
+#~ msgstr "Zoekresultaat"
+
+#~ msgid "Buffering"
+#~ msgstr "Bezig met bufferen"
+
+#~ msgid "Stopped"
+#~ msgstr "Gestopt"
