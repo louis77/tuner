@@ -27,24 +27,23 @@ public class Tuner.PlayerController : Object {
 
     public signal void station_changed (Model.Station station);
     public signal void state_changed (Gst.PlayerState state);
+    public signal void title_changed (string title);
 
     construct {
-        if (Gst.PbUtils.install_plugins_supported ()) {
-            warning (@"GSTREAMER PLUGIN SUPPORTED");
-            Gst.PbUtils.install_plugins_sync ({"icydemux"}, null);
-        }
         player = new Gst.Player (null, null);
         player.state_changed.connect ((state) => {
-            // Don't forward flickering between playing and buffering
+            // Don't for warning(title);ward flickering between playing and buffering
             if (!(current_state == Gst.PlayerState.PLAYING && state == Gst.PlayerState.BUFFERING) && !(state == current_state)) {
                 state_changed (state);
                 current_state = state;
             }
         });
-        player.media_info_updated.connect ((obj, mediainfo) => {
-            warning ("Media Info updated");
-            var tags = obj.media_info.get_tags ();
-            warning (@"Title: $tags");
+        player.media_info_updated.connect ((obj) => {
+            string? title = extract_title_from_stream (obj);
+            if (title != null) {
+                debug(@"Got new title from station: $title");
+                title_changed(title);
+            }
         });
     }
 
@@ -70,15 +69,8 @@ public class Tuner.PlayerController : Object {
     }
 
     public void play_station (Model.Station station) {
-        /* 
-        var launchline = @"souphttpsrc location=$(station.url) iradio-mode=true ! icydemux ! autoaudiosink";
-        warning (launchline);
-        var pipeline = Gst.parse_launch (launchline);
-        pipeline.set_state(Gst.State.PLAYING);
-        */
         player.uri = station.url;
         player.play ();
-        
         station_changed (station);
     }
 
@@ -96,6 +88,20 @@ public class Tuner.PlayerController : Object {
                 player.play ();
                 break;
         }
+    }
+
+    private string? extract_title_from_stream (Gst.PlayerMediaInfo media_info) {
+        string? title = null;
+        unowned var streamlist = media_info.get_stream_list ();
+        foreach (var stream in streamlist) {
+            var tags = stream.get_tags ();
+            tags.foreach ((list, tag) => {
+                if (tag == "title") {
+                    list.get_string(tag, out title);
+                }
+            });
+        }
+        return title;
     }
 
 }

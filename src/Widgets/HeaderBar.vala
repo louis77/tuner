@@ -35,7 +35,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     private bool _starred = false;
     private Model.Station _station;
     private Gtk.Label _title_label;
-    private Gtk.Label _subtitle_label;
+    private RevealLabel _subtitle_label;
     private Gtk.Image _favicon_image;
 
     public signal void star_clicked (bool starred);
@@ -46,12 +46,13 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         show_close_button = true;
 
         var station_info = new Gtk.Grid ();
+        station_info.width_request = 200;
         station_info.column_spacing = 10;
 
         _title_label = new Gtk.Label (_("Choose a station"));
         _title_label.get_style_context ().add_class (Granite.STYLE_CLASS_H4_LABEL);
         _title_label.ellipsize = Pango.EllipsizeMode.MIDDLE;
-        _subtitle_label = new Gtk.Label (_("Paused"));
+        _subtitle_label = new RevealLabel ();
         _favicon_image = new Gtk.Image.from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG);
 
         station_info.attach (_favicon_image, 0, 0, 1, 2);
@@ -179,7 +180,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             handle_station_change ();
         });
         title = station.title;
-        subtitle = _("Connecting");
+        subtitle = _("Playing");
         load_favicon (station.favicon_url);
         starred = station.starred;
     }

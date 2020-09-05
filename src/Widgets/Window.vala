@@ -68,8 +68,14 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         application.set_accels_for_action (ACTION_PREFIX + ACTION_PAUSE, {"<Control>5"});
         application.set_accels_for_action (ACTION_PREFIX + ACTION_QUIT, {"<Control>q", "<Control>w"});
 
+        headerbar = new HeaderBar ();
+        set_titlebar (headerbar);
+
         player.state_changed.connect (handleplayer_state_changed);
         player.station_changed.connect (headerbar.update_from_station);
+        player.title_changed.connect ((title) => {
+            headerbar.subtitle = title;
+        });
 
         var dark = new Theme ().is_theme_dark ();
         warning (@"Theme settings: $dark");
@@ -91,9 +97,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var stack = new Gtk.Stack ();
         stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
         
-        headerbar = new HeaderBar ();
-        set_titlebar (headerbar);
-
         var data_file = Path.build_filename (Application.instance.data_dir, "favorites.json");
         var store = new Model.StationStore (data_file);
         _directory = new DirectoryController (store);
@@ -394,7 +397,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             case Gst.PlayerState.BUFFERING:
                 debug ("player state changed to Buffering");
                 Gdk.threads_add_idle (() => {
-                    headerbar.subtitle = _("Buffering");
                     headerbar.set_playstate (HeaderBar.PlayState.PAUSE_ACTIVE);
                     return false;
                 });
@@ -402,7 +404,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             case Gst.PlayerState.PAUSED:
                 debug ("player state changed to Paused");
                 Gdk.threads_add_idle (() => {
-                    headerbar.subtitle = _("Paused");
                     if (player.can_play()) {
                         headerbar.set_playstate (HeaderBar.PlayState.PLAY_ACTIVE);
                     } else {
@@ -414,7 +415,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             case Gst.PlayerState.PLAYING:
                 debug ("player state changed to Playing");
                 Gdk.threads_add_idle (() => {
-                    headerbar.subtitle = _("Playing");
                     headerbar.set_playstate (HeaderBar.PlayState.PAUSE_ACTIVE);
                     return false;
                 });
@@ -422,7 +422,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             case Gst.PlayerState.STOPPED:
                 debug ("player state changed to Stopped");
                 Gdk.threads_add_idle (() => {
-                    headerbar.subtitle = _("Stopped");
                     if (player.can_play()) {
                         headerbar.set_playstate (HeaderBar.PlayState.PLAY_ACTIVE);
                     } else {
