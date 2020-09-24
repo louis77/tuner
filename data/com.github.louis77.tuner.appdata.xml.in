@@ -71,7 +71,18 @@
         <p>Other improvements:</p>
         <ul>
           <li>Added Dutch translation</li>
-          <li>Added manual dark mode switch in settings</li>
+        </ul>
+        <p>Bugfixes:</p>
+        <ul>
+          <li>Fix missing icons for non elementary OS systems</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.2.5" date="2020-08-14">
+      <description>
+        <p>Other improvements:</p>
+        <ul>
+          <li>Add manual dark mode switch in settings</li>
           <li>Compact sidebar and content window</li>
         </ul>
         <p>Bugfixes:</p>
