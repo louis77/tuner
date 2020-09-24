@@ -83,10 +83,9 @@ sudo ninja install
 
 - [faleksandar.com](https://faleksandar.com/) for icons and colors
 - [radio-browser.info](http://www.radio-browser.info) for providing a free radio station directory
-- [elementary.io](https://elementary.io) for making GNU/Linux enjoyable on the desktop
-- [Vala](https://wiki.gnome.org/Projects/Vala) - a great programming language
-- [Vala Language Server](https://github.com/benwaffle/vala-language-server) - makes Vala even better
-- [@NathanBnm](https://github.com/NathanBnm) - provided French translations
+- [@NathanBnm](https://github.com/NathanBnm) - French translation
+- [@DevAlien](https://github.com/DevAlien) - Italian translation 
+- [@Vistaus](https://github.com/Vistaus) - Dutch translation
 - [@btd1337](https://github.com/btd1337) - supports Tuner on Arch Linux / AUR
 
 ### Free Software Foundation
