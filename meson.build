@@ -2,8 +2,12 @@
 project (
     'com.github.louis77.tuner',
     'vala', 'c',
-    version: '1.2.5'
+    version: '1.3.0'
 )
+
+# if meson.get_compiler ('vala').get_id() == 'valac'
+#     extra_args = ['-g', '--save_temps']
+# endif
 
 # Translation module
 i18n = import ('i18n')

@@ -150,7 +150,7 @@ msgstr "Meer radiostations tonen"
 #. Trending Box
 #: src/Widgets/Window.vala:153
 msgid "Trending"
-msgstr "Populair"
+msgstr "Trending"
 
 #: src/Widgets/Window.vala:158
 msgid "Trending in the last 24 hours"

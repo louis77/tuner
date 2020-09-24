@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=Tuner
-GenericName=Internet Radio Station Receiver
+GenericName=Internet Radio Player
 Comment=Listen to Radio Stations all over the world
 Categories=Audio;Tuner;Player;Music;
 Exec=com.github.louis77.tuner

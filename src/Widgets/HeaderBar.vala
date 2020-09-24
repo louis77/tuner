@@ -121,10 +121,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         });
         pack_end (searchentry);
 
-
-       
-        pack_end (mode_switch);
-
         star_button = new Gtk.Button.from_icon_name (
             "non-starred",
             Gtk.IconSize.LARGE_TOOLBAR

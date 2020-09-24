@@ -16,7 +16,7 @@
     <p>Tuner uses the community-driven station catalog radio-browser.info.</p>
     <ul>
       <li>Discover new stations every day</li>
-      <li>Star stations you like</li>
+      <li>Star stations you like and visit their website</li>
       <li>Control Tuner from your volume indicator</li>
     </ul>
   </description>
@@ -58,15 +58,18 @@
   </provides>
 
   <releases>
-    <release version="1.2.5" date="2020-08-14">
+    <release version="1.3.0" date="2020-09-24">
       <description>
         <p>New features:</p>
         <ul>
+          <li>Show the current track playing if supported by station</li>
+          <li>Show Top 100 stations of user country if detectable</li>
           <li>"Visit Website" link in station context menu</li>
-          <li>Add manual dark mode switch in settings</li>
         </ul>
         <p>Other improvements:</p>
         <ul>
+          <li>Added Dutch translation</li>
+          <li>Added manual dark mode switch in settings</li>
           <li>Compact sidebar and content window</li> 
         </ul>
         <p>Bugfixes:</p>
