@@ -23,11 +23,11 @@
 
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_light_1.2.4.png</image>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_light_1.3.0.png</image>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_dark_1.2.4.png</image>
-    </screenshot>  
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_dark_1.3.0.png</image>
+    </screenshot>
   </screenshots>
 
   <developer_name>Louis Brauer</developer_name>
@@ -70,13 +70,13 @@
         <ul>
           <li>Added Dutch translation</li>
           <li>Added manual dark mode switch in settings</li>
-          <li>Compact sidebar and content window</li> 
+          <li>Compact sidebar and content window</li>
         </ul>
         <p>Bugfixes:</p>
         <ul>
           <li>Fix missing icons for non elementary OS systems</li>
-        </ul>        
-      </description>    
+        </ul>
+      </description>
     </release>
     <release version="1.2.4" date="2020-08-10">
       <description>
@@ -96,7 +96,7 @@
         <p>Bugfixes:</p>
         <ul>
           <li>Fix broken dark theme support (elementary and Adwaita dark look fine now)</li>
-        </ul>        
+        </ul>
       </description>
     </release>
     <release version="1.2.3" date="2020-06-29">

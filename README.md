@@ -4,7 +4,7 @@
 Discover and Listen to random radio stations while you work.
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
-![Screenshot 01](docs/screen_dark_1.2.4.png?raw=true)
+![Screenshot 01](docs/screen_dark_1.3.0.png?raw=true)
 
 ## Installation
 
@@ -34,7 +34,7 @@ While I hacked on this App, I discovered so many cool and new stations, which ma
 
 - Uses radio-browser.info catalog
 - Presets various selection of stations (random, top, trending, genres)
-- Save favourite stations 
+- Save favourite stations
 - Sends a click count to radio-browser.info on station click
 - Sends a vote count to radio-browser.info when you star a station
 - DBus integration to pause/resume playing and show station info in Wingpanel
@@ -94,7 +94,7 @@ sudo ninja install
 ![FSF Member badge](https://static.fsf.org/nosvn/associate/crm/4989673.png)
 
 I'm a member of the Free Software Foundation. Without GNU/Linux and all the great
-work from people all over the world producing free software, this project would 
+work from people all over the world producing free software, this project would
 not have been possible.
 
 Consider joining the FSF, [here is why](https://my.fsf.org/join?referrer=4989673).
