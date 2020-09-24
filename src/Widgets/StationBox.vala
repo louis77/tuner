@@ -41,7 +41,7 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
         });
 
         // TODO Use a AsyncQueue with limited threads
-        new Thread<void> ("station-box", realize_favicon);
+        new Thread<int>("station-box", realize_favicon);
 
 
         event.connect ((e) => {
@@ -68,7 +68,7 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
         return Application.STAR_CHAR + title;
     }
 
-    private void realize_favicon () {
+    private int realize_favicon () {
         // TODO: REFACTOR in separate class
         var favicon_cache_file = Path.build_filename (Application.instance.cache_dir, station.id);
         if (FileUtils.test (favicon_cache_file, FileTest.EXISTS | FileTest.IS_REGULAR)) {
@@ -79,7 +79,7 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
                     set_default_favicon ();
                 };
                 favicon_stream.close ();
-                return;
+                return 0;
             } catch (Error e) {
                 warning (@"unable to read local favicon: %s %s", favicon_cache_file, e.message);
             }
@@ -106,7 +106,7 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
                 try {
                     var stream = file.create_readwrite (FileCreateFlags.PRIVATE);
                     stream.output_stream.splice (data_stream, 0);
-                    stream.close ();    
+                    stream.close ();
                 } catch (Error e) {
                     // File already created by another stationbox
                     // TODO: possible race condition
@@ -126,7 +126,9 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
         } else {
             set_default_favicon ();
         }
+
         Thread.exit (0);
+        return 0;
     }
 
     private bool set_favicon_from_stream (InputStream stream) {

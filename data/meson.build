@@ -32,7 +32,7 @@ i18n.merge_file (
 )
 
 # Install schema
-install_data (
-    meson.project_name () + '.gschema.xml',
-    install_dir: join_paths (get_option ('datadir'), 'glib-2.0', 'schemas')
-)
+schemas_dir = get_option('prefix') / get_option('datadir') / 'glib-2.0' / 'schemas'
+settings_schemas = [ meson.project_name () + '.gschema.xml' ]
+install_data(settings_schemas, install_dir: schemas_dir)
+
