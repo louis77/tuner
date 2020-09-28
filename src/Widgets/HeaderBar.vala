@@ -87,8 +87,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         var menu_grid = new Gtk.Grid ();
         menu_grid.margin_bottom = 3;
         menu_grid.margin_top = 5;
-        menu_grid.margin_left = 3;
-        menu_grid.margin_right = 3;
+        menu_grid.margin_start = 3;
+        menu_grid.margin_end = 3;
         menu_grid.row_spacing = 3;
         menu_grid.orientation = Gtk.Orientation.VERTICAL;
         menu_grid.attach (mode_switch, 1, 0);
