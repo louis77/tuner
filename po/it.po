@@ -1,13 +1,21 @@
+# Italian translations for com.github.louis77.tuner package.
+# Copyright (C) 2020 THE com.github.louis77.tuner'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the com.github.louis77.tuner package.
+# Automatically generated, 2020.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: Tuner\n"
+"Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-06 01:26+0200\n"
+"POT-Creation-Date: 2020-09-28 11:51+0200\n"
+"PO-Revision-Date: 2020-09-28 11:48+0200\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: POEditor.com\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: src/Models/Genre.vala:35
 msgid "70s"
@@ -106,11 +114,11 @@ msgstr "Preferenze"
 msgid "Station name"
 msgstr "Nome stazione"
 
-#: src/Widgets/HeaderBar.vala:134
+#: src/Widgets/HeaderBar.vala:130
 msgid "Star this station"
 msgstr "Aggiungi ai preferiti"
 
-#: src/Widgets/HeaderBar.vala:183
+#: src/Widgets/HeaderBar.vala:179
 msgid "Playing"
 msgstr "Giocando"
 
@@ -126,7 +134,6 @@ msgstr ""
 msgid "Genres"
 msgstr "Generi"
 
-#. Discover Box
 #: src/Widgets/Window.vala:122
 msgid "Discover"
 msgstr "Scoprire"
@@ -139,7 +146,6 @@ msgstr "Scopri le stazioni"
 msgid "Discover more stations"
 msgstr "Scopri altre stazioni"
 
-#. Trending Box
 #: src/Widgets/Window.vala:153
 msgid "Trending"
 msgstr "Trending"
@@ -148,7 +154,6 @@ msgstr "Trending"
 msgid "Trending in the last 24 hours"
 msgstr "Di tendenza nelle ultime 24 ore"
 
-#. Popular Box
 #: src/Widgets/Window.vala:174
 msgid "Popular"
 msgstr "Popolare"
@@ -157,7 +162,6 @@ msgstr "Popolare"
 msgid "Most-listened over 24 hours"
 msgstr "I più ascoltati per 24 ore"
 
-#. Country-specific stations list
 #: src/Widgets/Window.vala:194
 #, fuzzy
 msgid "Your Country"
@@ -167,12 +171,10 @@ msgstr "Nazione"
 msgid "Top 100 in"
 msgstr ""
 
-#. Favourites Box
 #: src/Widgets/Window.vala:231 src/Widgets/Window.vala:235
 msgid "Starred by You"
 msgstr "I tuoi preferiti"
 
-#. Search Results Box
 #: src/Widgets/Window.vala:244
 #, fuzzy
 msgid "Recent Search"
@@ -181,18 +183,3 @@ msgstr "Ricerca"
 #: src/Widgets/Window.vala:248
 msgid "Search"
 msgstr "Ricerca"
-
-#~ msgid "Paused"
-#~ msgstr "In pausa"
-
-#~ msgid "Connecting"
-#~ msgstr "Collegamento"
-
-#~ msgid "Search Result"
-#~ msgstr "Risultato della ricerca"
-
-#~ msgid "Buffering"
-#~ msgstr "buffering"
-
-#~ msgid "Stopped"
-#~ msgstr "Fermato"
