@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-28 11:51+0200\n"
+"POT-Creation-Date: 2020-11-08 19:03+0100\n"
 "PO-Revision-Date: 2020-09-28 11:48+0200\n"
 "Last-Translator: Nathan Bonnemains (@NathanBnm)\n"
 "Language-Team: none\n"
@@ -91,7 +91,7 @@ msgstr "À propos"
 
 #: src/Widgets/HeaderBar.vala:73
 msgid "Do not track"
-msgstr "Ne pas suivre"
+msgstr "Ne pas me pister"
 
 #: src/Widgets/HeaderBar.vala:75
 msgid "If enabled, we will not send usage info to radio-browser.org"
@@ -101,11 +101,11 @@ msgstr ""
 
 #: src/Widgets/HeaderBar.vala:82
 msgid "Light mode"
-msgstr ""
+msgstr "Thème clair"
 
 #: src/Widgets/HeaderBar.vala:83
 msgid "Dark mode"
-msgstr ""
+msgstr "Thème sombre"
 
 #: src/Widgets/HeaderBar.vala:108
 msgid "Preferences"
@@ -129,12 +129,13 @@ msgstr "Sélection"
 
 #: src/Widgets/Window.vala:111
 msgid "Library"
-msgstr ""
+msgstr "Bibliothèque"
 
 #: src/Widgets/Window.vala:115
 msgid "Genres"
 msgstr "Genres"
 
+#. Discover Box
 #: src/Widgets/Window.vala:122
 msgid "Discover"
 msgstr "Découvrir"
@@ -147,6 +148,7 @@ msgstr "Découvrir des stations"
 msgid "Discover more stations"
 msgstr "Découvrir plus de stations"
 
+#. Trending Box
 #: src/Widgets/Window.vala:153
 msgid "Trending"
 msgstr "Tendances"
@@ -155,6 +157,7 @@ msgstr "Tendances"
 msgid "Trending in the last 24 hours"
 msgstr "Tendances des dernières 24 heures"
 
+#. Popular Box
 #: src/Widgets/Window.vala:174
 msgid "Popular"
 msgstr "Populaire"
@@ -163,23 +166,25 @@ msgstr "Populaire"
 msgid "Most-listened over 24 hours"
 msgstr "Les plus écoutées ces dernières 24 heures"
 
+#. Country-specific stations list
 #: src/Widgets/Window.vala:194
 #, fuzzy
 msgid "Your Country"
-msgstr "Country"
+msgstr "Dans votre pays"
 
 #: src/Widgets/Window.vala:215
 msgid "Top 100 in"
-msgstr ""
+msgstr "Top 100 en"
 
+#. Favourites Box
 #: src/Widgets/Window.vala:231 src/Widgets/Window.vala:235
 msgid "Starred by You"
 msgstr "Vos favoris"
 
+#. Search Results Box
 #: src/Widgets/Window.vala:244
-#, fuzzy
 msgid "Recent Search"
-msgstr "Recherche"
+msgstr "Recherches récentes"
 
 #: src/Widgets/Window.vala:248
 msgid "Search"
