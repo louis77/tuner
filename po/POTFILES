@@ -1,3 +1,4 @@
+src/Models/Countries.vala
 src/Models/Genre.vala
 
 src/Widgets/ContentBox.vala
