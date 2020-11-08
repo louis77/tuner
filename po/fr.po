@@ -751,7 +751,7 @@ msgstr "Roumanie"
 
 #: src/Models/Countries.vala:217
 msgid "Russian Federation"
-msgstr "Fédération de Russie"
+msgstr "Russie"
 
 #: src/Models/Countries.vala:218
 msgid "Rwanda"
@@ -955,7 +955,7 @@ msgstr "Émirats arabes unis"
 
 #: src/Models/Countries.vala:268
 msgid "United Kingdom of Great Britain and Northern Ireland"
-msgstr "Royaume-Uni de Grande-Bretagne et d'Irlande"
+msgstr "Royaume-Uni"
 
 #: src/Models/Countries.vala:269
 msgid "United States of America"
