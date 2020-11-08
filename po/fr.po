@@ -63,7 +63,7 @@ msgstr "Rock"
 
 #: src/Widgets/ContentBox.vala:47
 msgid "Nothing here"
-msgstr "Rien ici"
+msgstr "Il n'y a rien ici"
 
 #: src/Widgets/ContentBox.vala:47
 msgid ""
@@ -79,7 +79,7 @@ msgstr "Aucune station trouvée"
 
 #: src/Widgets/ContentBox.vala:57
 msgid "Please try a different search term."
-msgstr "Veuillez essayer un autre terme de recherche."
+msgstr "Veuillez essayer une autre recherche."
 
 #: src/Widgets/HeaderBar.vala:52
 msgid "Choose a station"
@@ -168,7 +168,6 @@ msgstr "Les plus écoutées ces dernières 24 heures"
 
 #. Country-specific stations list
 #: src/Widgets/Window.vala:194
-#, fuzzy
 msgid "Your Country"
 msgstr "Dans votre pays"
 
