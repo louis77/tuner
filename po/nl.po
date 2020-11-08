@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-08 19:20+0100\n"
+"POT-Creation-Date: 2020-11-08 19:47+0100\n"
 "PO-Revision-Date: 2020-09-28 11:48+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -113,13 +113,22 @@ msgstr "Voorkeuren"
 msgid "Station name"
 msgstr "Naam van radiostation"
 
-#: src/Widgets/HeaderBar.vala:130
+#: src/Widgets/HeaderBar.vala:130 src/Widgets/StationContextMenu.vala:71
 msgid "Star this station"
 msgstr "Toevoegen aan fovorieten"
 
 #: src/Widgets/HeaderBar.vala:179
 msgid "Playing"
 msgstr "Je luistert naar"
+
+#: src/Widgets/StationContextMenu.vala:41
+msgid "Visit Website"
+msgstr ""
+
+#: src/Widgets/StationContextMenu.vala:71
+#, fuzzy
+msgid "Unstar this station"
+msgstr "Toevoegen aan fovorieten"
 
 #: src/Widgets/Window.vala:107
 msgid "Selections"
@@ -165,26 +174,26 @@ msgid "Most-listened over 24 hours"
 msgstr "Meest beluisterd in de afgelopen 24 uur"
 
 #. Country-specific stations list
-#: src/Widgets/Window.vala:194
+#: src/Widgets/Window.vala:194 src/Widgets/Window.vala:198
 #, fuzzy
 msgid "Your Country"
 msgstr "Country"
 
-#: src/Widgets/Window.vala:215
+#: src/Widgets/Window.vala:216
 msgid "Top 100 in"
 msgstr ""
 
 #. Favourites Box
-#: src/Widgets/Window.vala:231 src/Widgets/Window.vala:235
+#: src/Widgets/Window.vala:232 src/Widgets/Window.vala:236
 msgid "Starred by You"
 msgstr "Favorieten"
 
 #. Search Results Box
-#: src/Widgets/Window.vala:244
+#: src/Widgets/Window.vala:245
 #, fuzzy
 msgid "Recent Search"
 msgstr "Zoeken"
 
-#: src/Widgets/Window.vala:248
+#: src/Widgets/Window.vala:249
 msgid "Search"
 msgstr "Zoeken"

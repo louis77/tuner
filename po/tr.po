@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-08 19:20+0100\n"
+"POT-Creation-Date: 2020-11-08 19:47+0100\n"
 "PO-Revision-Date: 2020-11-08 19:15+0100\n"
 "Last-Translator: Safak <bjksafak45@gmail.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
@@ -114,13 +114,22 @@ msgstr "Tercihler"
 msgid "Station name"
 msgstr "İstasyon ismi"
 
-#: src/Widgets/HeaderBar.vala:130
+#: src/Widgets/HeaderBar.vala:130 src/Widgets/StationContextMenu.vala:71
 msgid "Star this station"
 msgstr "Bu istasyona yıldız ekle"
 
 #: src/Widgets/HeaderBar.vala:179
 msgid "Playing"
 msgstr "Çalma"
+
+#: src/Widgets/StationContextMenu.vala:41
+msgid "Visit Website"
+msgstr ""
+
+#: src/Widgets/StationContextMenu.vala:71
+#, fuzzy
+msgid "Unstar this station"
+msgstr "Bu istasyona yıldız ekle"
 
 #: src/Widgets/Window.vala:107
 msgid "Selections"
@@ -166,26 +175,26 @@ msgid "Most-listened over 24 hours"
 msgstr "24 saat içinde en çok dinlenenler"
 
 #. Country-specific stations list
-#: src/Widgets/Window.vala:194
+#: src/Widgets/Window.vala:194 src/Widgets/Window.vala:198
 #, fuzzy
 msgid "Your Country"
 msgstr "Ülke"
 
-#: src/Widgets/Window.vala:215
+#: src/Widgets/Window.vala:216
 msgid "Top 100 in"
 msgstr ""
 
 #. Favourites Box
-#: src/Widgets/Window.vala:231 src/Widgets/Window.vala:235
+#: src/Widgets/Window.vala:232 src/Widgets/Window.vala:236
 msgid "Starred by You"
 msgstr "Yıldız Eklediniz"
 
 #. Search Results Box
-#: src/Widgets/Window.vala:244
+#: src/Widgets/Window.vala:245
 #, fuzzy
 msgid "Recent Search"
 msgstr "Arama"
 
-#: src/Widgets/Window.vala:248
+#: src/Widgets/Window.vala:249
 msgid "Search"
 msgstr "Arama"

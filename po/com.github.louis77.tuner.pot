@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-08 19:20+0100\n"
+"POT-Creation-Date: 2020-11-08 19:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -111,12 +111,20 @@ msgstr ""
 msgid "Station name"
 msgstr ""
 
-#: src/Widgets/HeaderBar.vala:130
+#: src/Widgets/HeaderBar.vala:130 src/Widgets/StationContextMenu.vala:71
 msgid "Star this station"
 msgstr ""
 
 #: src/Widgets/HeaderBar.vala:179
 msgid "Playing"
+msgstr ""
+
+#: src/Widgets/StationContextMenu.vala:41
+msgid "Visit Website"
+msgstr ""
+
+#: src/Widgets/StationContextMenu.vala:71
+msgid "Unstar this station"
 msgstr ""
 
 #: src/Widgets/Window.vala:107
@@ -163,24 +171,24 @@ msgid "Most-listened over 24 hours"
 msgstr ""
 
 #. Country-specific stations list
-#: src/Widgets/Window.vala:194
+#: src/Widgets/Window.vala:194 src/Widgets/Window.vala:198
 msgid "Your Country"
 msgstr ""
 
-#: src/Widgets/Window.vala:215
+#: src/Widgets/Window.vala:216
 msgid "Top 100 in"
 msgstr ""
 
 #. Favourites Box
-#: src/Widgets/Window.vala:231 src/Widgets/Window.vala:235
+#: src/Widgets/Window.vala:232 src/Widgets/Window.vala:236
 msgid "Starred by You"
 msgstr ""
 
 #. Search Results Box
-#: src/Widgets/Window.vala:244
+#: src/Widgets/Window.vala:245
 msgid "Recent Search"
 msgstr ""
 
-#: src/Widgets/Window.vala:248
+#: src/Widgets/Window.vala:249
 msgid "Search"
 msgstr ""
