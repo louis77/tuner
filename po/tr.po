@@ -1,17 +1,17 @@
-# Italian translations for com.github.louis77.tuner package.
+# Turkish translations for com.github.louis77.tuner package.
 # Copyright (C) 2020 THE com.github.louis77.tuner'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the com.github.louis77.tuner package.
-# Automatically generated, 2020.
+# Safak <bjksafak45@gmail.com>, 2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-08 19:20+0100\n"
-"PO-Revision-Date: 2020-09-28 11:48+0200\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: it\n"
+"PO-Revision-Date: 2020-11-08 19:15+0100\n"
+"Last-Translator: Safak <bjksafak45@gmail.com>\n"
+"Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,35 +19,35 @@ msgstr ""
 
 #: src/Models/Genre.vala:35
 msgid "70s"
-msgstr "70s"
+msgstr "70'ler "
 
 #: src/Models/Genre.vala:36
 msgid "80s"
-msgstr "80s"
+msgstr "80'ler"
 
 #: src/Models/Genre.vala:37
 msgid "90s"
-msgstr "90s"
+msgstr "90'lar"
 
 #: src/Models/Genre.vala:38
 msgid "Classical"
-msgstr "Classico"
+msgstr "Klasik"
 
 #: src/Models/Genre.vala:39
 msgid "Country"
-msgstr "Nazione"
+msgstr "Ülke"
 
 #: src/Models/Genre.vala:40
 msgid "Dance"
-msgstr "Danza"
+msgstr "Dans"
 
 #: src/Models/Genre.vala:41
 msgid "Electronic"
-msgstr "Elettronico"
+msgstr "Elektronik"
 
 #: src/Models/Genre.vala:42
 msgid "House"
-msgstr "Casa"
+msgstr "Ev"
 
 #: src/Models/Genre.vala:43
 msgid "Jazz"
@@ -59,44 +59,44 @@ msgstr "Pop"
 
 #: src/Models/Genre.vala:45
 msgid "Rock"
-msgstr "Roccia"
+msgstr "Rock"
 
 #: src/Widgets/ContentBox.vala:47
 msgid "Nothing here"
-msgstr "Niente qui"
+msgstr "Burada hiçbir şey yok"
 
 #: src/Widgets/ContentBox.vala:47
 msgid ""
 "Something went wrong loading radio stations data from radio-browser.info. "
 "Please try again later."
 msgstr ""
-"Qualcosa è andato storto durante il caricamento dei dati delle stazioni "
-"radio da radio-browser.info. Per favore riprova più tardi."
+"radio-browser.info 'dan radyo istasyonları verileri yüklenirken bir sorun "
+"oluştu. Lütfen daha sonra tekrar deneyiniz."
 
 #: src/Widgets/ContentBox.vala:57
 msgid "No stations found"
-msgstr "Nessuna stazione trovata"
+msgstr "İstasyon bulunamadı"
 
 #: src/Widgets/ContentBox.vala:57
 msgid "Please try a different search term."
-msgstr "Prova un termine di ricerca diverso."
+msgstr "Lütfen başka bir isim girin"
 
 #: src/Widgets/HeaderBar.vala:52
 msgid "Choose a station"
-msgstr "Scegli una stazione"
+msgstr "Bir istasyon seçin"
 
 #: src/Widgets/HeaderBar.vala:69
 msgid "About"
-msgstr "Di"
+msgstr "Hakkında"
 
 #: src/Widgets/HeaderBar.vala:73
 msgid "Do not track"
-msgstr "Non tracciare"
+msgstr "Takip Etme"
 
 #: src/Widgets/HeaderBar.vala:75
 msgid "If enabled, we will not send usage info to radio-browser.org"
 msgstr ""
-"Se abilitato, non invieremo informazioni sull'utilizzo a radio-browser.org"
+"Etkinleştirilirse, kullanım bilgilerini radio-browser.org'a göndermeyeceğiz"
 
 #: src/Widgets/HeaderBar.vala:82
 msgid "Light mode"
@@ -108,23 +108,23 @@ msgstr ""
 
 #: src/Widgets/HeaderBar.vala:108
 msgid "Preferences"
-msgstr "Preferenze"
+msgstr "Tercihler"
 
 #: src/Widgets/HeaderBar.vala:114
 msgid "Station name"
-msgstr "Nome stazione"
+msgstr "İstasyon ismi"
 
 #: src/Widgets/HeaderBar.vala:130
 msgid "Star this station"
-msgstr "Aggiungi ai preferiti"
+msgstr "Bu istasyona yıldız ekle"
 
 #: src/Widgets/HeaderBar.vala:179
 msgid "Playing"
-msgstr "Giocando"
+msgstr "Çalma"
 
 #: src/Widgets/Window.vala:107
 msgid "Selections"
-msgstr "Selezioni"
+msgstr "Seçimler"
 
 #: src/Widgets/Window.vala:111
 msgid "Library"
@@ -132,44 +132,44 @@ msgstr ""
 
 #: src/Widgets/Window.vala:115
 msgid "Genres"
-msgstr "Generi"
+msgstr "Türler"
 
 #. Discover Box
 #: src/Widgets/Window.vala:122
 msgid "Discover"
-msgstr "Scoprire"
+msgstr "Keşfedin"
 
 #: src/Widgets/Window.vala:127
 msgid "Discover Stations"
-msgstr "Scopri le stazioni"
+msgstr "İstasyonları Keşfedin"
 
 #: src/Widgets/Window.vala:128
 msgid "Discover more stations"
-msgstr "Scopri altre stazioni"
+msgstr "Daha fazla istasyon keşfedin"
 
 #. Trending Box
 #: src/Widgets/Window.vala:153
 msgid "Trending"
-msgstr "Trending"
+msgstr "Trend Olanlar"
 
 #: src/Widgets/Window.vala:158
 msgid "Trending in the last 24 hours"
-msgstr "Di tendenza nelle ultime 24 ore"
+msgstr "Son 24 saat içinde trend olan istasyonlar"
 
 #. Popular Box
 #: src/Widgets/Window.vala:174
 msgid "Popular"
-msgstr "Popolare"
+msgstr "Popüler"
 
 #: src/Widgets/Window.vala:179
 msgid "Most-listened over 24 hours"
-msgstr "I più ascoltati per 24 ore"
+msgstr "24 saat içinde en çok dinlenenler"
 
 #. Country-specific stations list
 #: src/Widgets/Window.vala:194
 #, fuzzy
 msgid "Your Country"
-msgstr "Nazione"
+msgstr "Ülke"
 
 #: src/Widgets/Window.vala:215
 msgid "Top 100 in"
@@ -178,14 +178,14 @@ msgstr ""
 #. Favourites Box
 #: src/Widgets/Window.vala:231 src/Widgets/Window.vala:235
 msgid "Starred by You"
-msgstr "I tuoi preferiti"
+msgstr "Yıldız Eklediniz"
 
 #. Search Results Box
 #: src/Widgets/Window.vala:244
 #, fuzzy
 msgid "Recent Search"
-msgstr "Ricerca"
+msgstr "Arama"
 
 #: src/Widgets/Window.vala:248
 msgid "Search"
-msgstr "Ricerca"
+msgstr "Arama"
