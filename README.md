@@ -86,6 +86,7 @@ sudo ninja install
 - [@NathanBnm](https://github.com/NathanBnm) - French translation
 - [@DevAlien](https://github.com/DevAlien) - Italian translation 
 - [@Vistaus](https://github.com/Vistaus) - Dutch translation
+- [@safak45x](https://github.com/safak45x) - Turkish translation
 - [@btd1337](https://github.com/btd1337) - supports Tuner on Arch Linux / AUR
 
 ### Free Software Foundation
