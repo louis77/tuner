@@ -31,9 +31,10 @@ public class Tuner.AboutDialog : Gtk.AboutDialog {
         documenters = null;
         translator_credits = """French translation by NathanBnm https://github.com/NathanBnm
 Italian translation by DevAlien https://github.com/DevAlien
-Dutch translation by Vistaus https://github.com/Vistaus""";
+Dutch translation by Vistaus https://github.com/Vistaus
+Turkish translation by Safak https://github.com/safak45x""";
         logo_icon_name = Application._instance.get_application_id ();
-        program_name = "Tuner for elementary OS";
+        program_name = "Tuner";
         comments = "Listen to internet radio stations";
         copyright = "Copyright © 2020 Louis Brauer";
         version = @"v$(Application.APP_VERSION)";
@@ -55,7 +56,7 @@ License along with this program; if not, write to the
 Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 Boston, MA 02110-1301 USA
 
-Authored by: Louis Brauer <louis77@member.fsf.org>""";
+Authored by: Louis Brauer <louis77@member.fsf.org> and contributors""";
         wrap_license = true;
     
         website = "https://github.com/louis77/tuner";
