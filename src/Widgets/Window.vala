@@ -195,7 +195,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         item4.icon = new ThemedIcon ("emblem-web");
         ContentBox c_country;
         c_country = create_content_box ("my-country", item4,
-           "Your Country", null, null, stack, source_list, true);
+                            _("Your Country"), null, null,
+                            stack, source_list, true);
         var c_slist = new StationList ();
         c_slist.selection_changed.connect (handle_station_click);
         c_slist.favourites_changed.connect (handle_favourites_changed);

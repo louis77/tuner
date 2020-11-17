@@ -1,7 +1,9 @@
+src/Models/Countries.vala
 src/Models/Genre.vala
 
 src/Widgets/ContentBox.vala
 src/Widgets/HeaderBar.vala
+src/Widgets/StationContextMenu.vala
 src/Widgets/Window.vala
 
 src/Application.vala
