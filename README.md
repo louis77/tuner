@@ -92,6 +92,7 @@ sudo ninja install
 - [@Vistaus](https://github.com/Vistaus) - Dutch translation
 - [@safak45x](https://github.com/safak45x) - Turkish translation
 - [@btd1337](https://github.com/btd1337) - supports Tuner on Arch Linux / AUR
+- [@SwampRabbit](https://github.com/SwampRabbit) - supports Tuner on MX Linux
 
 ### Free Software Foundation
 
