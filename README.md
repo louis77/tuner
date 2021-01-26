@@ -23,6 +23,10 @@ $ yay -S tuner-git`
 ```
 Thanks to [@btd1377](https://github.com/btd1337) for supporting Tuner on Arch Linux!
 
+### MX Linux
+MX Linux users can find `Tuner` by using the MX Package Installer (currently under the MX Test Repo tab)
+
+Thanks to SwampRabbit for packaging Tuner for MX Linux!
 
 ## Motivation
 
@@ -88,6 +92,7 @@ sudo ninja install
 - [@Vistaus](https://github.com/Vistaus) - Dutch translation
 - [@safak45x](https://github.com/safak45x) - Turkish translation
 - [@btd1337](https://github.com/btd1337) - supports Tuner on Arch Linux / AUR
+- [@SwampRabbit](https://github.com/SwampRabbit) - supports Tuner on MX Linux
 
 ### Free Software Foundation
 
