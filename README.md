@@ -50,6 +50,11 @@ While I hacked on this App, I discovered so many cool and new stations, which ma
 - Community-listening: see what other users are listening to right now
 - Other ideas? Create an issue!
 
+## Environment Variables
+
+* `TUNER_API` - a `:` separated list of API servers to read from, e.g.
+    * `export TUNER_API="de1.api.radio-browser.info:nl1.api.radio-browser.info"; com.github.louis77.tuner`
+
 ## Dependencies
 
 ```bash
