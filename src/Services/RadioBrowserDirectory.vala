@@ -98,7 +98,7 @@ public enum SortOrder {
     }
 }
 
-private const string[] BOOTSTRAP_SERVERS = {
+private const string[] DEFAULT_BOOTSTRAP_SERVERS = {
     "de1.api.radio-browser.info",
     "fr1.api.radio-browser.info",
     "nl1.api.radio-browser.info"
@@ -140,7 +140,16 @@ public class Client : Object {
         _session.user_agent = USER_AGENT;
         _session.timeout = 3;
 
-        randomized_servers = new ArrayList<string>.wrap (BOOTSTRAP_SERVERS, EqualCompareString);
+
+        string[] servers;
+        string _servers = GLib.Environment.get_variable ("TUNER_API");
+        if ( _servers != null ){
+            servers = _servers.split(":");
+        } else {
+            servers = DEFAULT_BOOTSTRAP_SERVERS;
+        }
+
+        randomized_servers = new ArrayList<string>.wrap (servers, EqualCompareString);
         randomized_servers.sort (RandomSortFunc);
 
         current_server = @"https://$(randomized_servers[0])";
