@@ -141,19 +141,15 @@ public class Client : Object {
         _session.timeout = 3;
 
 
-        string[] BOOTSTRAP_SERVERS;
-        string[] environ = Environ.get ();
-        string _BOOTSTRAP_SERVERS = Environ.get_variable(environ, "TUNER_API");
-        if ( _BOOTSTRAP_SERVERS != null ){
-            BOOTSTRAP_SERVERS = _BOOTSTRAP_SERVERS.split(":");
+        string[] servers;
+        string _servers = GLib.Environment.get_variable ("TUNER_API");
+        if ( _servers != null ){
+            servers = _servers.split(":");
         } else {
-            BOOTSTRAP_SERVERS = DEFAULT_BOOTSTRAP_SERVERS;
+            servers = DEFAULT_BOOTSTRAP_SERVERS;
         }
-        //strfreev(environ); // from https://valadoc.org/glib-2.0/GLib.Environ.@get.html, but causes a segfault?
 
-
-
-        randomized_servers = new ArrayList<string>.wrap (BOOTSTRAP_SERVERS, EqualCompareString);
+        randomized_servers = new ArrayList<string>.wrap (servers, EqualCompareString);
         randomized_servers.sort (RandomSortFunc);
 
         current_server = @"https://$(randomized_servers[0])";
