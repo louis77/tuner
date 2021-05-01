@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-08 19:20+0100\n"
-"PO-Revision-Date: 2020-09-28 11:53+0200\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2021-04-25 15:00+0100\n"
+"Last-Translator: Albano Battistella<albano_battistella@hotmail.com>\n"
+"Language-Team: Italian\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,9 +23,8 @@ msgid "Tuner"
 msgstr "Tuner"
 
 #: data/com.github.louis77.tuner.desktop.in:5
-#, fuzzy
 msgid "Internet Radio Player"
-msgstr "Ricevitore della stazione radio Internet"
+msgstr "Lettore diInternet Radio"
 
 #: data/com.github.louis77.tuner.desktop.in:6
 msgid "Listen to Radio Stations all over the world"
@@ -74,7 +73,7 @@ msgstr "Scopri nuove stazioni ogni giorno"
 #: data/com.github.louis77.tuner.appdata.xml.in:21
 #, fuzzy
 msgid "Star stations you like and visit their website"
-msgstr "Aggiungi ai preferiti le stazioni che ti piacciono"
+msgstr "Aggiungi ai preferiti le stazioni che ti piacciono e visita il loro sito web"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:22
 msgid "Control Tuner from your volume indicator"
@@ -88,15 +87,15 @@ msgstr "Nuove caratteristiche:"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:66
 msgid "Show the current track playing if supported by station"
-msgstr ""
+msgstr "Mostra la traccia corrente in riproduzione se supportata dalla stazione"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:67
 msgid "Show Top 100 stations of user country if detectable"
-msgstr ""
+msgstr "Mostra le prime 100 stazioni del paese dell'utente, se rilevabili"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:68
 msgid "\"Visit Website\" link in station context menu"
-msgstr ""
+msgstr "\"Visita sito web\" link nel menu contestuale della stazione"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:70
 #: data/com.github.louis77.tuner.appdata.xml.in:82
@@ -106,9 +105,8 @@ msgid "Other improvements:"
 msgstr "Altri miglioramenti:"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:72
-#, fuzzy
 msgid "Added Dutch translation"
-msgstr "Aggiunta traduzione in francese"
+msgstr "Aggiunta traduzione in olandese"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:74
 #: data/com.github.louis77.tuner.appdata.xml.in:87
@@ -120,15 +118,15 @@ msgstr "bugfix:"
 #: data/com.github.louis77.tuner.appdata.xml.in:76
 #: data/com.github.louis77.tuner.appdata.xml.in:89
 msgid "Fix missing icons for non elementary OS systems"
-msgstr ""
+msgstr "Corretto le icone mancanti per i sistemi operativi non elemtary OS"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:84
 msgid "Add manual dark mode switch in settings"
-msgstr ""
+msgstr "Aggiunto l'interruttore manuale della modalità oscura nelle impostazioni"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:85
 msgid "Compact sidebar and content window"
-msgstr ""
+msgstr "Barra laterale compatta e finestra dei contenuti"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:97
 msgid "Right-click a station to add or remove to favourites directly"
@@ -173,7 +171,6 @@ msgstr ""
 "migliorare il tempo di avvio dell'app"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:106
-#, fuzzy
 msgid "Added Italian translation"
 msgstr "Aggiunta traduzione in italiano"
 
