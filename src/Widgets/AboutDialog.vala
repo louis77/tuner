@@ -29,9 +29,10 @@ public class Tuner.AboutDialog : Gtk.AboutDialog {
         authors = {"Louis Brauer"};
         documenters = null;
         translator_credits = """French translation by NathanBnm https://github.com/NathanBnm
-Italian translation by DevAlien https://github.com/DevAlien
+Italian translation by DevAlien https://github.com/DevAlien 
+and albanobattistella https://github.com/albanobattistella
 Dutch translation by Vistaus https://github.com/Vistaus
-Turkish translation by Safak https://github.com/safak45x""";
+Turkish translation by safak45x https://github.com/safak45x""";
         logo_icon_name = Application._instance.get_application_id ();
         program_name = "Tuner";
         comments = "Listen to internet radio stations";

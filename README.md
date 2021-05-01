@@ -94,6 +94,7 @@ sudo ninja install
 - [radio-browser.info](http://www.radio-browser.info) for providing a free radio station directory
 - [@NathanBnm](https://github.com/NathanBnm) - French translation
 - [@DevAlien](https://github.com/DevAlien) - Italian translation 
+- [@albanobattistella](https://github.com/albanobattistella) - Italian translation
 - [@Vistaus](https://github.com/Vistaus) - Dutch translation
 - [@safak45x](https://github.com/safak45x) - Turkish translation
 - [@btd1337](https://github.com/btd1337) - supports Tuner on Arch Linux / AUR
