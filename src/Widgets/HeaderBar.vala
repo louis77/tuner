@@ -29,6 +29,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     }
 
     public Gtk.Button play_button { get; set; }
+    public Gtk.VolumeButton volume_button;
 
     private Gtk.Button star_button;
     private bool _starred = false;
@@ -132,6 +133,11 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         });
 
         pack_start (star_button);
+
+        volume_button = new Gtk.VolumeButton ();
+        pack_start (volume_button);
+        
+
         set_playstate (PlayState.PAUSE_INACTIVE);
     }
 

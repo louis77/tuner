@@ -27,6 +27,7 @@ public class Tuner.PlayerController : Object {
     public signal void station_changed (Model.Station station);
     public signal void state_changed (Gst.PlayerState state);
     public signal void title_changed (string title);
+    public signal void volume_changed (double volume);
 
     construct {
         player = new Gst.Player (null, null);
@@ -43,6 +44,10 @@ public class Tuner.PlayerController : Object {
                 debug(@"Got new title from station: $title");
                 title_changed(title);
             }
+        });
+        player.volume_changed.connect ((obj) => {
+            warning(@"Volume changed to: $(obj.volume)");
+            volume_changed(obj.volume);
         });
     }
 
@@ -65,6 +70,11 @@ public class Tuner.PlayerController : Object {
             _station = value;
             play_station (_station);
         }
+    }
+
+    public double volume {
+        get { return player.volume; }
+        set { player.volume = value; }
     }
 
     public void play_station (Model.Station station) {

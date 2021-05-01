@@ -75,6 +75,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         player.title_changed.connect ((title) => {
             headerbar.subtitle = title;
         });
+        player.volume_changed.connect ((volume) => {
+            headerbar.volume_button.value = volume;
+        });
+        headerbar.volume_button.value_changed.connect ((value) => {
+            player.volume = value;
+        });
 
         var dark = new Theme ().is_theme_dark ();
         warning (@"Theme settings: $dark");
