@@ -24,6 +24,15 @@
     letter-spacing: -0.05em;
 }
 
+.h3 {
+	font-weight: 500;
+}
+
+.station-button-description {
+    font-size: 14px;
+    color: rgb(100, 100, 100);
+}
+
 .station-button:hover {
         background-color: darker(@bg_color);
 }
@@ -33,5 +42,21 @@
 	border-style: solid;
     border-color: #dddddd;
 	box-shadow: 2px 2px 3px grey;
-	background-color: #eee
+	background-color: #eee;
+	margin-right: 5px;
+    min-width: 48px;
 }
+
+/* Used in Station Button for Codec/Bitrate Tag */
+.tag {
+	border-radius: 5px;
+    box-shadow: none;
+    min-width: 20px;
+    min-height: 18px;
+    font-size: 11px;
+    font-weight: 400;
+    margin-top: 3px;
+    margin-left: -2px;
+    padding-bottom: 0px;
+}
+

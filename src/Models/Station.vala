@@ -25,6 +25,8 @@ public class Tuner.Model.Station : Object {
     public string url { get; set; }
     public bool starred { get; set; }
     public string homepage { get; set; }
+    public string codec { get; set; }
+    public int bitrate { get; set; }
 
     public string? favicon_url { get; set; }
     public uint clickcount = 0;

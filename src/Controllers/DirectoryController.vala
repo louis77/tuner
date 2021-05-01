@@ -222,6 +222,9 @@ public class Tuner.StationSource : Object {
             s.favicon_url = station.favicon;
             s.clickcount = station.clickcount;
             s.homepage = station.homepage;
+            s.codec = station.codec;
+            s.bitrate = station.bitrate;
+
             s.notify["starred"].connect ( (sender, property) => {
                 if (s.starred) {
                     _store.add (s);

@@ -27,6 +27,7 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
         Object (
             description: make_description (station.location),
             title: make_title (station.title, station.starred),
+            tag: make_tag (station.codec, station.bitrate),
             icon: new Gtk.Image(),
             station: station
         );
@@ -67,6 +68,15 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
         return Application.STAR_CHAR + title;
     }
 
+    private static string make_tag (string codec, int bitrate) {
+        var tag = codec;
+        if (bitrate > 0)
+        {
+            tag = tag + " " + bitrate.to_string() + "k";
+        }
+
+        return tag;
+    }
 
     private static string make_description (string location) {
         if (location.length > 0) 
@@ -74,6 +84,7 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
         else
             return location;
     }
+
     private int realize_favicon () {
         // TODO: REFACTOR in separate class
         var favicon_cache_file = Path.build_filename (Application.instance.cache_dir, station.id);

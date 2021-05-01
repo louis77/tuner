@@ -112,6 +112,8 @@ public class Station : Object {
     public string favicon { get; set; }
     public uint clickcount { get; set; }
     public string homepage { get; set; }
+    public string codec { get; set; }
+    public int bitrate { get; set; }
 }
 
 public class Tag : Object {
