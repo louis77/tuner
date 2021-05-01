@@ -26,7 +26,7 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
 
     public StationBox (Model.Station station) {
         Object (
-            description: @"$(station.location)",
+            description: make_description (station.location),
             title: make_title (station.title, station.starred),
             icon: new Gtk.Image(),
             station: station
@@ -68,6 +68,13 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
         return Application.STAR_CHAR + title;
     }
 
+
+    private static string make_description (string location) {
+        if (location.length > 0) 
+            return _(location);
+        else
+            return location;
+    }
     private int realize_favicon () {
         // TODO: REFACTOR in separate class
         var favicon_cache_file = Path.build_filename (Application.instance.cache_dir, station.id);
