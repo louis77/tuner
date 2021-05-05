@@ -37,5 +37,10 @@
             <summary>Excluded Countries</summary>
             <description>A list of ISO-3166-2 country codes where we don't show you stations from</description>
         </key>
+        <key name="dark-mode" type="b">
+            <default>false</default>
+            <summary>Dark mode</summary>
+            <description>If enabled, the dark variant of your current theme will be used</description>
+        </key>        
     </schema>
 </schemalist>

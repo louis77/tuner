@@ -29,6 +29,18 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     }
 
     public Gtk.Button play_button { get; set; }
+    public bool enable_dark_mode {
+        get {
+            warning("get enable_dark_mode");
+            return Application.instance.settings.get_boolean ("dark-mode");
+        }
+
+        set {
+            warning("set enable dark mode");
+            Application.instance.settings.set_boolean ("dark-mode", value);
+        }
+    }
+
     public Gtk.VolumeButton volume_button;
 
     private Gtk.Button star_button;
@@ -83,6 +95,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         mode_switch.secondary_icon_tooltip_text = _("Dark mode");
         mode_switch.valign = Gtk.Align.CENTER;
         mode_switch.bind_property ("active", gtk_settings, "gtk-application-prefer-dark-theme", GLib.BindingFlags.BIDIRECTIONAL);
+        mode_switch.bind_property ("active", this, "enable-dark-mode", GLib.BindingFlags.BIDIRECTIONAL);
+        mode_switch.active = this.enable_dark_mode;
 
         var menu_grid = new Gtk.Grid ();
         menu_grid.margin_bottom = 3;
