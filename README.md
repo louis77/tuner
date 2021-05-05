@@ -6,20 +6,47 @@ Discover and Listen to your favourite internet radio stations.
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 ![Screenshot 01](docs/screen_dark_1.3.0.png?raw=true)
 
+## Contributors wanted!
+
+I've started `Tuner` in May 2020 when COVID-19 began to change our lives and provided me with some time to finally learn things that I couldn't during my life as a professional developer. 
+
+I moved from macOS to Linux as a daily driver, learned a little about Linux programming, and chose Vala as the language for Tuner. At the time I was running elementary OS, and they have excellent documentation for beginning developers on how to build nice-looking apps for elementary. That helped me a lot to get started with all the new stuff.
+
+At the time, I never expected `Tuner` to be installed by the thousands on other great distros, like Arch, MX Linux, Ubuntu, Fedora. In August 2020, I released `Tuner` as a Flatpak app, and it was installed over 18.000 times on Flathub alone ever since! Users began to send me their appreciations but also bug reports and feature requests. Some friendly contributors made Tuner available on MX Linux and Arch AUR repos. 
+
+Maybe it was around this time when I started to feel not only the euphoria that comes with Open Source projects but also the weight of responsibility. I feared to move on because I didn't want to break things, so *I* took a break :-). 
+
+Yet, users keep sending bug reports and feature requests. I want `Tuner` to live on and be the best tiny internet radio receiver for the Linux environment. 
+
+**Would you be interested in joining the project as a developer or package maintainer?**
+
+Things I need help with:
+
+- Deeper integration into the GNOME desktop environment (DBus and such)
+- Development of new features for Tuner (skills: Vala/C)
+- Create and maintain Tuner packages for distros. Do you know how we can get Tuner into some official repos?
+- Help me fixing those Flatpak bugs users are reporting
+- Translate Tuner into more languages
+
+**Interested?** Send me an email or get in touch with me on Freenode `louis771`.
+
 ## Installation
 
 ### Flathub
 
-<a href='https://flathub.org/apps/details/com.github.louis77.tuner'><img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>
+Tuner is available on Flathub, but there are some known bugs:
+https://flathub.org/apps/details/com.github.louis77.tuner
 
 ### elementary OS
-[![Get it on AppCenter](https://appcenter.elementary.io/badge.svg)](https://appcenter.elementary.io/com.github.louis77.tuner)
+
+Install Tuner via elementary's App store:
+https://appcenter.elementary.io/com.github.louis77.tuner
 
 ### Arch Linux / AUR
 Arch-based GNU/Linux users can find `Tuner` under the name [tuner-git](https://aur.archlinux.org/packages/tuner-git/) in the **AUR**:
 
 ```sh
-$ yay -S tuner-git`
+$ yay -S tuner-git
 ```
 Thanks to [@btd1377](https://github.com/btd1337) for supporting Tuner on Arch Linux!
 
