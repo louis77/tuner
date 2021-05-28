@@ -149,6 +149,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         pack_start (star_button);
 
         volume_button = new Gtk.VolumeButton ();
+        volume_button.value = Application.instance.settings.get_double ("volume");
+        volume_button.value_changed.connect ((value) => {
+            Application.instance.settings.set_double ("volume", value);
+        });
         pack_start (volume_button);
         
 
