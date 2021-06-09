@@ -28,7 +28,7 @@ Things I need help with:
 - Help me fixing those Flatpak bugs users are reporting
 - Translate Tuner into more languages
 
-**Interested?** Send me an email or get in touch with me on Freenode `louis771`.
+**Interested?** Join #tuner on libera.chat IRC.
 
 ## Installation
 
