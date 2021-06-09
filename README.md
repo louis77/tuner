@@ -55,6 +55,18 @@ MX Linux users can find `Tuner` by using the MX Package Installer (currently und
 
 Thanks to SwampRabbit for packaging Tuner for MX Linux!
 
+### Pacstall
+Pacstall is a totally new package manager for Ubuntu that provides an AUR-like community-driven repo for package builds. If you already use `pacstall` you can install Tuner:
+
+```sh
+$ sudo pacstall -I tuner
+```
+
+If you have Ubuntu and want a clean build of Tuner on your system, consider using `pacstall` instead of Flatpak if you don't feat beta software. Get `pacstall` here:
+
+https://henryws.github.io/pacstall/
+
+
 ## Motivation
 
 I love listening to radio while I work. There are tens of tousands of cool internet radio stations available, however I find it hard to "find" new stations by using filters and genres. As of now, this little app takes away all the filtering and just presents me with new radio stations every time I use it.

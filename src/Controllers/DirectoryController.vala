@@ -46,6 +46,14 @@ public class Tuner.DirectoryController : Object {
         this.migrate_favourites ();
     }
 
+    public StationSource load_station_uuid (string uuid) {
+        string[] lps_arr = { uuid }; 
+        var params = RadioBrowser.SearchParams() {
+            uuids = new ArrayList<string>.wrap (lps_arr)
+        };
+        var source = new StationSource(1, params, provider, store);
+        return source;
+    }
 
     public StationSource load_random_stations (uint limit) {
         var params = RadioBrowser.SearchParams() {

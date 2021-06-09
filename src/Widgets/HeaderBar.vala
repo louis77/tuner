@@ -98,6 +98,11 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         mode_switch.bind_property ("active", this, "enable-dark-mode", GLib.BindingFlags.BIDIRECTIONAL);
         mode_switch.active = this.enable_dark_mode;
 
+        var autoplay_item = new Gtk.ModelButton ();
+        autoplay_item.text = _("Auto-play last station");
+        autoplay_item.action_name = Window.ACTION_PREFIX + Window.ACTION_ENABLE_AUTOPLAY;
+        autoplay_item.tooltip_text = _("If enabled, when Tuner starts it will automatically start to play the last played station");
+
         var menu_grid = new Gtk.Grid ();
         menu_grid.margin_bottom = 3;
         menu_grid.margin_top = 5;
@@ -107,8 +112,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         menu_grid.orientation = Gtk.Orientation.VERTICAL;
         menu_grid.attach (mode_switch, 1, 0);
         menu_grid.attach (new Gtk.SeparatorMenuItem (), 0, 1, 3, 1);
-        menu_grid.attach (disable_tracking_item, 0, 2, 3, 1);
-        menu_grid.attach (about_menuitem, 0, 3, 3, 1);
+        menu_grid.attach (autoplay_item, 0, 2, 3, 1);
+        menu_grid.attach (disable_tracking_item, 0, 3, 3, 1);
+        menu_grid.attach (new Gtk.SeparatorMenuItem (), 0, 4, 3, 1);
+        menu_grid.attach (about_menuitem, 0, 5, 3, 1);
         menu_grid.show_all ();
 
         var menu = new Gtk.Popover (null);

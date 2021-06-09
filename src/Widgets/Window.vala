@@ -30,11 +30,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     private HeaderBar headerbar;
     private Granite.Widgets.SourceList source_list;
     
+    public const string WindowName = "Tuner";
     public const string ACTION_PREFIX = "win.";
     public const string ACTION_PAUSE = "action_pause";
     public const string ACTION_QUIT = "action_quit";
     public const string ACTION_ABOUT = "action_about";
     public const string ACTION_DISABLE_TRACKING = "action_disable_tracking";
+    public const string ACTION_ENABLE_AUTOPLAY = "action_enable_autoplay";
 
     private signal void refresh_favourites ();
 
@@ -42,7 +44,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         { ACTION_PAUSE, on_toggle_playback },
         { ACTION_QUIT , on_action_quit },
         { ACTION_ABOUT, on_action_about },
-        { ACTION_DISABLE_TRACKING, on_action_disable_tracking, null, "false" }
+        { ACTION_DISABLE_TRACKING, on_action_disable_tracking, null, "false" },
+        { ACTION_ENABLE_AUTOPLAY, on_action_enable_autoplay, null, "false" }
     };
 
     static construct {
@@ -69,6 +72,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     construct {
         headerbar = new HeaderBar ();
         set_titlebar (headerbar);
+        set_title (WindowName);
 
         player.state_changed.connect (handleplayer_state_changed);
         player.station_changed.connect (headerbar.update_from_station);
@@ -90,6 +94,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         window_position = Gtk.WindowPosition.CENTER;
         set_default_size (800, 540);
         change_action_state (ACTION_DISABLE_TRACKING, settings.get_boolean ("do-not-track"));
+        change_action_state (ACTION_ENABLE_AUTOPLAY, settings.get_boolean ("auto-play"));
         move (settings.get_int ("pos-x"), settings.get_int ("pos-y"));
 
         set_geometry_hints (null, Gdk.Geometry() {min_height = 440, min_width = 800}, Gdk.WindowHints.MIN_SIZE);
@@ -336,23 +341,37 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         primary_box.pack2 (stack, true, false);
         add (primary_box);
         show_all ();
+
+        // Auto-play
+        if (settings.get_boolean("auto-play")) {
+            warning (@"Auto-play enabled");
+            var last_played_station = settings.get_string("last-played-station");
+            warning (@"Last played station is: $last_played_station");
+
+            var source = _directory.load_station_uuid (last_played_station);
+
+            try {
+                foreach (var station in source.next ()) {
+                    handle_station_click(station);
+                    break;
+                }  
+            } catch (SourceError e) {
+                warning ("Error while trying to autoplay, aborting...");
+            }
+
+        }
     }
 
     private ContentBox create_content_box (
              string name,
              Granite.Widgets.SourceList.Item item,
-             //string list_icon_name,
              string full_title,
              string? action_icon_name,
              string? action_tooltip_text,
              Gtk.Stack stack,
-             //Granite.Widgets.SourceList.ExpandableItem category_item,
              Granite.Widgets.SourceList source_list,
              bool enable_count = false) {
-        //var item = new Granite.Widgets.SourceList.Item (list_title);
-        //item.icon = new ThemedIcon (list_icon_name);
         item.set_data<string> ("stack_child", name);
-        //category_item.add (item);
         var c = new ContentBox (
             null,
             full_title,
@@ -388,6 +407,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         info (@"handle station click for $(station.title)");
         _directory.count_station_click (station);
         player.station = station;
+
+        warning (@"storing last played station: $(station.id)");
+        settings.set_string("last-played-station", station.id);
+
+        set_title (WindowName+": "+station.title);
     }
 
     public void handle_favourites_changed () {
@@ -405,6 +429,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         settings.set_boolean ("do-not-track", new_state);
         debug (@"on_action_disable_tracking: $new_state");
     }
+
+    public void on_action_enable_autoplay (SimpleAction action, Variant? parameter) {
+        var new_state = !settings.get_boolean ("auto-play");
+        action.set_state (new_state);
+        settings.set_boolean ("auto-play", new_state);
+        debug (@"on_action_enable_autoplay: $new_state");
+    }    
 
     public void handleplayer_state_changed (Gst.PlayerState state) {
         switch (state) {
