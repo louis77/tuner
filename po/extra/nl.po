@@ -8,14 +8,15 @@ msgstr ""
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-08 19:20+0100\n"
-"PO-Revision-Date: 2020-09-28 11:53+0200\n"
-"Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
+"PO-Revision-Date: 2021-06-10 14:20+0200\n"
+"Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: none\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0\n"
 
 #: data/com.github.louis77.tuner.desktop.in:4
 #: data/com.github.louis77.tuner.appdata.xml.in:8
@@ -23,9 +24,8 @@ msgid "Tuner"
 msgstr "Tuner"
 
 #: data/com.github.louis77.tuner.desktop.in:5
-#, fuzzy
 msgid "Internet Radio Player"
-msgstr "Internetradio-ontvanger"
+msgstr "Internetradiospeler"
 
 #: data/com.github.louis77.tuner.desktop.in:6
 msgid "Listen to Radio Stations all over the world"
@@ -72,9 +72,8 @@ msgid "Discover new stations every day"
 msgstr "Ontdek elke dag nieuwe radiostations"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:21
-#, fuzzy
 msgid "Star stations you like and visit their website"
-msgstr "Voeg radiostations toe aan je favorieten"
+msgstr "Voeg radiostations toe aan je favorieten en bezoek hun websites"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:22
 msgid "Control Tuner from your volume indicator"
@@ -89,32 +88,33 @@ msgstr "Nieuwe mogelijkheden:"
 #: data/com.github.louis77.tuner.appdata.xml.in:66
 msgid "Show the current track playing if supported by station"
 msgstr ""
+"Toon het momenteel spelende nummer (indien ondersteund door radiostation)"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:67
 msgid "Show Top 100 stations of user country if detectable"
-msgstr ""
+msgstr "Bekijk de top 100 van radiostations in eigen land (indien mogelijk)"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:68
 msgid "\"Visit Website\" link in station context menu"
-msgstr ""
+msgstr "‘Website openen’ toegevoegd aan het rechtermuisknopmenu"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:70
 #: data/com.github.louis77.tuner.appdata.xml.in:82
 #: data/com.github.louis77.tuner.appdata.xml.in:101
 #: data/com.github.louis77.tuner.appdata.xml.in:123
 msgid "Other improvements:"
-msgstr ""
+msgstr "Andere verbeteringen:"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:72
 msgid "Added Dutch translation"
-msgstr ""
+msgstr "Nederlandse vertaling"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:74
 #: data/com.github.louis77.tuner.appdata.xml.in:87
 #: data/com.github.louis77.tuner.appdata.xml.in:108
 #: data/com.github.louis77.tuner.appdata.xml.in:130
 msgid "Bugfixes:"
-msgstr ""
+msgstr "Opgeloste fouten:"
 
 #: data/com.github.louis77.tuner.appdata.xml.in:76
 #: data/com.github.louis77.tuner.appdata.xml.in:89
