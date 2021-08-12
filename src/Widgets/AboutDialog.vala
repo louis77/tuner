@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020-2021 Louis Brauer <louis77@member.fsf.org>
+* Copyright (c) 2020-2021 Louis Brauer <louis@brauer.family>
 *
 * This file is part of Tuner.
 *
@@ -39,7 +39,7 @@ Turkish translation by safak45x https://github.com/safak45x""";
         copyright = "Copyright © 2020-2021 Louis Brauer";
         version = @"v$(Application.APP_VERSION)";
     
-        license = """* Copyright (c) 2020-2021 Louis Brauer <louis77@member.fsf.org>
+        license = """* Copyright (c) 2020-2021 Louis Brauer <louis@brauer.family>
 
         Tuner is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

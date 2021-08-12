@@ -1,7 +1,7 @@
 Source: com.github.louis77.tuner
 Section: x11
 Priority: optional
-Maintainer: Louis Brauer <louis77@member.fsf.org>
+Maintainer: Louis Brauer <louis@brauer.family>
 Build-Depends: cmake (>= 2.8),
                debhelper (>= 9),
                libgtk-3-dev,

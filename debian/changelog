@@ -6,7 +6,7 @@ com.github.louis77.tuner (1.4.0) RELEASED; urgency=medium
   * New setting: Auto-play last station
   * Properly set Window name
 
- -- Louis Brauer <louis77@member.fsf.org>  Thu, 09 Jun 2021 23:00:00 +0200
+ -- Louis Brauer <louis@brauer.family>  Thu, 09 Jun 2021 23:00:00 +0200
 
 
 com.github.louis77.tuner (1.3.1) RELEASED; urgency=medium
@@ -14,7 +14,7 @@ com.github.louis77.tuner (1.3.1) RELEASED; urgency=medium
   * Added Turkish translation
   * Improvements in French translations
 
- -- Louis Brauer <louis77@member.fsf.org>  Thu, 24 Sep 2020 23:00:00 +0200
+ -- Louis Brauer <louis@brauer.family>  Thu, 24 Sep 2020 23:00:00 +0200
 
 
 com.github.louis77.tuner (1.3.0) RELEASED; urgency=medium
@@ -22,7 +22,7 @@ com.github.louis77.tuner (1.3.0) RELEASED; urgency=medium
   * Show current track if station supports it
   * Add dutch translation, thanks to @Vistaus
 
- -- Louis Brauer <louis77@member.fsf.org>  Thu, 24 Sep 2020 23:00:00 +0200
+ -- Louis Brauer <louis@brauer.family>  Thu, 24 Sep 2020 23:00:00 +0200
 
 
 com.github.louis77.tuner (1.2.5) RELEASED; urgency=medium
@@ -31,7 +31,7 @@ com.github.louis77.tuner (1.2.5) RELEASED; urgency=medium
   * Add manual dark mode switch in settings
   * Fix missing icons for non-elementary OS systems
 
- -- Louis Brauer <louis77@member.fsf.org>  Mon, 14 Aug 2020 23:00:00 +0200
+ -- Louis Brauer <louis@brauer.family>  Mon, 14 Aug 2020 23:00:00 +0200
 
 com.github.louis77.tuner (1.2.4ubuntu1) RELEASED; urgency=medium
 
@@ -43,7 +43,7 @@ com.github.louis77.tuner (1.2.4ubuntu1) RELEASED; urgency=medium
   * Favourites are now stored in a local favourites.json file to improve app startup time
   * Fix broken dark theme support (elementary and Adwaita dark look fine now)
 
- -- Louis Brauer <louis77@member.fsf.org>  Mon, 10 Aug 2020 17:10:46 +0200
+ -- Louis Brauer <louis@brauer.family>  Mon, 10 Aug 2020 17:10:46 +0200
 
 com.github.louis77.tuner (1.2.3) RELEASED; urgency=low
 
@@ -54,4 +54,4 @@ com.github.louis77.tuner (1.2.3) RELEASED; urgency=low
   * The app icon now appears more vertically centered
   * Fixed a bug where starred stations appeared as unstarred
 
--- Louis Brauer <louis77@member.fsf.org>  Wednesday, 29 Jun 2020 11:00:00 -0500
+-- Louis Brauer <louis@brauer.family>  Wednesday, 29 Jun 2020 11:00:00 -0500
