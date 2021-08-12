@@ -28,7 +28,7 @@ Things I need help with:
 - Help me fixing those Flatpak bugs users are reporting
 - Translate Tuner into more languages
 
-**Interested?** Join #tuner on libera.chat IRC.
+**Interested?** Please open an issue or drop me an email.
 
 ## Installation
 
@@ -141,13 +141,11 @@ sudo ninja install
 
 ### Free Software Foundation
 
-![FSF Member badge](https://static.fsf.org/nosvn/associate/crm/4989673.png)
-
-I'm a member of the Free Software Foundation. Without GNU/Linux and all the great
+~~I'm a member of the Free Software Foundation.~~ Without GNU/Linux and all the great
 work from people all over the world producing free software, this project would
 not have been possible.
 
-Consider joining the FSF, [here is why](https://my.fsf.org/join?referrer=4989673).
+*Update 2021-08-01: I'm no longer a member of the Free Software Foundation.*
 
 ## Disclaimer
 
