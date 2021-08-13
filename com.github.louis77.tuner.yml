@@ -16,6 +16,8 @@ finish-args:
 - "--talk-name=org.freedesktop.Notifications"
 - "--talk-name=org.gnome.SettingsDaemon.MediaKeys"
 - "--own-name=org.mpris.MediaPlayer2.Tuner"
+# Needed to read prefer-color-scheme with Granite.Settings
+- '--system-talk-name=org.freedesktop.Accounts'
 cleanup:
 - "/include"
 - "/lib/pkgconfig"
