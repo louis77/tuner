@@ -89,6 +89,15 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var dark = new Theme ().is_theme_dark ();
         warning (@"Theme settings: $dark");
 
+        var granite_settings = Granite.Settings.get_default ();
+        var gtk_settings = Gtk.Settings.get_default ();
+
+        headerbar.enable_dark_mode = (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK);
+
+        granite_settings.notify["prefers-color-scheme"].connect (() => {
+            headerbar.enable_dark_mode = (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK);
+        });
+
         add_action_entries (ACTION_ENTRIES, this);
 
         window_position = Gtk.WindowPosition.CENTER;
