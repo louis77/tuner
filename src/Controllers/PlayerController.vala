@@ -32,7 +32,7 @@ public class Tuner.PlayerController : Object {
     construct {
         player = new Gst.Player (null, null);
         player.state_changed.connect ((state) => {
-            // Don't for warning(title);ward flickering between playing and buffering
+            // Don't forward flickering between playing and buffering
             if (!(current_state == Gst.PlayerState.PLAYING && state == Gst.PlayerState.BUFFERING) && !(state == current_state)) {
                 state_changed (state);
                 current_state = state;
@@ -46,7 +46,6 @@ public class Tuner.PlayerController : Object {
             }
         });
         player.volume_changed.connect ((obj) => {
-            warning(@"Volume changed to: $(obj.volume)");
             volume_changed(obj.volume);
         });
     }
