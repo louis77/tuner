@@ -25,14 +25,17 @@
 
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_light_1.3.0.png</image>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_light_1.4.2.png</image>
+    </screenshot>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_light-2_1.4.2.png</image>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_dark_1.3.0.png</image>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_dark_1.4.2.png</image>
     </screenshot>
   </screenshots>
 
-  <update_contact>louis77_AT_member.fsf.org</update_contact>
+  <update_contact>louis_AT_brauer.family</update_contact>
   <url type="homepage">https://github.com/louis77/tuner</url>
   <url type="bugtracker">http://github.com/louis77/tuner/issues</url>
   <url type="help">http://github.com/louis77/tuner/issues</url>
@@ -59,6 +62,16 @@
   </provides>
 
   <releases>
+    <release version="1.4.2" date="2021-08-13">
+      <description>
+        <p>Other improvements:</p>
+        <ul>
+          <li>Dark/light mode adapts to system settings</li>
+          <li>Use elementary OS 6 flatpak runtime</li>
+        </ul>
+      </description>
+    </release>
+
     <release version="1.4.0" date="2021-06-09">
       <description>
         <p>New features:</p>

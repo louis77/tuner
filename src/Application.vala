@@ -27,7 +27,7 @@ public class Tuner.Application : Gtk.Application {
 
     public Window window;
 
-    public const string APP_VERSION = "1.4.0";
+    public const string APP_VERSION = "1.4.2";
     public const string APP_ID = "com.github.louis77.tuner";
     public const string STAR_CHAR = "★ ";
     public const string UNSTAR_CHAR = "☆ ";

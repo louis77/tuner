@@ -21,4 +21,4 @@ Package: com.github.louis77.tuner
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Discover and listen to internet radio stations
- An Internet Radio Station player for elementary OS.
+ An Internet Radio Station player.

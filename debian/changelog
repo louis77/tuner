@@ -1,3 +1,11 @@
+com.github.louis77.tuner (1.4.2) RELEASED; urgency=medium
+
+  * Dark/light mode adapts to system settings
+  * Use elementary OS 6 Flatpak runtime
+
+ -- Louis Brauer <louis@brauer.family>  Thu, 13 Aug 2021 23:00:00 +0200
+
+
 com.github.louis77.tuner (1.4.0) RELEASED; urgency=medium
 
   * Show codec and bitrate on station

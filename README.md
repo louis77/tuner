@@ -4,7 +4,7 @@
 Discover and Listen to your favourite internet radio stations.
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
-![Screenshot 01](docs/screen_dark_1.3.0.png?raw=true)
+![Screenshot 01](docs/screen_dark_1.4.2.png?raw=true)
 
 ## Contributors wanted!
 
@@ -125,6 +125,14 @@ Then clone this repo and build it locally:
 meson build && cd build
 meson configure -Dprefix=/usr
 sudo ninja install
+```
+
+## Known Issues
+
+- If AAC/AAC+ streams don't play (found on Elementary OS 6) install the following dependency:
+
+```sh
+$ apt get gstreamer1.0-libav
 ```
 
 ## Credits
