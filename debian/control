@@ -16,6 +16,7 @@ Build-Depends: cmake (>= 2.8),
                libgeocode-glib-dev,
                libgeoclue-2-dev
 Standards-Version: 3.9.3
+Homepage: https://github.com/louis77/tuner
 
 Package: com.github.louis77.tuner
 Architecture: any
