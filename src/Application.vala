@@ -40,6 +40,11 @@ public class Tuner.Application : Gtk.Application {
     }
 
     construct {
+        GLib.Intl.setlocale (LocaleCategory.ALL, "");
+        GLib.Intl.bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+        GLib.Intl.bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+        GLib.Intl.textdomain (GETTEXT_PACKAGE);
+
         settings = new GLib.Settings (this.application_id);
         player = new PlayerController ();
 

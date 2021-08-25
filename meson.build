@@ -21,6 +21,15 @@ add_project_arguments (
     language: 'c'
 )
 
+config_data = configuration_data()
+config_data.set_quoted('LOCALEDIR', join_paths(get_option('prefix'), get_option('localedir')))
+config_data.set_quoted('GETTEXT_PACKAGE', meson.project_name())
+config_file = configure_file(
+    input: 'src/Config.vala.in',
+    output: '@BASENAME@',
+    configuration: config_data
+)
+
 # Compiling resources
 asresources = gnome.compile_resources (
     'as-resources',
@@ -50,6 +59,7 @@ subdir ('src')
 executable (
     meson.project_name (),
     asresources,
+    config_file,
     sources,
     dependencies: dependencies,
     install: true
