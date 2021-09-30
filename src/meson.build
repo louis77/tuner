@@ -26,6 +26,7 @@ sources = files (
     'Widgets/CountryList.vala',
     'Widgets/StationList.vala',
     'Widgets/RevealLabel.vala',
+    'Widgets/PreferencesPopover.vala',
 
     'Application.vala',
     'Main.vala'

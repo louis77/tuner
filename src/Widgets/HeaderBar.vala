@@ -29,17 +29,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     }
 
     public Gtk.Button play_button { get; set; }
-    public bool enable_dark_mode {
-        get {
-            warning("get enable_dark_mode");
-            return Application.instance.settings.get_boolean ("dark-mode");
-        }
 
-        set {
-            warning("set enable dark mode");
-            Application.instance.settings.set_boolean ("dark-mode", value);
-        }
-    }
 
     public Gtk.VolumeButton volume_button;
 
@@ -77,57 +67,12 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         play_button.action_name = Window.ACTION_PREFIX + Window.ACTION_PAUSE;
         pack_start (play_button);
 
-        var about_menuitem = new Gtk.ModelButton ();
-        about_menuitem.text = _("About");
-        about_menuitem.action_name = Window.ACTION_PREFIX + Window.ACTION_ABOUT;
-
-        var disable_tracking_item = new Gtk.ModelButton ();
-        disable_tracking_item.text = _("Do not track");
-        disable_tracking_item.action_name = Window.ACTION_PREFIX + Window.ACTION_DISABLE_TRACKING;
-        disable_tracking_item.tooltip_text = _("If enabled, we will not send usage info to radio-browser.org");
-
-        var gtk_settings = Gtk.Settings.get_default ();
-        var mode_switch = new Granite.ModeSwitch.from_icon_name (
-            "display-brightness-symbolic",
-            "weather-clear-night-symbolic"
-        );
-        mode_switch.primary_icon_tooltip_text = _("Light mode");
-        mode_switch.secondary_icon_tooltip_text = _("Dark mode");
-        mode_switch.valign = Gtk.Align.CENTER;
-        mode_switch.bind_property ("active", gtk_settings, "gtk-application-prefer-dark-theme", GLib.BindingFlags.BIDIRECTIONAL);
-        mode_switch.bind_property ("active", this, "enable-dark-mode", GLib.BindingFlags.BIDIRECTIONAL);
-        mode_switch.active = this.enable_dark_mode;
-
-        var autoplay_item = new Gtk.ModelButton ();
-        autoplay_item.text = _("Auto-play last station");
-        autoplay_item.action_name = Window.ACTION_PREFIX + Window.ACTION_ENABLE_AUTOPLAY;
-        autoplay_item.tooltip_text = _("If enabled, when Tuner starts it will automatically start to play the last played station");
-
-        var menu_grid = new Gtk.Grid ();
-        menu_grid.margin_bottom = 3;
-        menu_grid.margin_top = 5;
-        menu_grid.margin_start = 3;
-        menu_grid.margin_end = 3;
-        menu_grid.row_spacing = 3;
-        menu_grid.orientation = Gtk.Orientation.VERTICAL;
-        menu_grid.attach (mode_switch, 1, 0);
-        menu_grid.attach (new Gtk.SeparatorMenuItem (), 0, 1, 3, 1);
-        menu_grid.attach (autoplay_item, 0, 2, 3, 1);
-        menu_grid.attach (disable_tracking_item, 0, 3, 3, 1);
-        menu_grid.attach (new Gtk.SeparatorMenuItem (), 0, 4, 3, 1);
-        menu_grid.attach (about_menuitem, 0, 5, 3, 1);
-        menu_grid.show_all ();
-
-        var menu = new Gtk.Popover (null);
-        menu.add (menu_grid);
-
-
         var prefs_button = new Gtk.MenuButton ();
         prefs_button.image = new Gtk.Image.from_icon_name ("open-menu", Gtk.IconSize.LARGE_TOOLBAR);
         prefs_button.valign = Gtk.Align.CENTER;
         prefs_button.sensitive = true;
         prefs_button.tooltip_text = _("Preferences");
-        prefs_button.popover = menu;
+        prefs_button.popover = new Tuner.PreferencesPopover();;
         pack_end (prefs_button);
 
         var searchentry = new Gtk.SearchEntry ();
