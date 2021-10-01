@@ -132,7 +132,7 @@ sudo ninja install
 - If AAC/AAC+ streams don't play (found on Elementary OS 6) install the following dependency:
 
 ```sh
-$ apt get gstreamer1.0-libav
+$ sudo apt install gstreamer1.0-libav
 ```
 
 ## Credits

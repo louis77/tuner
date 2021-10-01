@@ -40,7 +40,7 @@
         <key name="dark-mode" type="b">
             <default>false</default>
             <summary>Dark mode</summary>
-            <description>If enabled, the dark variant of your current theme will be used</description>
+            <description>Deprecated: see "theme-mode"</description>
         </key>     
         <key name="auto-play" type="b">
             <default>false</default>
@@ -56,6 +56,16 @@
             <default>1.0</default>
             <summary>Volume control</summary>
             <description>The last volume setting. Value from 0.0 to 1.0</description>
+        </key>
+        <key name="theme-mode" type="s">
+            <choices>
+                <choice value="system" />
+                <choice value="dark" />
+                <choice value="light" />
+            </choices>
+            <default>"system"</default>
+            <summary>Theme mode</summary>
+            <description>Which theme the app should use</description>
         </key>    
     </schema>
 </schemalist>

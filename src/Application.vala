@@ -93,17 +93,5 @@ public class Tuner.Application : Gtk.Application {
         }
     }
 
-    public bool enable_dark_mode {
-        get {
-            warning("get enable_dark_mode");
-            return Application.instance.settings.get_boolean ("dark-mode");
-        }
-
-        set {
-            warning("set enable dark mode");
-            Application.instance.settings.set_boolean ("dark-mode", value);
-        }
-    }
-
 }
 

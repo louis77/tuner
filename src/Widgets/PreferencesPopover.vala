@@ -30,17 +30,21 @@ public class Tuner.PreferencesPopover : Gtk.Popover {
         disable_tracking_item.action_name = Window.ACTION_PREFIX + Window.ACTION_DISABLE_TRACKING;
         disable_tracking_item.tooltip_text = _("If enabled, we will not send usage info to radio-browser.org");
 
-        var gtk_settings = Gtk.Settings.get_default ();
-        var mode_switch = new Granite.ModeSwitch.from_icon_name (
-            "display-brightness-symbolic",
-            "weather-clear-night-symbolic"
-        );
-        mode_switch.primary_icon_tooltip_text = _("Light mode");
-        mode_switch.secondary_icon_tooltip_text = _("Dark mode");
-        mode_switch.valign = Gtk.Align.CENTER;
-        mode_switch.bind_property ("active", gtk_settings, "gtk-application-prefer-dark-theme", GLib.BindingFlags.BIDIRECTIONAL);
-        mode_switch.bind_property ("active", this, "enable-dark-mode", GLib.BindingFlags.BIDIRECTIONAL);
-        mode_switch.active = Application.instance.enable_dark_mode;
+        var theme_combo = new Gtk.ComboBoxText ();
+        theme_combo.append("system", _("Use System"));  
+        theme_combo.append("light", _("Light mode"));
+        theme_combo.append("dark", _("Dark mode"));
+        theme_combo.halign = Gtk.Align.CENTER;
+        theme_combo.active_id = Application.instance.settings.get_string("theme-mode");
+
+        theme_combo.changed.connect ((elem) => {
+            warning(@"Theme changed: $(elem.active_id)");
+            Application.instance.settings.set_string("theme-mode", elem.active_id);
+        });
+
+        var theme_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);
+        theme_box.pack_end (theme_combo, true, true, 5);
+        theme_box.pack_end (new Gtk.Label(_("Theme")), false, false, 12);
 
         var autoplay_item = new Gtk.ModelButton ();
         autoplay_item.text = _("Auto-play last station");
@@ -48,13 +52,13 @@ public class Tuner.PreferencesPopover : Gtk.Popover {
         autoplay_item.tooltip_text = _("If enabled, when Tuner starts it will automatically start to play the last played station");
 
         var menu_grid = new Gtk.Grid ();
-        menu_grid.margin_bottom = 3;
-        menu_grid.margin_top = 5;
-        menu_grid.margin_start = 3;
-        menu_grid.margin_end = 3;
+        menu_grid.margin_bottom = 10;
+        menu_grid.margin_top = 10;
+        menu_grid.margin_start = 5;
+        menu_grid.margin_end = 5;
         menu_grid.row_spacing = 3;
         menu_grid.orientation = Gtk.Orientation.VERTICAL;
-        menu_grid.attach (mode_switch, 1, 0);
+        menu_grid.attach (theme_box, 0, 0);
         menu_grid.attach (new Gtk.SeparatorMenuItem (), 0, 1, 3, 1);
         menu_grid.attach (autoplay_item, 0, 2, 3, 1);
         menu_grid.attach (disable_tracking_item, 0, 3, 3, 1);

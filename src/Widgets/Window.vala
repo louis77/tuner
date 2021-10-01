@@ -86,16 +86,19 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             player.volume = value;
         });
 
-        var dark = new Theme ().is_theme_dark ();
-        warning (@"Theme settings: $dark");
+        adjust_theme();
+        settings.changed.connect( (key) => {
+            if (key == "theme-mode") {
+                warning("theme-mode changed");
+                adjust_theme();
+                
+            }
+        });
 
         var granite_settings = Granite.Settings.get_default ();
-        var gtk_settings = Gtk.Settings.get_default ();
-
-        Application.instance.enable_dark_mode = (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK);
-
-        granite_settings.notify["prefers-color-scheme"].connect (() => {
-            Application.instance.enable_dark_mode = (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK);
+        granite_settings.notify.connect( (key) => {
+                warning("theme-mode changed");
+                adjust_theme();
         });
 
         add_action_entries (ACTION_ENTRIES, this);
@@ -403,6 +406,19 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         return c;
     }
     
+    private static void adjust_theme() {
+        var theme = Application.instance.settings.get_string("theme-mode");
+        warning(@"current theme: $theme");
+        
+        var gtk_settings = Gtk.Settings.get_default ();
+        var granite_settings = Granite.Settings.get_default ();
+        if (theme != "system") {
+            gtk_settings.gtk_application_prefer_dark_theme = (theme == "dark");
+        } else {
+            gtk_settings.gtk_application_prefer_dark_theme = (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK);
+        }
+    }
+
     private void on_action_quit () {
         close ();
     }
