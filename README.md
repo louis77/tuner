@@ -59,12 +59,12 @@ Thanks to SwampRabbit for packaging Tuner for MX Linux!
 Pacstall is a totally new package manager for Ubuntu that provides an AUR-like community-driven repo for package builds. If you already use `pacstall` you can install Tuner:
 
 ```sh
-$ sudo pacstall -I tuner
+$ pacstall -I tuner
 ```
 
 If you have Ubuntu and want a clean build of Tuner on your system, consider using `pacstall` instead of Flatpak if you don't feat beta software. Get `pacstall` here:
 
-https://henryws.github.io/pacstall/
+https://pacstall.dev
 
 
 ## Motivation
