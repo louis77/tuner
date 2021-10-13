@@ -95,7 +95,7 @@
         button_description.set_line_wrap (true);
         button_description.set_line_wrap_mode (Pango.WrapMode.WORD);
         button_description.get_style_context ().add_class ("station-button-description");
-        button_description.ellipsize = Pango.EllipsizeMode.END;
+        button_description.ellipsize = Pango.EllipsizeMode.MIDDLE;
         button_description.hexpand = true;
 
         get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);

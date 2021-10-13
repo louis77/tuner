@@ -51,8 +51,8 @@ public class Tuner.StationList : AbstractContentList {
     public StationList () {
         Object (
             homogeneous: false,
-            min_children_per_line: 2,
-            max_children_per_line: 2,
+            min_children_per_line: 1,
+            max_children_per_line: 3,
             column_spacing: 5,
             row_spacing: 5,
             border_width: 20,

@@ -111,7 +111,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         change_action_state (ACTION_ENABLE_AUTOPLAY, settings.get_boolean ("auto-play"));
         move (settings.get_int ("pos-x"), settings.get_int ("pos-y"));
 
-        set_geometry_hints (null, Gdk.Geometry() {min_height = 440, min_width = 800}, Gdk.WindowHints.MIN_SIZE);
+        set_geometry_hints (null, Gdk.Geometry() {min_height = 440, min_width = 600}, Gdk.WindowHints.MIN_SIZE);
         resize (settings.get_int ("window-width"), settings.get_int ("window-height"));
 
         delete_event.connect (e => {
@@ -151,7 +151,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                             _("Discover Stations"), "media-playlist-shuffle-symbolic",
                             _("Discover more stations"),
                             stack, source_list);
-        var s1 = _directory.load_random_stations(10);
+        var s1 = _directory.load_random_stations(20);
         c1.realize.connect (() => {
             try {
                 var slist = new StationList.with_stations (s1.next ());
