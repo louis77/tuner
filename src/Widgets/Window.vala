@@ -34,6 +34,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public const string ACTION_PREFIX = "win.";
     public const string ACTION_PAUSE = "action_pause";
     public const string ACTION_QUIT = "action_quit";
+    public const string ACTION_HIDE = "action_hide";
     public const string ACTION_ABOUT = "action_about";
     public const string ACTION_DISABLE_TRACKING = "action_disable_tracking";
     public const string ACTION_ENABLE_AUTOPLAY = "action_enable_autoplay";
@@ -66,7 +67,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         );
 
         application.set_accels_for_action (ACTION_PREFIX + ACTION_PAUSE, {"<Control>5"});
-        application.set_accels_for_action (ACTION_PREFIX + ACTION_QUIT, {"<Control>q", "<Control>w"});
+        application.set_accels_for_action (ACTION_PREFIX + ACTION_QUIT, {"<Control>q"});
+        application.set_accels_for_action (ACTION_PREFIX + ACTION_QUIT, {"<Control>w"});
     }
 
     construct {
@@ -515,6 +517,15 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         settings.set_int ("pos-y", y);
         settings.set_int ("window-height", height);
         settings.set_int ("window-width", width);
+
+        if (player.current_state == Gst.PlayerState.PLAYING) {
+            hide_on_delete();
+            var notification = new GLib.Notification("Playing in background");
+            notification.set_body("Click here to resume window. To quit Tuner, pause playback and close the window.");
+            notification.set_default_action("app.resume-window");
+            Application.instance.send_notification("continue-playing", notification);
+            return true;
+        }
 
         return false;
     }

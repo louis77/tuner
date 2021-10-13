@@ -32,6 +32,10 @@ public class Tuner.Application : Gtk.Application {
     public const string STAR_CHAR = "★ ";
     public const string UNSTAR_CHAR = "☆ ";
 
+    private const ActionEntry[] ACTION_ENTRIES = {
+        { "resume-window", on_resume_window }
+    };
+
     public Application () {
         Object (
             application_id: APP_ID,
@@ -53,6 +57,8 @@ public class Tuner.Application : Gtk.Application {
 
         data_dir = Path.build_filename (Environment.get_user_data_dir (), application_id);
         ensure_dir (data_dir);
+
+        add_action_entries(ACTION_ENTRIES, this);
     }
 
     public static Application _instance = null;
@@ -75,6 +81,10 @@ public class Tuner.Application : Gtk.Application {
             window.present ();
         }
 
+    }
+
+    private void on_resume_window() {
+        window.present();
     }
 
     private void ensure_dir (string path) {
