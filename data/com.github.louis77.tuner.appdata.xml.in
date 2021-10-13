@@ -62,6 +62,20 @@
   </provides>
 
   <releases>
+
+    <release version="1.5.0" date="2021-10-14">
+      <description>
+        <p>New features:</p>
+        <ul>
+          <li>Background playback: Tuner can be closed and playback will continue. A notification provides easy access to bring the Tuner window back.</li>
+        </ul>
+        <p>Other improvements:</p>
+        <ul>
+          <li>Dark/light mode optimized with new dropdown (use system, dark or light theme)</li>
+        </ul>
+      </description>
+    </release>
+
     <release version="1.4.2" date="2021-08-13">
       <description>
         <p>Other improvements:</p>
