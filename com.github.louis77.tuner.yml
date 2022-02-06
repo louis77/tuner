@@ -1,7 +1,7 @@
 ---
 app-id: com.github.louis77.tuner
 runtime: io.elementary.Platform
-runtime-version: '6'
+runtime-version: '6.1'
 sdk: io.elementary.Sdk
 command: com.github.louis77.tuner
 finish-args:
