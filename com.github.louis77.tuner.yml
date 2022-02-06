@@ -37,13 +37,14 @@ modules:
   - "-DCMAKE_BUILD_TYPE=Release"
   sources:
   - type: archive
-    url: https://github.com/taglib/taglib/archive/v1.11.1.tar.gz
-    sha256: b6d1a5a610aae6ff39d93de5efd0fdc787aa9e9dc1e7026fa4c961b26563526b
+    url: https://github.com/taglib/taglib/releases/download/v1.12/taglib-1.12.tar.gz
+    sha256: 7fccd07669a523b07a15bd24c8da1bbb92206cb19e9366c3692af3d79253b703
 - name: libgeocode-glib0
   buildsystem: meson
   sources:
-  - type: git
-    url: https://gitlab.gnome.org/GNOME/geocode-glib.git
+  - type: archive
+    url: https://gitlab.gnome.org/GNOME/geocode-glib/-/archive/3.26.2/geocode-glib-3.26.2.tar.gz
+    sha256: 589ed8cf890fb47619ad1062b7117d16104554078b837344496d603d0896ec20
 - name: tuner
   buildsystem: meson
   config-opts:
