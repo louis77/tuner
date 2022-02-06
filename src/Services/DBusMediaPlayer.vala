@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020-2021 Louis Brauer <louis@brauer.family>
+* Copyright (c) 2020-2022 Louis Brauer <louis@brauer.family>
 *
 * This file is part of Tuner.
 *
