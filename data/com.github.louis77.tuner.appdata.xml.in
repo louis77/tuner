@@ -62,7 +62,15 @@
   </provides>
 
   <releases>
-
+    <release version="1.5.1" date="2022-02-06">
+      <description>
+        <p>Maintanance release:</p>
+        <ul>
+          <li>Change flatpak runtime to lastest eOS 6.1</li>
+          <li>Change pause button to stop button</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.5.0" date="2021-10-14">
       <description>
         <p>New features:</p>
