@@ -209,7 +209,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 break;
             case PlayState.PAUSE_ACTIVE:
                 play_button.image = new Gtk.Image.from_icon_name (
-                    "media-playback-pause-symbolic",
+                    "media-playback-stop-symbolic",
                     Gtk.IconSize.LARGE_TOOLBAR
                 );
                 play_button.sensitive = true;
@@ -217,7 +217,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 break;
             case PlayState.PAUSE_INACTIVE:
                 play_button.image = new Gtk.Image.from_icon_name (
-                    "media-playback-pause-symbolic",
+                    "media-playback-stop-symbolic",
                     Gtk.IconSize.LARGE_TOOLBAR
                 );
                 play_button.sensitive = false;
