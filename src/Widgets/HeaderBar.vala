@@ -80,7 +80,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         var searchentry = new Gtk.SearchEntry ();
         searchentry.valign = Gtk.Align.CENTER;
         searchentry.placeholder_text = _("Station name");
-        searchentry.search_changed.connect (() => {
+        searchentry.changed.connect (() => {
             searchentry_text = searchentry.text;
             reset_timeout();
         });
