@@ -32,12 +32,13 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     private int search_delay = 250; // search delay in milliseconds (ms)
     private uint delayed_changed_id;
     private string searchentry_text = "";
+
     private void reset_timeout(){
         if(delayed_changed_id > 0)
             Source.remove(delayed_changed_id);
         delayed_changed_id = Timeout.add(search_delay, timeout);
     }
-    
+
     private bool timeout(){
         // perform search
         searched_for (searchentry_text);
