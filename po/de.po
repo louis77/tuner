@@ -1187,7 +1187,6 @@ msgstr "Von Dir markiert"
 
 #. Search Results Box
 #: src/Widgets/Window.vala:245
-#, fuzzy
 msgid "Recent Search"
 msgstr "Suche"
 
