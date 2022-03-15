@@ -28,6 +28,23 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     public signal void star_clicked (bool starred);
     public signal void searched_for (string text);
     public signal void search_focused ();
+    
+    private int search_delay = 250; // search delay in milliseconds (ms)
+    private uint delayed_changed_id;
+    private string searchentry_text = "";
+
+    private void reset_timeout(){
+        if(delayed_changed_id > 0)
+            Source.remove(delayed_changed_id);
+        delayed_changed_id = Timeout.add(search_delay, timeout);
+    }
+
+    private bool timeout(){
+        // perform search
+        searched_for (searchentry_text);
+        delayed_changed_id = 0;
+        return false;
+    }
 
     construct {
         show_close_button = true;
@@ -63,8 +80,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         var searchentry = new Gtk.SearchEntry ();
         searchentry.valign = Gtk.Align.CENTER;
         searchentry.placeholder_text = _("Station name");
-        searchentry.search_changed.connect (() => {
-            searched_for (searchentry.text);
+        searchentry.changed.connect (() => {
+            searchentry_text = searchentry.text;
+            reset_timeout();
         });
         searchentry.focus_in_event.connect ((e) => {
             search_focused ();
