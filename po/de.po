@@ -4,13 +4,14 @@
 # Automatically generated, 2020.
 #
 # Louis Brauer <louis@openbooking.ch>, 2022.
+# J. Lavoie <j.lavoie@net-c.ca>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: louis@brauer.family\n"
 "POT-Creation-Date: 2020-11-08 19:49+0100\n"
-"PO-Revision-Date: 2022-04-25 19:59+0000\n"
-"Last-Translator: Louis Brauer <louis@openbooking.ch>\n"
+"PO-Revision-Date: 2022-04-25 21:17+0000\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/tuner/tuner-ui/de/"
 ">\n"
 "Language: de\n"
@@ -121,14 +122,12 @@ msgid "Barbados"
 msgstr "Barbados"
 
 #: src/Models/Countries.vala:54
-#, fuzzy
 msgid "Belarus"
-msgstr "Belarus"
+msgstr "Weißrussland"
 
 #: src/Models/Countries.vala:55
-#, fuzzy
 msgid "Belgium"
-msgstr "Belgium"
+msgstr "Belgien"
 
 #: src/Models/Countries.vala:56
 #, fuzzy
@@ -1186,24 +1185,20 @@ msgid "Ukraine"
 msgstr "Ukraine"
 
 #: src/Models/Countries.vala:267
-#, fuzzy
 msgid "United Arab Emirates"
-msgstr "United Arab Emirates"
+msgstr "Vereinigte Arabische Emirate"
 
 #: src/Models/Countries.vala:268
-#, fuzzy
 msgid "United Kingdom of Great Britain and Northern Ireland"
-msgstr "United Kingdom of Great Britain and Northern Ireland"
+msgstr "Vereinigtes Königreich von Großbritannien und Nordirland"
 
 #: src/Models/Countries.vala:269
-#, fuzzy
 msgid "United States of America"
-msgstr "United States of America"
+msgstr "Vereinigte Staaten von Amerika"
 
 #: src/Models/Countries.vala:270
-#, fuzzy
 msgid "United States Minor Outlying Islands"
-msgstr "United States Minor Outlying Islands"
+msgstr "Kleinere abgelegene Inseln der Vereinigten Staaten"
 
 #: src/Models/Countries.vala:271
 #, fuzzy
@@ -1286,7 +1281,7 @@ msgstr "Dance"
 
 #: src/Models/Genre.vala:41
 msgid "Electronic"
-msgstr "Electronic"
+msgstr "Elektronische"
 
 #: src/Models/Genre.vala:42
 msgid "House"
@@ -1343,14 +1338,12 @@ msgstr ""
 "Stationen informiert wird"
 
 #: src/Widgets/HeaderBar.vala:82
-#, fuzzy
 msgid "Light mode"
-msgstr "Light mode"
+msgstr "Helles Farbschema"
 
 #: src/Widgets/HeaderBar.vala:83
-#, fuzzy
 msgid "Dark mode"
-msgstr "Dark mode"
+msgstr "Dunkles Farbschema"
 
 #: src/Widgets/HeaderBar.vala:108
 msgid "Preferences"
@@ -1369,9 +1362,8 @@ msgid "Playing"
 msgstr "Läuft"
 
 #: src/Widgets/StationContextMenu.vala:41
-#, fuzzy
 msgid "Visit Website"
-msgstr "Visit Website"
+msgstr "Website besuchen"
 
 #: src/Widgets/StationContextMenu.vala:71
 #, fuzzy
@@ -1383,9 +1375,8 @@ msgid "Selections"
 msgstr "Ausgewählt"
 
 #: src/Widgets/Window.vala:111
-#, fuzzy
 msgid "Library"
-msgstr "Library"
+msgstr "Bibliothek"
 
 #: src/Widgets/Window.vala:115
 msgid "Genres"
@@ -1424,9 +1415,8 @@ msgstr "Am meisten gehört in den letzten 24 Stunden"
 
 #. Country-specific stations list
 #: src/Widgets/Window.vala:194 src/Widgets/Window.vala:198
-#, fuzzy
 msgid "Your Country"
-msgstr "Country"
+msgstr "Dein Land"
 
 #: src/Widgets/Window.vala:216
 #, fuzzy
@@ -1436,7 +1426,7 @@ msgstr "Top 100 in"
 #. Favourites Box
 #: src/Widgets/Window.vala:232 src/Widgets/Window.vala:236
 msgid "Starred by You"
-msgstr "Von Dir markiert"
+msgstr "Von dir markiert"
 
 #. Search Results Box
 #: src/Widgets/Window.vala:245
