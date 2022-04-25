@@ -200,9 +200,8 @@ msgid "Cameroon"
 msgstr "Cameroon"
 
 #: src/Models/Countries.vala:74
-#, fuzzy
 msgid "Canada"
-msgstr "Canada"
+msgstr "Kanada"
 
 #: src/Models/Countries.vala:75
 #, fuzzy
@@ -215,9 +214,8 @@ msgid "Central African Republic"
 msgstr "Central African Republic"
 
 #: src/Models/Countries.vala:77
-#, fuzzy
 msgid "Chad"
-msgstr "Chad"
+msgstr "Tschad"
 
 #: src/Models/Countries.vala:78
 #, fuzzy
@@ -240,24 +238,20 @@ msgid "Cocos (Keeling) Islands"
 msgstr "Cocos (Keeling) Islands"
 
 #: src/Models/Countries.vala:82
-#, fuzzy
 msgid "Colombia"
-msgstr "Colombia"
+msgstr "Kolumbien"
 
 #: src/Models/Countries.vala:83
-#, fuzzy
 msgid "Comoros"
-msgstr "Comoros"
+msgstr "Komoren"
 
 #: src/Models/Countries.vala:84
-#, fuzzy
 msgid "Congo"
-msgstr "Congo"
+msgstr "Kongo"
 
 #: src/Models/Countries.vala:85
-#, fuzzy
 msgid "Congo, Democratic Republic of the"
-msgstr "Congo, Democratic Republic of the"
+msgstr "Kongo, Demokratische Republik"
 
 #: src/Models/Countries.vala:86
 #, fuzzy
@@ -285,7 +279,6 @@ msgid "Cuba"
 msgstr "Cuba"
 
 #: src/Models/Countries.vala:91
-#, fuzzy
 msgid "Curaçao"
 msgstr "Curaçao"
 
@@ -305,9 +298,8 @@ msgid "Denmark"
 msgstr "Denmark"
 
 #: src/Models/Countries.vala:95
-#, fuzzy
 msgid "Djibouti"
-msgstr "Über"
+msgstr "Dschibuti"
 
 #: src/Models/Countries.vala:96
 #, fuzzy
@@ -320,14 +312,12 @@ msgid "Dominican Republic"
 msgstr "Dominican Republic"
 
 #: src/Models/Countries.vala:98
-#, fuzzy
 msgid "Ecuador"
 msgstr "Ecuador"
 
 #: src/Models/Countries.vala:99
-#, fuzzy
 msgid "Egypt"
-msgstr "Egypt"
+msgstr "Ägypten"
 
 #: src/Models/Countries.vala:100
 #, fuzzy
@@ -345,9 +335,8 @@ msgid "Eritrea"
 msgstr "Eritrea"
 
 #: src/Models/Countries.vala:103
-#, fuzzy
 msgid "Estonia"
-msgstr "Estonia"
+msgstr "Estland"
 
 #: src/Models/Countries.vala:104
 #, fuzzy
@@ -370,34 +359,28 @@ msgid "Faroe Islands"
 msgstr "Faroe Islands"
 
 #: src/Models/Countries.vala:108
-#, fuzzy
 msgid "Fiji"
-msgstr "Fiji"
+msgstr "Fidschi"
 
 #: src/Models/Countries.vala:109
-#, fuzzy
 msgid "Finland"
-msgstr "Finland"
+msgstr "Finnland"
 
 #: src/Models/Countries.vala:110
-#, fuzzy
 msgid "France"
-msgstr "Dance"
+msgstr "Frankreich"
 
 #: src/Models/Countries.vala:111
-#, fuzzy
 msgid "French Guiana"
-msgstr "French Guiana"
+msgstr "Französisch-Guayana"
 
 #: src/Models/Countries.vala:112
-#, fuzzy
 msgid "French Polynesia"
-msgstr "French Polynesia"
+msgstr "Französisch-Polynesien"
 
 #: src/Models/Countries.vala:113
-#, fuzzy
 msgid "French Southern Territories"
-msgstr "French Southern Territories"
+msgstr "Französische Süd-Territorien"
 
 #: src/Models/Countries.vala:114
 #, fuzzy
@@ -415,9 +398,8 @@ msgid "Georgia"
 msgstr "Georgia"
 
 #: src/Models/Countries.vala:117
-#, fuzzy
 msgid "Germany"
-msgstr "Germany"
+msgstr "Deutschland"
 
 #: src/Models/Countries.vala:118
 #, fuzzy
@@ -430,14 +412,12 @@ msgid "Gibraltar"
 msgstr "Gibraltar"
 
 #: src/Models/Countries.vala:120
-#, fuzzy
 msgid "Greece"
-msgstr "Greece"
+msgstr "Griechenland"
 
 #: src/Models/Countries.vala:121
-#, fuzzy
 msgid "Greenland"
-msgstr "Greenland"
+msgstr "Grönland"
 
 #: src/Models/Countries.vala:122
 #, fuzzy
@@ -1368,7 +1348,7 @@ msgstr "Entdecken"
 
 #: src/Widgets/Window.vala:127
 msgid "Discover Stations"
-msgstr "Entdecke Radio Stationen"
+msgstr "Entdecke Radiostationen"
 
 #: src/Widgets/Window.vala:128
 msgid "Discover more stations"
@@ -1415,3 +1395,8 @@ msgstr "Suche"
 #: src/Widgets/Window.vala:249
 msgid "Search"
 msgstr "Suche"
+
+#: src/Models/Countries.vala:275
+#, fuzzy
+msgid "Viet Nam"
+msgstr "Viet Nam"
