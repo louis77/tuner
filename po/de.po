@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the com.github.louis77.tuner package.
 # Automatically generated, 2020.
 #
+# Louis Brauer <louis@openbooking.ch>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: louis@brauer.family\n"
 "POT-Creation-Date: 2020-11-08 19:49+0100\n"
-"PO-Revision-Date: 2022-04-25 19:45+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2022-04-25 19:59+0000\n"
+"Last-Translator: Louis Brauer <louis@openbooking.ch>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/tuner/tuner-ui/de/"
 ">\n"
 "Language: de\n"
@@ -1333,12 +1334,12 @@ msgstr "Über"
 
 #: src/Widgets/HeaderBar.vala:73
 msgid "Do not track"
-msgstr "Do Not Track"
+msgstr "Nicht nachverfolgen"
 
 #: src/Widgets/HeaderBar.vala:75
 msgid "If enabled, we will not send usage info to radio-browser.org"
 msgstr ""
-"Einschaltung, um zu verhindern, dass radio-browser.org über das Hören von "
+"Einschalten, um zu verhindern, dass radio-browser.org über das Hören von "
 "Stationen informiert wird"
 
 #: src/Widgets/HeaderBar.vala:82
