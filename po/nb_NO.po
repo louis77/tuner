@@ -1,18 +1,17 @@
-# Turkish translations for com.github.louis77.tuner package.
-# Copyright (C) 2020 THE com.github.louis77.tuner'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the com.github.louis77.tuner package.
-# Safak <bjksafak45@gmail.com>, 2020.
-#
+# Allan Nordhøy <epost@anotheragency.no>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: louis@brauer.family\n"
 "POT-Creation-Date: 2020-11-08 19:49+0100\n"
-"PO-Revision-Date: 2022-04-25 19:45+0000\n"
+"PO-Revision-Date: 2022-04-25 19:59+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: Turkish <https://hosted.weblate.org/projects/tuner/tuner-ui/"
-"tr/>\n"
-"Language: tr\n"
+"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/tuner/"
+"tuner-ui/nb_NO/>\n"
+"Language: nb_NO\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -327,7 +326,7 @@ msgstr "Denmark"
 #: src/Models/Countries.vala:95
 #, fuzzy
 msgid "Djibouti"
-msgstr "Hakkında"
+msgstr "Djibouti"
 
 #: src/Models/Countries.vala:96
 #, fuzzy
@@ -402,7 +401,7 @@ msgstr "Finland"
 #: src/Models/Countries.vala:110
 #, fuzzy
 msgid "France"
-msgstr "Dans"
+msgstr "France"
 
 #: src/Models/Countries.vala:111
 #, fuzzy
@@ -1082,7 +1081,7 @@ msgstr "Sudan"
 #: src/Models/Countries.vala:246
 #, fuzzy
 msgid "Suriname"
-msgstr "İstasyon ismi"
+msgstr "Suriname"
 
 #: src/Models/Countries.vala:247
 #, fuzzy
@@ -1260,85 +1259,103 @@ msgid "Zimbabwe"
 msgstr "Zimbabwe"
 
 #: src/Models/Genre.vala:35
+#, fuzzy
 msgid "70s"
-msgstr "70'ler "
+msgstr "70s"
 
 #: src/Models/Genre.vala:36
+#, fuzzy
 msgid "80s"
-msgstr "80'ler"
+msgstr "80s"
 
 #: src/Models/Genre.vala:37
+#, fuzzy
 msgid "90s"
-msgstr "90'lar"
+msgstr "90s"
 
 #: src/Models/Genre.vala:38
+#, fuzzy
 msgid "Classical"
-msgstr "Klasik"
+msgstr "Classical"
 
 #: src/Models/Genre.vala:39
+#, fuzzy
 msgid "Country"
-msgstr "Ülke"
+msgstr "Country"
 
 #: src/Models/Genre.vala:40
+#, fuzzy
 msgid "Dance"
-msgstr "Dans"
+msgstr "Dance"
 
 #: src/Models/Genre.vala:41
+#, fuzzy
 msgid "Electronic"
-msgstr "Elektronik"
+msgstr "Electronic"
 
 #: src/Models/Genre.vala:42
+#, fuzzy
 msgid "House"
-msgstr "Ev"
+msgstr "House"
 
 #: src/Models/Genre.vala:43
+#, fuzzy
 msgid "Jazz"
 msgstr "Jazz"
 
 #: src/Models/Genre.vala:44
+#, fuzzy
 msgid "Pop"
 msgstr "Pop"
 
 #: src/Models/Genre.vala:45
+#, fuzzy
 msgid "Rock"
 msgstr "Rock"
 
 #: src/Widgets/ContentBox.vala:47
+#, fuzzy
 msgid "Nothing here"
-msgstr "Burada hiçbir şey yok"
+msgstr "Nothing here"
 
 #: src/Widgets/ContentBox.vala:47
+#, fuzzy
 msgid ""
 "Something went wrong loading radio stations data from radio-browser.info. "
 "Please try again later."
 msgstr ""
-"radio-browser.info 'dan radyo istasyonları verileri yüklenirken bir sorun "
-"oluştu. Lütfen daha sonra tekrar deneyiniz."
+"Something went wrong loading radio stations data from radio-browser.info. "
+"Please try again later."
 
 #: src/Widgets/ContentBox.vala:57
+#, fuzzy
 msgid "No stations found"
-msgstr "İstasyon bulunamadı"
+msgstr "No stations found"
 
 #: src/Widgets/ContentBox.vala:57
+#, fuzzy
 msgid "Please try a different search term."
-msgstr "Lütfen başka bir isim girin"
+msgstr "Please try a different search term."
 
 #: src/Widgets/HeaderBar.vala:52
+#, fuzzy
 msgid "Choose a station"
-msgstr "Bir istasyon seçin"
+msgstr "Choose a station"
 
 #: src/Widgets/HeaderBar.vala:69
+#, fuzzy
 msgid "About"
-msgstr "Hakkında"
+msgstr "About"
 
 #: src/Widgets/HeaderBar.vala:73
+#, fuzzy
 msgid "Do not track"
-msgstr "Takip Etme"
+msgstr "Do not track"
 
 #: src/Widgets/HeaderBar.vala:75
+#, fuzzy
 msgid "If enabled, we will not send usage info to radio-browser.org"
-msgstr ""
-"Etkinleştirilirse, kullanım bilgilerini radio-browser.org'a göndermeyeceğiz"
+msgstr "If enabled, we will not send usage info to radio-browser.org"
 
 #: src/Widgets/HeaderBar.vala:82
 #, fuzzy
@@ -1351,20 +1368,24 @@ msgid "Dark mode"
 msgstr "Dark mode"
 
 #: src/Widgets/HeaderBar.vala:108
+#, fuzzy
 msgid "Preferences"
-msgstr "Tercihler"
+msgstr "Preferences"
 
 #: src/Widgets/HeaderBar.vala:114
+#, fuzzy
 msgid "Station name"
-msgstr "İstasyon ismi"
+msgstr "Station name"
 
 #: src/Widgets/HeaderBar.vala:130 src/Widgets/StationContextMenu.vala:71
+#, fuzzy
 msgid "Star this station"
-msgstr "Bu istasyona yıldız ekle"
+msgstr "Star this station"
 
 #: src/Widgets/HeaderBar.vala:179
+#, fuzzy
 msgid "Playing"
-msgstr "Çalma"
+msgstr "Playing"
 
 #: src/Widgets/StationContextMenu.vala:41
 #, fuzzy
@@ -1374,11 +1395,12 @@ msgstr "Visit Website"
 #: src/Widgets/StationContextMenu.vala:71
 #, fuzzy
 msgid "Unstar this station"
-msgstr "Bu istasyona yıldız ekle"
+msgstr "Unstar this station"
 
 #: src/Widgets/Window.vala:107
+#, fuzzy
 msgid "Selections"
-msgstr "Seçimler"
+msgstr "Selections"
 
 #: src/Widgets/Window.vala:111
 #, fuzzy
@@ -1386,45 +1408,53 @@ msgid "Library"
 msgstr "Library"
 
 #: src/Widgets/Window.vala:115
+#, fuzzy
 msgid "Genres"
-msgstr "Türler"
+msgstr "Genres"
 
 #. Discover Box
 #: src/Widgets/Window.vala:122
+#, fuzzy
 msgid "Discover"
-msgstr "Keşfedin"
+msgstr "Discover"
 
 #: src/Widgets/Window.vala:127
+#, fuzzy
 msgid "Discover Stations"
-msgstr "İstasyonları Keşfedin"
+msgstr "Discover Stations"
 
 #: src/Widgets/Window.vala:128
+#, fuzzy
 msgid "Discover more stations"
-msgstr "Daha fazla istasyon keşfedin"
+msgstr "Discover more stations"
 
 #. Trending Box
 #: src/Widgets/Window.vala:153
+#, fuzzy
 msgid "Trending"
-msgstr "Trend Olanlar"
+msgstr "Trending"
 
 #: src/Widgets/Window.vala:158
+#, fuzzy
 msgid "Trending in the last 24 hours"
-msgstr "Son 24 saat içinde trend olan istasyonlar"
+msgstr "Trending in the last 24 hours"
 
 #. Popular Box
 #: src/Widgets/Window.vala:174
+#, fuzzy
 msgid "Popular"
-msgstr "Popüler"
+msgstr "Popular"
 
 #: src/Widgets/Window.vala:179
+#, fuzzy
 msgid "Most-listened over 24 hours"
-msgstr "24 saat içinde en çok dinlenenler"
+msgstr "Most-listened over 24 hours"
 
 #. Country-specific stations list
 #: src/Widgets/Window.vala:194 src/Widgets/Window.vala:198
 #, fuzzy
 msgid "Your Country"
-msgstr "Ülke"
+msgstr "Your Country"
 
 #: src/Widgets/Window.vala:216
 #, fuzzy
@@ -1433,15 +1463,17 @@ msgstr "Top 100 in"
 
 #. Favourites Box
 #: src/Widgets/Window.vala:232 src/Widgets/Window.vala:236
+#, fuzzy
 msgid "Starred by You"
-msgstr "Yıldız Eklediniz"
+msgstr "Starred by You"
 
 #. Search Results Box
 #: src/Widgets/Window.vala:245
 #, fuzzy
 msgid "Recent Search"
-msgstr "Arama"
+msgstr "Recent Search"
 
 #: src/Widgets/Window.vala:249
+#, fuzzy
 msgid "Search"
-msgstr "Arama"
+msgstr "Search"
