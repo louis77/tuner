@@ -1124,7 +1124,6 @@ msgid "Uruguay"
 msgstr "Uruguay"
 
 #: src/Models/Countries.vala:272
-#, fuzzy
 msgid "Uzbekistan"
 msgstr "Uzbekistan"
 
@@ -1147,16 +1146,14 @@ msgid "Virgin Islands"
 msgstr "Isole Vergini"
 
 #: src/Models/Countries.vala:278
-#, fuzzy
 msgid "Wallis and Futuna"
-msgstr "Wallis and Futuna"
+msgstr "Wallis e Futuna"
 
 #: src/Models/Countries.vala:279
 msgid "Western Sahara"
 msgstr "Sahara occidentale"
 
 #: src/Models/Countries.vala:280
-#, fuzzy
 msgid "Yemen"
 msgstr "Yemen"
 
@@ -1172,15 +1169,15 @@ msgstr "Zimbabwe"
 
 #: src/Models/Genre.vala:35
 msgid "70s"
-msgstr "70s"
+msgstr "Anni 1970"
 
 #: src/Models/Genre.vala:36
 msgid "80s"
-msgstr "80s"
+msgstr "Anni 1980"
 
 #: src/Models/Genre.vala:37
 msgid "90s"
-msgstr "90s"
+msgstr "Anni 1990"
 
 #: src/Models/Genre.vala:38
 msgid "Classical"
@@ -1188,7 +1185,7 @@ msgstr "Classico"
 
 #: src/Models/Genre.vala:39
 msgid "Country"
-msgstr "Nazione"
+msgstr "Country"
 
 #: src/Models/Genre.vala:40
 msgid "Dance"
@@ -1200,7 +1197,7 @@ msgstr "Elettronica"
 
 #: src/Models/Genre.vala:42
 msgid "House"
-msgstr "Casa"
+msgstr "House"
 
 #: src/Models/Genre.vala:43
 msgid "Jazz"
@@ -1289,7 +1286,7 @@ msgstr "Selezioni"
 
 #: src/Widgets/Window.vala:111
 msgid "Library"
-msgstr "Libreria"
+msgstr "Raccolta"
 
 #: src/Widgets/Window.vala:115
 msgid "Genres"
