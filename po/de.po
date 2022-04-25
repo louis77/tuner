@@ -11,7 +11,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: louis@brauer.family\n"
 "POT-Creation-Date: 2020-11-08 19:49+0100\n"
 "PO-Revision-Date: 2022-04-25 21:17+0000\n"
-"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"Last-Translator: Louis Brauer <louis@openbooking.ch>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/tuner/tuner-ui/de/"
 ">\n"
 "Language: de\n"
@@ -22,102 +22,82 @@ msgstr ""
 "X-Generator: Weblate 4.12.1-dev\n"
 
 #: src/Models/Countries.vala:34
-#, fuzzy
 msgid "Afghanistan"
 msgstr "Afghanistan"
 
 #: src/Models/Countries.vala:35
-#, fuzzy
 msgid "Åland Islands"
-msgstr "Åland Islands"
+msgstr "Åland-Inseln"
 
 #: src/Models/Countries.vala:36
-#, fuzzy
 msgid "Albania"
-msgstr "Albania"
+msgstr "Albanien"
 
 #: src/Models/Countries.vala:37
-#, fuzzy
 msgid "Algeria"
-msgstr "Algeria"
+msgstr "Algerien"
 
 #: src/Models/Countries.vala:38
-#, fuzzy
 msgid "American Samoa"
-msgstr "American Samoa"
+msgstr "Amerikanisch-Samoa"
 
 #: src/Models/Countries.vala:39
-#, fuzzy
 msgid "Andorra"
 msgstr "Andorra"
 
 #: src/Models/Countries.vala:40
-#, fuzzy
 msgid "Angola"
 msgstr "Angola"
 
 #: src/Models/Countries.vala:41
-#, fuzzy
 msgid "Anguilla"
 msgstr "Anguilla"
 
 #: src/Models/Countries.vala:42
-#, fuzzy
 msgid "Antarctica"
-msgstr "Antarctica"
+msgstr "Antarktis"
 
 #: src/Models/Countries.vala:43
-#, fuzzy
 msgid "Antigua and Barbuda"
-msgstr "Antigua and Barbuda"
+msgstr "Antigua und Barbuda"
 
 #: src/Models/Countries.vala:44
-#, fuzzy
 msgid "Argentina"
-msgstr "Argentina"
+msgstr "Argentinien"
 
 #: src/Models/Countries.vala:45
-#, fuzzy
 msgid "Armenia"
-msgstr "Armenia"
+msgstr "Armenien"
 
 #: src/Models/Countries.vala:46
-#, fuzzy
 msgid "Aruba"
 msgstr "Aruba"
 
 #: src/Models/Countries.vala:47
-#, fuzzy
 msgid "Australia"
-msgstr "Australia"
+msgstr "Australien"
 
 #: src/Models/Countries.vala:48
-#, fuzzy
 msgid "Austria"
-msgstr "Austria"
+msgstr "Österreich"
 
 #: src/Models/Countries.vala:49
-#, fuzzy
 msgid "Azerbaijan"
-msgstr "Azerbaijan"
+msgstr "Aserbaidschan"
 
 #: src/Models/Countries.vala:50
-#, fuzzy
 msgid "Bahamas"
 msgstr "Bahamas"
 
 #: src/Models/Countries.vala:51
-#, fuzzy
 msgid "Bahrain"
 msgstr "Bahrain"
 
 #: src/Models/Countries.vala:52
-#, fuzzy
 msgid "Bangladesh"
-msgstr "Bangladesh"
+msgstr "Bangladesch"
 
 #: src/Models/Countries.vala:53
-#, fuzzy
 msgid "Barbados"
 msgstr "Barbados"
 
