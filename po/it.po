@@ -26,7 +26,7 @@ msgstr "Afghanistan"
 
 #: src/Models/Countries.vala:35
 msgid "Åland Islands"
-msgstr "Isole Aland"
+msgstr "Isole Åland"
 
 #: src/Models/Countries.vala:36
 #, fuzzy
@@ -156,7 +156,7 @@ msgstr "Bonaire, Sint Eustatius and Saba"
 
 #: src/Models/Countries.vala:62
 msgid "Bosnia and Herzegovina"
-msgstr "Bosnia Herzegovina"
+msgstr "Bosnia ed Erzegovina"
 
 #: src/Models/Countries.vala:63
 #, fuzzy
@@ -197,7 +197,7 @@ msgstr "Burundi"
 
 #: src/Models/Countries.vala:71
 msgid "Cabo Verde"
-msgstr "Capo Verde"
+msgstr "Cabo Verde"
 
 #: src/Models/Countries.vala:72
 msgid "Cambodia"
@@ -1349,3 +1349,7 @@ msgstr "Ricerca Recente"
 #: src/Widgets/Window.vala:249
 msgid "Search"
 msgstr "Ricerca"
+
+#: src/Models/Countries.vala:275
+msgid "Viet Nam"
+msgstr "Vietnam"
