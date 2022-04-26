@@ -743,7 +743,7 @@ msgstr "Nepal"
 
 #: src/Models/Countries.vala:190
 msgid "Netherlands"
-msgstr "Olanda"
+msgstr "Paesi Bassi"
 
 #: src/Models/Countries.vala:191
 msgid "New Caledonia"
