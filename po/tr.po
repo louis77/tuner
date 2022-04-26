@@ -53,7 +53,7 @@ msgstr "Anguilla"
 
 #: src/Models/Countries.vala:42
 msgid "Antarctica"
-msgstr "Antartika"
+msgstr "Antarktika"
 
 #: src/Models/Countries.vala:43
 msgid "Antigua and Barbuda"
