@@ -137,7 +137,7 @@ msgstr "Bosna Hersek"
 
 #: src/Models/Countries.vala:63
 msgid "Botswana"
-msgstr "Bostvana"
+msgstr "Botsvana"
 
 #: src/Models/Countries.vala:64
 msgid "Bouvet Island"
@@ -257,7 +257,7 @@ msgstr "Kıbrıs"
 
 #: src/Models/Countries.vala:93
 msgid "Czechia"
-msgstr "Çek Cumhuriyeti"
+msgstr "Çekya"
 
 #: src/Models/Countries.vala:94
 msgid "Denmark"
@@ -277,7 +277,7 @@ msgstr "Dominik Cumhuriyeti"
 
 #: src/Models/Countries.vala:98
 msgid "Ecuador"
-msgstr "Ekvator"
+msgstr "Ekvador"
 
 #: src/Models/Countries.vala:99
 msgid "Egypt"
@@ -329,7 +329,7 @@ msgstr "Fransa"
 
 #: src/Models/Countries.vala:111
 msgid "French Guiana"
-msgstr "Fransız Guanası"
+msgstr "Fransız Guyanası"
 
 #: src/Models/Countries.vala:112
 msgid "French Polynesia"
@@ -653,7 +653,7 @@ msgstr "Yeni Kaledonya"
 
 #: src/Models/Countries.vala:192
 msgid "New Zealand"
-msgstr "Yeni Zellanda"
+msgstr "Yeni Zelanda"
 
 #: src/Models/Countries.vala:193
 msgid "Nicaragua"
@@ -981,7 +981,7 @@ msgstr "Vanuatu"
 
 #: src/Models/Countries.vala:274
 msgid "Venezuela"
-msgstr "Venezüella"
+msgstr "Venezuela"
 
 #: src/Models/Countries.vala:275
 msgid "Vietnam"
@@ -989,7 +989,7 @@ msgstr ""
 
 #: src/Models/Countries.vala:276 src/Models/Countries.vala:277
 msgid "Virgin Islands"
-msgstr "Virjin Adaları"
+msgstr "Virgin Adaları"
 
 #: src/Models/Countries.vala:278
 msgid "Wallis and Futuna"
@@ -1029,7 +1029,7 @@ msgstr "Klasik"
 
 #: src/Models/Genre.vala:39
 msgid "Country"
-msgstr "Ülke"
+msgstr "Country"
 
 #: src/Models/Genre.vala:40
 msgid "Dance"
@@ -1041,7 +1041,7 @@ msgstr "Elektronik"
 
 #: src/Models/Genre.vala:42
 msgid "House"
-msgstr "Ev"
+msgstr "House"
 
 #: src/Models/Genre.vala:43
 msgid "Jazz"
@@ -1065,7 +1065,7 @@ msgid ""
 "Please try again later."
 msgstr ""
 "radio-browser.info 'dan radyo istasyonları verileri yüklenirken bir sorun "
-"oluştu. Lütfen daha sonra tekrar deneyiniz."
+"oluştu. Lütfen daha sonra tekrar deneyin."
 
 #: src/Widgets/ContentBox.vala:57
 msgid "No stations found"
@@ -1098,7 +1098,7 @@ msgstr "Açık kip"
 
 #: src/Widgets/HeaderBar.vala:83
 msgid "Dark mode"
-msgstr "Karanlık kip"
+msgstr "Koyu kip"
 
 #: src/Widgets/HeaderBar.vala:108
 msgid "Preferences"
