@@ -110,12 +110,10 @@ msgid "Belgium"
 msgstr "Belgien"
 
 #: src/Models/Countries.vala:56
-#, fuzzy
 msgid "Belize"
 msgstr "Belize"
 
 #: src/Models/Countries.vala:57
-#, fuzzy
 msgid "Benin"
 msgstr "Benin"
 
@@ -140,29 +138,24 @@ msgid "Bonaire, Sint Eustatius and Saba"
 msgstr "Bonaire, Sint Eustatius and Saba"
 
 #: src/Models/Countries.vala:62
-#, fuzzy
 msgid "Bosnia and Herzegovina"
-msgstr "Bosnia and Herzegovina"
+msgstr "Bosnien und Herzegowina"
 
 #: src/Models/Countries.vala:63
-#, fuzzy
 msgid "Botswana"
 msgstr "Botswana"
 
 #: src/Models/Countries.vala:64
-#, fuzzy
 msgid "Bouvet Island"
-msgstr "Bouvet Island"
+msgstr "Bouvetinsel"
 
 #: src/Models/Countries.vala:65
-#, fuzzy
 msgid "Brazil"
-msgstr "Brazil"
+msgstr "Brasilien"
 
 #: src/Models/Countries.vala:66
-#, fuzzy
 msgid "British Indian Ocean Territory"
-msgstr "British Indian Ocean Territory"
+msgstr "Britisches Territorium im Indischen Ozean"
 
 #: src/Models/Countries.vala:67
 #, fuzzy
@@ -190,28 +183,24 @@ msgid "Cabo Verde"
 msgstr "Cabo Verde"
 
 #: src/Models/Countries.vala:72
-#, fuzzy
 msgid "Cambodia"
-msgstr "Cambodia"
+msgstr "Kambodscha"
 
 #: src/Models/Countries.vala:73
-#, fuzzy
 msgid "Cameroon"
-msgstr "Cameroon"
+msgstr "Kamerun"
 
 #: src/Models/Countries.vala:74
 msgid "Canada"
 msgstr "Kanada"
 
 #: src/Models/Countries.vala:75
-#, fuzzy
 msgid "Cayman Islands"
-msgstr "Cayman Islands"
+msgstr "Kaimaninseln"
 
 #: src/Models/Countries.vala:76
-#, fuzzy
 msgid "Central African Republic"
-msgstr "Central African Republic"
+msgstr "Zentralafrikanische Republik"
 
 #: src/Models/Countries.vala:77
 msgid "Chad"
@@ -630,9 +619,8 @@ msgid "Lithuania"
 msgstr "Lithuania"
 
 #: src/Models/Countries.vala:164
-#, fuzzy
 msgid "Luxembourg"
-msgstr "Luxembourg"
+msgstr "Luxemburg"
 
 #: src/Models/Countries.vala:165
 #, fuzzy
