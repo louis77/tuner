@@ -982,7 +982,7 @@ msgid "Venezuela"
 msgstr "Venezuela"
 
 #: src/Models/Countries.vala:275
-msgid "Viet Nam"
+msgid "Vietnam"
 msgstr "Viêt Nam"
 
 #: src/Models/Countries.vala:276 src/Models/Countries.vala:277

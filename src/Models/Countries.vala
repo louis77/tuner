@@ -256,7 +256,7 @@ namespace Tuner.Model {
                     _map["UZ"] = _("Uzbekistan");
                     _map["VU"] = _("Vanuatu");
                     _map["VE"] = _("Venezuela");
-                    _map["VN"] = _("Viet Nam");
+                    _map["VN"] = _("Vietnam");
                     _map["VG"] = _("Virgin Islands");
                     _map["VI"] = _("Virgin Islands");
                     _map["WF"] = _("Wallis and Futuna");
