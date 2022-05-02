@@ -1,6 +1,4 @@
-# ![icon](docs/logo_01.png) Tuner
-
-[![Translation status](https://hosted.weblate.org/widgets/tuner/-/tuner-ui/multi-auto.svg)](https://hosted.weblate.org/engage/tuner/)
+# ![icon](docs/logo_01.png) Tuner [![Translation status](https://hosted.weblate.org/widgets/tuner/-/tuner-ui/svg-badge.svg)](https://hosted.weblate.org/engage/tuner/)
 
 ## Minimalist radio station player
 Discover and Listen to your favourite internet radio stations.
@@ -23,6 +21,8 @@ Yet, users keep sending bug reports and feature requests. I want `Tuner` to live
 ### You can help translate Tuner into your language
 
 Tuner translations are now hosted on [Weblate](https://hosted.weblate.org/engage/tuner/). Please help by translating Tuner into your language or fix any translation issues.
+
+[![Translation status](https://hosted.weblate.org/widgets/tuner/-/tuner-ui/multi-auto.svg)](https://hosted.weblate.org/engage/tuner/)
 
 Thanks to the Weblate team for generously hosting Tuner for free.
 
