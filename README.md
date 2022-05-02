@@ -1,9 +1,8 @@
-# ![icon](docs/logo_01.png) Tuner [![Translation status](https://hosted.weblate.org/widgets/tuner/-/tuner-ui/svg-badge.svg)](https://hosted.weblate.org/engage/tuner/)
+# ![icon](docs/logo_01.png) Tuner [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0) [![Translation status](https://hosted.weblate.org/widgets/tuner/-/tuner-ui/svg-badge.svg)](https://hosted.weblate.org/engage/tuner/)
 
 ## Minimalist radio station player
 Discover and Listen to your favourite internet radio stations.
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 ![Screenshot 01](docs/screen_dark_1.4.2.png?raw=true)
 
 ## Contributors wanted!
