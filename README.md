@@ -1,5 +1,7 @@
 # ![icon](docs/logo_01.png) Tuner
 
+[![Translation status](https://hosted.weblate.org/widgets/tuner/-/tuner-ui/multi-auto.svg)](https://hosted.weblate.org/engage/tuner/)
+
 ## Minimalist radio station player
 Discover and Listen to your favourite internet radio stations.
 
@@ -17,6 +19,13 @@ At the time, I never expected `Tuner` to be installed by the thousands on other 
 Maybe it was around this time when I started to feel not only the euphoria that comes with Open Source projects but also the weight of responsibility. I feared to move on because I didn't want to break things, so *I* took a break :-). 
 
 Yet, users keep sending bug reports and feature requests. I want `Tuner` to live on and be the best tiny internet radio receiver for the Linux environment. 
+
+### You can help translate Tuner into your language
+
+Tuner translations are now hosted on [Weblate](https://hosted.weblate.org/engage/tuner/). Please help by translating Tuner into your language or fix any translation issues.
+
+Thanks to the Weblate team for generously hosting Tuner for free.
+
 
 **Would you be interested in joining the project as a developer or package maintainer?**
 
@@ -146,6 +155,7 @@ $ sudo apt install gstreamer1.0-libav
 - [@safak45x](https://github.com/safak45x) - Turkish translation
 - [@btd1337](https://github.com/btd1337) - supports Tuner on Arch Linux / AUR
 - [@SwampRabbit](https://github.com/SwampRabbit) - supports Tuner on MX Linux
+- 
 
 ### Free Software Foundation
 
