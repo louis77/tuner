@@ -1228,7 +1228,6 @@ msgstr "Venezuela"
 msgid "Vietnam"
 msgstr ""
 
-
 #: src/Models/Countries.vala:276 src/Models/Countries.vala:277
 #, fuzzy
 msgid "Virgin Islands"
