@@ -1225,14 +1225,9 @@ msgid "Venezuela"
 msgstr "Venezuela"
 
 #: src/Models/Countries.vala:275
-<<<<<<< ours
 msgid "Vietnam"
 msgstr ""
-=======
-#, fuzzy
-msgid "Viet Nam"
-msgstr "Viet Nam"
->>>>>>> theirs
+
 
 #: src/Models/Countries.vala:276 src/Models/Countries.vala:277
 #, fuzzy
