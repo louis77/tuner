@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: louis@brauer.family\n"
 "POT-Creation-Date: 2020-11-08 19:49+0100\n"
-"PO-Revision-Date: 2022-05-18 21:15+0000\n"
+"PO-Revision-Date: 2022-06-18 10:21+0000\n"
 "Last-Translator: AHOHNMYC <lqwh2h2cwa@protonmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/tuner/tuner-ui/"
 "ru/>\n"
@@ -1073,9 +1073,8 @@ msgid "No stations found"
 msgstr "Станций не найдено"
 
 #: src/Widgets/ContentBox.vala:57
-#, fuzzy
 msgid "Please try a different search term."
-msgstr "Please try a different search term."
+msgstr "Пожалуйста, попробуйте другой запрос."
 
 #: src/Widgets/HeaderBar.vala:52
 msgid "Choose a station"
@@ -1142,19 +1141,16 @@ msgstr "Жанры"
 
 #. Discover Box
 #: src/Widgets/Window.vala:122
-#, fuzzy
 msgid "Discover"
-msgstr "Discover"
+msgstr "Исследовать"
 
 #: src/Widgets/Window.vala:127
-#, fuzzy
 msgid "Discover Stations"
-msgstr "Discover Stations"
+msgstr "Исследовать станции"
 
 #: src/Widgets/Window.vala:128
-#, fuzzy
 msgid "Discover more stations"
-msgstr "Discover more stations"
+msgstr "Открыть больше станций"
 
 #. Trending Box
 #: src/Widgets/Window.vala:153
@@ -1167,14 +1163,12 @@ msgstr "Популярные за поселедние сутки"
 
 #. Popular Box
 #: src/Widgets/Window.vala:174
-#, fuzzy
 msgid "Popular"
-msgstr "Popular"
+msgstr "Популярное"
 
 #: src/Widgets/Window.vala:179
-#, fuzzy
 msgid "Most-listened over 24 hours"
-msgstr "Most-listened over 24 hours"
+msgstr "Самые прослушиваемые за последние сутки"
 
 #. Country-specific stations list
 #: src/Widgets/Window.vala:194 src/Widgets/Window.vala:198
