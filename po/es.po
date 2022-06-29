@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: louis@brauer.family\n"
 "POT-Creation-Date: 2020-11-08 19:49+0100\n"
-"PO-Revision-Date: 2022-06-29 02:33+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2022-07-01 02:20+0000\n"
+"Last-Translator: Paxton <p1xt4n@pm.me>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/tuner/tuner-ui/"
 "es/>\n"
 "Language: es\n"
@@ -19,272 +19,218 @@ msgstr ""
 "X-Generator: Weblate 4.13.1-dev\n"
 
 #: src/Models/Countries.vala:34
-#, fuzzy
 msgid "Afghanistan"
-msgstr "Afghanistan"
+msgstr "Afganistán"
 
 #: src/Models/Countries.vala:35
-#, fuzzy
 msgid "Åland Islands"
-msgstr "Åland Islands"
+msgstr "Islas Åland"
 
 #: src/Models/Countries.vala:36
-#, fuzzy
 msgid "Albania"
 msgstr "Albania"
 
 #: src/Models/Countries.vala:37
-#, fuzzy
 msgid "Algeria"
 msgstr "Algeria"
 
 #: src/Models/Countries.vala:38
-#, fuzzy
 msgid "American Samoa"
-msgstr "American Samoa"
+msgstr "Samoa Americana"
 
 #: src/Models/Countries.vala:39
-#, fuzzy
 msgid "Andorra"
 msgstr "Andorra"
 
 #: src/Models/Countries.vala:40
-#, fuzzy
 msgid "Angola"
 msgstr "Angola"
 
 #: src/Models/Countries.vala:41
-#, fuzzy
 msgid "Anguilla"
-msgstr "Anguilla"
+msgstr "Anguila"
 
 #: src/Models/Countries.vala:42
-#, fuzzy
 msgid "Antarctica"
-msgstr "Antarctica"
+msgstr "Antártica"
 
 #: src/Models/Countries.vala:43
-#, fuzzy
 msgid "Antigua and Barbuda"
-msgstr "Antigua and Barbuda"
+msgstr "Antigua y Barbuda"
 
 #: src/Models/Countries.vala:44
-#, fuzzy
 msgid "Argentina"
 msgstr "Argentina"
 
 #: src/Models/Countries.vala:45
-#, fuzzy
 msgid "Armenia"
 msgstr "Armenia"
 
 #: src/Models/Countries.vala:46
-#, fuzzy
 msgid "Aruba"
 msgstr "Aruba"
 
 #: src/Models/Countries.vala:47
-#, fuzzy
 msgid "Australia"
 msgstr "Australia"
 
 #: src/Models/Countries.vala:48
-#, fuzzy
 msgid "Austria"
 msgstr "Austria"
 
 #: src/Models/Countries.vala:49
-#, fuzzy
 msgid "Azerbaijan"
-msgstr "Azerbaijan"
+msgstr "Azerbaiyán"
 
 #: src/Models/Countries.vala:50
-#, fuzzy
 msgid "Bahamas"
 msgstr "Bahamas"
 
 #: src/Models/Countries.vala:51
-#, fuzzy
 msgid "Bahrain"
 msgstr "Bahrain"
 
 #: src/Models/Countries.vala:52
-#, fuzzy
 msgid "Bangladesh"
 msgstr "Bangladesh"
 
 #: src/Models/Countries.vala:53
-#, fuzzy
 msgid "Barbados"
 msgstr "Barbados"
 
 #: src/Models/Countries.vala:54
-#, fuzzy
 msgid "Belarus"
-msgstr "Belarus"
+msgstr "Bielorrusia"
 
 #: src/Models/Countries.vala:55
-#, fuzzy
 msgid "Belgium"
-msgstr "Belgium"
+msgstr "Bélgica"
 
 #: src/Models/Countries.vala:56
-#, fuzzy
 msgid "Belize"
-msgstr "Belize"
+msgstr "Belice"
 
 #: src/Models/Countries.vala:57
-#, fuzzy
 msgid "Benin"
 msgstr "Benin"
 
 #: src/Models/Countries.vala:58
-#, fuzzy
 msgid "Bermuda"
 msgstr "Bermuda"
 
 #: src/Models/Countries.vala:59
-#, fuzzy
 msgid "Bhutan"
-msgstr "Bhutan"
+msgstr "Bhután"
 
 #: src/Models/Countries.vala:60
-#, fuzzy
 msgid "Bolivia"
 msgstr "Bolivia"
 
 #: src/Models/Countries.vala:61
-#, fuzzy
 msgid "Bonaire, Sint Eustatius and Saba"
-msgstr "Bonaire, Sint Eustatius and Saba"
+msgstr "Bonaire, San Eustaquio y Saba"
 
 #: src/Models/Countries.vala:62
-#, fuzzy
 msgid "Bosnia and Herzegovina"
-msgstr "Bosnia and Herzegovina"
+msgstr "Bosnia y Herzegovina"
 
 #: src/Models/Countries.vala:63
-#, fuzzy
 msgid "Botswana"
 msgstr "Botswana"
 
 #: src/Models/Countries.vala:64
-#, fuzzy
 msgid "Bouvet Island"
-msgstr "Bouvet Island"
+msgstr "Isla de Bouvet"
 
 #: src/Models/Countries.vala:65
-#, fuzzy
 msgid "Brazil"
-msgstr "Brazil"
+msgstr "Brasil"
 
 #: src/Models/Countries.vala:66
-#, fuzzy
 msgid "British Indian Ocean Territory"
-msgstr "British Indian Ocean Territory"
+msgstr "Territorio Británico del Océano Índico"
 
 #: src/Models/Countries.vala:67
-#, fuzzy
 msgid "Brunei Darussalam"
 msgstr "Brunei Darussalam"
 
 #: src/Models/Countries.vala:68
-#, fuzzy
 msgid "Bulgaria"
 msgstr "Bulgaria"
 
 #: src/Models/Countries.vala:69
-#, fuzzy
 msgid "Burkina Faso"
 msgstr "Burkina Faso"
 
 #: src/Models/Countries.vala:70
-#, fuzzy
 msgid "Burundi"
 msgstr "Burundi"
 
 #: src/Models/Countries.vala:71
-#, fuzzy
 msgid "Cabo Verde"
 msgstr "Cabo Verde"
 
 #: src/Models/Countries.vala:72
-#, fuzzy
 msgid "Cambodia"
-msgstr "Cambodia"
+msgstr "Camboya"
 
 #: src/Models/Countries.vala:73
-#, fuzzy
 msgid "Cameroon"
-msgstr "Cameroon"
+msgstr "Camerun"
 
 #: src/Models/Countries.vala:74
-#, fuzzy
 msgid "Canada"
 msgstr "Canada"
 
 #: src/Models/Countries.vala:75
-#, fuzzy
 msgid "Cayman Islands"
-msgstr "Cayman Islands"
+msgstr "Islas Caimán"
 
 #: src/Models/Countries.vala:76
-#, fuzzy
 msgid "Central African Republic"
-msgstr "Central African Republic"
+msgstr "República Centroafricana"
 
 #: src/Models/Countries.vala:77
-#, fuzzy
 msgid "Chad"
 msgstr "Chad"
 
 #: src/Models/Countries.vala:78
-#, fuzzy
 msgid "Chile"
 msgstr "Chile"
 
 #: src/Models/Countries.vala:79
-#, fuzzy
 msgid "China"
 msgstr "China"
 
 #: src/Models/Countries.vala:80
-#, fuzzy
 msgid "Christmas Island"
-msgstr "Christmas Island"
+msgstr "Isla de Navidad"
 
 #: src/Models/Countries.vala:81
-#, fuzzy
 msgid "Cocos (Keeling) Islands"
-msgstr "Cocos (Keeling) Islands"
+msgstr "Islas Cocos (Keeling)"
 
 #: src/Models/Countries.vala:82
-#, fuzzy
 msgid "Colombia"
 msgstr "Colombia"
 
 #: src/Models/Countries.vala:83
-#, fuzzy
 msgid "Comoros"
-msgstr "Comoros"
+msgstr "Comoras"
 
 #: src/Models/Countries.vala:84
-#, fuzzy
 msgid "Congo"
 msgstr "Congo"
 
 #: src/Models/Countries.vala:85
-#, fuzzy
 msgid "Congo, Democratic Republic of the"
-msgstr "Congo, Democratic Republic of the"
+msgstr "República Democrática del Congo"
 
 #: src/Models/Countries.vala:86
-#, fuzzy
 msgid "Cook Islands"
-msgstr "Cook Islands"
+msgstr "Islas Cook"
 
 #: src/Models/Countries.vala:87
-#, fuzzy
 msgid "Costa Rica"
 msgstr "Costa Rica"
 
@@ -294,94 +240,76 @@ msgid "Côte d'Ivoire"
 msgstr "Côte d'Ivoire"
 
 #: src/Models/Countries.vala:89
-#, fuzzy
 msgid "Croatia"
-msgstr "Croatia"
+msgstr "Croacia"
 
 #: src/Models/Countries.vala:90
-#, fuzzy
 msgid "Cuba"
 msgstr "Cuba"
 
 #: src/Models/Countries.vala:91
-#, fuzzy
 msgid "Curaçao"
-msgstr "Curaçao"
+msgstr "Curazao"
 
 #: src/Models/Countries.vala:92
-#, fuzzy
 msgid "Cyprus"
-msgstr "Cyprus"
+msgstr "Chipre"
 
 #: src/Models/Countries.vala:93
-#, fuzzy
 msgid "Czechia"
-msgstr "Czechia"
+msgstr "Chequia"
 
 #: src/Models/Countries.vala:94
-#, fuzzy
 msgid "Denmark"
-msgstr "Denmark"
+msgstr "Dinamarca"
 
 #: src/Models/Countries.vala:95
-#, fuzzy
 msgid "Djibouti"
 msgstr "Djibouti"
 
 #: src/Models/Countries.vala:96
-#, fuzzy
 msgid "Dominica"
 msgstr "Dominica"
 
 #: src/Models/Countries.vala:97
-#, fuzzy
 msgid "Dominican Republic"
-msgstr "Dominican Republic"
+msgstr "República Dominicana"
 
 #: src/Models/Countries.vala:98
-#, fuzzy
 msgid "Ecuador"
 msgstr "Ecuador"
 
 #: src/Models/Countries.vala:99
-#, fuzzy
 msgid "Egypt"
-msgstr "Egypt"
+msgstr "Egipto"
 
 #: src/Models/Countries.vala:100
-#, fuzzy
 msgid "El Salvador"
 msgstr "El Salvador"
 
 #: src/Models/Countries.vala:101
-#, fuzzy
 msgid "Equatorial Guinea"
-msgstr "Equatorial Guinea"
+msgstr "Guinea Ecuatorial"
 
 #: src/Models/Countries.vala:102
-#, fuzzy
 msgid "Eritrea"
 msgstr "Eritrea"
 
 #: src/Models/Countries.vala:103
-#, fuzzy
 msgid "Estonia"
 msgstr "Estonia"
 
 #: src/Models/Countries.vala:104
-#, fuzzy
 msgid "Eswatini"
 msgstr "Eswatini"
 
 #: src/Models/Countries.vala:105
-#, fuzzy
 msgid "Ethiopia"
-msgstr "Ethiopia"
+msgstr "Etiopía"
 
 #: src/Models/Countries.vala:106
-#, fuzzy
 msgid "Falkland Islands (Malvinas)"
-msgstr "Falkland Islands (Malvinas)"
+msgstr "Islas Falkland (Malvinas)"
 
 #: src/Models/Countries.vala:107
 #, fuzzy
@@ -434,17 +362,14 @@ msgid "Georgia"
 msgstr "Georgia"
 
 #: src/Models/Countries.vala:117
-#, fuzzy
 msgid "Germany"
-msgstr "Germany"
+msgstr "Alemania"
 
 #: src/Models/Countries.vala:118
-#, fuzzy
 msgid "Ghana"
 msgstr "Ghana"
 
 #: src/Models/Countries.vala:119
-#, fuzzy
 msgid "Gibraltar"
 msgstr "Gibraltar"
 
@@ -1239,27 +1164,22 @@ msgid "Wallis and Futuna"
 msgstr "Wallis and Futuna"
 
 #: src/Models/Countries.vala:279
-#, fuzzy
 msgid "Western Sahara"
-msgstr "Western Sahara"
+msgstr "Sahara Occidental"
 
 #: src/Models/Countries.vala:280
-#, fuzzy
 msgid "Yemen"
 msgstr "Yemen"
 
 #: src/Models/Countries.vala:281
-#, fuzzy
 msgid "Zambia"
 msgstr "Zambia"
 
 #: src/Models/Countries.vala:282
-#, fuzzy
 msgid "Zimbabwe"
 msgstr "Zimbabwe"
 
 #: src/Models/Genre.vala:35
-#, fuzzy
 msgid "70s"
 msgstr "70s"
 
@@ -1269,211 +1189,171 @@ msgid "80s"
 msgstr "80s"
 
 #: src/Models/Genre.vala:37
-#, fuzzy
 msgid "90s"
 msgstr "90s"
 
 #: src/Models/Genre.vala:38
-#, fuzzy
 msgid "Classical"
-msgstr "Classical"
+msgstr "Clásica"
 
 #: src/Models/Genre.vala:39
-#, fuzzy
 msgid "Country"
 msgstr "Country"
 
 #: src/Models/Genre.vala:40
-#, fuzzy
 msgid "Dance"
 msgstr "Dance"
 
 #: src/Models/Genre.vala:41
-#, fuzzy
 msgid "Electronic"
 msgstr "Electronic"
 
 #: src/Models/Genre.vala:42
-#, fuzzy
 msgid "House"
 msgstr "House"
 
 #: src/Models/Genre.vala:43
-#, fuzzy
 msgid "Jazz"
 msgstr "Jazz"
 
 #: src/Models/Genre.vala:44
-#, fuzzy
 msgid "Pop"
 msgstr "Pop"
 
 #: src/Models/Genre.vala:45
-#, fuzzy
 msgid "Rock"
 msgstr "Rock"
 
 #: src/Widgets/ContentBox.vala:47
-#, fuzzy
 msgid "Nothing here"
-msgstr "Nothing here"
+msgstr "No hay nada aquí"
 
 #: src/Widgets/ContentBox.vala:47
-#, fuzzy
 msgid ""
 "Something went wrong loading radio stations data from radio-browser.info. "
 "Please try again later."
 msgstr ""
-"Something went wrong loading radio stations data from radio-browser.info. "
-"Please try again later."
+"Algo ha ido mal al cargar los datos de las emisoras de radio desde radio-"
+"browser.info. Por favor, inténtelo de nuevo más tarde."
 
 #: src/Widgets/ContentBox.vala:57
-#, fuzzy
 msgid "No stations found"
-msgstr "No stations found"
+msgstr "Estación no encontrada"
 
 #: src/Widgets/ContentBox.vala:57
-#, fuzzy
 msgid "Please try a different search term."
-msgstr "Please try a different search term."
+msgstr "Por favor, intenta un término de búsqueda diferente."
 
 #: src/Widgets/HeaderBar.vala:52
-#, fuzzy
 msgid "Choose a station"
-msgstr "Choose a station"
+msgstr "Seleccionar una estación"
 
 #: src/Widgets/HeaderBar.vala:69
-#, fuzzy
 msgid "About"
-msgstr "About"
+msgstr "Acerca"
 
 #: src/Widgets/HeaderBar.vala:73
-#, fuzzy
 msgid "Do not track"
-msgstr "Do not track"
+msgstr "No rastrear"
 
 #: src/Widgets/HeaderBar.vala:75
-#, fuzzy
 msgid "If enabled, we will not send usage info to radio-browser.org"
-msgstr "If enabled, we will not send usage info to radio-browser.org"
+msgstr "Si se activa, no se enviará la información de uso a radio-browser.org"
 
 #: src/Widgets/HeaderBar.vala:82
-#, fuzzy
 msgid "Light mode"
-msgstr "Light mode"
+msgstr "Modo claro"
 
 #: src/Widgets/HeaderBar.vala:83
-#, fuzzy
 msgid "Dark mode"
-msgstr "Dark mode"
+msgstr "Modo oscuro"
 
 #: src/Widgets/HeaderBar.vala:108
-#, fuzzy
 msgid "Preferences"
-msgstr "Preferences"
+msgstr "Preferencias"
 
 #: src/Widgets/HeaderBar.vala:114
-#, fuzzy
 msgid "Station name"
-msgstr "Station name"
+msgstr "Nombre de la Estación"
 
 #: src/Widgets/HeaderBar.vala:130 src/Widgets/StationContextMenu.vala:71
-#, fuzzy
 msgid "Star this station"
-msgstr "Star this station"
+msgstr "Agregar a Favoritas"
 
 #: src/Widgets/HeaderBar.vala:179
-#, fuzzy
 msgid "Playing"
-msgstr "Playing"
+msgstr "Reproducir"
 
 #: src/Widgets/StationContextMenu.vala:41
-#, fuzzy
 msgid "Visit Website"
-msgstr "Visit Website"
+msgstr "Visitar Sitio Web"
 
 #: src/Widgets/StationContextMenu.vala:71
-#, fuzzy
 msgid "Unstar this station"
-msgstr "Unstar this station"
+msgstr "Desmarcar esta estación"
 
 #: src/Widgets/Window.vala:107
-#, fuzzy
 msgid "Selections"
-msgstr "Selections"
+msgstr "Selecciones"
 
 #: src/Widgets/Window.vala:111
-#, fuzzy
 msgid "Library"
-msgstr "Library"
+msgstr "Biblioteca"
 
 #: src/Widgets/Window.vala:115
-#, fuzzy
 msgid "Genres"
-msgstr "Genres"
+msgstr "Géneros"
 
 #. Discover Box
 #: src/Widgets/Window.vala:122
-#, fuzzy
 msgid "Discover"
-msgstr "Discover"
+msgstr "Descubrir"
 
 #: src/Widgets/Window.vala:127
-#, fuzzy
 msgid "Discover Stations"
-msgstr "Discover Stations"
+msgstr "Descubrir Estaciones"
 
 #: src/Widgets/Window.vala:128
-#, fuzzy
 msgid "Discover more stations"
-msgstr "Discover more stations"
+msgstr "Descubrir más estaciones"
 
 #. Trending Box
 #: src/Widgets/Window.vala:153
-#, fuzzy
 msgid "Trending"
-msgstr "Trending"
+msgstr "Tendencias"
 
 #: src/Widgets/Window.vala:158
-#, fuzzy
 msgid "Trending in the last 24 hours"
-msgstr "Trending in the last 24 hours"
+msgstr "Tendencias en las últimas 24 horas"
 
 #. Popular Box
 #: src/Widgets/Window.vala:174
-#, fuzzy
 msgid "Popular"
 msgstr "Popular"
 
 #: src/Widgets/Window.vala:179
-#, fuzzy
 msgid "Most-listened over 24 hours"
-msgstr "Most-listened over 24 hours"
+msgstr "Lo más escuchado en 24 horas"
 
 #. Country-specific stations list
 #: src/Widgets/Window.vala:194 src/Widgets/Window.vala:198
-#, fuzzy
 msgid "Your Country"
-msgstr "Your Country"
+msgstr "Tu País"
 
 #: src/Widgets/Window.vala:216
-#, fuzzy
 msgid "Top 100 in"
-msgstr "Top 100 in"
+msgstr "Los mejores 100"
 
 #. Favourites Box
 #: src/Widgets/Window.vala:232 src/Widgets/Window.vala:236
-#, fuzzy
 msgid "Starred by You"
-msgstr "Starred by You"
+msgstr "Estaciones Favoritas"
 
 #. Search Results Box
 #: src/Widgets/Window.vala:245
-#, fuzzy
 msgid "Recent Search"
-msgstr "Recent Search"
+msgstr "Búsqueda Reciente"
 
 #: src/Widgets/Window.vala:249
-#, fuzzy
 msgid "Search"
-msgstr "Search"
+msgstr "Buscar"
