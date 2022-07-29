@@ -57,6 +57,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     }
 
     construct {
+        this.set_icon_name("com.github.louis77.tuner");
+
         headerbar = new HeaderBar ();
         set_titlebar (headerbar);
         set_title (WindowName);
