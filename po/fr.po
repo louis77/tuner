@@ -187,7 +187,7 @@ msgstr "Îles Caïmans"
 
 #: src/Models/Countries.vala:76
 msgid "Central African Republic"
-msgstr "République d'Afrique Centrale"
+msgstr "République centrafricaine"
 
 #: src/Models/Countries.vala:77
 msgid "Chad"
@@ -327,7 +327,7 @@ msgstr "France"
 
 #: src/Models/Countries.vala:111
 msgid "French Guiana"
-msgstr "Guinée française"
+msgstr "Guyane"
 
 #: src/Models/Countries.vala:112
 msgid "French Polynesia"
@@ -335,7 +335,7 @@ msgstr "Polynésie française"
 
 #: src/Models/Countries.vala:113
 msgid "French Southern Territories"
-msgstr "Territoires français du Sud"
+msgstr "Terres australes françaises"
 
 #: src/Models/Countries.vala:114
 msgid "Gabon"
@@ -647,11 +647,11 @@ msgstr "Pays-Bas"
 
 #: src/Models/Countries.vala:191
 msgid "New Caledonia"
-msgstr "Nouvelle Calédonie"
+msgstr "Nouvelle-Calédonie"
 
 #: src/Models/Countries.vala:192
 msgid "New Zealand"
-msgstr "Nouvelle Zélande"
+msgstr "Nouvelle-Zélande"
 
 #: src/Models/Countries.vala:193
 msgid "Nicaragua"
@@ -759,7 +759,7 @@ msgstr "Rwanda"
 
 #: src/Models/Countries.vala:219
 msgid "Saint Barthélemy"
-msgstr "Saint Barthélemy"
+msgstr "Saint-Barthélemy"
 
 #: src/Models/Countries.vala:220
 msgid "Saint Helena, Ascension and Tristan da Cunha"
@@ -783,7 +783,7 @@ msgstr "Saint-Pierre-et-Miquelon"
 
 #: src/Models/Countries.vala:225
 msgid "Saint Vincent and the Grenadines"
-msgstr "Saint Vincent et les Grenadines"
+msgstr "Saint-Vincent-et-les-Grenadines"
 
 #: src/Models/Countries.vala:226
 msgid "Samoa"
@@ -979,7 +979,7 @@ msgstr "Vanuatu"
 
 #: src/Models/Countries.vala:274
 msgid "Venezuela"
-msgstr "Venezuela"
+msgstr "Vénézuéla"
 
 #: src/Models/Countries.vala:275
 msgid "Vietnam"
@@ -1031,7 +1031,7 @@ msgstr "Country"
 
 #: src/Models/Genre.vala:40
 msgid "Dance"
-msgstr "Danse"
+msgstr "Dance"
 
 #: src/Models/Genre.vala:41
 msgid "Electronic"
@@ -1188,3 +1188,7 @@ msgstr "Recherches récentes"
 #: src/Widgets/Window.vala:249
 msgid "Search"
 msgstr "Recherche"
+
+#: src/Models/Countries.vala:275
+msgid "Viet Nam"
+msgstr "Viêt Nam"
