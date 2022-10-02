@@ -6,13 +6,14 @@
 # Louis Brauer <louis@openbooking.ch>, 2022.
 # J. Lavoie <j.lavoie@net-c.ca>, 2022.
 # Tobias S <tobias.schmalzried@gmx.de>, 2022.
+# uwe-ss <u.senkler@gmx.de>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: louis@brauer.family\n"
 "POT-Creation-Date: 2020-11-08 19:49+0100\n"
-"PO-Revision-Date: 2022-08-22 01:19+0000\n"
-"Last-Translator: Tobias S <tobias.schmalzried@gmx.de>\n"
+"PO-Revision-Date: 2022-10-03 20:19+0000\n"
+"Last-Translator: uwe-ss <u.senkler@gmx.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/tuner/tuner-ui/de/"
 ">\n"
 "Language: de\n"
@@ -20,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14-dev\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #: src/Models/Countries.vala:34
 msgid "Afghanistan"
@@ -1040,7 +1041,7 @@ msgstr "Dance"
 
 #: src/Models/Genre.vala:41
 msgid "Electronic"
-msgstr "Elektronische"
+msgstr "Elektronisch"
 
 #: src/Models/Genre.vala:42
 msgid "House"
@@ -1067,24 +1068,24 @@ msgid ""
 "Something went wrong loading radio stations data from radio-browser.info. "
 "Please try again later."
 msgstr ""
-"Beim Abrufen der Radio-Stationen von radio-browser.info ist etwas schief "
-"gelaufen. Bitte versuche es später nochmals."
+"Beim Abrufen der Radiosender von radio-browser.info ist etwas "
+"schiefgelaufen. Bitte versuche es später nochmals."
 
 #: src/Widgets/ContentBox.vala:57
 msgid "No stations found"
-msgstr "Keine Stationen gefunden"
+msgstr "Keine Sender gefunden"
 
 #: src/Widgets/ContentBox.vala:57
 msgid "Please try a different search term."
-msgstr "Bitte versuche es mit einem anderen Suchbegriff."
+msgstr "Bitte einen anderen Suchbegriff versuchen."
 
 #: src/Widgets/HeaderBar.vala:52
 msgid "Choose a station"
-msgstr "Wähle eine Station"
+msgstr "Sender wählen"
 
 #: src/Widgets/HeaderBar.vala:69
 msgid "About"
-msgstr "Über"
+msgstr "Info"
 
 #: src/Widgets/HeaderBar.vala:73
 msgid "Do not track"
@@ -1093,16 +1094,16 @@ msgstr "Nicht nachverfolgen"
 #: src/Widgets/HeaderBar.vala:75
 msgid "If enabled, we will not send usage info to radio-browser.org"
 msgstr ""
-"Einschalten, um zu verhindern, dass radio-browser.org über das Hören von "
-"Stationen informiert wird"
+"Einschalten, um zu verhindern, dass radio-browser.info über das Hören von "
+"Sendern informiert wird"
 
 #: src/Widgets/HeaderBar.vala:82
 msgid "Light mode"
-msgstr "Helles Farbschema"
+msgstr "Helle Ansicht"
 
 #: src/Widgets/HeaderBar.vala:83
 msgid "Dark mode"
-msgstr "Dunkles Farbschema"
+msgstr "Dunkle Ansicht"
 
 #: src/Widgets/HeaderBar.vala:108
 msgid "Preferences"
@@ -1110,7 +1111,7 @@ msgstr "Einstellungen"
 
 #: src/Widgets/HeaderBar.vala:114
 msgid "Station name"
-msgstr "Stationsname"
+msgstr "Sendername"
 
 #: src/Widgets/HeaderBar.vala:130 src/Widgets/StationContextMenu.vala:71
 msgid "Star this station"
@@ -1118,11 +1119,11 @@ msgstr "Als Favorit markieren"
 
 #: src/Widgets/HeaderBar.vala:179
 msgid "Playing"
-msgstr "Läuft"
+msgstr "Wiedergabe"
 
 #: src/Widgets/StationContextMenu.vala:41
 msgid "Visit Website"
-msgstr "Website besuchen"
+msgstr "Internet-Seite besuchen"
 
 #: src/Widgets/StationContextMenu.vala:71
 msgid "Unstar this station"
@@ -1147,11 +1148,11 @@ msgstr "Entdecken"
 
 #: src/Widgets/Window.vala:127
 msgid "Discover Stations"
-msgstr "Entdecke Radiostationen"
+msgstr "Radiosender entdecken"
 
 #: src/Widgets/Window.vala:128
 msgid "Discover more stations"
-msgstr "Entdecke mehr Stationen"
+msgstr "Weitere Sender entdecken"
 
 #. Trending Box
 #: src/Widgets/Window.vala:153
@@ -1169,7 +1170,7 @@ msgstr "Populär"
 
 #: src/Widgets/Window.vala:179
 msgid "Most-listened over 24 hours"
-msgstr "Am meisten gehört in den letzten 24 Stunden"
+msgstr "Meistgehört in den letzten 24 Stunden"
 
 #. Country-specific stations list
 #: src/Widgets/Window.vala:194 src/Widgets/Window.vala:198
@@ -1183,12 +1184,12 @@ msgstr "Top 100 in"
 #. Favourites Box
 #: src/Widgets/Window.vala:232 src/Widgets/Window.vala:236
 msgid "Starred by You"
-msgstr "Von dir markiert"
+msgstr "Favoriten"
 
 #. Search Results Box
 #: src/Widgets/Window.vala:245
 msgid "Recent Search"
-msgstr "Suche"
+msgstr "Letzte Suche"
 
 #: src/Widgets/Window.vala:249
 msgid "Search"
