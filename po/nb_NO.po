@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: louis@brauer.family\n"
 "POT-Creation-Date: 2020-11-08 19:49+0100\n"
-"PO-Revision-Date: 2022-11-14 00:48+0000\n"
+"PO-Revision-Date: 2022-11-20 15:47+0000\n"
 "Last-Translator: Jon Helgeland <jhelg@live.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/tuner/"
 "tuner-ui/nb_NO/>\n"
@@ -37,9 +37,8 @@ msgid "Algeria"
 msgstr "Algerie"
 
 #: src/Models/Countries.vala:38
-#, fuzzy
 msgid "American Samoa"
-msgstr "American Samoa"
+msgstr "Amerikansk Samoa"
 
 #: src/Models/Countries.vala:39
 msgid "Andorra"
@@ -150,9 +149,8 @@ msgid "Brazil"
 msgstr "Brasil"
 
 #: src/Models/Countries.vala:66
-#, fuzzy
 msgid "British Indian Ocean Territory"
-msgstr "British Indian Ocean Territory"
+msgstr "Det britiske territoriet i Indiahavet"
 
 #: src/Models/Countries.vala:67
 msgid "Brunei Darussalam"
@@ -187,19 +185,16 @@ msgid "Canada"
 msgstr "Canada"
 
 #: src/Models/Countries.vala:75
-#, fuzzy
 msgid "Cayman Islands"
-msgstr "Cayman Islands"
+msgstr "Caymanøyene"
 
 #: src/Models/Countries.vala:76
-#, fuzzy
 msgid "Central African Republic"
-msgstr "Central African Republic"
+msgstr "Den sentralafrikanske republikk"
 
 #: src/Models/Countries.vala:77
-#, fuzzy
 msgid "Chad"
-msgstr "Chad"
+msgstr "Tsjad"
 
 #: src/Models/Countries.vala:78
 msgid "Chile"
@@ -210,9 +205,8 @@ msgid "China"
 msgstr "Kina"
 
 #: src/Models/Countries.vala:80
-#, fuzzy
 msgid "Christmas Island"
-msgstr "Christmas Island"
+msgstr "Christmasøya"
 
 #: src/Models/Countries.vala:81
 #, fuzzy
