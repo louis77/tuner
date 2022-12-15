@@ -21,11 +21,18 @@ public class Tuner.StationContextMenu : Gtk.Menu {
         label2.sensitive = false;
         this.append (label2);
 
+		this.append (new Gtk.SeparatorMenuItem ());
+
         if (this.station.homepage != null && this.station.homepage.length > 0) {
             var website_label = new Gtk.MenuItem.with_label (_("Visit Website"));
             this.append (website_label);
             website_label.activate.connect (on_website_handler);
         }
+
+		var label3 = new Gtk.MenuItem.with_label (_("Copy Stream-URL to clipboard"));
+		label3.sensitive = true;
+		this.append (label3);
+		label3.activate.connect (on_streamurl_handler);
 
         this.append (new Gtk.SeparatorMenuItem ());
 
@@ -51,6 +58,13 @@ public class Tuner.StationContextMenu : Gtk.Menu {
         }
 
     }
+
+	private void on_streamurl_handler () {
+		Gdk.Display display = Gdk.Display.get_default ();
+		Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (display, Gdk.SELECTION_CLIPBOARD);
+		clipboard.set_text (this.station.url, -1);
+	}
+
     private void set_star_context (Gtk.MenuItem item) {
         item.label = station.starred ? Application.UNSTAR_CHAR + _("Unstar this station") : Application.STAR_CHAR + _("Star this station");
     }
