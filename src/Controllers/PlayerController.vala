@@ -8,6 +8,7 @@ public class Tuner.PlayerController : Object {
     private Model.Station _station;
     private Gst.PlayerState? _current_state = Gst.PlayerState.STOPPED;
     public Gst.Player player;
+	public string currentTitle = " ";
 
     public signal void station_changed (Model.Station station);
     public signal void state_changed (Gst.PlayerState state);
@@ -27,6 +28,7 @@ public class Tuner.PlayerController : Object {
             string? title = extract_title_from_stream (obj);
             if (title != null) {
                 debug(@"Got new title from station: $title");
+				currentTitle = title;
                 title_changed(title);
             }
         });

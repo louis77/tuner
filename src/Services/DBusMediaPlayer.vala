@@ -79,7 +79,7 @@ namespace Tuner.DBus {
 
         public string identity {
             owned get {
-                return "tuner@exe";
+                return "Tuner";
             }
         }
 
@@ -109,6 +109,9 @@ namespace Tuner.DBus {
     public class MediaPlayerPlayer : Object, DBus.IMediaPlayer2Player {
         [DBus (visible = false)]
         private string _playback_status = "Stopped";
+		private string _current_title = "";
+		private string _current_artist = "Tuner";
+		private string? _current_art_url = null;
         private uint update_metadata_source = 0;
         private uint send_property_source = 0;
         private HashTable<string,Variant> changed_properties = null;
@@ -134,6 +137,19 @@ namespace Tuner.DBus {
                     break;
                 }
             });
+
+			Application.instance.player.title_changed.connect ((title) => {
+					_current_title = title;
+					trigger_metadata_update ();
+			});
+
+			Application.instance.player.station_changed.connect ((station) => {
+					_current_title = station.title;
+					_current_artist = station.title;
+					_current_art_url = station.favicon_url;
+					trigger_metadata_update ();
+				});
+
         }
 
         public void next() throws DBusError, IOError {
@@ -202,17 +218,16 @@ namespace Tuner.DBus {
             owned get {
                 //  debug ("DBus metadata requested");
                 var table = new HashTable<string, Variant> (str_hash, str_equal);
-                table.insert ("xesam:title", "Tuner");
+                table.insert ("xesam:title", _current_title);
+                table.insert ("xesam:artist", get_simple_string_array  (_current_artist));
 
-                var station = Application.instance.player.station;
-                if (station != null) {
-                    var station_title = station.title;
-                    table.insert ("xesam:artist", get_simple_string_array (station_title));
-                } else {
-                    table.insert ("xesam:artist", get_simple_string_array (null));
-                }
+				// this is necessary to remove previous images if the current
+				// station has none
+				var art = _current_art_url == null || _current_art_url == "" ? "file:///" : _current_art_url;
 
-                return table;
+				table.insert ("mpris:artUrl", art);
+
+				return table;
             }
         }
         public double volume { owned get; set; }
