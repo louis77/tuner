@@ -2,13 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the com.github.louis77.tuner package.
 # Allan Nordhøy <epost@anotheragency.no>, 2022.
+# Jon Helgeland <jhelg@live.no>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: louis@brauer.family\n"
 "POT-Creation-Date: 2020-11-08 19:49+0100\n"
-"PO-Revision-Date: 2022-04-26 15:50+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2022-11-20 15:47+0000\n"
+"Last-Translator: Jon Helgeland <jhelg@live.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/tuner/"
 "tuner-ui/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -16,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.12.1-dev\n"
+"X-Generator: Weblate 4.15-dev\n"
 
 #: src/Models/Countries.vala:34
 msgid "Afghanistan"
@@ -36,9 +37,8 @@ msgid "Algeria"
 msgstr "Algerie"
 
 #: src/Models/Countries.vala:38
-#, fuzzy
 msgid "American Samoa"
-msgstr "American Samoa"
+msgstr "Amerikansk Samoa"
 
 #: src/Models/Countries.vala:39
 msgid "Andorra"
@@ -49,7 +49,6 @@ msgid "Angola"
 msgstr "Angola"
 
 #: src/Models/Countries.vala:41
-#, fuzzy
 msgid "Anguilla"
 msgstr "Anguilla"
 
@@ -58,9 +57,8 @@ msgid "Antarctica"
 msgstr "Antarktis"
 
 #: src/Models/Countries.vala:43
-#, fuzzy
 msgid "Antigua and Barbuda"
-msgstr "Antigua and Barbuda"
+msgstr "Antigua og Barbuda"
 
 #: src/Models/Countries.vala:44
 msgid "Argentina"
@@ -71,7 +69,6 @@ msgid "Armenia"
 msgstr "Armenia"
 
 #: src/Models/Countries.vala:46
-#, fuzzy
 msgid "Aruba"
 msgstr "Aruba"
 
@@ -96,7 +93,6 @@ msgid "Bahrain"
 msgstr "Bahrain"
 
 #: src/Models/Countries.vala:52
-#, fuzzy
 msgid "Bangladesh"
 msgstr "Bangladesh"
 
@@ -113,7 +109,6 @@ msgid "Belgium"
 msgstr "Belgia"
 
 #: src/Models/Countries.vala:56
-#, fuzzy
 msgid "Belize"
 msgstr "Belize"
 
@@ -126,7 +121,6 @@ msgid "Bermuda"
 msgstr "Bermuda"
 
 #: src/Models/Countries.vala:59
-#, fuzzy
 msgid "Bhutan"
 msgstr "Bhutan"
 
@@ -135,16 +129,14 @@ msgid "Bolivia"
 msgstr "Bolivia"
 
 #: src/Models/Countries.vala:61
-#, fuzzy
 msgid "Bonaire, Sint Eustatius and Saba"
-msgstr "Bonaire, Sint Eustatius and Saba"
+msgstr "Bonaire, Sint Eustatius og Saba"
 
 #: src/Models/Countries.vala:62
 msgid "Bosnia and Herzegovina"
 msgstr "Bosnia-Hercegovina"
 
 #: src/Models/Countries.vala:63
-#, fuzzy
 msgid "Botswana"
 msgstr "Botswana"
 
@@ -157,12 +149,10 @@ msgid "Brazil"
 msgstr "Brasil"
 
 #: src/Models/Countries.vala:66
-#, fuzzy
 msgid "British Indian Ocean Territory"
-msgstr "British Indian Ocean Territory"
+msgstr "Det britiske territoriet i Indiahavet"
 
 #: src/Models/Countries.vala:67
-#, fuzzy
 msgid "Brunei Darussalam"
 msgstr "Brunei Darussalam"
 
@@ -171,17 +161,14 @@ msgid "Bulgaria"
 msgstr "Bulgaria"
 
 #: src/Models/Countries.vala:69
-#, fuzzy
 msgid "Burkina Faso"
 msgstr "Burkina Faso"
 
 #: src/Models/Countries.vala:70
-#, fuzzy
 msgid "Burundi"
 msgstr "Burundi"
 
 #: src/Models/Countries.vala:71
-#, fuzzy
 msgid "Cabo Verde"
 msgstr "Cabo Verde"
 
@@ -194,27 +181,22 @@ msgid "Cameroon"
 msgstr "Kamerun"
 
 #: src/Models/Countries.vala:74
-#, fuzzy
 msgid "Canada"
 msgstr "Canada"
 
 #: src/Models/Countries.vala:75
-#, fuzzy
 msgid "Cayman Islands"
-msgstr "Cayman Islands"
+msgstr "Caymanøyene"
 
 #: src/Models/Countries.vala:76
-#, fuzzy
 msgid "Central African Republic"
-msgstr "Central African Republic"
+msgstr "Den sentralafrikanske republikk"
 
 #: src/Models/Countries.vala:77
-#, fuzzy
 msgid "Chad"
-msgstr "Chad"
+msgstr "Tsjad"
 
 #: src/Models/Countries.vala:78
-#, fuzzy
 msgid "Chile"
 msgstr "Chile"
 
@@ -223,9 +205,8 @@ msgid "China"
 msgstr "Kina"
 
 #: src/Models/Countries.vala:80
-#, fuzzy
 msgid "Christmas Island"
-msgstr "Christmas Island"
+msgstr "Christmasøya"
 
 #: src/Models/Countries.vala:81
 #, fuzzy
@@ -233,7 +214,6 @@ msgid "Cocos (Keeling) Islands"
 msgstr "Cocos (Keeling) Islands"
 
 #: src/Models/Countries.vala:82
-#, fuzzy
 msgid "Colombia"
 msgstr "Colombia"
 
@@ -257,26 +237,22 @@ msgid "Cook Islands"
 msgstr "Cook Islands"
 
 #: src/Models/Countries.vala:87
-#, fuzzy
 msgid "Costa Rica"
 msgstr "Costa Rica"
 
 #: src/Models/Countries.vala:88
-#, fuzzy
 msgid "Côte d'Ivoire"
-msgstr "Côte d'Ivoire"
+msgstr "Elfenbenskysten"
 
 #: src/Models/Countries.vala:89
-#, fuzzy
 msgid "Croatia"
-msgstr "Croatia"
+msgstr "Kroatia"
 
 #: src/Models/Countries.vala:90
 msgid "Cuba"
 msgstr "Kuba"
 
 #: src/Models/Countries.vala:91
-#, fuzzy
 msgid "Curaçao"
 msgstr "Curaçao"
 
@@ -293,22 +269,18 @@ msgid "Denmark"
 msgstr "Danmark"
 
 #: src/Models/Countries.vala:95
-#, fuzzy
 msgid "Djibouti"
 msgstr "Djibouti"
 
 #: src/Models/Countries.vala:96
-#, fuzzy
 msgid "Dominica"
 msgstr "Dominica"
 
 #: src/Models/Countries.vala:97
-#, fuzzy
 msgid "Dominican Republic"
-msgstr "Dominican Republic"
+msgstr "Den dominikanske republikk"
 
 #: src/Models/Countries.vala:98
-#, fuzzy
 msgid "Ecuador"
 msgstr "Ecuador"
 
@@ -317,7 +289,6 @@ msgid "Egypt"
 msgstr "Egypt"
 
 #: src/Models/Countries.vala:100
-#, fuzzy
 msgid "El Salvador"
 msgstr "El Salvador"
 
