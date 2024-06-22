@@ -58,6 +58,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     construct {
         this.set_icon_name("com.github.louis77.tuner");
+		this.size_allocate.connect(on_window_resize);
 
         headerbar = new HeaderBar ();
         set_titlebar (headerbar);
@@ -93,7 +94,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         add_action_entries (ACTION_ENTRIES, this);
 
         window_position = Gtk.WindowPosition.CENTER;
-        set_default_size (800, 540);
+        set_default_size (900, 680);
         change_action_state (ACTION_DISABLE_TRACKING, settings.get_boolean ("do-not-track"));
         change_action_state (ACTION_ENABLE_AUTOPLAY, settings.get_boolean ("auto-play"));
         move (settings.get_int ("pos-x"), settings.get_int ("pos-y"));
@@ -362,6 +363,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         }
     }
+
+	private void on_window_resize (Gtk.Widget self, Gtk.Allocation allocation) {
+		int width = allocation.width;
+		int height = allocation.height;
+
+		debug (@"Window resized: w$(width) h$(height)");
+	}
 
     private ContentBox create_content_box (
              string name,
