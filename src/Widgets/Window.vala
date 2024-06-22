@@ -14,7 +14,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     private DirectoryController _directory;
     private HeaderBar headerbar;
     private Granite.Widgets.SourceList source_list;
-    
+
     public const string WindowName = "Tuner";
     public const string ACTION_PREFIX = "win.";
     public const string ACTION_PAUSE = "action_pause";
@@ -38,15 +38,15 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var provider = new Gtk.CssProvider ();
         provider.load_from_resource ("com/github/louis77/tuner/Application.css");
         Gtk.StyleContext.add_provider_for_screen (
-            Gdk.Screen.get_default (), 
-            provider, 
+            Gdk.Screen.get_default (),
+            provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
     }
 
     public Window (Application app, PlayerController player) {
         Object (
-            application: app, 
+            application: app,
             player: player,
             settings: Application.instance.settings
         );
@@ -81,7 +81,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             if (key == "theme-mode") {
                 warning("theme-mode changed");
                 adjust_theme();
-                
+
             }
         });
 
@@ -108,7 +108,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         var stack = new Gtk.Stack ();
         stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
-        
+
         var data_file = Path.build_filename (Application.instance.data_dir, "favorites.json");
         var store = new Model.StationStore (data_file);
         _directory = new DirectoryController (store);
@@ -127,7 +127,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var genres_category = new Granite.Widgets.SourceList.ExpandableItem (_("Genres"));
         genres_category.collapsible = true;
         genres_category.expanded = true;
-        
+
         source_list = new Granite.Widgets.SourceList ();
 
         // Discover Box
@@ -165,7 +165,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var item2 = new Granite.Widgets.SourceList.Item (_("Trending"));
         item2.icon = new ThemedIcon ("playlist-queue");
         selections_category.add (item2);
-                
+
         var c2 = create_content_box ("trending", item2,
                             _("Trending in the last 24 hours"), null, null,
                             stack, source_list);
@@ -186,7 +186,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var item3 = new Granite.Widgets.SourceList.Item (_("Popular"));
         item3.icon = new ThemedIcon ("playlist-similar");
         selections_category.add (item3);
-                                
+
         var c3 = create_content_box ("popular", item3,
                             _("Most-listened over 24 hours"), null, null,
                             stack, source_list);
@@ -213,6 +213,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         c_slist.selection_changed.connect (handle_station_click);
         c_slist.favourites_changed.connect (handle_favourites_changed);
 
+        /* 
         LocationDiscovery.country_code.begin ((obj, res) => {
             string country;
             try {
@@ -239,7 +240,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 }
             });
         });
- 
+        */
+
         // Favourites Box
         var item5 = new Granite.Widgets.SourceList.Item (_("Starred by You"));
         item5.icon = new ThemedIcon ("starred");
@@ -247,7 +249,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var c4 = create_content_box ("starred", item5,
                             _("Starred by You"), null, null,
                             stack, source_list, true);
-        
+
         var slist = new StationList.with_stations (_directory.get_stored ());
         slist.selection_changed.connect (handle_station_click);
         slist.favourites_changed.connect (handle_favourites_changed);
@@ -262,7 +264,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                             stack, source_list, true);
 
         // Excluded Countries Box
-        /* not finished yet 
+        /* not finished yet
         var item7 = new Granite.Widgets.SourceList.Item (_("Excluded Countries"));
         item7.icon = new ThemedIcon ("folder-saved-search");
         searched_category.add (item7);
@@ -271,13 +273,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             stack, source_list, true);
         c6.content = new CountryList ();
         */
-        
+
         // Genre Boxes
         foreach (var genre in Model.genres ()) {
             var item8 = new Granite.Widgets.SourceList.Item (_(genre.name));
             item8.icon = new ThemedIcon ("playlist-symbolic");
             genres_category.add (item8);
-            var cb = create_content_box (genre.name, item8, 
+            var cb = create_content_box (genre.name, item8,
                 genre.name, null, null, stack, source_list);
             var tags = new ArrayList<string>.wrap (genre.tags);
             var ds = _directory.load_by_tags (tags);
@@ -298,7 +300,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
 
         refresh_favourites.connect ( () => {
-            var _slist = new StationList.with_stations (_directory.get_stored ()); 
+            var _slist = new StationList.with_stations (_directory.get_stored ());
             _slist.selection_changed.connect (handle_station_click);
             _slist.favourites_changed.connect (handle_favourites_changed);
             c4.content = _slist;
@@ -318,7 +320,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         headerbar.searched_for.connect ( (text) => {
             if (text.length > 0) {
                 string mytext = text;
-                var s5 = _directory.load_search_stations (mytext, 100); 
+                var s5 = _directory.load_search_stations (mytext, 100);
                 try {
                     var stations = s5.next ();
                     if (stations == null || stations.size == 0) {
@@ -331,7 +333,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                     }
                 } catch (SourceError e) {
                     c5.show_alert ();
-                }    
+                }
             }
         });
 
@@ -356,7 +358,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 foreach (var station in source.next ()) {
                     handle_station_click(station);
                     break;
-                }  
+                }
             } catch (SourceError e) {
                 warning ("Error while trying to autoplay, aborting...");
             }
@@ -402,11 +404,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         return c;
     }
-    
+
     private static void adjust_theme() {
         var theme = Application.instance.settings.get_string("theme-mode");
         warning(@"current theme: $theme");
-        
+
         var gtk_settings = Gtk.Settings.get_default ();
         var granite_settings = Granite.Settings.get_default ();
         if (theme != "system") {
@@ -457,7 +459,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         action.set_state (new_state);
         settings.set_boolean ("auto-play", new_state);
         debug (@"on_action_enable_autoplay: $new_state");
-    }    
+    }
 
     public void handleplayer_state_changed (Gst.PlayerState state) {
         switch (state) {
