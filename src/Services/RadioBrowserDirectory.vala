@@ -82,10 +82,9 @@ public enum SortOrder {
     }
 }
 
+// TODO: Fetch list of servers via DNS
 private const string[] DEFAULT_BOOTSTRAP_SERVERS = {
     "de1.api.radio-browser.info",
-    "fr1.api.radio-browser.info",
-    "nl1.api.radio-browser.info"
 };
 
 public class Station : Object {
