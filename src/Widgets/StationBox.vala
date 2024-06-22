@@ -94,34 +94,40 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
             var session = new Soup.Session ();
             var message = new Soup.Message ("GET", station.favicon_url);
 
-            session.queue_message (message, (sess, mess) => {
-                if (mess.status_code != 200) {
+            session.send_async.begin (message, 0, null, (sess, res) => {
+                try {
+                    GLib.InputStream data_stream = session.send_async.end (res);
+
+                    //set_favicon_from_stream (data_stream);
+
+                    var file = File.new_for_path (favicon_cache_file);
+                    try {
+                        var stream = file.create_readwrite (FileCreateFlags.PRIVATE);
+                        stream.output_stream.splice (data_stream, 0);
+                        stream.close ();
+                    } catch (Error e) {
+                        // File already created by another stationbox
+                        // TODO: possible race condition
+                        // TODO: Create stationboxes as singletons?
+                    }
+
+                    try {
+                        var favicon_stream = file.read ();
+                        if (!set_favicon_from_stream (favicon_stream)) {
+                            set_default_favicon ();
+                        };
+                    } catch (Error e) {
+                        warning (@"Error while reading icon file stream: $(e.message)");
+                    }
+                } catch (GLib.Error e) {
+                    critical (@"unable to load favicon: $(e.message)");
+                    return;
+                }
+     
+                if (message.status_code != 200) {
                     //debug (@"Unexpected status code: $(mess.status_code), will not render $(station.favicon_url)");
                     set_default_favicon ();
                     return;
-                }
-
-                var data_stream = new MemoryInputStream.from_data (mess.response_body.data);
-                //set_favicon_from_stream (data_stream);
-
-                var file = File.new_for_path (favicon_cache_file);
-                try {
-                    var stream = file.create_readwrite (FileCreateFlags.PRIVATE);
-                    stream.output_stream.splice (data_stream, 0);
-                    stream.close ();
-                } catch (Error e) {
-                    // File already created by another stationbox
-                    // TODO: possible race condition
-                    // TODO: Create stationboxes as singletons?
-                }
-
-                try {
-                    var favicon_stream = file.read ();
-                    if (!set_favicon_from_stream (favicon_stream)) {
-                        set_default_favicon ();
-                    };
-                } catch (Error e) {
-                    warning (@"Error while reading icon file stream: $(e.message)");
                 }
             });
 

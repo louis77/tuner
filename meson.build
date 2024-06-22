@@ -47,7 +47,7 @@ dependencies = [
     dependency ('granite'),
     dependency ('gstreamer-1.0'),
     dependency ('gstreamer-player-1.0'),
-    dependency ('libsoup-2.4'),
+    dependency ('libsoup-3.0'),
     dependency ('json-glib-1.0'),
     dependency ('libgeoclue-2.0'),
     dependency ('geocode-glib-1.0')
@@ -69,4 +69,3 @@ subdir ('data')
 subdir ('po')
 
 meson.add_install_script ('meson/post_install.py')
-

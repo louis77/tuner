@@ -177,16 +177,26 @@ public class Client : Object {
         debug (@"sending listening event for station $stationuuid");
         var resource = @"json/url/$stationuuid";
         var message = new Soup.Message ("GET", @"$current_server/$resource");
-        var response_code = _session.send_message (message);
-        debug (@"response: $(response_code)");
+        try {
+            var resp = _session.send (message);
+            resp.close ();
+        } catch(GLib.Error e) {
+            debug ("failed to track()");
+        }
+        debug (@"response: $(message.status_code)");
     }
 
     public void vote (string stationuuid) {
         debug (@"sending vote event for station $stationuuid");
         var resource = @"json/vote/$stationuuid)";
         var message = new Soup.Message ("GET", @"$current_server/$resource");
-        var response_code = _session.send_message (message);
-        debug (@"response: $(response_code)");
+        try {
+            var resp = _session.send (message);
+            resp.close ();
+        } catch(GLib.Error e) {
+            debug("failed to vote()");
+        }
+        debug (@"response: $(message.status_code)");
     }
 
     public ArrayList<Station> get_stations (string resource) throws DataError {
@@ -195,21 +205,27 @@ public class Client : Object {
         var message = new Soup.Message ("GET", @"$current_server/$resource");
         Json.Node rootnode;
 
-        var response_code = _session.send_message (message);
-        debug (@"response from radio-browser.info: $response_code");
-        var body = (string) message.response_body.data;
-        if (body == null) {
-            throw new DataError.NO_CONNECTION (@"unable to read response");
-        }
         try {
-            rootnode = Json.from_string (body);
-        } catch (Error e) {
-            throw new DataError.PARSE_DATA (@"unable to parse JSON response: $(e.message)");
-        }
-        var rootarray = rootnode.get_array ();
+            var response = _session.send (message);
+            warning (@"response from radio-browser.info: $(message.status_code)");
 
-        var stations = jarray_to_stations (rootarray);
-        return stations;
+            try {
+                var parser = new Json.Parser();
+                parser.load_from_stream (response, null);
+                rootnode = parser.get_root();
+                response.close ();
+            } catch (Error e) {
+                throw new DataError.PARSE_DATA (@"unable to parse JSON response: $(e.message)");
+            }
+            var rootarray = rootnode.get_array ();
+
+            var stations = jarray_to_stations (rootarray);
+            return stations;
+        } catch (GLib.Error e) {
+            warning (@"response from radio-browser.info: $(e.message)");
+        }
+
+        return new ArrayList<Station>();
     }
 
     public ArrayList<Station> search (SearchParams params,
@@ -266,20 +282,27 @@ public class Client : Object {
         var message = new Soup.Message ("GET", @"$current_server/$resource");
         Json.Node rootnode;
 
-        var response_code = _session.send_message (message);
-        debug (@"response from radio-browser.info: $response_code");
-        var body = (string) message.response_body.data;
-
         try {
-            rootnode = Json.from_string (body);
-        } catch (Error e) {
-            throw new DataError.PARSE_DATA (@"unable to parse JSON response: $(e.message)");
+            var ip = _session.send (message);
+            debug (@"response from radio-browser.info: $(message.status_code)");
+
+            
+            try {
+                var parser = new Json.Parser();
+                parser.load_from_stream (ip, null);
+                rootnode = parser.get_root ();
+            } catch (Error e) {
+                throw new DataError.PARSE_DATA (@"unable to parse JSON response: $(e.message)");
+            }
+            var rootarray = rootnode.get_array ();
+
+            var tags = jarray_to_tags (rootarray);
+            return tags;
+        } catch(GLib.Error e) {
+            debug("cannot get_tags()");
         }
-        var rootarray = rootnode.get_array ();
 
-        var tags = jarray_to_tags (rootarray);
-        return tags;
-
+        return new ArrayList<Tag>();
     }
 
 }

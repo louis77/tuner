@@ -184,26 +184,32 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         var session = new Soup.Session ();
         var message = new Soup.Message ("GET", url);
 
-        session.queue_message (message, (sess, mess) => {
-            if (mess.status_code != 200) {
-                warning (@"Unexpected status code: $(mess.status_code), will not render $(url)");
-                return;
+        session.send_async.begin (message, 0, null, (sess, res) => {
+            try {            
+                GLib.InputStream resp = session.send_async.end (res);
+                
+                if (message.status_code != 200) {
+                    warning (@"Unexpected status code: $(message.status_code), will not render $(url)");
+                    return;
+                }
+                
+                // var data_stream = new MemoryInputStream.from_data (mess.response_body.data);
+                Gdk.Pixbuf pxbuf;
+
+                try {
+                    pxbuf = new Gdk.Pixbuf.from_stream_at_scale (resp, 48, 48, true, null);
+                    favicon.set_from_pixbuf (pxbuf);
+                    favicon.set_size_request (48, 48);
+                } catch (Error e) {
+                    warning ("Couldn't render favicon: %s (%s)",
+                        url ?? "unknown url",
+                        e.message);
+                }
+
+                resp.close ();
+            } catch (GLib.Error e) {
+                warning("load_favicon failed: $(e.message)");
             }
-
-            var data_stream = new MemoryInputStream.from_data (mess.response_body.data);
-            Gdk.Pixbuf pxbuf;
-
-            try {
-                pxbuf = new Gdk.Pixbuf.from_stream_at_scale (data_stream, 48, 48, true, null);
-            } catch (Error e) {
-                warning ("Couldn't render favicon: %s (%s)",
-                    url ?? "unknown url",
-                    e.message);
-                return;
-            }
-
-            favicon.set_from_pixbuf (pxbuf);
-            favicon.set_size_request (48, 48);
         });
     }
 
