@@ -21,10 +21,10 @@ Turkish translation by safak45x https://github.com/safak45x""";
         logo_icon_name = Application._instance.get_application_id ();
         program_name = "Tuner";
         comments = "Listen to internet radio stations";
-        copyright = "Copyright © 2020-2022 Louis Brauer";
+        copyright = "Copyright © 2020-2024 Louis Brauer";
         version = @"v$(Application.APP_VERSION)";
 
-        license = """* Copyright (c) 2020-2022 Louis Brauer <louis@brauer.family>
+        license = """* Copyright (c) 2020-2024 Louis Brauer <louis@brauer.family>
 
         Tuner is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
