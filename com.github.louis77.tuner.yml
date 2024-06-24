@@ -1,7 +1,7 @@
 ---
 app-id: com.github.louis77.tuner
 runtime: io.elementary.Platform
-runtime-version: '6.1'
+runtime-version: '8'
 sdk: io.elementary.Sdk
 command: com.github.louis77.tuner
 finish-args:
@@ -13,11 +13,8 @@ finish-args:
 - "--share=network"
 - "--metadata=X-DConf=migrate-path=/com/github/louis77/tuner/"
 - "--socket=pulseaudio"
-- "--talk-name=org.freedesktop.Notifications"
 - "--talk-name=org.gnome.SettingsDaemon.MediaKeys"
 - "--own-name=org.mpris.MediaPlayer2.Tuner"
-# Needed to read prefer-color-scheme with Granite.Settings
-- '--system-talk-name=org.freedesktop.Accounts'
 cleanup:
 - "/include"
 - "/lib/pkgconfig"
