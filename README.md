@@ -122,7 +122,7 @@ Make sure you have the dependencies installed:
 
 ```bash
 sudo apt install git valac meson
-sudo apt install libgtk-3-dev libgee-0.8-dev libgranite-dev libgstreamer1.0-dev libgstreamer-plugins-bad1.0-dev libsoup3.0-dev libjson-glib-dev
+sudo apt install libgtk-3-dev libgee-0.8-dev libgranite-dev libgstreamer1.0-dev libgstreamer-plugins-bad1.0-dev libsoup-3.0-dev libjson-glib-dev
 ```
 
 Then clone this repo and build it locally:
