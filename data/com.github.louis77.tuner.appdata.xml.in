@@ -62,6 +62,15 @@
   </provides>
 
   <releases>
+    <release version="1.5.3" date="2024-09-22">
+      <description>
+        <p>Maintanance release:</p>
+        <ul>
+          <li>Upgrade to taglib 1.13.1</li>
+          <li>Corrected README (apt libs)</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.5.2" date="2024-06-22">
       <description>
         <p>Maintanance release:</p>
