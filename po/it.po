@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the com.github.louis77.tuner package.
 # Automatically generated, 2020.
 #
+# FinixFighter <luca.finizio.mgbx@hotmail.it>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: louis@brauer.family\n"
 "POT-Creation-Date: 2020-11-08 19:49+0100\n"
-"PO-Revision-Date: 2022-04-25 19:45+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2022-11-26 22:48+0000\n"
+"Last-Translator: FinixFighter <luca.finizio.mgbx@hotmail.it>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/tuner/tuner-ui/"
 "it/>\n"
 "Language: it\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.12.1-dev\n"
+"X-Generator: Weblate 4.15-dev\n"
 
 #: src/Models/Countries.vala:34
 #, fuzzy
@@ -1128,7 +1129,6 @@ msgid "Uzbekistan"
 msgstr "Uzbekistan"
 
 #: src/Models/Countries.vala:273
-#, fuzzy
 msgid "Vanuatu"
 msgstr "Vanuatu"
 
@@ -1158,7 +1158,6 @@ msgid "Yemen"
 msgstr "Yemen"
 
 #: src/Models/Countries.vala:281
-#, fuzzy
 msgid "Zambia"
 msgstr "Zambia"
 
@@ -1185,7 +1184,7 @@ msgstr "Classico"
 
 #: src/Models/Genre.vala:39
 msgid "Country"
-msgstr "Country"
+msgstr "Paese"
 
 #: src/Models/Genre.vala:40
 msgid "Dance"
@@ -1308,7 +1307,7 @@ msgstr "Scopri altre stazioni"
 #. Trending Box
 #: src/Widgets/Window.vala:153
 msgid "Trending"
-msgstr "Trending"
+msgstr "Di tendenza"
 
 #: src/Widgets/Window.vala:158
 msgid "Trending in the last 24 hours"
