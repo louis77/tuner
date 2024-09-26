@@ -3,8 +3,13 @@
  * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
  */
 
-// StationStore can store and retrieve a collection of stations
-// in a JSON file
+ /**
+    StationStore 
+    
+    Store and retrieve a collection of stations in a JSON file
+
+    Uses libgee for data structures.
+  */
 
 using Gee;
 
@@ -63,9 +68,18 @@ public class StationStore : Object {
             warning (@"store: unable to load data, does it exist? $(e.message)");
         }
 
-        Json.Node node = parser.get_root ();
-        Json.Array array = node.get_array ();
-        array.foreach_element ((a, i, elem) => {
+        Json.Node? node = parser.get_root ();
+
+        if ( node == null )
+        {
+            debug ("store: unable to load data, root is null");
+            return;    // FIXME What should be done when root node is null?
+        }
+        
+        debug ("store: root is not null");
+
+        Json.Array array = node.get_array ();    // Json-CRITICAL **: 21:02:51.821: json_node_get_array: assertion 'JSON_NODE_IS_VALID (node)' failed
+        array.foreach_element ((a, i, elem) => {  // json_array_foreach_element: assertion 'array != NULL' failed
             Station station = Json.gobject_deserialize (typeof (Station), elem) as Station;
             // TODO This should probably not be here but in 
             // DirectoryController
