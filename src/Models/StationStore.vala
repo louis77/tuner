@@ -3,8 +3,13 @@
  * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
  */
 
-// StationStore can store and retrieve a collection of stations
-// in a JSON file
+ /**
+    StationStore 
+    
+    Store and retrieve a collection of stations in a JSON file, i.e. favorites
+
+    Uses libgee for data structures.
+  */
 
 using Gee;
 
@@ -12,16 +17,16 @@ namespace Tuner.Model {
 
 public class StationStore : Object {
     private ArrayList<Station> _store;
-    private File _data_file;
+    private File _favorites_file;
 
-    public StationStore (string data_path) {
+    public StationStore (string favorites_path) {
         Object ();
         
         _store = new ArrayList<Station> ();
-        _data_file = File.new_for_path (data_path);
+        _favorites_file = File.new_for_path (favorites_path);
         ensure ();
         load ();
-        debug (@"store initialized in path $data_path");
+        debug (@"store initialized in path $favorites_path");
     }
 
     public void add (Station station) {
@@ -43,7 +48,7 @@ public class StationStore : Object {
         // Non-racy approach is to try to create the file first
         // and ignore errors if it already exists
         try {
-            var df = _data_file.create (FileCreateFlags.PRIVATE);
+            var df = _favorites_file.create (FileCreateFlags.PRIVATE);
             df.close ();
             debug (@"store created");
         } catch (Error e) {
@@ -56,16 +61,19 @@ public class StationStore : Object {
         Json.Parser parser = new Json.Parser ();
         
         try {
-            var stream = _data_file.read ();
+            var stream = _favorites_file.read ();
             parser.load_from_stream (stream);
             stream.close ();
         } catch (Error e) {
             warning (@"store: unable to load data, does it exist? $(e.message)");
         }
 
-        Json.Node node = parser.get_root ();
-        Json.Array array = node.get_array ();
-        array.foreach_element ((a, i, elem) => {
+        Json.Node? node = parser.get_root ();
+
+        if ( node == null ) return; // No favorites store    
+
+        Json.Array array = node.get_array ();    // Json-CRITICAL **: 21:02:51.821: json_node_get_array: assertion 'JSON_NODE_IS_VALID (node)' failed
+        array.foreach_element ((a, i, elem) => {  // json_array_foreach_element: assertion 'array != NULL' failed
             Station station = Json.gobject_deserialize (typeof (Station), elem) as Station;
             // TODO This should probably not be here but in 
             // DirectoryController
@@ -88,8 +96,8 @@ public class StationStore : Object {
         var data = serialize ();
         
         try {
-            _data_file.delete ();
-            var stream = _data_file.create (
+            _favorites_file.delete ();
+            var stream = _favorites_file.create (
                 FileCreateFlags.REPLACE_DESTINATION | FileCreateFlags.PRIVATE
             );
             var s = new DataOutputStream (stream);
