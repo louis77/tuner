@@ -109,8 +109,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var stack = new Gtk.Stack ();
         stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
 
-        var data_file = Path.build_filename (Application.instance.data_dir, "favorites.json");
-        var store = new Model.StationStore (data_file);
+        var favorites_file = Path.build_filename (Application.instance.data_dir, "favorites.json");
+        var store = new Model.StationStore (favorites_file);
         _directory = new DirectoryController (store);
 
         var primary_box = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);
