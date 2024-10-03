@@ -3,6 +3,11 @@
  * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
  */
 
+ /**
+    Application
+
+    Entry point for Tuner 
+ */
 public class Tuner.Application : Gtk.Application {
 
     public GLib.Settings settings { get; construct; }

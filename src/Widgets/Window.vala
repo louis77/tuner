@@ -3,8 +3,12 @@
  * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
  */
 
+
 using Gee;
 
+/**
+    Window
+*/
 public class Tuner.Window : Gtk.ApplicationWindow {
 
     public GLib.Settings settings { get; construct; }
@@ -15,7 +19,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     private HeaderBar headerbar;
     private Granite.Widgets.SourceList source_list;
 
-    public const string WindowName = "Tuner";
+    public const string WINDOW_NAME = "Tuner";
     public const string ACTION_PREFIX = "win.";
     public const string ACTION_PAUSE = "action_pause";
     public const string ACTION_QUIT = "action_quit";
@@ -62,7 +66,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         headerbar = new HeaderBar ();
         set_titlebar (headerbar);
-        set_title (WindowName);
+        set_title (WINDOW_NAME);
 
         player.state_changed.connect (handleplayer_state_changed);
         player.station_changed.connect (headerbar.update_from_station);
@@ -407,7 +411,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     private static void adjust_theme() {
         var theme = Application.instance.settings.get_string("theme-mode");
-        warning(@"current theme: $theme");
+        info(@"current theme: $theme");
 
         var gtk_settings = Gtk.Settings.get_default ();
         var granite_settings = Granite.Settings.get_default ();
@@ -435,7 +439,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         warning (@"storing last played station: $(station.id)");
         settings.set_string("last-played-station", station.id);
 
-        set_title (WindowName+": "+station.title);
+        set_title (WINDOW_NAME+": "+station.title);
     }
 
     public void handle_favourites_changed () {
