@@ -8,6 +8,9 @@
 
     Entry point for Tuner 
  */
+/**
+ * @brief Entry point for Tuner application
+ */
 public class Tuner.Application : Gtk.Application {
 
     public GLib.Settings settings { get; construct; }
@@ -26,6 +29,9 @@ public class Tuner.Application : Gtk.Application {
         { "resume-window", on_resume_window }
     };
 
+    /**
+     * @brief Constructor for the Application
+     */
     public Application () {
         Object (
             application_id: APP_ID,
@@ -33,6 +39,9 @@ public class Tuner.Application : Gtk.Application {
         );
     }
 
+    /**
+     * @brief Construct block for initializing the application
+     */
     construct {
         GLib.Intl.setlocale (LocaleCategory.ALL, "");
         GLib.Intl.bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
@@ -51,8 +60,15 @@ public class Tuner.Application : Gtk.Application {
         add_action_entries(ACTION_ENTRIES, this);
     }
 
+    /**
+     * @brief Singleton instance of the Application
+     */
     public static Application _instance = null;
 
+    /**
+     * @brief Getter for the singleton instance
+     * @return The Application instance
+     */
     public static Application instance {
         get {
             if (_instance == null) {
@@ -62,6 +78,9 @@ public class Tuner.Application : Gtk.Application {
         }
     }
 
+    /**
+     * @brief Activates the application
+     */
     protected override void activate() {
         if (window == null) {
             window = new Window (this, player);
@@ -73,10 +92,17 @@ public class Tuner.Application : Gtk.Application {
 
     }
 
+    /**
+     * @brief Resumes the window
+     */
     private void on_resume_window() {
         window.present();
     }
 
+    /**
+     * @brief Ensures a directory exists
+     * @param path The directory path to ensure
+     */
     private void ensure_dir (string path) {
         var dir = File.new_for_path (path);
         

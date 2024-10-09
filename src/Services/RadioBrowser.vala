@@ -3,21 +3,20 @@
  * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
  */
 
+
+
 using Gee;
 
 /**
-    RadioBrowser
-
-    Interface to https://www.radio-browser.info/ API and servers
-
-    Retrieves Station info for display and play, sends user station tagging info back 
-
-*/
+ * @namespace Tuner.RadioBrowser
+ * @brief Interface to radio-browser.info API and servers
+ */
 namespace Tuner.RadioBrowser {
 
     /**
-        Station data subset returned from radio-browser API
-    */
+     * @class Station
+     * @brief Station data subset returned from radio-browser API
+     */
     public class Station : Object {
         public string stationuuid { get; set; }
         public string name { get; set; }
@@ -31,6 +30,10 @@ namespace Tuner.RadioBrowser {
         public int bitrate { get; set; }
     }
 
+    /**
+     * @struct SearchParams
+     * @brief Parameters for searching radio stations
+     */
     public struct SearchParams {
         string text;
         ArrayList<string> tags;
@@ -40,11 +43,18 @@ namespace Tuner.RadioBrowser {
         bool reverse;
     }
 
+    /**
+     * @brief Error domain for data-related errors
+     */
     public errordomain DataError {
         PARSE_DATA,
         NO_CONNECTION
     }
 
+    /**
+     * @enum SortOrder
+     * @brief Enumeration of sorting options for station search results
+     */
     public enum SortOrder {
         NAME,
         URL,
@@ -64,6 +74,10 @@ namespace Tuner.RadioBrowser {
         CLICKTREND,
         RANDOM;
 
+        /**
+         * @brief Convert SortOrder enum to string representation
+         * @return String representation of the SortOrder
+         */
         public string to_string () {
             switch (this) {
                 case NAME:
@@ -114,22 +128,39 @@ namespace Tuner.RadioBrowser {
 
 
 
+    /**
+     * @class Tag
+     * @brief Represents a tag associated with radio stations
+     */
     public class Tag : Object {
         public string name { get; set; }
         public uint stationcount { get; set; }
     }
 
+    /**
+     * @brief Compare two strings for equality
+     * @param a First string to compare
+     * @param b Second string to compare
+     * @return True if strings are equal, false otherwise
+     */
     public bool EqualCompareString (string a, string b) {
         return a == b;
     }
 
+    /**
+     * @brief Random sort function for strings
+     * @param a First string to compare
+     * @param b Second string to compare
+     * @return Random integer between -1 and 1
+     */
     public int RandomSortFunc (string a, string b) {
         return Random.int_range (-1, 1);
     }
 
     /**
-        RadioBrowser API Client
-    */
+     * @class Client
+     * @brief RadioBrowser API Client
+     */
     public class Client : Object {
         private string current_server;
         private ArrayList<string> randomized_servers;
@@ -141,7 +172,8 @@ namespace Tuner.RadioBrowser {
 
 
         /**
-            Constructor
+         * @brief Constructor for RadioBrowser Client
+         * @throw DataError if unable to initialize the client
          */
         public Client() throws DataError {
             Object();
@@ -164,48 +196,8 @@ namespace Tuner.RadioBrowser {
 
 
         /**
-         */
-        private Station jnode_to_station (Json.Node node) {
-            return Json.gobject_deserialize (typeof (Station), node) as Station;
-        }
-
-
-        /**
-         */
-        private ArrayList<Station> jarray_to_stations (Json.Array data) {
-            var stations = new ArrayList<Station> ();
-
-            data.foreach_element ((array, index, element) => {
-                Station s = jnode_to_station (element);
-                stations.add (s);
-            });
-
-            return stations;
-        }
-
-
-        /**
-         */
-        private Tag jnode_to_tag (Json.Node node) {
-            return Json.gobject_deserialize (typeof (Tag), node) as Tag;
-        }
-
-
-        /**
-         */
-        private ArrayList<Tag> jarray_to_tags (Json.Array data) {
-            var tags = new ArrayList<Tag> ();
-
-            data.foreach_element ((array, index, element) => {
-                Tag s = jnode_to_tag (element);
-                tags.add (s);
-            });
-
-            return tags;
-        }
-
-
-        /**
+         * @brief Track a station listen event
+         * @param stationuuid UUID of the station being listened to
          */
         public void track (string stationuuid) {
             debug (@"sending listening event for station $stationuuid");
@@ -224,7 +216,8 @@ namespace Tuner.RadioBrowser {
 
 
         /**
-            Vote
+         * @brief Vote for a station
+         * @param stationuuid UUID of the station being voted for
          */
         public void vote (string stationuuid) {
             debug (@"sending vote event for station $stationuuid");
@@ -241,6 +234,10 @@ namespace Tuner.RadioBrowser {
 
 
         /**
+         * @brief Get stations from a specific API resource
+         * @param resource API resource path
+         * @return ArrayList of Station objects
+         * @throw DataError if unable to retrieve or parse station data
          */
         public ArrayList<Station> get_stations (string resource) throws DataError {
             debug (@"RB $resource");
@@ -251,21 +248,21 @@ namespace Tuner.RadioBrowser {
                 uint status_code;
                 var response = HttpClient.GET(@"$current_server/$resource", out status_code);
 
-                warning (@"response from radio-browser.info: $(status_code)");
+                debug (@"Response from 'radio-browser.info': $(status_code)");
 
                 try {
                     var parser = new Json.Parser();
                     parser.load_from_stream (response, null);
                     rootnode = parser.get_root();
                 } catch (Error e) {
-                    throw new DataError.PARSE_DATA (@"unable to parse JSON response: $(e.message)");
+                    throw new DataError.PARSE_DATA (@"Unable to parse JSON response: $(e.message)");
                 }
                 var rootarray = rootnode.get_array ();
 
                 var stations = jarray_to_stations (rootarray);
                 return stations;
             } catch (GLib.Error e) {
-                warning (@"response from radio-browser.info: $(e.message)");
+                warning (@"Unknown error: $(e.message)");
             }
 
             return new ArrayList<Station>();
@@ -273,6 +270,12 @@ namespace Tuner.RadioBrowser {
 
 
         /**
+         * @brief Search for stations based on given parameters
+         * @param params Search parameters
+         * @param rowcount Maximum number of results to return
+         * @param offset Offset for pagination
+         * @return ArrayList of Station objects matching the search criteria
+         * @throw DataError if unable to retrieve or parse station data
          */
         public ArrayList<Station> search (SearchParams params,
                                         uint rowcount,
@@ -316,6 +319,10 @@ namespace Tuner.RadioBrowser {
 
 
         /**
+         * @brief Get a station by its UUID
+         * @param uuid UUID of the station to retrieve
+         * @return Station object if found, null otherwise
+         * @throw DataError if unable to retrieve or parse station data
          */
         public Station? by_uuid (string uuid) throws DataError {
             var resource = @"json/stations/byuuid/$uuid";
@@ -328,6 +335,9 @@ namespace Tuner.RadioBrowser {
 
 
         /**
+         * @brief Get all available tags
+         * @return ArrayList of Tag objects
+         * @throw DataError if unable to retrieve or parse tag data
          */
         public ArrayList<Tag> get_tags () throws DataError {
 
@@ -355,6 +365,48 @@ namespace Tuner.RadioBrowser {
             }
 
             return new ArrayList<Tag>();
+        }
+
+
+        /**
+         */
+        private Station jnode_to_station (Json.Node node) {
+            return Json.gobject_deserialize (typeof (Station), node) as Station;
+        }
+
+
+        /**
+         */
+        private ArrayList<Station> jarray_to_stations (Json.Array data) {
+            var stations = new ArrayList<Station> ();
+
+            data.foreach_element ((array, index, element) => {
+                Station s = jnode_to_station (element);
+                stations.add (s);
+            });
+
+            return stations;
+        }
+
+
+        /**
+         */
+        private Tag jnode_to_tag (Json.Node node) {
+            return Json.gobject_deserialize (typeof (Tag), node) as Tag;
+        }
+
+
+        /**
+         */
+        private ArrayList<Tag> jarray_to_tags (Json.Array data) {
+            var tags = new ArrayList<Tag> ();
+
+            data.foreach_element ((array, index, element) => {
+                Tag s = jnode_to_tag (element);
+                tags.add (s);
+            });
+
+            return tags;
         }
 
     }

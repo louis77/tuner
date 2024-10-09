@@ -3,30 +3,55 @@
  * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
  */
 
+/**
+ * @class StationBox
+ * @brief A custom button widget representing a radio station.
+ * 
+ * The StationBox class extends the WelcomeButton class to create a specialized
+ * button for displaying radio station information. It includes the station's
+ * title, location, codec, bitrate, and favicon.
+ * 
+ * @extends Tuner.WelcomeButton
+ */
 public class Tuner.StationBox : Tuner.WelcomeButton {
 
+    // Default icon name for stations without a custom favicon
+    private const string DEFAULT_ICON_NAME = "internet-radio";
+
+    // Public properties for the station and its context menu
     public Model.Station station { get; construct; }
     public StationContextMenu menu { get; private set; }
 
+    /**
+     * Constructor for the StationBox
+     * @param station The radio station to represent
+     */
     public StationBox (Model.Station station) {
         Object (
             description: make_description (station.location),
             title: make_title (station.title, station.starred),
             tag: make_tag (station.codec, station.bitrate),
-            icon: new Gtk.Image(),
+            favicon: new Gtk.Image.from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG),
             station: station
         );
     }
 
+    /**
+     * Construct block for additional initialization
+     */
     construct {
+        warning (@"StationBox construct $(station.title)");
+
+        //new Thread(load_favicon());
+        new Thread<void>("station-box", load_favicon);
+
+
         get_style_context().add_class("station-button");
+        always_show_image = true;
 
         this.station.notify["starred"].connect ( (sender, prop) => {
             this.title = make_title (this.station.title, this.station.starred);
         });
-
-        // TODO Use a AsyncQueue with limited threads
-        new Thread<int>("station-box", realize_favicon);
 
 
         event.connect ((e) => {
@@ -45,7 +70,6 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
             }
             return false;
         });
-        always_show_image = true;
     }
 
     private static string make_title (string title, bool starred) {
@@ -70,93 +94,15 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
             return location;
     }
 
-    private int realize_favicon () {
-        // TODO: REFACTOR in separate class
-        var favicon_cache_file = Path.build_filename (Application.instance.cache_dir, station.id);
-        if (FileUtils.test (favicon_cache_file, FileTest.EXISTS | FileTest.IS_REGULAR)) {
-            var file = File.new_for_path (favicon_cache_file);
-            try {
-                var favicon_stream = file.read ();
-                if (!set_favicon_from_stream (favicon_stream)) {
-                    set_default_favicon ();
-                };
-                favicon_stream.close ();
-                return 0;
-            } catch (Error e) {
-                warning (@"unable to read local favicon: %s %s", favicon_cache_file, e.message);
+    private void load_favicon()
+    {
+        Favicon.load_async.begin (station, false, (favicon, res) => {
+            var pxbuf = Favicon.load_async.end (res);
+            if (pxbuf != null) {
+                this.favicon.set_from_pixbuf (pxbuf);  
+                this.favicon.set_size_request (48, 48);  
             }
-        } else {
-            // debug (@"favicon cache file doesn't exist: %s", favicon_cache_file);
-        }
-
-        // in Vala nullable strings are always empty
-        if (station.favicon_url != "") {
-            var session = new Soup.Session ();
-            var message = new Soup.Message ("GET", station.favicon_url);
-
-            session.send_async.begin (message, 0, null, (sess, res) => {
-                try {
-                    GLib.InputStream data_stream = session.send_async.end (res);
-
-                    //set_favicon_from_stream (data_stream);
-
-                    var file = File.new_for_path (favicon_cache_file);
-                    try {
-                        var stream = file.create_readwrite (FileCreateFlags.PRIVATE);
-                        stream.output_stream.splice (data_stream, 0);
-                        stream.close ();
-                    } catch (Error e) {
-                        // File already created by another stationbox
-                        // TODO: possible race condition
-                        // TODO: Create stationboxes as singletons?
-                    }
-
-                    try {
-                        var favicon_stream = file.read ();
-                        if (!set_favicon_from_stream (favicon_stream)) {
-                            set_default_favicon ();
-                        };
-                    } catch (Error e) {
-                        warning (@"Error while reading icon file stream: $(e.message)");
-                    }
-                } catch (GLib.Error e) {
-                    critical (@"unable to load favicon: $(e.message)");
-                    return;
-                }
-     
-                if (message.status_code != 200) {
-                    //debug (@"Unexpected status code: $(mess.status_code), will not render $(station.favicon_url)");
-                    set_default_favicon ();
-                    return;
-                }
-            });
-
-        } else {
-            set_default_favicon ();
-        }
-
-        Thread.exit (0);
-        return 0;
-    }
-
-    private bool set_favicon_from_stream (InputStream stream) {
-        Gdk.Pixbuf pxbuf;
-
-        try {
-            pxbuf = new Gdk.Pixbuf.from_stream_at_scale (stream, 48, 48, true, null);
-            this.icon.set_from_pixbuf (pxbuf);
-            this.icon.set_size_request (48, 48);
-            return true;
-        } catch (Error e) {
-            //debug ("Couldn't render favicon: %s (%s)",
-            //    station.favicon_url ?? "unknown url",
-            //    e.message);
-            return false;
-        }
-    }
-
-    private void set_default_favicon () {
-        this.icon.set_from_icon_name ("internet-radio", Gtk.IconSize.DIALOG);
+        });
     }
 
 }

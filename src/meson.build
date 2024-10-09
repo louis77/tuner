@@ -10,8 +10,10 @@ sources = files (
 
     'Services/DBusMediaPlayer.vala',
     'Services/DBusInterface.vala',
-    'Services/RadioBrowserDirectory.vala',
+    'Services/RadioBrowser.vala',
   #  'Services/LocationDiscovery.vala',
+    'Services/HttpClient.vala',
+    'Services/Favicon.vala',
 
     'Widgets/AbstractContentList.vala',
     'Widgets/ContentBox.vala',
