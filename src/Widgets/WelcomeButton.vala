@@ -8,7 +8,7 @@
     Gtk.Label button_title;
     Gtk.Label button_tag;
     Gtk.Label button_description;
-    Gtk.Image? _icon;
+    Gtk.Image? _favicon_image;
     Gtk.Grid button_grid;
 
     public string title {
@@ -32,21 +32,21 @@
         }
     }
 
-    public Gtk.Image? icon {
-        get { return _icon; }
+    public Gtk.Image? favicon {
+        get { return _favicon_image; }
         set {
-            if (_icon != null) {
-                _icon.destroy ();
+            if (_favicon_image != null) {
+                _favicon_image.destroy ();
             }
-            _icon = value;
-            if (_icon != null) {
-                _icon.set_pixel_size (48);
-                _icon.halign = Gtk.Align.CENTER;
-                _icon.valign = Gtk.Align.CENTER;
-                button_grid.attach (_icon, 0, 0, 1, 2);
+            _favicon_image = value;
+            if (_favicon_image != null) {
+                _favicon_image.set_pixel_size (48);
+                _favicon_image.halign = Gtk.Align.CENTER;
+                _favicon_image.valign = Gtk.Align.CENTER;
+                button_grid.attach (_favicon_image, 0, 0, 1, 2);
             }
         }
-    }
+  }
 
     /*
     public WelcomeButton (Gtk.Image? image, string title, string description) {
