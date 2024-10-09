@@ -42,9 +42,7 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
     construct {
         warning (@"StationBox construct $(station.title)");
 
-        //new Thread(load_favicon());
-        new Thread<void>("station-box", load_favicon);
-
+        load_favicon();
 
         get_style_context().add_class("station-button");
         always_show_image = true;
