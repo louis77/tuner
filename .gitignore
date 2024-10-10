@@ -6,3 +6,4 @@ build-aux
 .buildconfig
 .flatpak-builder
 code.sh
+favicon.ico

@@ -54,19 +54,24 @@ public class Tuner.HttpClient : Object {
     /**
      * @brief Perform a GET request to the specified URL
      *
-     * This method sends a GET request to the specified URL using the singleton
-     * Soup.Session instance. It returns the response body as an InputStream and
-     * outputs the status code of the response.
-     *
      * @param url_string The URL to send the GET request to
      * @param status_code Output parameter for the HTTP status code of the response
-     * @return InputStream containing the response body
+     * @return InputStream containing the response body, or null if the request failed
      * @throws Error if there's an error sending the request or receiving the response
      */
     public static InputStream? GET(string url_string, out uint status_code) 
     {
         status_code = 0;
-        var msg = new Soup.Message("GET", url_string);
+        
+        if (url_string == null || url_string.length < 4) // domains are at least 4 chars
+        {
+            warning("GET - Invalid URL: %s", url_string ?? "null");
+            return null;
+        }
+
+        string sanitized_url = ensure_https_prefix(url_string);
+
+        var msg = new Soup.Message("GET", sanitized_url);
 
         /*
             Ignore all TLS certificate errors
@@ -77,27 +82,25 @@ public class Tuner.HttpClient : Object {
 
         try {
 
-            if (Uri.is_valid(url_string, NONE))
+            if (Uri.is_valid(sanitized_url, UriFlags.NONE))
             {
                 var inputStream = getSession().send(msg);
                 status_code = msg.status_code;
                 return inputStream;
+            } else {
+                debug("GET - Invalid URL format: %s", sanitized_url);
             }
         } catch (Error e) {
-                warning ("GET - Error accessing URL: %s (%s)",
-                url_string ?? "unknown url",
-                    e.message);
-            }
+            warning("GET - Error accessing URL: %s (%s)",
+                sanitized_url,
+                e.message);
+        }
 
         return null;
     }
 
     /**
      * @brief Perform an asynchronous GET request to the specified URL
-     *
-     * This method sends an asynchronous GET request to the specified URL using the singleton
-     * Soup.Session instance. It returns the response body as an InputStream and
-     * outputs the status code of the response.
      *
      * @param url_string The URL to send the GET request to
      * @param status_code Output parameter for the HTTP status code of the response
@@ -107,21 +110,25 @@ public class Tuner.HttpClient : Object {
     {
         status_code = 0;
 
-        try {
-            /*
-                Ignore all URLs that are too short to be valid or dont validate
-            */
-            if ( url_string != null 
-                && url_string.length < 7 
-                && !Uri.is_valid(url_string, UriFlags.NONE)) {
-                warning("URL Check - Failed for URL: %s", url_string);
-                return null;
-            }
-        } catch (GLib.UriError e) {
+        if (url_string == null || url_string.length  < 4 ) // domains are at least 4 chars
+        {
+            debug("GETasync - Invalid URL: %s", url_string ?? "null");
             return null;
         }
 
-        var msg = new Soup.Message("GET", url_string);
+        string sanitized_url = ensure_https_prefix(url_string);
+
+        try {
+            if (!Uri.is_valid(sanitized_url, UriFlags.NONE)) {
+                debug("GETasync - Invalid URL format: %s", sanitized_url);
+                return null;
+            }
+        } catch (GLib.UriError e) {
+            debug("GETasync - URI error: %s", e.message);
+            return null;
+        }
+
+        var msg = new Soup.Message("GET", sanitized_url);
 
         /*
             Ignore all TLS certificate errors
@@ -137,11 +144,31 @@ public class Tuner.HttpClient : Object {
             return inputStream;
 
         } catch (Error e) {
-            warning ("GETasync - Couldn't render favicon: %s (%s)",
-                url_string ?? "unknown url",
+            warning("GETasync - Couldn't fetch resource: %s (%s)",
+                sanitized_url,
                 e.message);
         }
 
         return null;
+    }
+
+    /**
+     * @brief Ensures that the given URL has an HTTPS prefix
+     *
+     * This method checks if the provided URL starts with either "http://" or "https://".
+     * If it doesn't have either prefix, it adds "https://" to the beginning of the URL.
+     *
+     * @param url The input URL string to be checked and potentially modified
+     * @return A string representing the URL with an HTTPS prefix
+     *
+     * @note This method does not validate the URL structure beyond checking for the protocol prefix
+     */
+    private static string ensure_https_prefix(string url) {
+        // Check if the string starts with "http://" or "https://"
+        if (!url.has_prefix("http://") && !url.has_prefix("https://")) {
+            // If it doesn't, prefix the string with "https://"
+            return "https://" + url;
+        }
+        return url;
     }
 }
