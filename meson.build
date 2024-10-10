@@ -2,7 +2,7 @@
 project (
     'com.github.louis77.tuner',
     'vala', 'c',
-    version: '1.5.3'
+    version: '1.5.4'
 )
 
 # if meson.get_compiler ('vala').get_id() == 'valac'

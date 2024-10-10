@@ -4,42 +4,70 @@
  */
 
 
-
 using Gee;
 
 /**
  * @namespace Tuner.RadioBrowser
  * @brief Interface to radio-browser.info API and servers
+ *
+ * This namespace provides functionality to interact with the radio-browser.info API,
+ * including searching for stations, retrieving station information, and managing user actions
+ * such as voting and tracking listens.
  */
 namespace Tuner.RadioBrowser {
+
+    private const string SRV_SERVICE = "api";
+    private const string SRV_PROTOCOL = "tcp";
+    private const string SRV_DOMAIN = "radio-browser.info";
+    private const string ALL_API = "https://all.api.radio-browser.info";
 
     /**
      * @class Station
      * @brief Station data subset returned from radio-browser API
+     *
+     * This class represents a radio station with its properties as returned by the radio-browser API.
      */
     public class Station : Object {
+        /** @brief Unique identifier for the station */
         public string stationuuid { get; set; }
+        /** @brief Name of the station */
         public string name { get; set; }
+        /** @brief Resolved URL of the station's stream */
         public string url_resolved { get; set; }
+        /** @brief Country where the station is located */
         public string country { get; set; }
+        /** @brief Country code of the station's location */
         public string countrycode { get; set; }
+        /** @brief URL of the station's favicon */
         public string favicon { get; set; }
+        /** @brief Number of clicks/listens for the station */
         public uint clickcount { get; set; }
+        /** @brief URL of the station's homepage */
         public string homepage { get; set; }
+        /** @brief Audio codec used by the station */
         public string codec { get; set; }
+        /** @brief Bitrate of the station's stream */
         public int bitrate { get; set; }
     }
 
     /**
      * @struct SearchParams
      * @brief Parameters for searching radio stations
+     *
+     * This struct defines the parameters used for searching radio stations.
      */
     public struct SearchParams {
+        /** @brief Text to search for in station names */
         string text;
+        /** @brief List of tags to filter stations */
         ArrayList<string> tags;
+        /** @brief List of station UUIDs to retrieve */
         ArrayList<string> uuids;
+        /** @brief Country code to filter stations */
         string countrycode;
+        /** @brief Sort order for the search results */
         SortOrder order;
+        /** @brief Whether to reverse the sort order */
         bool reverse;
     }
 
@@ -120,20 +148,14 @@ namespace Tuner.RadioBrowser {
         }
     }
 
-
-    // TODO: Fetch list of servers via DNS query of SRV record for _api._tcp.radio-browser.info
-    private const string[] DEFAULT_STATION_SERVERS = {
-        "de1.api.radio-browser.info",
-    };
-
-
-
     /**
      * @class Tag
      * @brief Represents a tag associated with radio stations
      */
     public class Tag : Object {
+        /** @brief Name of the tag */
         public string name { get; set; }
+        /** @brief Number of stations associated with this tag */
         public uint stationcount { get; set; }
     }
 
@@ -148,28 +170,14 @@ namespace Tuner.RadioBrowser {
     }
 
     /**
-     * @brief Random sort function for strings
-     * @param a First string to compare
-     * @param b Second string to compare
-     * @return Random integer between -1 and 1
-     */
-    public int RandomSortFunc (string a, string b) {
-        return Random.int_range (-1, 1);
-    }
-
-    /**
      * @class Client
      * @brief RadioBrowser API Client
+     *
+     * This class provides methods to interact with the RadioBrowser API, including
+     * searching for stations, retrieving station information, and managing user actions.
      */
     public class Client : Object {
         private string current_server;
-        private ArrayList<string> randomized_servers;
-
-
-        ~Client()  {
-            debug ("RadioBrowser Client - Destruct");
-        }
-
 
         /**
          * @brief Constructor for RadioBrowser Client
@@ -178,22 +186,24 @@ namespace Tuner.RadioBrowser {
         public Client() throws DataError {
             Object();
 
-            string[] servers;
+            ArrayList<string> servers;
             string _servers = GLib.Environment.get_variable ("TUNER_API");
             if ( _servers != null ){
-                servers = _servers.split(":");
+                servers = new Gee.ArrayList<string>.wrap(_servers.split(":"));
             } else {
-                servers = DEFAULT_STATION_SERVERS;
+                //servers = DEFAULT_STATION_SERVERS;
+                servers = get_api_servers();
             }
 
-            randomized_servers = new ArrayList<string>.wrap (servers, EqualCompareString);
-            randomized_servers.sort (RandomSortFunc);
+            if ( servers.size == 0 ) {
+                throw new DataError.NO_CONNECTION ("Unable to resolve API servers for radio-browser.info");
+            }
 
-            current_server = @"https://$(randomized_servers[0])";
+            var chosen_server =  Random.int_range(0, servers.size);
+
+            current_server = @"https://$(servers[chosen_server])";
             debug (@"RadioBrowser Client - Chosen radio-browser.info server: $current_server");
-            // TODO: Implement server rotation on error
         }
-
 
         /**
          * @brief Track a station listen event
@@ -202,18 +212,9 @@ namespace Tuner.RadioBrowser {
         public void track (string stationuuid) {
             debug (@"sending listening event for station $stationuuid");
             uint status_code;
-            //var resource = @"json/url/$stationuuid";
-            //var message = new Soup.Message ("GET", @"$current_server/$resource");
-            try {
-                //var resp = _session.send (message);
-                HttpClient.GET (@"$current_server/json/url/$stationuuid", out status_code);
-               // resp.close ();
-            } catch(GLib.Error e) {
-                debug ("failed to track()");
-            }
+            HttpClient.GET (@"$current_server/json/url/$stationuuid", out status_code);
             debug (@"response: $(status_code)");
         }
-
 
         /**
          * @brief Vote for a station
@@ -222,16 +223,9 @@ namespace Tuner.RadioBrowser {
         public void vote (string stationuuid) {
             debug (@"sending vote event for station $stationuuid");
             uint status_code;
-
-            try {
-                HttpClient.GET(@"$current_server/json/vote/$stationuuid", out status_code);
-
-            } catch(GLib.Error e) {
-                debug("failed to vote()");
-            }
+            HttpClient.GET(@"$current_server/json/vote/$stationuuid", out status_code);
             debug (@"response: $(status_code)");
         }
-
 
         /**
          * @brief Get stations from a specific API resource
@@ -267,7 +261,6 @@ namespace Tuner.RadioBrowser {
 
             return new ArrayList<Station>();
         }
-
 
         /**
          * @brief Search for stations based on given parameters
@@ -317,7 +310,6 @@ namespace Tuner.RadioBrowser {
             return get_stations (resource);
         }
 
-
         /**
          * @brief Get a station by its UUID
          * @param uuid UUID of the station to retrieve
@@ -332,7 +324,6 @@ namespace Tuner.RadioBrowser {
             }
             return result[0];
         }
-
 
         /**
          * @brief Get all available tags
@@ -367,13 +358,11 @@ namespace Tuner.RadioBrowser {
             return new ArrayList<Tag>();
         }
 
-
         /**
          */
         private Station jnode_to_station (Json.Node node) {
             return Json.gobject_deserialize (typeof (Station), node) as Station;
         }
-
 
         /**
          */
@@ -388,13 +377,11 @@ namespace Tuner.RadioBrowser {
             return stations;
         }
 
-
         /**
          */
         private Tag jnode_to_tag (Json.Node node) {
             return Json.gobject_deserialize (typeof (Tag), node) as Tag;
         }
-
 
         /**
          */
@@ -409,5 +396,77 @@ namespace Tuner.RadioBrowser {
             return tags;
         }
 
+        /**
+        * @brief Get all radio-browser.info API servers
+        *
+        * Gets server list from 
+        *
+        * @since 1.5.4
+        * @return ArrayList of strings containing the resolved hostnames
+        * @throw DataError if unable to resolve DNS records
+        */
+        private ArrayList<string> get_api_servers() throws DataError {
+        
+            var results = new ArrayList<string>();
+    
+            try             
+            /*
+                DNS SRV record lookup 
+            */
+            {
+                var srv_targets = GLib.Resolver.get_default().
+                lookup_service( SRV_SERVICE, SRV_PROTOCOL, SRV_DOMAIN, null );
+                foreach (var target in srv_targets) {
+                    results.add(target.get_hostname());
+                }
+            } catch (GLib.Error e) {
+                @warning(@"Unable to resolve SRV records: $(e.message)");
+            }
+    
+            if (results.is_empty) 
+            /*
+                JSON API server lookup as SRV record lookup failed
+            */
+            {
+    
+                try {
+                    uint status_code;
+                    var stream = HttpClient.GET(@"$ALL_API/json/servers", out status_code);
+    
+                    debug (@"response from $(ALL_API)/json/servers: $(status_code)");
+    
+                    if (status_code == 200) {
+    
+                        Json.Node root_node;
+    
+                        try {
+                            var parser = new Json.Parser();
+                            parser.load_from_stream (stream);
+                            root_node = parser.get_root ();
+                        } catch (Error e) {
+                            throw new DataError.PARSE_DATA (@"unable to parse JSON response: $(e.message)");
+                        }
+        
+                        if (root_node != null && root_node.get_node_type() == Json.NodeType.ARRAY) {
+                
+                            root_node.get_array().foreach_element((array, index_, element_node) => {
+                                var object = element_node.get_object();
+                                if (object != null) {
+                                    var name = object.get_string_member("name");
+                                    if (name != null && !results.contains (name)) {
+                                        results.add(name);
+                                    }
+                                }
+                            });
+            
+                        }
+                    }
+                } catch (Error e) {
+                    warning("Failed to parse API ServersJSON: $(e.message)");
+                }                
+            }
+    
+            return results;
+        }
     }
 }

@@ -25,9 +25,7 @@
  */
 public class Tuner.Favicon : GLib.Object {
 
-   // private static Image INTERNET_RADIO = Image().set_from_icon_name ("internet-radio", Gtk.IconSize.DIALOG);
-   //private static Image INTERNET_RADIO_SYMBOLIC = new Image.from_icon_name ("internet-radio-symbolic", Gtk.IconSize.DIALOG);
-    /**
+     /**
      * @brief Asynchronously load the favicon for a given station
      *
      * This method attempts to load the favicon from the cache first. If not found in the cache
@@ -64,11 +62,9 @@ public class Tuner.Favicon : GLib.Object {
 
                 return scaled_pixbuf;
             } catch (Error e) {
-                warning("Failed to process favicon: %s", e.message);
+                warning("Failed to process favicon %s: %s", station.favicon_url,e.message);
             }
         }
         return null;
     }
-
-
  }
