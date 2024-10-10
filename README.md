@@ -42,7 +42,7 @@ Things I need help with:
 
 ### Flathub
 
-Tuner is available on Flathub, but there are some known bugs:
+Tuner is available asa Flatpak on Flathub:
 https://flathub.org/apps/details/com.github.louis77.tuner
 
 ### elementary OS
@@ -83,7 +83,7 @@ While I hacked on this App, I discovered so many cool and new stations, which ma
 
 ## Features
 
-- Uses radio-browser.info catalog
+- Uses [radio-browser.info](https://www.radio-browser.info/) radio station catalog
 - Presets various selection of stations (random, top, trending, genres)
 - Save favourite stations
 - Sends a click count to radio-browser.info on station click
@@ -102,38 +102,18 @@ While I hacked on this App, I discovered so many cool and new stations, which ma
 * `TUNER_API` - a `:` separated list of API servers to read from, e.g.
     * `export TUNER_API="de1.api.radio-browser.info:nl1.api.radio-browser.info"; com.github.louis77.tuner`
 
-## Dependencies
 
-```bash
-granite
-gtk+-3.0
-gstreamer-1.0
-gstreamer-player-1.0
-libsoup-3.0
-json-glib-1.0
-libgee-0.8
-meson
-vala
-```
+## Build, Maintance and Development of Tuner
 
-## Building
+Building, developing and maintianing **Tuner** is detailed seperately and in detail in the [DEVELOP](DEVELOP.md) markdown.
 
-Make sure you have the dependencies installed:
 
-```bash
-sudo apt install git valac meson
-sudo apt install libgtk-3-dev libgee-0.8-dev libgranite-dev libgstreamer1.0-dev libgstreamer-plugins-bad1.0-dev libsoup-3.0-dev libjson-glib-dev
-```
+## Support 
 
-Then clone this repo and build it locally:
+Feature request, observations and Issues can be documented with tickets on [Github](https://github.com/louis77/tuner/issues)
 
-```bash
-meson build && cd build
-meson configure -Dprefix=/usr
-sudo ninja install
-```
 
-## Known Issues
+### Known Issues
 
 - If AAC/AAC+ streams don't play (found on Elementary OS 6) install the following dependency:
 

@@ -46,7 +46,7 @@ public class Tuner.HttpClient : Object {
         {
             _session = new Soup.Session();
             _session.user_agent = @"$(Application.APP_ID)/$(Application.APP_VERSION)";
-            _session.timeout = 3;
+            _session.timeout = 5;
         }
         return _session;
     }
@@ -67,6 +67,14 @@ public class Tuner.HttpClient : Object {
     {
         status_code = 0;
         var msg = new Soup.Message("GET", url_string);
+
+        /*
+            Ignore all TLS certificate errors
+        */
+        msg.accept_certificate.connect ((msg, cert, errors) => {
+            return true;
+        });
+
         try {
 
             if (Uri.is_valid(url_string, NONE))
@@ -76,7 +84,7 @@ public class Tuner.HttpClient : Object {
                 return inputStream;
             }
         } catch (Error e) {
-                warning ("GET - Couldn't render favicon: %s (%s)",
+                warning ("GET - Error accessing URL: %s (%s)",
                 url_string ?? "unknown url",
                     e.message);
             }
@@ -98,14 +106,36 @@ public class Tuner.HttpClient : Object {
     public static async InputStream? GETasync(string url_string, out uint status_code) 
     {
         status_code = 0;
-        var msg = new Soup.Message("GET", url_string);
+
         try {
-            if (Uri.is_valid(url_string, NONE))
-            {
-                var inputStream = yield getSession().send_async(msg, Priority.DEFAULT, null);
-                status_code = msg.status_code;
-                return inputStream;
+            /*
+                Ignore all URLs that are too short to be valid or dont validate
+            */
+            if ( url_string != null 
+                && url_string.length < 7 
+                && !Uri.is_valid(url_string, UriFlags.NONE)) {
+                warning("URL Check - Failed for URL: %s", url_string);
+                return null;
             }
+        } catch (GLib.UriError e) {
+            return null;
+        }
+
+        var msg = new Soup.Message("GET", url_string);
+
+        /*
+            Ignore all TLS certificate errors
+        */
+        msg.accept_certificate.connect ((msg, cert, errors) => {
+            return true;
+        });
+
+        try {
+
+            var inputStream = yield getSession().send_async(msg, Priority.DEFAULT, null);
+            status_code = msg.status_code;
+            return inputStream;
+
         } catch (Error e) {
             warning ("GETasync - Couldn't render favicon: %s (%s)",
                 url_string ?? "unknown url",

@@ -40,7 +40,7 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
      * Construct block for additional initialization
      */
     construct {
-        warning (@"StationBox construct $(station.title)");
+        debug (@"StationBox construct $(station.title)");
 
         load_favicon();
 
