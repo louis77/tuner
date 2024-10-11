@@ -29,7 +29,8 @@ public class Tuner.Favicon : GLib.Object {
      * @brief Asynchronously load the favicon for a given station
      *
      * This method attempts to load the favicon from the cache first. If not found in the cache
-     * or if forceReload is true, it will fetch the favicon from the internet asynchronously.
+     * or if forceReload is true, it will fetch the favicon from the internet asynchronously
+     * scale it to 48x48 pixels, and save it to a cache file.
      *
      * @param station The station for which to load the favicon
      * @param forceReload If true, bypass the cache and fetch the favicon from the internet
