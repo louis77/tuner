@@ -261,17 +261,19 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     /**
      * @brief Load and display the favicon for a station.
      *
-     * This method asynchronously loads the favicon for the given station and updates the favicon image.
+     * This method asynchronously loads the favicon anew for 
+     * the given station and updates the favicon image.
      *
      * @param station The station whose favicon should be loaded.
      */
     private void load_favicon(Model.Station station)
     {
-        Favicon.load_async.begin (station, false, (favicon, res) => {
+        Favicon.load_async.begin (station, true, (favicon, res) => {
             var pxbuf = Favicon.load_async.end (res);
             if (pxbuf != null) {
                 this.favicon.set_from_pixbuf (pxbuf);  
             } else {
+                // If favicon is not available, use default icon
                 this.favicon.set_from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG);
             }
             this.favicon.set_size_request (48, 48);
