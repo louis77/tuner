@@ -110,7 +110,7 @@ public class Tuner.HttpClient : Object {
     {
         status_code = 0;
 
-        if (url_string == null || url_string.length  < 4 ) // domains are at least 4 chars
+        if (url_string == null || url_string.length  < 4 || url_string == "null") // domains are at least 4 chars
         {
             debug("GETasync - Invalid URL: %s", url_string ?? "null");
             return null;

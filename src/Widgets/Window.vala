@@ -2,6 +2,23 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
  */
+/**
+ * @file Window.vala
+ * @brief Defines the main application window for the Tuner application.
+ *
+ * This file contains the Window class, which is responsible for creating and
+ * managing the main application window. It handles the layout, user interface
+ * elements, and interactions with other components of the application.
+ *
+ * The Window class inherits from Gtk.ApplicationWindow and implements various
+ * features such as a header bar, source list, content stack, and player controls.
+ * It also manages application settings and handles user actions like playback
+ * control, station selection, and theme adjustments.
+ *
+ * @see Tuner.Application
+ * @see Tuner.PlayerController
+ * @see Tuner.DirectoryController
+ */
 
 
 using Gee;
@@ -48,6 +65,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         );
     }
 
+    /**
+     * @brief Constructs a new Window instance.
+     * @param app The Application instance.
+     * @param player The PlayerController instance.
+     */
     public Window (Application app, PlayerController player) {
         Object (
             application: app,
@@ -217,35 +239,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         c_slist.selection_changed.connect (handle_station_click);
         c_slist.favourites_changed.connect (handle_favourites_changed);
 
-        /* 
-        LocationDiscovery.country_code.begin ((obj, res) => {
-            string country;
-            try {
-                country = LocationDiscovery.country_code.end(res);
-            } catch (GLib.Error e) {
-                // GeoLocation Service might not be available
-                // We don't do anything about it
-                return;
-            }
-
-            var country_name = Model.Countries.get_by_code (country);
-            item4.name = country_name;
-            c_country.header_label.label = _("Top 100 in") + " " + country_name;
-            var s_country = _directory.load_by_country (100, country);
-            selections_category.add (item4);
-            c_country.realize.connect (() => {
-                try {
-                    var stations = s_country.next ();
-                    c_slist.stations = stations;
-                    warning (@"Length of country stations: $(stations.size)");
-                    c_country.content = c_slist;
-                } catch (SourceError e) {
-                    c_country.show_alert ();
-                }
-            });
-        });
-        */
-
         // Favourites Box
         var item5 = new Granite.Widgets.SourceList.Item (_("Starred by You"));
         item5.icon = new ThemedIcon ("starred");
@@ -266,17 +259,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var c5 = create_content_box ("searched", item6,
                             _("Search"), null, null,
                             stack, source_list, true);
-
-        // Excluded Countries Box
-        /* not finished yet
-        var item7 = new Granite.Widgets.SourceList.Item (_("Excluded Countries"));
-        item7.icon = new ThemedIcon ("folder-saved-search");
-        searched_category.add (item7);
-        var c6 = create_content_box ("excluded_countries", item7,
-            _("Excluded Countries"), null, null,
-            stack, source_list, true);
-        c6.content = new CountryList ();
-        */
 
         // Genre Boxes
         foreach (var genre in Model.genres ()) {
@@ -370,13 +352,30 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         }
     }
 
-	private void on_window_resize (Gtk.Widget self, Gtk.Allocation allocation) {
+    /**
+     * @brief Handles window resizing.
+     * @param self The widget being resized.
+     * @param allocation The new allocation for the widget.
+     */
+    private void on_window_resize (Gtk.Widget self, Gtk.Allocation allocation) {
 		int width = allocation.width;
 		int height = allocation.height;
 
 		debug (@"Window resized: w$(width) h$(height)");
 	}
 
+    /**
+     * @brief Creates a new ContentBox and adds it to the stack.
+     * @param name The name of the content box.
+     * @param item The SourceList item associated with the content box.
+     * @param full_title The full title of the content box.
+     * @param action_icon_name The name of the action icon (or null if none).
+     * @param action_tooltip_text The tooltip text for the action (or null if none).
+     * @param stack The Gtk.Stack to add the content box to.
+     * @param source_list The SourceList to update when the content box is selected.
+     * @param enable_count Whether to enable item counting for the content box.
+     * @return The created ContentBox.
+     */
     private ContentBox create_content_box (
              string name,
              Granite.Widgets.SourceList.Item item,
@@ -409,6 +408,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         return c;
     }
 
+    /**
+     * @brief Adjusts the application theme based on user settings.
+     */
     private static void adjust_theme() {
         var theme = Application.instance.settings.get_string("theme-mode");
         info(@"current theme: $theme");
@@ -422,15 +424,25 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         }
     }
 
+    /**
+     * @brief Handles the quit action.
+     */
     private void on_action_quit () {
         close ();
     }
 
+    /**
+     * @brief Handles the about action.
+     */
     private void on_action_about () {
         var dialog = new AboutDialog (this);
         dialog.present ();
     }
 
+    /**
+     * @brief Handles a station selection.
+     * @param station The selected station.
+     */
     public void handle_station_click (Tuner.Model.Station station) {
         info (@"handle station click for $(station.title)");
         _directory.count_station_click (station);
@@ -442,15 +454,26 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         set_title (WINDOW_NAME+": "+station.title);
     }
 
+    /**
+     * @brief Handles changes to the favorites list.
+     */
     public void handle_favourites_changed () {
         refresh_favourites ();
     }
 
+    /**
+     * @brief Toggles playback state.
+     */
     public void on_toggle_playback() {
         info ("Stop Playback requested");
         player.play_pause ();
     }
 
+    /**
+     * @brief Handles the disable tracking action.
+     * @param action The SimpleAction that triggered this method.
+     * @param parameter The parameter passed with the action (unused).
+     */
     public void on_action_disable_tracking (SimpleAction action, Variant? parameter) {
         var new_state = !settings.get_boolean ("do-not-track");
         action.set_state (new_state);
@@ -458,6 +481,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         debug (@"on_action_disable_tracking: $new_state");
     }
 
+    /**
+     * @brief Handles the enable autoplay action.
+     * @param action The SimpleAction that triggered this method.
+     * @param parameter The parameter passed with the action (unused).
+     */
     public void on_action_enable_autoplay (SimpleAction action, Variant? parameter) {
         var new_state = !settings.get_boolean ("auto-play");
         action.set_state (new_state);
@@ -465,6 +493,10 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         debug (@"on_action_enable_autoplay: $new_state");
     }
 
+    /**
+     * @brief Handles player state changes.
+     * @param state The new player state.
+     */
     public void handleplayer_state_changed (Gst.PlayerState state) {
         switch (state) {
             case Gst.PlayerState.BUFFERING:
@@ -508,6 +540,10 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         return;
     }
 
+    /**
+     * @brief Performs cleanup actions before the window is destroyed.
+     * @return true if the window should be hidden instead of destroyed, false otherwise.
+     */
     public bool before_destroy () {
         int width, height, x, y;
 

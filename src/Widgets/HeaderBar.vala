@@ -141,7 +141,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         star_button.sensitive = true;
         star_button.tooltip_text = _("Star this station");
         star_button.clicked.connect (() => {
-            star_clicked (starred);
+            star_clicked (starred);     // FIXME refresh faves?
         });
         pack_start (star_button);
 
@@ -233,7 +233,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 break;
             case PlayState.PLAY_INACTIVE:
                 play_button.image = new Gtk.Image.from_icon_name (
-                    "media-playback-start-symbolic",
+                    "media-playback-pause-symbolic",
                     Gtk.IconSize.LARGE_TOOLBAR
                 );
                 play_button.sensitive = false;
