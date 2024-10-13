@@ -190,13 +190,13 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         if (_station != null) {
             _station.notify.disconnect (handle_station_change);
         }
+        load_favicon (station); // Kick off first as its async and long running in comparison
         _station = station;
         _station.notify.connect ( (sender, property) => {
             handle_station_change ();
         });
         title = station.title;
         subtitle = _("Playing");
-        load_favicon (station); 
         starred = station.starred;
     }
 
@@ -268,6 +268,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
      */
     private void load_favicon(Model.Station station)
     {
+        this.favicon.clear ();
         Favicon.load_async.begin (station, true, (favicon, res) => {
             var pxbuf = Favicon.load_async.end (res);
             if (pxbuf != null) {
