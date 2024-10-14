@@ -12,7 +12,7 @@ jobs:
 
     # This job runs in a special container designed for building Flatpaks for AppCenter
     container:
-      image: ghcr.io/elementary/flatpak-platform/runtime:6
+      image: ghcr.io/elementary/flatpak-platform/runtime:8
       options: --privileged
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -21,7 +21,7 @@ jobs:
     - uses: actions/checkout@v4
 
       # Builds your flatpak manifest using the Flatpak Builder action
-    - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v3
+    - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v6.3
       with:
         # This is the name of the Bundle file we're building and can be anything you like
         bundle: Tuner.flatpak

@@ -2,7 +2,7 @@
 project (
     'com.github.louis77.tuner',
     'vala', 'c',
-    version: '1.5.3'
+    version: '1.5.4'
 )
 
 # if meson.get_compiler ('vala').get_id() == 'valac'
@@ -24,6 +24,7 @@ add_project_arguments (
 config_data = configuration_data()
 config_data.set_quoted('LOCALEDIR', join_paths(get_option('prefix'), get_option('localedir')))
 config_data.set_quoted('GETTEXT_PACKAGE', meson.project_name())
+config_data.set_quoted('VERSION', meson.project_version())
 config_file = configure_file(
     input: 'src/Config.vala.in',
     output: '@BASENAME@',

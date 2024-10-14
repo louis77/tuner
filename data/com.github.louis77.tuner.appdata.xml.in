@@ -62,6 +62,18 @@
   </provides>
 
   <releases>
+    <release version="1.5.4" date="2024-10-10">
+      <description>
+        <p>Maintanance release:</p>
+        <ul>
+          <li>Added API server lookup via SRV and backup via JSON, plus randomization</li>
+          <li>Added JSON validation for empty nodes</li>
+          <li>Refactored libsoup calls out to HttpClient.vala</li>
+          <li>Refactored loading of favicons to Favicon.vala</li>
+          <li>Turned off TLS checks for HTTP calls to avoid non loading of favicons with invalid certs</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.5.3" date="2024-09-22">
       <description>
         <p>Maintanance release:</p>
