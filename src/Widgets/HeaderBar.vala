@@ -15,8 +15,12 @@
  */
 public class Tuner.HeaderBar : Gtk.HeaderBar {
 
+    /* Constants    */
+
     // Default icon name for stations without a custom favicon
     private const string DEFAULT_ICON_NAME = "internet-radio-symbolic";
+
+    /* Public */
 
     /**
      * @enum PlayState
@@ -33,48 +37,28 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     public Gtk.Button play_button { get; set; }
     public Gtk.VolumeButton volume_button;
 
+    // Signals
+    public signal void star_clicked_sig (bool starred);
+    public signal void searched_for_sig (string text);
+    public signal void search_focused_sig ();
+
+
+    /* Private */
+
     // Private member variables
-    private Gtk.Button star_button;
+    private Gtk.Button _star_button;
     private bool _starred = false;
     private Model.Station _station;
     private Gtk.Label _title_label;
     private RevealLabel _subtitle_label;
     private Gtk.Image _favicon_image;
 
-    // Signals
-    public signal void star_clicked (bool starred);
-    public signal void searched_for (string text);
-    public signal void search_focused ();
     
     // Search-related variables
-    private int search_delay = 250; // search delay in milliseconds (ms)
-    private uint delayed_changed_id;
-    private string searchentry_text = "";
+    private int _search_delay = 250; // search delay in milliseconds (ms)
+    private uint _delayed_changed_id;
+    private string _searchentry_text = "";
 
-    /**
-     * @brief Reset the search timeout.
-     *
-     * This method removes any existing timeout and sets a new one for delayed search.
-     */
-    private void reset_timeout(){
-        if(delayed_changed_id > 0)
-            Source.remove(delayed_changed_id);
-        delayed_changed_id = Timeout.add(search_delay, timeout);
-    }
-
-    /**
-     * @brief Timeout function for delayed search.
-     *
-     * This method is called when the search delay timeout expires.
-     *
-     * @return bool Returns false to stop the timeout.
-     */
-    private bool timeout(){
-        // perform search
-        searched_for (searchentry_text);
-        delayed_changed_id = 0;
-        return false;
-    }
 
     /**
      * @brief Construct block for initializing the header bar components.
@@ -123,27 +107,27 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         searchentry.valign = Gtk.Align.CENTER;
         searchentry.placeholder_text = _("Station name");
         searchentry.changed.connect (() => {
-            searchentry_text = searchentry.text;
+            _searchentry_text = searchentry.text;
             reset_timeout();
         });
         searchentry.focus_in_event.connect ((e) => {
-            search_focused ();
+            search_focused_sig ();
             return true;
         });
         pack_end (searchentry);
 
         // Create and configure star button
-        star_button = new Gtk.Button.from_icon_name (
+        _star_button = new Gtk.Button.from_icon_name (
             "non-starred",
             Gtk.IconSize.LARGE_TOOLBAR
         );
-        star_button.valign = Gtk.Align.CENTER;
-        star_button.sensitive = true;
-        star_button.tooltip_text = _("Star this station");
-        star_button.clicked.connect (() => {
-            star_clicked (starred);     // FIXME refresh faves?
+        _star_button.valign = Gtk.Align.CENTER;
+        _star_button.sensitive = true;
+        _star_button.tooltip_text = _("Star this station");
+        _star_button.clicked.connect (() => {
+            star_clicked_sig (starred);     // FIXME refresh faves?
         });
-        pack_start (star_button);
+        pack_start (_star_button);
 
         // Create and configure volume button
         volume_button = new Gtk.VolumeButton ();
@@ -155,6 +139,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
         set_playstate (PlayState.PAUSE_INACTIVE);
     }
+
+
+    /* Public */
+
 
     // Properties for title and subtitle
     public new string title {
@@ -200,15 +188,44 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         starred = station.starred;
     }
 
+
+    /**
+     * @brief Reset the search timeout.
+     *
+     * This method removes any existing timeout and sets a new one for delayed search.
+     */
+     private void reset_timeout(){
+        if(_delayed_changed_id > 0)
+            Source.remove(_delayed_changed_id);
+        _delayed_changed_id = Timeout.add(_search_delay, timeout);
+    }
+
+
+    /* Private */
+
+    /**
+     * @brief Timeout function for delayed search.
+     *
+     * This method is called when the search delay timeout expires.
+     *
+     * @return bool Returns false to stop the timeout.
+     */
+    private bool timeout(){
+        // perform search
+        searched_for_sig (_searchentry_text);
+        _delayed_changed_id = 0;
+        return false;
+    }
+
     // Property for starred state
     private bool starred {
         get { return _starred; }
         set {
             _starred = value;
             if (!_starred) {
-                star_button.image = new Gtk.Image.from_icon_name ("non-starred", Gtk.IconSize.LARGE_TOOLBAR);
+                _star_button.image = new Gtk.Image.from_icon_name ("non-starred", Gtk.IconSize.LARGE_TOOLBAR);
             } else {
-                star_button.image = new Gtk.Image.from_icon_name ("starred", Gtk.IconSize.LARGE_TOOLBAR);
+                _star_button.image = new Gtk.Image.from_icon_name ("starred", Gtk.IconSize.LARGE_TOOLBAR);
             }
         }
     }
@@ -229,7 +246,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                     Gtk.IconSize.LARGE_TOOLBAR
                 );
                 play_button.sensitive = true;
-                star_button.sensitive = true;
+                _star_button.sensitive = true;
                 break;
             case PlayState.PLAY_INACTIVE:
                 play_button.image = new Gtk.Image.from_icon_name (
@@ -237,7 +254,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                     Gtk.IconSize.LARGE_TOOLBAR
                 );
                 play_button.sensitive = false;
-                star_button.sensitive = false;
+                _star_button.sensitive = false;
                 break;
             case PlayState.PAUSE_ACTIVE:
                 play_button.image = new Gtk.Image.from_icon_name (
@@ -245,7 +262,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                     Gtk.IconSize.LARGE_TOOLBAR
                 );
                 play_button.sensitive = true;
-                star_button.sensitive = true;
+                _star_button.sensitive = true;
                 break;
             case PlayState.PAUSE_INACTIVE:
                 play_button.image = new Gtk.Image.from_icon_name (
@@ -253,7 +270,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                     Gtk.IconSize.LARGE_TOOLBAR
                 );
                 play_button.sensitive = false;
-                star_button.sensitive = false;
+                _star_button.sensitive = false;
                 break;
         }
     }
