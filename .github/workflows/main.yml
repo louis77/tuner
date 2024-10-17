@@ -2,6 +2,14 @@ name: CI
 
 # This workflow will run for any pull request or pushed commit
 on: [push, pull_request]
+  branches:
+    - main
+    - development
+  paths-ignore:
+    - '.github/**'
+    - 'docs/**'
+    - '**.md'
+    - '**.mm'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
