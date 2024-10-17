@@ -7,6 +7,9 @@ assignees: ''
 
 ---
 
+**Has the bug or similar already been reported?**
+Look through the open bugs, and if one describes your issue, add to that ticket rather than create a new ticket.
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
