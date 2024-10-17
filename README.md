@@ -115,11 +115,18 @@ Feature request, observations and Issues can be documented with tickets on [Gith
 
 ### Known Issues
 
-- If AAC/AAC+ streams don't play (found on Elementary OS 6) install the following dependency:
-
+#### If AAC/AAC+ streams don't play (found on Elementary OS 6) install the following dependency:
 ```sh
 $ sudo apt install gstreamer1.0-libav
 ```
+
+#### 'Failed to load module "xapp-gtk3-module"'
+Running Tuner from the CLI with `flatpak run com.github.louis77.tuner` may produce a message like the following:
+
+`Gtk-Message: 10:01:00.561: Failed to load module "xapp-gtk3-module"`
+
+This relates to Gtk looking for Xapp (which isn't used by Tuner) and can be ignored.
+
 
 ## Credits
 
@@ -132,7 +139,6 @@ $ sudo apt install gstreamer1.0-libav
 - [@safak45x](https://github.com/safak45x) - Turkish translation
 - [@btd1337](https://github.com/btd1337) - supports Tuner on Arch Linux / AUR
 - [@SwampRabbit](https://github.com/SwampRabbit) - supports Tuner on MX Linux
-- 
 
 ### Free Software Foundation
 
