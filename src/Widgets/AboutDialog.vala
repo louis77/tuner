@@ -40,8 +40,8 @@ You should have received a copy of the GNU General Public License
 along with Tuner.  If not, see <http://www.gnu.org/licenses/>.""";
         wrap_license = true;
 
-        website = "https://codeberg.org/tuner/tuner";
-        website_label = "Tuner on Codeberg.org";
+        website = "https://github.com/louis77/tuner";
+        website_label = "Tuner on Github";
 
         response.connect ((response_id) => {
             if (response_id == Gtk.ResponseType.CANCEL || response_id == Gtk.ResponseType.DELETE_EVENT) {
