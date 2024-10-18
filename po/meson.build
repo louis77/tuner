@@ -1,3 +1,9 @@
+#
+# PO meson build file
+#
+
+message('Installing translations...' )
+
 # Install main translations
 i18n.gettext (meson.project_name (),
     args: [
@@ -9,3 +15,5 @@ i18n.gettext (meson.project_name (),
 )
 
 subdir ('extra')
+
+message('Installed translations\n')

@@ -24,7 +24,7 @@ sources = files (
     'Widgets/Window.vala',
     'Widgets/AboutDialog.vala',
     'Widgets/WelcomeButton.vala',
-    'Widgets/Theme.vala',
+    #'Widgets/Theme.vala',
     'Widgets/CountryList.vala',
     'Widgets/StationList.vala',
     'Widgets/RevealLabel.vala',
