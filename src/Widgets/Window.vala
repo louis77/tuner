@@ -38,21 +38,25 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public const string ACTION_ABOUT = "action_about";
     public const string ACTION_DISABLE_TRACKING = "action_disable_tracking";
     public const string ACTION_ENABLE_AUTOPLAY = "action_enable_autoplay";
+    public const string ACTION_PREFER_DARK_MODE = "action_prefer_dark_mode";
 
 
-    public GLib.Settings settings { get; construct; }
-    public Gtk.Stack stack { get; set; }
-    public PlayerController player { get; construct; }
+    public GLib.Settings settings { get; construct; }       // Settings for the application
+    public Gtk.Stack stack { get; set; }                   // Stack for the application
+    public PlayerController player { get; construct; }       // Player controller for media playback
 
 
     /* Private */   
+
+    private const string SETTING_THEME = "theme-mode";
 
     private const ActionEntry[] ACTION_ENTRIES = {
         { ACTION_PAUSE, on_toggle_playback },
         { ACTION_QUIT , on_action_quit },
         { ACTION_ABOUT, on_action_about },
         { ACTION_DISABLE_TRACKING, on_action_disable_tracking, null, "false" },
-        { ACTION_ENABLE_AUTOPLAY, on_action_enable_autoplay, null, "false" }
+        { ACTION_ENABLE_AUTOPLAY, on_action_enable_autoplay, null, "false" },
+        { ACTION_PREFER_DARK_MODE, on_action_prefer_dark_mode, null, "false" }
     };
 
     private DirectoryController _directory;
@@ -113,20 +117,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             player.volume = value;
         });
 
-        adjust_theme();
-        settings.changed.connect( (key) => {
-            if (key == "theme-mode") {
-                warning("theme-mode changed");
-                adjust_theme();
+        setup_theme();
 
-            }
-        });
-
-        var granite_settings = Granite.Settings.get_default ();
-        granite_settings.notify.connect( (key) => {
-                warning("theme-mode changed");
-                adjust_theme();
-        });
 
         add_action_entries (ACTION_ENTRIES, this);
 
@@ -364,6 +356,36 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     }
 
 
+    //-------------------------------------------------------------------------
+    // Tear Down
+    //-------------------------------------------------------------------------
+
+    /**
+     * @brief Performs cleanup actions before the window is destroyed.
+     * @return true if the window should be hidden instead of destroyed, false otherwise.
+     */
+     public bool before_destroy () {
+        int width, height, x, y;
+
+        get_size (out width, out height);
+        get_position (out x, out y);
+
+        settings.set_int ("pos-x", x);
+        settings.set_int ("pos-y", y);
+        settings.set_int ("window-height", height);
+        settings.set_int ("window-width", width);
+
+        if (player.current_state == Gst.PlayerState.PLAYING) {
+            hide_on_delete();
+            var notification = new GLib.Notification("Playing in background");
+            notification.set_body("Click here to resume window. To quit Tuner, pause playback and close the window.");
+            notification.set_default_action("app.resume-window");
+            Application.instance.send_notification("continue-playing", notification);
+            return true;
+        }
+
+        return false;
+    }
     /**
      * @brief Handles window resizing.
      * @param self The widget being resized.
@@ -426,16 +448,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @brief Adjusts the application theme based on user settings.
      */
     private static void adjust_theme() {
-        var theme = Application.instance.settings.get_string("theme-mode");
-        info(@"current theme: $theme");
-
         var gtk_settings = Gtk.Settings.get_default ();
         var granite_settings = Granite.Settings.get_default ();
-        if (theme != "system") {
-            gtk_settings.gtk_application_prefer_dark_theme = (theme == "dark");
-        } else {
-            gtk_settings.gtk_application_prefer_dark_theme = (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK);
-        }
+        var prefer_dark = Application.instance.settings.get_boolean("theme-mode");
+        
+        gtk_settings.gtk_application_prefer_dark_theme = prefer_dark || 
+            (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK);
     }
 
 
@@ -479,6 +497,10 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         refresh_favourites_sig ();
     }
 
+    //------------------------------------------------------------------------- 
+    // Actions
+    //-------------------------------------------------------------------------
+
     /**
      * @brief Toggles playback state.
      */
@@ -513,6 +535,17 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         debug (@"on_action_enable_autoplay: $new_state");
     }
 
+    // Add this method to the Window class
+    public void on_action_prefer_dark_mode (SimpleAction action, Variant? parameter) {
+        var new_state = !settings.get_boolean ("theme-mode");
+        action.set_state (new_state);
+        settings.set_boolean ("theme-mode", new_state);
+        adjust_theme();
+    }
+
+    //-------------------------------------------------------------------------
+    // Player State
+    //-------------------------------------------------------------------------
 
     /**
      * @brief Handles player state changes.
@@ -562,31 +595,217 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     }
 
 
+
+
+
+    //-------------------------------------------------------------------------
+    // Set Ups    
+    //-------------------------------------------------------------------------
+
+    // Add this method to the Window class
+    //  private void setup_autoplay() {
+    //      if (settings.get_boolean("auto-play")) {
+    //          warning (@"Auto-play enabled");
+    //          var last_played_station = settings.get_string("last-played-station");
+    //          warning (@"Last played station is: $last_played_station");
+
+    //          var source = _directory.load_station_uuid (last_played_station);
+
+    //          try {
+    //              foreach (var station in source.next ()) {
+    //                  handle_station_click(station);
+    //                  break;
+    //              }
+    //          } catch (SourceError e) {
+    //              warning ("Error while trying to autoplay, aborting...");
+    //          }
+
+    //      }
+    //  }
+
+
     /**
-     * @brief Performs cleanup actions before the window is destroyed.
-     * @return true if the window should be hidden instead of destroyed, false otherwise.
+     * @brief Sets up the initial theme based on user settings.
      */
-    public bool before_destroy () {
-        int width, height, x, y;
+    private void setup_theme() {
+        adjust_theme();
+        settings.changed.connect( (key) => {
+            if (key == "theme-mode") {
+                warning("theme-mode changed");
+                adjust_theme();
 
-        get_size (out width, out height);
-        get_position (out x, out y);
+            }
+        });
 
-        settings.set_int ("pos-x", x);
-        settings.set_int ("pos-y", y);
-        settings.set_int ("window-height", height);
-        settings.set_int ("window-width", width);
-
-        if (player.current_state == Gst.PlayerState.PLAYING) {
-            hide_on_delete();
-            var notification = new GLib.Notification("Playing in background");
-            notification.set_body("Click here to resume window. To quit Tuner, pause playback and close the window.");
-            notification.set_default_action("app.resume-window");
-            Application.instance.send_notification("continue-playing", notification);
-            return true;
-        }
-
-        return false;
+        var granite_settings = Granite.Settings.get_default ();
+        granite_settings.notify.connect( (key) => {
+                warning("theme-mode changed");
+                adjust_theme();
+        });    
     }
+
+    //  // Add this method to the Window class
+    //  private void setup_discover_box(ref Granite.Widgets.SourceList.ExpandableItem selections_category) {
+    //      // Discover Box
+    //      var item1 = new Granite.Widgets.SourceList.Item (_("Discover"));
+    //      item1.icon = new ThemedIcon ("face-smile");
+    //      selections_category.add (item1);
+
+    //      var c1 = create_content_box ("discover", item1,
+    //                          _("Discover Stations"), "media-playlist-shuffle-symbolic",
+    //                          _("Discover more stations"),
+    //                          stack, source_list);
+    //      var s1 = _directory.load_random_stations(20);
+    //      c1.realize.connect (() => {
+    //          try {
+    //              var slist = new StationList.with_stations (s1.next ());
+    //              slist.selection_changed.connect (handle_station_click);
+    //              slist.favourites_changed.connect (handle_favourites_changed);
+    //              c1.content = slist;
+    //          } catch (SourceError e) {
+    //              c1.show_alert ();
+    //          }
+    //      });
+    //      c1.action_activated_sig.connect (() => {
+    //          try {
+    //              var slist = new StationList.with_stations (s1.next ());
+    //              slist.selection_changed.connect (handle_station_click);
+    //              slist.favourites_changed.connect (handle_favourites_changed);
+    //              c1.content = slist;
+    //          } catch (SourceError e) {
+    //              c1.show_alert ();
+    //          }
+    //      });
+    //  }
+
+    //  private void setup_trending_box(ref Granite.Widgets.SourceList.ExpandableItem selections_category) {
+    //      var item2 = new Granite.Widgets.SourceList.Item (_("Trending"));
+    //      item2.icon = new ThemedIcon ("playlist-queue");
+    //      selections_category.add (item2);
+
+    //      var c2 = create_content_box ("trending", item2,
+    //                          _("Trending in the last 24 hours"), null, null,
+    //                          stack, source_list);
+    //      var s2 = _directory.load_trending_stations(40);
+    //      c2.realize.connect (() => {
+    //          try {
+    //              var slist = new StationList.with_stations (s2.next ());
+    //              slist.selection_changed.connect (handle_station_click);
+    //              slist.favourites_changed.connect (handle_favourites_changed);
+    //              c2.content = slist;
+    //          } catch (SourceError e) {
+    //              c2.show_alert ();
+    //          }
+    //      });
+    //  }
+
+    //  private void setup_popular_box(ref Granite.Widgets.SourceList.ExpandableItem selections_category) {
+    //      var item3 = new Granite.Widgets.SourceList.Item (_("Popular"));
+    //      item3.icon = new ThemedIcon ("playlist-similar");
+    //      selections_category.add (item3);
+
+    //      var c3 = create_content_box ("popular", item3,
+    //                          _("Most-listened over 24 hours"), null, null,
+    //                          stack, source_list);
+    //      var s3 = _directory.load_popular_stations(40);
+    //      c3.realize.connect (() => {
+    //          try {
+    //              var slist = new StationList.with_stations (s3.next ());
+    //              slist.selection_changed.connect (handle_station_click);
+    //              slist.favourites_changed.connect (handle_favourites_changed);
+    //              c3.content = slist;
+    //          } catch (SourceError e) {
+    //              c3.show_alert ();
+    //          }
+    //      });
+    //  }
+
+    //  private void setup_country_box(ref Granite.Widgets.SourceList.ExpandableItem searched_category) {
+    //      // Country-specific stations list
+    //      var item4 = new Granite.Widgets.SourceList.Item (_("Your Country"));
+    //      item4.icon = new ThemedIcon ("emblem-web");
+    //      ContentBox c_country;
+    //      c_country = create_content_box ("my-country", item4,
+    //                          _("Your Country"), null, null,
+    //                          stack, source_list, true);
+    //      var c_slist = new StationList ();
+    //      c_slist.selection_changed.connect (handle_station_click);
+    //      c_slist.favourites_changed.connect (handle_favourites_changed);
+    //  }
+
+    //  private void setup_favourites_box(ref Granite.Widgets.SourceList.ExpandableItem searched_category) {
+    //      var item5 = new Granite.Widgets.SourceList.Item (_("Starred by You"));
+    //      item5.icon = new ThemedIcon ("starred");
+    //      searched_category.add (item5);
+    //      var c4 = create_content_box ("starred", item5,
+    //                          _("Starred by You"), null, null,
+    //                          stack, source_list, true);
+
+    //      var slist = new StationList.with_stations (_directory.get_stored ());
+    //      slist.selection_changed.connect (handle_station_click);
+    //      slist.favourites_changed.connect (handle_favourites_changed);
+    //      c4.content = slist;
+
+    //      refresh_favourites_sig.connect ( () => {
+    //          var _slist = new StationList.with_stations (_directory.get_stored ());
+    //          _slist.selection_changed.connect (handle_station_click);
+    //          _slist.favourites_changed.connect (handle_favourites_changed);
+    //          c4.content = _slist;
+    //      });
+    //  }
+
+    //  private void setup_search_box(ref Granite.Widgets.SourceList.ExpandableItem searched_category) {
+    //      var item6 = new Granite.Widgets.SourceList.Item (_("Recent Search"));
+    //      item6.icon = new ThemedIcon ("folder-saved-search");
+    //      searched_category.add (item6);
+    //      var c5 = create_content_box ("searched", item6,
+    //                          _("Search"), null, null,
+    //                          stack, source_list, true);
+
+    //      _headerbar.searched_for_sig.connect ( (text) => {
+    //          if (text.length > 0) {
+    //              string mytext = text;
+    //              var s5 = _directory.load_search_stations (mytext, 100);
+    //              try {
+    //                  var stations = s5.next ();
+    //                  if (stations == null || stations.size == 0) {
+    //                      c5.show_nothing_found ();
+    //                  } else {
+    //                      var _slist = new StationList.with_stations (stations);
+    //                      _slist.selection_changed.connect (handle_station_click);
+    //                      _slist.favourites_changed.connect (handle_favourites_changed);
+    //                      c5.content = _slist;
+    //                  }
+    //              } catch (SourceError e) {
+    //                  c5.show_alert ();
+    //              }
+    //          }
+    //      });
+    //  }
+
+    //  private void setup_genres_box(ref Granite.Widgets.SourceList.ExpandableItem genres_category) {
+    //      foreach (var genre in Model.genres ()) {
+    //          var item8 = new Granite.Widgets.SourceList.Item (_(genre.name));
+    //          item8.icon = new ThemedIcon ("playlist-symbolic");
+    //          genres_category.add (item8);
+    //          var cb = create_content_box (genre.name, item8,
+    //              genre.name, null, null, stack, source_list);
+    //          var tags = new ArrayList<string>.wrap (genre.tags);
+    //          var ds = _directory.load_by_tags (tags);
+    //          cb.realize.connect (() => {
+    //              try {
+    //                  var slist1 = new StationList.with_stations (ds.next ());
+    //                  slist1.selection_changed.connect (handle_station_click);
+    //                  slist1.favourites_changed.connect (handle_favourites_changed);
+    //                  cb.content = slist1;
+    //              } catch (SourceError e) {
+    //                  cb.show_alert ();
+    //              }
+    //          });
+    //      }   
+    //      // This method is intentionally left empty as the genre boxes are set up in the foreach loop that follows
+    //  }
+
+
 
 }
