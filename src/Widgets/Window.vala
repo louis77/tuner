@@ -38,25 +38,21 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public const string ACTION_ABOUT = "action_about";
     public const string ACTION_DISABLE_TRACKING = "action_disable_tracking";
     public const string ACTION_ENABLE_AUTOPLAY = "action_enable_autoplay";
-    public const string ACTION_PREFER_DARK_MODE = "action_prefer_dark_mode";
 
 
-    public GLib.Settings settings { get; construct; }       // Settings for the application
-    public Gtk.Stack stack { get; set; }                   // Stack for the application
-    public PlayerController player { get; construct; }       // Player controller for media playback
+    public GLib.Settings settings { get; construct; }
+    public Gtk.Stack stack { get; set; }
+    public PlayerController player { get; construct; }
 
 
     /* Private */   
-
-    private const string SETTING_THEME = "theme-mode";
 
     private const ActionEntry[] ACTION_ENTRIES = {
         { ACTION_PAUSE, on_toggle_playback },
         { ACTION_QUIT , on_action_quit },
         { ACTION_ABOUT, on_action_about },
         { ACTION_DISABLE_TRACKING, on_action_disable_tracking, null, "false" },
-        { ACTION_ENABLE_AUTOPLAY, on_action_enable_autoplay, null, "false" },
-        { ACTION_PREFER_DARK_MODE, on_action_prefer_dark_mode, null, "false" }
+        { ACTION_ENABLE_AUTOPLAY, on_action_enable_autoplay, null, "false" }
     };
 
     private DirectoryController _directory;
@@ -117,8 +113,20 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             player.volume = value;
         });
 
-        setup_theme();
+        adjust_theme();
+        settings.changed.connect( (key) => {
+            if (key == "theme-mode") {
+                warning("theme-mode changed");
+                adjust_theme();
 
+            }
+        });
+
+        var granite_settings = Granite.Settings.get_default ();
+        granite_settings.notify.connect( (key) => {
+                warning("theme-mode changed");
+                adjust_theme();
+        });
 
         add_action_entries (ACTION_ENTRIES, this);
 
@@ -333,43 +341,29 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         primary_box.pack1 (source_list, false, false);
         primary_box.pack2 (stack, true, false);
         add (primary_box);
-
-        setup_autoplay();
-
         show_all ();
-    }
 
+        // Auto-play
+        if (settings.get_boolean("auto-play")) {
+            warning (@"Auto-play enabled");
+            var last_played_station = settings.get_string("last-played-station");
+            warning (@"Last played station is: $last_played_station");
 
-    //-------------------------------------------------------------------------
-    // Tear Down
-    //-------------------------------------------------------------------------
+            var source = _directory.load_station_uuid (last_played_station);
 
-    /**
-     * @brief Performs cleanup actions before the window is destroyed.
-     * @return true if the window should be hidden instead of destroyed, false otherwise.
-     */
-     public bool before_destroy () {
-        int width, height, x, y;
+            try {
+                foreach (var station in source.next ()) {
+                    handle_station_click(station);
+                    break;
+                }
+            } catch (SourceError e) {
+                warning ("Error while trying to autoplay, aborting...");
+            }
 
-        get_size (out width, out height);
-        get_position (out x, out y);
-
-        settings.set_int ("pos-x", x);
-        settings.set_int ("pos-y", y);
-        settings.set_int ("window-height", height);
-        settings.set_int ("window-width", width);
-
-        if (player.current_state == Gst.PlayerState.PLAYING) {
-            hide_on_delete();
-            var notification = new GLib.Notification("Playing in background");
-            notification.set_body("Click here to resume window. To quit Tuner, pause playback and close the window.");
-            notification.set_default_action("app.resume-window");
-            Application.instance.send_notification("continue-playing", notification);
-            return true;
         }
-
-        return false;
     }
+
+
     /**
      * @brief Handles window resizing.
      * @param self The widget being resized.
@@ -432,12 +426,16 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @brief Adjusts the application theme based on user settings.
      */
     private static void adjust_theme() {
+        var theme = Application.instance.settings.get_string("theme-mode");
+        info(@"current theme: $theme");
+
         var gtk_settings = Gtk.Settings.get_default ();
         var granite_settings = Granite.Settings.get_default ();
-        var prefer_dark = Application.instance.settings.get_boolean("theme-mode");
-        
-        gtk_settings.gtk_application_prefer_dark_theme = prefer_dark || 
-            (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK);
+        if (theme != "system") {
+            gtk_settings.gtk_application_prefer_dark_theme = (theme == "dark");
+        } else {
+            gtk_settings.gtk_application_prefer_dark_theme = (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK);
+        }
     }
 
 
@@ -481,10 +479,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         refresh_favourites_sig ();
     }
 
-    //------------------------------------------------------------------------- 
-    // Actions
-    //-------------------------------------------------------------------------
-
     /**
      * @brief Toggles playback state.
      */
@@ -519,17 +513,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         debug (@"on_action_enable_autoplay: $new_state");
     }
 
-    // Add this method to the Window class
-    public void on_action_prefer_dark_mode (SimpleAction action, Variant? parameter) {
-        var new_state = !settings.get_boolean ("theme-mode");
-        action.set_state (new_state);
-        settings.set_boolean ("theme-mode", new_state);
-        adjust_theme();
-    }
-
-    //-------------------------------------------------------------------------
-    // Player State
-    //-------------------------------------------------------------------------
 
     /**
      * @brief Handles player state changes.
@@ -579,53 +562,31 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     }
 
 
-
-
-
-    //-------------------------------------------------------------------------
-    // Set Ups    
-    //-------------------------------------------------------------------------
-
     /**
-     * @brief Sets up autoplay functionality based on user settings.
+     * @brief Performs cleanup actions before the window is destroyed.
+     * @return true if the window should be hidden instead of destroyed, false otherwise.
      */
-    private void setup_autoplay() {
-        if (settings.get_boolean("auto-play")) {
-            warning("Auto-play enabled");
-            var last_played_station = settings.get_string("last-played-station");
-            warning(@"Last played station is: $last_played_station");
+    public bool before_destroy () {
+        int width, height, x, y;
 
-            var source = _directory.load_station_uuid(last_played_station);
+        get_size (out width, out height);
+        get_position (out x, out y);
 
-            try {
-                foreach (var station in source.next()) {
-                    handle_station_click(station);
-                    break;
-                }
-            } catch (SourceError e) {
-                warning("Error while trying to autoplay, aborting...");
-            }
+        settings.set_int ("pos-x", x);
+        settings.set_int ("pos-y", y);
+        settings.set_int ("window-height", height);
+        settings.set_int ("window-width", width);
+
+        if (player.current_state == Gst.PlayerState.PLAYING) {
+            hide_on_delete();
+            var notification = new GLib.Notification("Playing in background");
+            notification.set_body("Click here to resume window. To quit Tuner, pause playback and close the window.");
+            notification.set_default_action("app.resume-window");
+            Application.instance.send_notification("continue-playing", notification);
+            return true;
         }
-    }
 
-    /**
-     * @brief Sets up the initial theme based on user settings.
-     */
-    private void setup_theme() {
-        adjust_theme();
-        settings.changed.connect( (key) => {
-            if (key == "theme-mode") {
-                warning("theme-mode changed");
-                adjust_theme();
-
-            }
-        });
-
-        var granite_settings = Granite.Settings.get_default ();
-        granite_settings.notify.connect( (key) => {
-                warning("theme-mode changed");
-                adjust_theme();
-        });    
+        return false;
     }
 
 }

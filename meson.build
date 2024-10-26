@@ -2,7 +2,8 @@
 project (
     'com.github.louis77.tuner',
     'vala', 'c',
-    version: '1.5.5'
+    version: '1.5.5',
+    meson_version: '>= 0.60.0',
 )
 
 message('Starting build for project: ' + meson.project_name())
@@ -69,6 +70,7 @@ executable (
 )
 
 subdir ('data')
+
 subdir ('po')
 
 message('Build for project: ' + meson.project_name() + ' finished.\n')

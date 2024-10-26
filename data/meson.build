@@ -14,17 +14,16 @@ icon_sizes = ['16', '24', '32', '48', '64', '128']
 foreach i : icon_sizes
     install_data (
         join_paths ('icons', i, meson.project_name () + '.svg'),
-        install_dir: join_paths (get_option ('datadir'), 'icons/hicolor', i + 'x' + i, 'apps'),
+        install_dir: join_paths (get_option ('datadir'), 'icons','hicolor', i + 'x' + i, 'apps'),
         install_tag: 'icons'
     )
     install_data (
         join_paths ('icons', i, meson.project_name () + '.svg'),
-        install_dir: join_paths (get_option ('datadir'), 'icons/hicolor', i + 'x' + i + '@2', 'apps'),
+        install_dir: join_paths (get_option ('datadir'), 'icons','hicolor', i + 'x' + i + '@2', 'apps'),
         install_tag: 'icons'
     )
 endforeach
 
-meson.add_install_script('gtk-update-icon-cache', join_paths('datadir', 'icons/hicolor'), install_tag: 'icons')
 
 message('Installed icons\n')
 
@@ -70,23 +69,13 @@ message('Installed appdata\n')
 #
 message('Installing schema...')
 
-#gsettings_schema_build_dir = join_paths(meson.current_build_dir(), 'schemas')
+schemas_dir = join_paths (get_option('prefix'), get_option('datadir'), 'glib-2.0', 'schemas')
 
-#message('to ' + gsettings_schema_build_dir)
-#gnome.compile_schemas(gsettings_schema_build_dir)
+settings_schemas = [ meson.project_name() + '.gschema.xml' ]
 
-gsettings_schema_dir = join_paths(get_option ('datadir'), 'glib-2.0', 'schemas')
-gschema = files(meson.project_name () +'.gschema.xml')
+install_data(settings_schemas, install_dir: schemas_dir)
 
-message('to ' + gsettings_schema_dir)
-
-install_data(
-    gschema,
-    install_dir: gsettings_schema_dir,
-    install_tag: 'schemas'
-)
-
-meson.add_install_script('glib-compile-schemas', gsettings_schema_dir, install_tag: 'schemas')
+meson.add_install_script('glib-compile-schemas', schemas_dir, install_tag: 'schemas')
 
 
 message('Installed schema\n')
