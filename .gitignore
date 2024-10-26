@@ -5,6 +5,7 @@ build-aux
 .vscode
 .buildconfig
 .flatpak-builder
+.flatpak
 code.sh
 favicon.ico
 tuner.code-workspace

@@ -2,8 +2,13 @@
 project (
     'com.github.louis77.tuner',
     'vala', 'c',
-    version: '1.5.4'
+    version: '1.5.5',
+    meson_version: '>= 0.60.0',
 )
+
+message('Starting build for project: ' + meson.project_name())
+message('Build type: ' + get_option('buildtype'))
+
 
 # if meson.get_compiler ('vala').get_id() == 'valac'
 #     extra_args = ['-g', '--save_temps']
@@ -65,6 +70,7 @@ executable (
 )
 
 subdir ('data')
+
 subdir ('po')
 
-meson.add_install_script ('meson/post_install.py')
+message('Build for project: ' + meson.project_name() + ' finished.\n')

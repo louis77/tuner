@@ -15,16 +15,26 @@
  */
 public class Tuner.StationBox : Tuner.WelcomeButton {
 
-    // Default icon name for stations without a custom favicon
+    /**
+     * @brief Default icon name for stations without a custom favicon.
+     */
     private const string DEFAULT_ICON_NAME = "internet-radio";
 
-    // Public properties for the station and its context menu
+    /**
+     * @property station
+     * @brief The radio station represented by this StationBox.
+     */
     public Model.Station station { get; construct; }
+
+    /**
+     * @property menu
+     * @brief The context menu associated with this StationBox.
+     */
     public StationContextMenu menu { get; private set; }
 
     /**
-     * Constructor for the StationBox
-     * @param station The radio station to represent
+     * @brief Constructs a new StationBox instance.
+     * @param station The radio station to represent.
      */
     public StationBox (Model.Station station) {
         Object (
@@ -37,7 +47,10 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
     }
 
     /**
-     * Construct block for additional initialization
+     * @brief Additional initialization for the StationBox.
+     *
+     * This method is automatically called after construction and sets up
+     * the favicon, style context, and event handling for the StationBox.
      */
     construct {
         debug (@"StationBox construct $(station.title)");
@@ -70,11 +83,23 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
         });
     }
 
+    /**
+     * @brief Creates a title string for the station.
+     * @param title The station's title.
+     * @param starred Whether the station is starred (favorited).
+     * @return The formatted title string.
+     */
     private static string make_title (string title, bool starred) {
         if (!starred) return title;
         return Application.STAR_CHAR + title;
     }
 
+    /**
+     * @brief Creates a tag string combining codec and bitrate information.
+     * @param codec The station's codec.
+     * @param bitrate The station's bitrate.
+     * @return The formatted tag string.
+     */
     private static string make_tag (string codec, int bitrate) {
         var tag = codec;
         if (bitrate > 0)
@@ -85,6 +110,11 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
         return tag;
     }
 
+    /**
+     * @brief Creates a description string based on the station's location.
+     * @param location The station's location.
+     * @return The formatted description string.
+     */
     private static string make_description (string location) {
         if (location.length > 0) 
             return _(location);
@@ -92,6 +122,12 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
             return location;
     }
 
+    /**
+     * @brief Asynchronously loads the station's favicon.
+     *
+     * This method attempts to load the station's custom favicon and
+     * updates the StationBox's icon if successful.
+     */
     private void load_favicon()
     {
         Favicon.load_async.begin (station, false, (favicon, res) => {
