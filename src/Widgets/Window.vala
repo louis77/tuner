@@ -316,21 +316,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         _headerbar.searched_for_sig.connect ( (text) => {
             if (text.length > 0) {
-                string mytext = text;
-                var s5 = _directory.load_search_stations (mytext, 100);
-                try {
-                    var stations = s5.next ();
-                    if (stations == null || stations.size == 0) {
-                        c5.show_nothing_found ();
-                    } else {
-                        var _slist = new StationList.with_stations (stations);
-                        _slist.selection_changed.connect (handle_station_click);
-                        _slist.favourites_changed.connect (handle_favourites_changed);
-                        c5.content = _slist;
-                    }
-                } catch (SourceError e) {
-                    c5.show_alert ();
-                }
+                load_search_stations.begin(text, c5);
             }
         });
 
@@ -587,6 +573,35 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         }
 
         return false;
+    }
+
+    /**
+     * @brief Loads search stations based on the provided text and updates the content box.
+     * Async since 1.5.5 so that UI is responsive during long searches
+     * @param searchText The text to search for stations.
+     * @param contentBox The ContentBox to update with the search results.
+     */
+    private async void load_search_stations(string searchText, ContentBox contentBox) {
+        debug(@"Searching for: $(searchText)");
+        
+        var station_source = _directory.load_search_stations(searchText, 100);
+        debug(@"Search done");
+
+        try {
+            var stations = station_source.next();
+            debug(@"Search Next done");
+            if (stations == null || stations.size == 0) {
+                contentBox.show_nothing_found();
+            } else {
+                debug(@"Search found $(stations.size) stations");
+                var _slist = new StationList.with_stations(stations);
+                _slist.selection_changed.connect(handle_station_click);
+                _slist.favourites_changed.connect(handle_favourites_changed);
+                contentBox.content = _slist;
+            }
+        } catch (SourceError e) {
+            contentBox.show_alert();
+        }
     }
 
 }

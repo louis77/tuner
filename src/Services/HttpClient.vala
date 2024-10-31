@@ -36,7 +36,9 @@ public class Tuner.HttpClient : Object {
      *
      * This method returns the singleton Soup.Session instance, creating it
      * if it doesn't already exist. The session is configured with a custom
-     * user agent string and a timeout of 3 seconds.
+     * user agent string and a timeout of 2 seconds, maximum 30 connections
+     * with only one connection per host.
+     * 
      *
      * @return The singleton Soup.Session instance
      */
@@ -44,10 +46,14 @@ public class Tuner.HttpClient : Object {
     {
         if (_session == null)
         {
-            _session = new Soup.Session();
-            _session.user_agent = @"$(Application.APP_ID)/$(Application.APP_VERSION)";
-            _session.timeout = 5;
+            _session = new Soup.Session.with_options(
+               "max-conns", 30,
+                "max-conns-per-host", 1 ,
+                "timeout", 2,
+                "user_agent", @"$(Application.APP_ID)/$(Application.APP_VERSION)"
+            );
         }
+        debug(@"Conns Max: $(_session.get_max_conns()), Conns PH: $(_session.get_max_conns_per_host())");
         return _session;
     }
 

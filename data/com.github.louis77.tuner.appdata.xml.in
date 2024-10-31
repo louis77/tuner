@@ -62,6 +62,17 @@
   </provides>
 
   <releases>
+    <release version="1.5.5" date="2024-10-31">
+      <description>
+        <p>Maintanance release:</p>
+        <ul>
+          <li>Updated HTTP Session connections to improve response</li>
+          <li>Increased Search re-fire interval to reduce number of searches</li>
+          <li>Made Search asynchronouls so UI remains responsive during long searches</li>
+          <li>Add system-bus to manifest sockets</li>
+        </ul>
+      </description>
+    </release>    
     <release version="1.5.4" date="2024-10-10">
       <description>
         <p>Maintanance release:</p>
