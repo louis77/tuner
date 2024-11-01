@@ -20,6 +20,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     // Default icon name for stations without a custom favicon
     private const string DEFAULT_ICON_NAME = "internet-radio-symbolic";
 
+    // Search delay in milliseconds
+    private const int SEARCH_DELAY = 500; 
+
     /* Public */
 
     /**
@@ -55,7 +58,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
     
     // Search-related variables
-    private int _search_delay = 250; // search delay in milliseconds (ms)
     private uint _delayed_changed_id;
     private string _searchentry_text = "";
 
@@ -189,6 +191,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     }
 
 
+    /* Private */
+
     /**
      * @brief Reset the search timeout.
      *
@@ -197,25 +201,16 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
      private void reset_timeout(){
         if(_delayed_changed_id > 0)
             Source.remove(_delayed_changed_id);
-        _delayed_changed_id = Timeout.add(_search_delay, timeout);
+            //  _delayed_changed_id = Timeout.add(SEARCH_DELAY, search_timeout);
+            _delayed_changed_id = Timeout.add(SEARCH_DELAY, () => {              
+                
+                _delayed_changed_id = 0; // Reset timeout ID after scheduling               
+                searched_for_sig (_searchentry_text); // Emit the custom signal with the search query
+    
+                return Source.REMOVE;
+            });
     }
 
-
-    /* Private */
-
-    /**
-     * @brief Timeout function for delayed search.
-     *
-     * This method is called when the search delay timeout expires.
-     *
-     * @return bool Returns false to stop the timeout.
-     */
-    private bool timeout(){
-        // perform search
-        searched_for_sig (_searchentry_text);
-        _delayed_changed_id = 0;
-        return false;
-    }
 
     // Property for starred state
     private bool starred {
