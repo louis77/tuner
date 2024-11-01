@@ -113,11 +113,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             player.volume = value;
         });
 
-        adjust_theme();
+        //  adjust_theme();     // FIXME Theme management needs refactoring. adjust-theme calls are removed in a flathub
         settings.changed.connect( (key) => {
             if (key == "theme-mode") {
                 warning("theme-mode changed");
-                adjust_theme();
+                //  adjust_theme();     // FIXME  ...patch so commenting them out now so patch can be removed.
 
             }
         });
