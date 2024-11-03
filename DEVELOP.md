@@ -58,7 +58,8 @@ cd tuner
 Configure Meson for development debug build, build Tuner with Ninja, and run the result:
 ```bash
 meson setup --buildtype=debug builddir
-ninja -C builddir
+meson compile -C builddir
+meson install -C builddir     # only needed once to get the gschema in place
 ./builddir/com.github.louis77.tuner
 ```
 
@@ -106,7 +107,7 @@ Tuner uses the __elementary.io__ platform, version __8__. To build the tuner fla
 ```bash
 apt-get install flatpak-builder
 flatpak remote-add --user --if-not-exists elementary https://flatpak.elementary.io/repo.flatpakrepo
-flatpak flatpak install elementary io.elementary.Sdk//8 io.elementary.Platform//8
+flatpak install elementary io.elementary.Sdk//8 io.elementary.Platform//8
 ```
 
 Build the flatpak in the _user_ scope:
