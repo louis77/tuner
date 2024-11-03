@@ -113,12 +113,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             player.volume = value;
         });
 
-        //  adjust_theme();     // FIXME Theme management needs refactoring. adjust-theme calls are removed in a flathub
+        adjust_theme();    // TODO Theme management needs research in flatpak as nonfunctional
         settings.changed.connect( (key) => {
             if (key == "theme-mode") {
                 warning("theme-mode changed");
-                //  adjust_theme();     // FIXME  ...patch so commenting them out now so patch can be removed.
-
+                adjust_theme();                     
             }
         });
 
@@ -383,7 +382,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
              string? action_tooltip_text,
              Gtk.Stack stack,
              Granite.Widgets.SourceList source_list,
-             bool enable_count = false) {
+             bool enable_count = false) 
+    {
         item.set_data<string> ("stack_child", name);
         var c = new ContentBox (
             null,
@@ -425,6 +425,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     }
 
 
+    // ----------------------------------------------------------------------
+    //
+    // Handlers
+    //
+    // ----------------------------------------------------------------------
+
+
     /**
      * @brief Handles the quit action.
      */
@@ -442,28 +449,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     }
 
 
-    /**
-     * @brief Handles a station selection.
-     * @param station The selected station.
-     */
-    public void handle_station_click (Tuner.Model.Station station) {
-        info (@"handle station click for $(station.title)");
-        _directory.count_station_click (station);
-        player.station = station;
-
-        warning (@"storing last played station: $(station.id)");
-        settings.set_string("last-played-station", station.id);
-
-        set_title (WINDOW_NAME+": "+station.title);
-    }
-
-
-    /**
-     * @brief Handles changes to the favorites list.
-     */
-    public void handle_favourites_changed () {
-        refresh_favourites_sig ();
-    }
 
     /**
      * @brief Toggles playback state.
@@ -499,7 +484,35 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         debug (@"on_action_enable_autoplay: $new_state");
     }
 
+    // ----------------------------------------------------------------------
+    //
+    // Handlers
+    //
+    // ----------------------------------------------------------------------
 
+
+    /**
+     * @brief Handles a station selection.
+     * @param station The selected station.
+     */
+     public void handle_station_click (Tuner.Model.Station station) {
+        info (@"handle station click for $(station.title)");
+        _directory.count_station_click (station);
+        player.station = station;
+
+        warning (@"storing last played station: $(station.id)");
+        settings.set_string("last-played-station", station.id);
+
+        set_title (WINDOW_NAME+": "+station.title);
+    }
+
+
+    /**
+     * @brief Handles changes to the favorites list.
+     */
+    public void handle_favourites_changed () {
+        refresh_favourites_sig ();
+    }
     /**
      * @brief Handles player state changes.
      * @param state The new player state.

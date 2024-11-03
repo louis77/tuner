@@ -49,7 +49,6 @@ public class Tuner.ContentBox : Gtk.Box {
     public signal void content_changed_sig ();
 
 
-
     private Gtk.Box _header;
     private Gtk.Box _content;
     private AbstractContentList _content_list;
@@ -69,7 +68,8 @@ public class Tuner.ContentBox : Gtk.Box {
                        string title,
                        string? subtitle,
                        string? action_icon_name,
-                       string? action_tooltip_text) {
+                       string? action_tooltip_text) 
+    {
         Object (
             orientation: Gtk.Orientation.VERTICAL,
             spacing: 0
@@ -97,10 +97,11 @@ public class Tuner.ContentBox : Gtk.Box {
             _header.pack_start (icon, false, false, 20);
         }
 
-        header_label = new HeaderLabel (title);
-        header_label.xpad = 20;
-        header_label.ypad = 20;
-        _header.pack_start (header_label, false, false);
+        //  header_label = new HeaderLabel (title);
+        //  header_label.xpad = 20;
+        //  header_label.ypad = 20;
+        //  _header.pack_start (header_label, false, false);
+        _header.pack_start (new HeaderLabel (title, 20, 20 ), false, false);
 
         if (action_icon_name != null && action_tooltip_text != null) {
             var shuffle_button = new Gtk.Button.from_icon_name (
@@ -135,12 +136,23 @@ public class Tuner.ContentBox : Gtk.Box {
         _stack.add_named (scroller, "content");
         add (_stack);
         
-        show.connect (() => {
+        show.connect (() => {   
             _stack.set_visible_child_full ("content", Gtk.StackTransitionType.NONE);            
         });
+    } // ContentBox
+
+       
+    /**
+     * @brief Initializes the ContentBox instance.
+     *
+     * This method is called automatically by the Vala compiler and sets up
+     * the initial style context for the widget.
+     */
+     construct {
+        get_style_context ().add_class ("color-dark");
     }
 
-    
+
     /**
      * @brief Displays the alert view in the content area.
      */
@@ -166,10 +178,9 @@ public class Tuner.ContentBox : Gtk.Box {
      */
     public AbstractContentList content { 
         set {
-            var childs = _content.get_children ();
-            foreach (var c in childs) {
-                c.destroy ();
-            }
+        
+            foreach (var child in _content.get_children ()) { child.destroy (); }
+
             _stack.set_visible_child_full ("content", Gtk.StackTransitionType.NONE);
             _content_list = value;
             _content.add (_content_list);
@@ -178,19 +189,10 @@ public class Tuner.ContentBox : Gtk.Box {
         }
 
         get {
-            return _content_list;
+            return _content_list; 
         }
     }
 
-   
-    /**
-     * @brief Initializes the ContentBox instance.
-     *
-     * This method is called automatically by the Vala compiler and sets up
-     * the initial style context for the widget.
-     */
-    construct {
-        get_style_context ().add_class ("color-dark");
-    }
+
 
 }
