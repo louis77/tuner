@@ -14,9 +14,11 @@
  */
 public class Tuner.HeaderLabel : Gtk.Label {
     
-    public HeaderLabel (string label) {
+    public HeaderLabel (string label, int xpad = 0, int ypad = 0 ) {
         Object (
-            label: label
+            label: label,
+            xpad: xpad,
+            ypad: ypad
         );
     }
 

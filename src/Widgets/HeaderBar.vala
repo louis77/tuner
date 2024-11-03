@@ -72,7 +72,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     construct {
         show_close_button = true;
 
+        //
         // Create and configure station info display
+        //
         var station_info = new Gtk.Grid ();
         station_info.width_request = 200;
         station_info.column_spacing = 10;
@@ -89,13 +91,19 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
         custom_title = station_info;
 
+        
+        //
         // Create and configure play button
+        //
         play_button = new Gtk.Button ();
         play_button.valign = Gtk.Align.CENTER;
         play_button.action_name = Window.ACTION_PREFIX + Window.ACTION_PAUSE;
         pack_start (play_button);
 
+        
+        //
         // Create and configure preferences button
+        //
         var prefs_button = new Gtk.MenuButton ();
         prefs_button.image = new Gtk.Image.from_icon_name ("open-menu", Gtk.IconSize.LARGE_TOOLBAR);
         prefs_button.valign = Gtk.Align.CENTER;
@@ -104,7 +112,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         prefs_button.popover = new Tuner.PreferencesPopover();;
         pack_end (prefs_button);
 
+
+        // 
         // Create and configure search entry
+        //
         var searchentry = new Gtk.SearchEntry ();
         searchentry.valign = Gtk.Align.CENTER;
         searchentry.placeholder_text = _("Station name");
@@ -118,7 +129,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         });
         pack_end (searchentry);
 
-        // Create and configure star button
+
+        // 
+        //Create and configure star button
+        //
         _star_button = new Gtk.Button.from_icon_name (
             "non-starred",
             Gtk.IconSize.LARGE_TOOLBAR
@@ -131,7 +145,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         });
         pack_start (_star_button);
 
+
+        // 
         // Create and configure volume button
+        //
         volume_button = new Gtk.VolumeButton ();
         volume_button.value = Application.instance.settings.get_double ("volume");
         volume_button.value_changed.connect ((value) => {
@@ -243,6 +260,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 play_button.sensitive = true;
                 _star_button.sensitive = true;
                 break;
+
             case PlayState.PLAY_INACTIVE:
                 play_button.image = new Gtk.Image.from_icon_name (
                     "media-playback-pause-symbolic",
@@ -251,6 +269,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 play_button.sensitive = false;
                 _star_button.sensitive = false;
                 break;
+
             case PlayState.PAUSE_ACTIVE:
                 play_button.image = new Gtk.Image.from_icon_name (
                     "media-playback-stop-symbolic",
@@ -259,6 +278,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 play_button.sensitive = true;
                 _star_button.sensitive = true;
                 break;
+
             case PlayState.PAUSE_INACTIVE:
                 play_button.image = new Gtk.Image.from_icon_name (
                     "media-playback-stop-symbolic",
@@ -275,8 +295,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
      *
      * This method asynchronously loads the favicon anew for 
      * the given station and updates the favicon image.
-     * If the favicon is not available, it will load cached 
-     * favicon or use the default icon.
+     * If the favicon is not available from the site, 
+     * it will load the cached favicon or use the default icon.
      *
      * @param station The station whose favicon should be loaded.
      */
@@ -284,6 +304,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     {
         this.favicon.clear ();
 
+        // Load and force a refresh of the favicon to freshen the cache
         Favicon.load_async.begin (station, true, (favicon, res) => {
             var pxbuf = Favicon.load_async.end (res);
             if (pxbuf != null) {
@@ -293,7 +314,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             } 
         });
 
-        // If favicon is not available, use cached favicon or default icon    
+        // If favicon is not available, use the current cached favicon or default icon    
         Favicon.load_async.begin (station, false, (favicon, res) => {
             var pxbuf = Favicon.load_async.end (res);
             if (pxbuf != null) {
