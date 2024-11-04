@@ -616,5 +616,4 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             contentBox.show_alert();
         }
     }
-
 }
