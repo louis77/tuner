@@ -38,7 +38,7 @@ public class Tuner.Favicon : GLib.Object {
      */
     public static async Gdk.Pixbuf? load_async(Model.Station station, bool forceReload = false)
     {
-        if ( station.favicon_load_error ) return null;  // Favicon is erring out, so bypss loading it this session
+        if ( station.favicon_url == null || station.favicon_url == "" || station.favicon_load_error ) return null;  // Favicon is erring out, so bypss loading it this session
 
         var favicon_cache_file = Path.build_filename(Application.instance.cache_dir, station.id);
 
