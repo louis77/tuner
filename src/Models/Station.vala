@@ -14,6 +14,7 @@ public class Tuner.Model.Station : Object {
     public int bitrate { get; set; }
 
     public string? favicon_url { get; set; }
+    public bool favicon_load_error { get; set; }
     public uint clickcount = 0;
 
     public Station (string id, string title, string location, string url) {
@@ -24,6 +25,7 @@ public class Tuner.Model.Station : Object {
         this.location = location;
         this.url = url;
         this.starred = starred;
+        this.favicon_load_error = false;    // Is favicon load erring? Limit retry reloads during this session
     }
 
     public void toggle_starred () {

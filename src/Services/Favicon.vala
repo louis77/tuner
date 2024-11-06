@@ -38,22 +38,27 @@ public class Tuner.Favicon : GLib.Object {
      */
     public static async Gdk.Pixbuf? load_async(Model.Station station, bool forceReload = false)
     {
+        if ( station.favicon_load_error ) return null;  // Favicon is erring out, so bypss loading it this session
+
         var favicon_cache_file = Path.build_filename(Application.instance.cache_dir, station.id);
 
-        // Check cache first if not forcing reload
-        if (!forceReload && FileUtils.test(favicon_cache_file, FileTest.EXISTS)) {
+        // Check if not forcing reload and then if favicon is cached
+        if (    !forceReload 
+            &&  FileUtils.test(favicon_cache_file, FileTest.EXISTS)) 
+            {
             try {
                 return new Gdk.Pixbuf.from_file_at_scale(favicon_cache_file, 48, 48, true);
             } catch (Error e) {
-                warning("Failed to load cached favicon: %s", e.message);
+                warning(@"Failed to load cached favicon: $(e.message)");
             }
         }
 
         // If not in cache or force reload, fetch from internet
         uint status_code;
+
         InputStream? stream = yield HttpClient.GETasync(station.favicon_url, out status_code);
 
-        if (stream != null && status_code == 200) {
+        if ( stream != null && status_code == 200) {
             try {
                 var pixbuf = yield new Gdk.Pixbuf.from_stream_async(stream, null);
                 var scaled_pixbuf = pixbuf.scale_simple(48, 48, Gdk.InterpType.BILINEAR);
@@ -63,9 +68,12 @@ public class Tuner.Favicon : GLib.Object {
 
                 return scaled_pixbuf;
             } catch (Error e) {
-                warning("Failed to process favicon %s: %s", station.favicon_url,e.message);
+                warning(@"Failed to process favicon $(station.favicon_url) - $(e.message)");
             }
         }
+
+        // Could not load the favicon, so flag not to try again in this session
+        station.favicon_load_error = true;
         return null;
     }
  }
