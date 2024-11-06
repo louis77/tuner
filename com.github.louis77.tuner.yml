@@ -13,7 +13,7 @@ finish-args:
 - "--share=network"
 - "--metadata=X-DConf=migrate-path=/com/github/louis77/tuner/"
 - "--socket=pulseaudio"
-- "--talk-name=org.gnome.SettingsDaemon.MediaKeys"
+- "--talk-name=org.freedesktop.Notifications"
 - "--own-name=org.mpris.MediaPlayer2.Tuner"
 cleanup:
 - "/include"

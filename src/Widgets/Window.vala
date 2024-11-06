@@ -595,10 +595,10 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @param contentBox The ContentBox to update with the search results.
      */
     private async void load_search_stations(string searchText, ContentBox contentBox) {
-        debug(@"Searching for: $(searchText)");
-        
+
+        warning(@"Searching for: $(searchText)");        
         var station_source = _directory.load_search_stations(searchText, 100);
-        debug(@"Search done");
+        warning(@"Search done");
 
         try {
             var stations = station_source.next();

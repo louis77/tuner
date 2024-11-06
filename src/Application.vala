@@ -78,7 +78,6 @@ public class Tuner.Application : Gtk.Application {
         GLib.Intl.textdomain (GETTEXT_PACKAGE);
 
         settings = new GLib.Settings (this.application_id);
-        warning(@"Settings path: $(settings.path)");
         
         player = new PlayerController ();
 
