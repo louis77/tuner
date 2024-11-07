@@ -596,17 +596,17 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      */
     private async void load_search_stations(string searchText, ContentBox contentBox) {
 
-        warning(@"Searching for: $(searchText)");        
+        warning(@"Searching for: $(searchText)");        // FIXME warnings to debugs
         var station_source = _directory.load_search_stations(searchText, 100);
         warning(@"Search done");
 
         try {
             var stations = station_source.next();
-            debug(@"Search Next done");
+            warning(@"Search Next done");
             if (stations == null || stations.size == 0) {
                 contentBox.show_nothing_found();
             } else {
-                debug(@"Search found $(stations.size) stations");
+                warning(@"Search found $(stations.size) stations");
                 var _slist = new StationList.with_stations(stations);
                 _slist.selection_changed.connect(handle_station_click);
                 _slist.favourites_changed.connect(handle_favourites_changed);

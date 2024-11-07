@@ -47,9 +47,9 @@ public class Tuner.HttpClient : Object {
         if (_session == null)
         {
             _session = new Soup.Session.with_options(
-               "max-conns", 30,
-                "max-conns-per-host", 1 ,
-                "timeout", 2,
+               "max-conns", 50,
+                "max-conns-per-host", 2 ,
+                "timeout", 3,
                 "user_agent", @"$(Application.APP_ID)/$(Application.APP_VERSION)"
             );
         }
