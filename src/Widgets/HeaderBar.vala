@@ -21,7 +21,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     private const string DEFAULT_ICON_NAME = "internet-radio-symbolic";
 
     // Search delay in milliseconds
-    private const int SEARCH_DELAY = 500; 
+    private const int SEARCH_DELAY = 400; 
 
     /* Public */
 
