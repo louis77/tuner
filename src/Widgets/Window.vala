@@ -330,9 +330,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         // Auto-play
         if (settings.get_boolean("auto-play")) {
-            warning (@"Auto-play enabled");
+            debug (@"Auto-play enabled");
             var last_played_station = settings.get_string("last-played-station");
-            warning (@"Last played station is: $last_played_station");
+            debug (@"Last played station is: $last_played_station");
 
             var source = _directory.load_station_uuid (last_played_station);
 
@@ -596,17 +596,17 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      */
     private async void load_search_stations(string searchText, ContentBox contentBox) {
 
-        warning(@"Searching for: $(searchText)");        // FIXME warnings to debugs
+        debug(@"Searching for: $(searchText)");        // FIXME warnings to debugs
         var station_source = _directory.load_search_stations(searchText, 100);
-        warning(@"Search done");
+        debug(@"Search done");
 
         try {
             var stations = station_source.next();
-            warning(@"Search Next done");
+            debug(@"Search Next done");
             if (stations == null || stations.size == 0) {
                 contentBox.show_nothing_found();
             } else {
-                warning(@"Search found $(stations.size) stations");
+                debug(@"Search found $(stations.size) stations");
                 var _slist = new StationList.with_stations(stations);
                 _slist.selection_changed.connect(handle_station_click);
                 _slist.favourites_changed.connect(handle_favourites_changed);
