@@ -5,14 +5,51 @@
 
 using Gee;
 
+/**
+ * @class StationList
+ * @brief A widget for displaying and managing a list of radio stations.
+ *
+ * The StationList class extends AbstractContentList to provide a specialized
+ * widget for displaying radio stations. It manages station selection, favorites,
+ * and provides signals for various state changes.
+ *
+ * @extends AbstractContentList
+ */
 public class Tuner.StationList : AbstractContentList {
 
+    /**
+     * @signal selection_changed
+     * @brief Emitted when a station is selected.
+     * @param station The selected Model.Station.
+     */
     public signal void selection_changed (Model.Station station);
+
+    /**
+     * @signal station_count_changed
+     * @brief Emitted when the number of stations changes.
+     * @param count The new number of stations.
+     */
     public signal void station_count_changed (uint count);
+
+    /**
+     * @signal favourites_changed
+     * @brief Emitted when a station's favorite status changes.
+     */
     public signal void favourites_changed ();
 
+    /**
+     * @property selected_station
+     * @brief The currently selected station.
+     */
     public Model.Station selected_station;
     
+    /**
+     * @property stations
+     * @brief The list of stations to display.
+     *
+     * When set, this property clears the existing list and populates it with
+     * the new stations. It also sets up signal connections for each station.
+     */
     public ArrayList<Model.Station> stations {
         set construct {
             clear ();
@@ -33,6 +70,11 @@ public class Tuner.StationList : AbstractContentList {
         }
     }
 
+    /**
+     * @brief Constructs a new StationList instance.
+     *
+     * Initializes the StationList with default properties for layout and behavior.
+     */
     public StationList () {
         Object (
             homogeneous: false,
@@ -46,12 +88,20 @@ public class Tuner.StationList : AbstractContentList {
         );
     }
 
+    /**
+     * @brief Constructs a new StationList instance with a predefined list of stations.
+     * @param stations The ArrayList of Model.Station objects to populate the list.
+     */
     public StationList.with_stations (Gee.ArrayList<Model.Station> stations) {
         this ();
         this.stations = stations;
     }
 
-    
+    /**
+     * @brief Clears all stations from the list.
+     *
+     * This method removes and destroys all child widgets from the StationList.
+     */
     public void clear () {
         var childs = get_children();
         foreach (var c in childs) {
@@ -59,5 +109,11 @@ public class Tuner.StationList : AbstractContentList {
         }
     }
 
+    /**
+     * @property item_count
+     * @brief The number of stations in the list.
+     *
+     * This property implements the abstract property from AbstractContentList.
+     */
     public override uint item_count { get; set; }
 }

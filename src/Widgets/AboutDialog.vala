@@ -3,7 +3,20 @@
  * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
  */
 
+/**
+ * @class AboutDialog
+ * @brief A dialog displaying information about the Tuner application.
+ *
+ * This class creates an "About" dialog with details such as the application's
+ * version, authors, translators, license, and website.
+ *
+ * @extends Gtk.AboutDialog
+ */
 public class Tuner.AboutDialog : Gtk.AboutDialog {
+    /**
+     * @brief Constructs a new AboutDialog.
+     * @param window The parent window for this dialog.
+     */
     public AboutDialog (Gtk.Window window) {
         Object ();
         set_destroy_with_parent (true);

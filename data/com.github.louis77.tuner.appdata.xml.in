@@ -62,6 +62,19 @@
   </provides>
 
   <releases>
+    <release version="1.5.5" date="2024-11-08">
+      <description>
+        <p>Maintanance release:</p>
+        <ul>
+          <li>Updated HTTP Session params to improve response</li>
+          <li>Increased Search re-fire interval to reduce number of concurrent searches</li>
+          <li>Made Search asynchronous so UI remains responsive during searches</li>
+          <li>Ignore request to load failing favicons URLs</li>
+          <li>Removed shadow from.svg images per Flathub quality directives</li>
+          <li>Removed org.gnome.SettingsDaemon.MediaKeys from manifest per flathub</li>
+        </ul>
+      </description>
+    </release>    
     <release version="1.5.4" date="2024-10-10">
       <description>
         <p>Maintanance release:</p>

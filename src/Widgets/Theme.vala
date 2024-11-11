@@ -14,7 +14,7 @@ public class Theme : Gtk.Widget
 		return _instance.once (() => { return new Theme (); });
 	}
 
-	public bool is_theme_dark()
+	public bool delet_is_theme_dark()
 	{
 		var settings = Gtk.Settings.get_default();
 		var theme = Environment.get_variable("GTK_THEME");

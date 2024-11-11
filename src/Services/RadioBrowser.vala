@@ -240,8 +240,9 @@ namespace Tuner.RadioBrowser {
 
             try {
                 uint status_code;
-                var response = HttpClient.GET(@"$current_server/$resource", out status_code);
 
+                debug (@"Requesting from 'radio-browser.info'");
+                var response = HttpClient.GET(@"$current_server/$resource", out status_code);
                 debug (@"Response from 'radio-browser.info': $(status_code)");
 
                 try {
@@ -256,7 +257,7 @@ namespace Tuner.RadioBrowser {
                 var stations = jarray_to_stations (rootarray);
                 return stations;
             } catch (GLib.Error e) {
-                warning (@"Unknown error: $(e.message)");
+                warning (@"Error retrieving stations: $(e.message)");
             }
 
             return new ArrayList<Station>();
@@ -287,12 +288,12 @@ namespace Tuner.RadioBrowser {
 
             // by text or tags
             var resource = @"json/stations/search?limit=$rowcount&order=$(params.order)&offset=$offset";
-            if (params.text != null && params.text != "") { 
+
+            debug (@"Search: $(resource)");
+            if ( params.text != "") { 
                 resource += @"&name=$(params.text)";
             }
-            if (params.tags == null) {
-                warning ("param tags is null");
-            }
+
             if (params.tags.size > 0 ) {
                 string tag_list = params.tags[0];
                 if (params.tags.size > 1) {
@@ -420,7 +421,7 @@ namespace Tuner.RadioBrowser {
                     results.add(target.get_hostname());
                 }
             } catch (GLib.Error e) {
-                @warning(@"Unable to resolve SRV records: $(e.message)");
+                @warning(@"Unable to resolve Radio-Browser SRV records: $(e.message)");
             }
     
             if (results.is_empty) 
@@ -462,7 +463,7 @@ namespace Tuner.RadioBrowser {
                         }
                     }
                 } catch (Error e) {
-                    warning("Failed to parse API ServersJSON: $(e.message)");
+                    warning("Failed to parse APIs JSON response: $(e.message)");
                 }                
             }
     

@@ -39,8 +39,12 @@ modules:
     sha256: c8da2b10f1bfec2cd7dbfcd33f4a2338db0765d851a50583d410bacf055cfd0b
 - name: tuner
   buildsystem: meson
+  build-options:
+    cflags: "-g"
+    cxxflags: "-g"
+    buildtype: "debug"
   config-opts:
-  - "--buildtype=release"
+  - "--buildtype=debug"
   post-install:
   - install -Dm644 /app/share/icons/hicolor/64x64/apps/${FLATPAK_ID}.svg  -t /app/share/icons/hicolor/128x128/apps/
   sources:
