@@ -116,14 +116,14 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         adjust_theme();    // TODO Theme management needs research in flatpak as nonfunctional
         settings.changed.connect( (key) => {
             if (key == "theme-mode") {
-                warning("theme-mode changed");
+                debug("theme-mode changed");
                 adjust_theme();                     
             }
         });
 
         var granite_settings = Granite.Settings.get_default ();
         granite_settings.notify.connect( (key) => {
-                warning("theme-mode changed");
+                debug("theme-mode changed");
                 adjust_theme();
         });
 
@@ -496,11 +496,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @param station The selected station.
      */
      public void handle_station_click (Tuner.Model.Station station) {
-        info (@"handle station click for $(station.title)");
+        debug (@"handle station click for $(station.title)");
         _directory.count_station_click (station);
         player.station = station;
 
-        warning (@"storing last played station: $(station.id)");
+        debug (@"Storing last played station: $(station.id)");
         settings.set_string("last-played-station", station.id);
 
         set_title (WINDOW_NAME+": "+station.title);

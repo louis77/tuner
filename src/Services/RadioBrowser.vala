@@ -257,7 +257,7 @@ namespace Tuner.RadioBrowser {
                 var stations = jarray_to_stations (rootarray);
                 return stations;
             } catch (GLib.Error e) {
-                warning (@"Unknown error: $(e.message)");
+                warning (@"Error retrieving stations: $(e.message)");
             }
 
             return new ArrayList<Station>();
@@ -421,7 +421,7 @@ namespace Tuner.RadioBrowser {
                     results.add(target.get_hostname());
                 }
             } catch (GLib.Error e) {
-                @warning(@"Unable to resolve SRV records: $(e.message)");
+                @warning(@"Unable to resolve Radio-Browser SRV records: $(e.message)");
             }
     
             if (results.is_empty) 
@@ -463,7 +463,7 @@ namespace Tuner.RadioBrowser {
                         }
                     }
                 } catch (Error e) {
-                    warning("Failed to parse API ServersJSON: $(e.message)");
+                    warning("Failed to parse APIs JSON response: $(e.message)");
                 }                
             }
     

@@ -169,7 +169,7 @@ public class Tuner.DirectoryController : Object {
             var tags = provider.get_tags ();
             tags_updated (tags);
         } catch (RadioBrowser.DataError e) {
-            warning (@"unable to load tags: $(e.message)");
+            warning (@"Load tags failed with error: $(e.message)");
         }
     }
 
