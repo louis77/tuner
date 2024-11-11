@@ -65,7 +65,7 @@ public class StationStore : Object {
             parser.load_from_stream (stream);
             stream.close ();
         } catch (Error e) {
-            warning (@"store: unable to load data, does it exist? $(e.message)");
+            warning (@"Load failed with error: $(e.message)");
         }
 
         Json.Node? node = parser.get_root ();
@@ -105,7 +105,7 @@ public class StationStore : Object {
             s.flush ();
             s.close (); // closes base stream also
         } catch (Error e) {
-            warning (@"store: unable to persist store: $(e.message)");
+            warning (@"Persist failed with error: $(e.message)");
         }
     }
 
