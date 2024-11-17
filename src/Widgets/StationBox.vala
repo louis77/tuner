@@ -38,8 +38,8 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
      */
     public StationBox (Model.Station station) {
         Object (
-            description: make_description (station.location),
-            title: make_title (station.title, station.starred),
+            description: make_description (station.countrycode),
+            title: make_title (station.name, station.starred),
             tag: make_tag (station.codec, station.bitrate),
             favicon: new Gtk.Image.from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG),
             station: station
@@ -53,15 +53,15 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
      * the favicon, style context, and event handling for the StationBox.
      */
     construct {
-        debug (@"StationBox construct $(station.title)");
+        debug (@"StationBox construct $(station.name)");
 
-        load_favicon();
+        load_favicon.begin();
 
         get_style_context().add_class("station-button");
         always_show_image = true;
 
         this.station.notify["starred"].connect ( (sender, prop) => {
-            this.title = make_title (this.station.title, this.station.starred);
+            this.title = make_title (this.station.name, this.station.starred);
         });
 
 
@@ -128,15 +128,21 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
      * This method attempts to load the station's custom favicon and
      * updates the StationBox's icon if successful.
      */
-    private void load_favicon()
+    private async void load_favicon()
     {
-        Favicon.load_async.begin (station, false, (favicon, res) => {
-            var pxbuf = Favicon.load_async.end (res);
-            if (pxbuf != null) {
-                this.favicon.set_from_pixbuf (pxbuf);  
-                this.favicon.set_size_request (48, 48);  
-            }
-        });
+
+        warning("Station box 1");
+        if ( (yield station.get_favicon_uri()) != null )
+        // Favicon is unavailable, leave default
+        {
+            warning("Station box 2");
+            return;
+        }
+
+        warning("Station box 3");
+        ///return; // FIXME remove
+        //  this.favicon.clear ();
+        this.favicon.set_from_pixbuf (station.get_favicon_image ());
     }
 
 }

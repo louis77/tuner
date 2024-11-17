@@ -14,7 +14,8 @@
  * This class serves as the entry point for the Tuner application.
  * It handles application initialization, window management, and theme settings.
  */
-public class Tuner.Application : Gtk.Application {
+public class Tuner.Application : Gtk.Application {  //TODO Add main here and rename to Tuner maybe use namespace
+    // FIXME https://valadoc.org/gio-2.0/GLib.Application.html
 
     /** @brief Application version */
     public const string APP_VERSION = VERSION;
@@ -39,10 +40,11 @@ public class Tuner.Application : Gtk.Application {
     //  }
 
     /** @brief Application settings */
-    public GLib.Settings settings { get; construct; }
+   // public GLib.Settings settings { get; construct; }  // TODO Can this go in Window?
+    public Settings settings { get; construct; }  // TODO Can this go in Window?
     
     /** @brief Player controller */
-    public PlayerController player { get; construct; }
+    public PlayerController player { get; construct; }  // TODO Can this go in Window?
     
     /** @brief Cache directory path */
     public string? cache_dir { get; construct; }
@@ -77,21 +79,26 @@ public class Tuner.Application : Gtk.Application {
         GLib.Intl.bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
         GLib.Intl.textdomain (GETTEXT_PACKAGE);
 
-        settings = new GLib.Settings (this.application_id);
         
+        settings = new Settings (this);
         player = new PlayerController ();
+        //settings = new GLib.Settings (this.application_id);
 
         cache_dir = Path.build_filename (Environment.get_user_cache_dir (), application_id);
         ensure_dir (cache_dir);
 
+        warning (@"Cache dir: $(cache_dir.to_string())");   // FIXME remove
+
         data_dir = Path.build_filename (Environment.get_user_data_dir (), application_id);
         ensure_dir (data_dir);
+
+        warning (@"Data dir: $(data_dir.to_string())"); // FIXME remove
 
         add_action_entries(ACTION_ENTRIES, this);
     }
 
     /** @brief Singleton instance of the Application */
-    public static Application _instance = null;
+    private static Application _instance = null;
 
     /**
      * @brief Getter for the singleton instance
@@ -135,7 +142,7 @@ public class Tuner.Application : Gtk.Application {
      */
     protected override void activate() {
         if (window == null) {
-            window = new Window (this, player);
+            window = new Window (this, player, settings);
             add_window (window);
             DBus.initialize ();
         } else {

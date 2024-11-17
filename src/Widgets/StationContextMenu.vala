@@ -34,11 +34,11 @@ public class Tuner.StationContextMenu : Gtk.Menu {
      * @brief Initializes the menu items and sets up event handlers.
      */
     construct {
-        var label = new Gtk.MenuItem.with_label (this.station.title);
+        var label = new Gtk.MenuItem.with_label (this.station.name);
         label.sensitive = false;
         this.append (label);
 
-        var label2 = new Gtk.MenuItem.with_label (this.station.location);
+        var label2 = new Gtk.MenuItem.with_label (this.station.countrycode);
         label2.sensitive = false;
         this.append (label2);
 
@@ -79,7 +79,7 @@ public class Tuner.StationContextMenu : Gtk.Menu {
      */
     private void on_website_handler () {
         try {
-            Gtk.show_uri_on_window (Application._instance.window, station.homepage, Gdk.CURRENT_TIME);
+            Gtk.show_uri_on_window (Application.instance.window, station.homepage, Gdk.CURRENT_TIME);
         } catch (Error e) {
             warning (@"Unable to open website: $(e.message)");
         }

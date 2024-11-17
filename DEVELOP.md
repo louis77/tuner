@@ -7,6 +7,7 @@ Discover and Listen to your favourite internet radio stations, and add improve t
 - [Tuner Development](#tuner-development)
   - [Dependencies](#dependencies)
   - [Building the Tuner App From Source](#building-the-tuner-app-from-source)
+- [Valadoc](#valadoc)
   - [Building the Tuner Flatpak](#building-the-tuner-flatpak)
   - [Readying code for a Pull Request](#readying-code-for-a-pull-request)
   - [NamingConventions](#namingconventions)
@@ -71,6 +72,9 @@ Tuner can be deployed to the local system to bypass flatpak if required, however
 meson configure -Dprefix=/usr
 sudo ninja install
 ```
+
+## Valadoc
+valadoc --force --pkg gtk+-3.0 --pkg glib-2.0 --pkg gee-0.8 --pkg gio-2.0 --pkg libsoup-3.0 --pkg json-glib-1.0 --pkg gstreamer-1.0 --pkg gstreamer-player-1.0 --pkg granite --package-name=Tuner -o apidocs  --verbose src/**/*.vala
 
 
 ### Building the Tuner Flatpak

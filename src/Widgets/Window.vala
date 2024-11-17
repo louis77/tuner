@@ -40,12 +40,21 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public const string ACTION_ENABLE_AUTOPLAY = "action_enable_autoplay";
 
 
-    public GLib.Settings settings { get; construct; }
+
+    public Settings settings { get; construct; }
     public Gtk.Stack stack { get; set; }
     public PlayerController player { get; construct; }
 
 
     /* Private */   
+
+    private const string NOTIFICATION_PLAYING_BACKGROUND = "Playing in background";
+    private const string NOTIFICATION_CLICK_RESUME = "Click here to resume window. To quit Tuner, pause playback and close the window.";
+    private const string NOTIFICATION_APP_RESUME_WINDOW = "app.resume-window";
+    private const string NOTIFICATION_APP_PLAYING_CONTINUE = "continue-playing";
+
+    private const int GEOMETRY_MIN_HEIGHT = 440;
+    private const int GEOMETRY_MIN_WIDTH = 600;
 
     private const ActionEntry[] ACTION_ENTRIES = {
         { ACTION_PAUSE, on_toggle_playback },
@@ -79,11 +88,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @param app The Application instance.
      * @param player The PlayerController instance.
      */
-    public Window (Application app, PlayerController player) {
+    public Window (Application app, PlayerController player, Settings settings) {
         Object (
             application: app,
             player: player,
-            settings: Application.instance.settings
+            settings: settings
         );
 
         application.set_accels_for_action (ACTION_PREFIX + ACTION_PAUSE, {"<Control>5"});
@@ -93,13 +102,18 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
 
     /* Construct */
-    construct {
-        this.set_icon_name("com.github.louis77.tuner");
-		this.size_allocate.connect(on_window_resize);
+    construct { // FIXME    Way to complex - should be in activate?
+        
+        this.set_icon_name(Application.APP_ID);
+        add_action_entries (ACTION_ENTRIES, this);
+        set_title (WINDOW_NAME);
+        window_position = Gtk.WindowPosition.CENTER;
+        set_geometry_hints (null, Gdk.Geometry() { min_height = GEOMETRY_MIN_HEIGHT, min_width = GEOMETRY_MIN_WIDTH}, Gdk.WindowHints.MIN_SIZE);
+        change_action_state (ACTION_DISABLE_TRACKING, settings.do_not_track);
+        change_action_state (ACTION_ENABLE_AUTOPLAY, settings.auto_play);
 
         _headerbar = new HeaderBar ();
         set_titlebar (_headerbar);
-        set_title (WINDOW_NAME);
 
         player.state_changed.connect (handleplayer_state_changed);
         player.station_changed.connect (_headerbar.update_from_station);
@@ -113,30 +127,28 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             player.volume = value;
         });
 
-        adjust_theme();    // TODO Theme management needs research in flatpak as nonfunctional
-        settings.changed.connect( (key) => {
-            if (key == "theme-mode") {
-                debug("theme-mode changed");
-                adjust_theme();                     
-            }
-        });
+        //  adjust_theme();    // TODO Theme management needs research in flatpak as nonfunctional
+        //  settings.changed.connect( (key) => {
+        //      if (key == "theme-mode") {
+        //          debug("theme-mode changed");
+        //          adjust_theme();                     
+        //      }
+        //  });
 
         var granite_settings = Granite.Settings.get_default ();
-        granite_settings.notify.connect( (key) => {
-                debug("theme-mode changed");
-                adjust_theme();
-        });
+        //  granite_settings.notify.connect( (key) => { // FIXME
+        //          debug("theme-mode changed");
+        //          adjust_theme();
+        //  });
 
-        add_action_entries (ACTION_ENTRIES, this);
 
-        window_position = Gtk.WindowPosition.CENTER;
-        set_default_size (900, 680);
-        change_action_state (ACTION_DISABLE_TRACKING, settings.get_boolean ("do-not-track"));
-        change_action_state (ACTION_ENABLE_AUTOPLAY, settings.get_boolean ("auto-play"));
-        move (settings.get_int ("pos-x"), settings.get_int ("pos-y"));
+       // set_default_size (900, 680);
+       // move (settings.get_int ("pos-x"), settings.get_int ("pos-y"));
 
-        set_geometry_hints (null, Gdk.Geometry() {min_height = 440, min_width = 600}, Gdk.WindowHints.MIN_SIZE);
-        resize (settings.get_int ("window-width"), settings.get_int ("window-height"));
+        //resize (settings.get_int ("window-width"), settings.get_int ("window-height"));
+
+
+		this.size_allocate.connect(on_window_resize);
 
         delete_event.connect (e => {
             return before_destroy ();
@@ -146,7 +158,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
 
         var favorites_file = Path.build_filename (Application.instance.data_dir, "favorites.json");
-        var store = new Model.StationStore (favorites_file);
+        var store = new Model.StarredStationStore (favorites_file);
         _directory = new DirectoryController (store);
 
         var primary_box = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);
@@ -313,6 +325,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             stack.visible_child_name = selected_item;
         });
 
+        // FIXME Should be in HeaderBar??
         _headerbar.searched_for_sig.connect ( (text) => {
             if (text.length > 0) {
                 load_search_stations.begin(text, c5);
@@ -329,16 +342,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         show_all ();
 
         // Auto-play
-        if (settings.get_boolean("auto-play")) {
+        if (_settings.auto_play) {
             debug (@"Auto-play enabled");
-            var last_played_station = settings.get_string("last-played-station");
-            debug (@"Last played station is: $last_played_station");
-
-            var source = _directory.load_station_uuid (last_played_station);
+            var source = _directory.load_station_uuid (_settings.last_played_station);
 
             try {
-                foreach (var station in source.next ()) {
-                    handle_station_click(station);
+                foreach (var station in source.next ()) {   // FIXME  Why
+                    handle_station_click(station);  
                     break;
                 }
             } catch (SourceError e) {
@@ -357,7 +367,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     private void on_window_resize (Gtk.Widget self, Gtk.Allocation allocation) {
 		int width = allocation.width;
 		int height = allocation.height;
-
 		debug (@"Window resized: w$(width) h$(height)");
 	}
 
@@ -411,18 +420,18 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     /**
      * @brief Adjusts the application theme based on user settings.
      */
-    private static void adjust_theme() {
-        var theme = Application.instance.settings.get_string("theme-mode");
-        info(@"current theme: $theme");
+    //  private static void adjust_theme() {
+    //      var theme = Application.instance.settings.get_string("theme-mode");
+    //      info(@"current theme: $theme");
 
-        var gtk_settings = Gtk.Settings.get_default ();
-        var granite_settings = Granite.Settings.get_default ();
-        if (theme != "system") {
-            gtk_settings.gtk_application_prefer_dark_theme = (theme == "dark");
-        } else {
-            gtk_settings.gtk_application_prefer_dark_theme = (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK);
-        }
-    }
+    //      var gtk_settings = Gtk.Settings.get_default ();
+    //      var granite_settings = Granite.Settings.get_default ();
+    //      if (theme != "system") {
+    //          gtk_settings.gtk_application_prefer_dark_theme = (theme == "dark");
+    //      } else {
+    //          gtk_settings.gtk_application_prefer_dark_theme = (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK);
+    //      }
+    //  }
 
 
     // ----------------------------------------------------------------------
@@ -465,10 +474,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @param parameter The parameter passed with the action (unused).
      */
     public void on_action_disable_tracking (SimpleAction action, Variant? parameter) {
-        var new_state = !settings.get_boolean ("do-not-track");
-        action.set_state (new_state);
-        settings.set_boolean ("do-not-track", new_state);
-        debug (@"on_action_disable_tracking: $new_state");
+        settings.do_not_track = !settings.do_not_track;
+        action.set_state (settings.do_not_track);
+        debug (@"on_action_disable_tracking: $(settings.do_not_track)");
     }
 
 
@@ -478,10 +486,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @param parameter The parameter passed with the action (unused).
      */
     public void on_action_enable_autoplay (SimpleAction action, Variant? parameter) {
-        var new_state = !settings.get_boolean ("auto-play");
-        action.set_state (new_state);
-        settings.set_boolean ("auto-play", new_state);
-        debug (@"on_action_enable_autoplay: $new_state");
+        settings.auto_play = !settings.auto_play;
+        action.set_state (settings.auto_play);
+        debug (@"on_action_enable_autoplay: $(settings.auto_play)");
     }
 
     // ----------------------------------------------------------------------
@@ -495,15 +502,15 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @brief Handles a station selection.
      * @param station The selected station.
      */
-     public void handle_station_click (Tuner.Model.Station station) {
-        debug (@"handle station click for $(station.title)");
+     public void handle_station_click (Model.Station station) {
+        debug (@"handle station click for $(station.name)");
         _directory.count_station_click (station);
         player.station = station;
 
-        debug (@"Storing last played station: $(station.id)");
-        settings.set_string("last-played-station", station.id);
+        debug (@"Storing last played station: $(station.stationuuid)");
+        _settings.last_played_station = station.stationuuid;
 
-        set_title (WINDOW_NAME+": "+station.title);
+        set_title (WINDOW_NAME+": "+station.name);
     }
 
 
@@ -566,27 +573,21 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @return true if the window should be hidden instead of destroyed, false otherwise.
      */
     public bool before_destroy () {
-        int width, height, x, y;
 
-        get_size (out width, out height);
-        get_position (out x, out y);
-
-        settings.set_int ("pos-x", x);
-        settings.set_int ("pos-y", y);
-        settings.set_int ("window-height", height);
-        settings.set_int ("window-width", width);
+        _settings.save ();
 
         if (player.current_state == Gst.PlayerState.PLAYING) {
             hide_on_delete();
-            var notification = new GLib.Notification("Playing in background");
-            notification.set_body("Click here to resume window. To quit Tuner, pause playback and close the window.");
-            notification.set_default_action("app.resume-window");
-            Application.instance.send_notification("continue-playing", notification);
+            var notification = new GLib.Notification(NOTIFICATION_PLAYING_BACKGROUND);
+            notification.set_body(NOTIFICATION_CLICK_RESUME);
+            notification.set_default_action(NOTIFICATION_APP_RESUME_WINDOW);
+            Application.instance.send_notification(NOTIFICATION_APP_PLAYING_CONTINUE, notification);
             return true;
         }
 
         return false;
     }
+
 
     /**
      * @brief Loads search stations based on the provided text and updates the content box.

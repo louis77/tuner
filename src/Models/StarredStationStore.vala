@@ -3,23 +3,34 @@
  * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
  */
 
- /**
-    StationStore 
-    
-    Store and retrieve a collection of stations in a JSON file, i.e. favorites
-
-    Uses libgee for data structures.
-  */
+/**
+ * @file StarredStationStore.vala
+ * @brief Class to store and retrieve a collection of favorite stations.
+ * 
+ * This class manages a collection of stations stored in a JSON file.
+ * It provides methods to add, remove, and persist stations.
+ */
 
 using Gee;
 
 namespace Tuner.Model {
 
-public class StationStore : Object {
-    private ArrayList<Station> _store;
-    private File _favorites_file;
+/**
+ * @class StarredStationStore
+ * @brief Manages a collection of favorite stations.
+ * 
+ * This class allows for storing, retrieving, and persisting a list of favorite stations
+ * in a JSON file. It uses libgee for data structures.
+ */
+public class StarredStationStore : Object {
+    private ArrayList<Station> _store; ///< Collection of favorite stations.
+    private File _favorites_file; ///< File to persist favorite stations.
 
-    public StationStore (string favorites_path) {
+    /**
+     * @brief Constructor for StarredStationStore.
+     * @param favorites_path The path to the JSON file where favorites are stored.
+     */
+    public StarredStationStore (string favorites_path) {
         Object ();
         
         _store = new ArrayList<Station> ();
@@ -29,24 +40,40 @@ public class StationStore : Object {
         debug (@"store initialized in path $favorites_path");
     }
 
+    /**
+     * @brief Adds a station to the favorites and persists the change.
+     * @param station The station to be added.
+     */
     public void add (Station station) {
         _add (station);
         persist ();
     }
 
+    /**
+     * @brief Internal method to add a station to the collection.
+     * @param station The station to be added.
+     */
     private void _add (Station station) {
         _store.add (station);
         // TODO Should we do a sorted insert?
     }
 
+    /**
+     * @brief Removes a station from the favorites and persists the change.
+     * @param station The station to be removed.
+     */
     public void remove (Station station) {
         _store.remove (station);
         persist ();
     }
 
+    /**
+     * @brief Ensures the favorites file exists.
+     * 
+     * This method attempts to create the file if it does not exist,
+     * ignoring errors if it already exists.
+     */
     private void ensure () {
-        // Non-racy approach is to try to create the file first
-        // and ignore errors if it already exists
         try {
             var df = _favorites_file.create (FileCreateFlags.PRIVATE);
             df.close ();
@@ -56,6 +83,12 @@ public class StationStore : Object {
         }
     }
 
+    /**
+     * @brief Loads the favorites from the JSON file.
+     * 
+     * This method reads the JSON file and populates the _store with
+     * the favorite stations.
+     */
     private void load () {
         debug ("loading store");
         Json.Parser parser = new Json.Parser ();
@@ -72,11 +105,10 @@ public class StationStore : Object {
 
         if ( node == null ) return; // No favorites store    
 
-        Json.Array array = node.get_array ();    // Json-CRITICAL **: 21:02:51.821: json_node_get_array: assertion 'JSON_NODE_IS_VALID (node)' failed
-        array.foreach_element ((a, i, elem) => {  // json_array_foreach_element: assertion 'array != NULL' failed
-            Station station = Json.gobject_deserialize (typeof (Station), elem) as Station;
-            // TODO This should probably not be here but in 
-            // DirectoryController
+        Json.Array array = node.get_array ();
+        array.foreach_element ((a, i, elem) => {
+            //Station station = new Station.deserialize(elem);
+            Station station = new Station ( elem) ;
             station.notify["starred"].connect ( (sender, property) => {
                 if (station.starred) {
                     this.add (station);
@@ -91,6 +123,11 @@ public class StationStore : Object {
         debug (@"loaded store size: $(_store.size)");
     }
 
+    /**
+     * @brief Persists the current state of favorites to the JSON file.
+     * 
+     * This method serializes the _store and writes it to the favorites file.
+     */
     private void persist () {
         debug ("persisting store");
         var data = serialize ();
@@ -109,6 +146,10 @@ public class StationStore : Object {
         }
     }
 
+    /**
+     * @brief Serializes the current favorites to a JSON string.
+     * @return A JSON string representation of the favorites.
+     */
     public string serialize () {
         Json.Builder builder = new Json.Builder ();
         builder.begin_array ();
@@ -124,13 +165,22 @@ public class StationStore : Object {
         return data;
     }
 
+    /**
+     * @brief Retrieves all favorite stations.
+     * @return An ArrayList of favorite stations.
+     */
     public ArrayList<Station> get_all () {
         return _store;
     }
 
+    /**
+     * @brief Checks if a station is in the favorites.
+     * @param station The station to check.
+     * @return True if the station is in favorites, false otherwise.
+     */
     public bool contains (Station station) {
         foreach (var s in _store) {
-            if (s.id == station.id) {
+            if (s.stationuuid == station.stationuuid) {
                 return true;
             }
         }

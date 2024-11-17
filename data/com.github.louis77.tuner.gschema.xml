@@ -3,12 +3,12 @@
 <schemalist>
     <schema path="/com/github/louis77/tuner/" id="com.github.louis77.tuner">
         <key name="pos-x" type="i">
-            <default>360</default>
+            <default>0</default>
             <summary>Horizontal position</summary>
             <description>Saved horizontal position of main window</description>
         </key>
         <key name="pos-y" type="i">
-            <default>640</default>
+            <default>0</default>
             <summary>Vertical position</summary>
             <description>Saved vertical position of main window</description>
         </key>
@@ -22,11 +22,11 @@
             <summary>Window height</summary>
             <description>Saved height of main window</description>
         </key>
-        <key name="starred-stations" type="as">
+        <!-- <key name="starred-stations" type="as">
             <default>[]</default>
             <summary>Starred stations</summary>
             <description>All station starred by the user</description>
-        </key>
+        </key> -->
         <key name="do-not-track" type="b">
             <default>false</default>
             <summary>Do not track</summary>
@@ -53,7 +53,7 @@
             <description>Station UUID of station the was last played. Used for auto-play</description>
         </key>
         <key name="volume" type="d">
-            <default>1.0</default>
+            <default>0.5</default>
             <summary>Volume control</summary>
             <description>The last volume setting. Value from 0.0 to 1.0</description>
         </key>

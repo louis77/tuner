@@ -20,11 +20,11 @@ public class Tuner.PreferencesPopover : Gtk.Popover {
         theme_combo.append("light", _("Light mode"));
         theme_combo.append("dark", _("Dark mode"));
         theme_combo.halign = Gtk.Align.CENTER;
-        theme_combo.active_id = Application.instance.settings.get_string("theme-mode");
+        //theme_combo.active_id = Application.instance.settings.get_string("theme-mode");   // FIXME
 
         theme_combo.changed.connect ((elem) => {
             warning(@"Theme changed: $(elem.active_id)");
-            Application.instance.settings.set_string("theme-mode", elem.active_id);
+           // Application.instance.settings.set_string("theme-mode", elem.active_id); // FIXME
         });
 
         var theme_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);

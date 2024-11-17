@@ -150,10 +150,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         // Create and configure volume button
         //
         volume_button = new Gtk.VolumeButton ();
-        volume_button.value = Application.instance.settings.get_double ("volume");
-        volume_button.value_changed.connect ((value) => {
-            Application.instance.settings.set_double ("volume", value);
-        });
+       // volume_button.value = Application.instance.settings.get_double ("volume");
+        //  volume_button.value_changed.connect ((value) => {   // FIXME
+        //      Application.instance.settings.set_double ("volume", value);
+       // });
         pack_start (volume_button);
 
         set_playstate (PlayState.PAUSE_INACTIVE);
@@ -197,12 +197,12 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         if (_station != null) {
             _station.notify.disconnect (handle_station_change);
         }
-        load_favicon (station); // Kick off first as its async and long running in comparison
+        load_favicon.begin (station); // Kick off first as its async and long running in comparison
         _station = station;
         _station.notify.connect ( (sender, property) => {
             handle_station_change ();
         });
-        title = station.title;
+        title = station.name;
         subtitle = _("Playing");
         starred = station.starred;
     }
@@ -300,30 +300,16 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
      *
      * @param station The station whose favicon should be loaded.
      */
-    private void load_favicon(Model.Station station)
+    private async void load_favicon(Model.Station station)
     {
+        if ( (yield station.get_favicon_uri(true)) == null )
+        // Favicon is unavailable, use default
+        {
+            this.favicon.set_from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG);
+            return;
+        }
+
         this.favicon.clear ();
-
-        // Load and force a refresh of the favicon to freshen the cache
-        Favicon.load_async.begin (station, true, (favicon, res) => {
-            var pxbuf = Favicon.load_async.end (res);
-            if (pxbuf != null) {
-                this.favicon.set_from_pixbuf (pxbuf);  
-                this.favicon.set_size_request (48, 48);
-                return;
-            } 
-        });
-
-        // If favicon is not available, use the current cached favicon or default icon    
-        Favicon.load_async.begin (station, false, (favicon, res) => {
-            var pxbuf = Favicon.load_async.end (res);
-            if (pxbuf != null) {
-                this.favicon.set_from_pixbuf (pxbuf);  
-            } else {
-                // If favicon is not available, use default icon
-                this.favicon.set_from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG);
-            }
-            this.favicon.set_size_request (48, 48);
-        });
+        this.favicon.set_from_pixbuf (station.get_favicon_image ());
     }
 }

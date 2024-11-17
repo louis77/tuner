@@ -6,14 +6,14 @@ sources = files (
     'Models/Countries.vala',
     'Models/Genre.vala',
     'Models/Station.vala',
-    'Models/StationStore.vala',
+    'Models/StarredStationStore.vala',
 
     'Services/DBusMediaPlayer.vala',
     'Services/DBusInterface.vala',
     'Services/RadioBrowser.vala',
   #  'Services/LocationDiscovery.vala',
     'Services/HttpClient.vala',
-    'Services/Favicon.vala',
+    #'Services/Favicon.vala',
 
     'Widgets/AbstractContentList.vala',
     'Widgets/ContentBox.vala',
@@ -30,6 +30,7 @@ sources = files (
     'Widgets/RevealLabel.vala',
     'Widgets/PreferencesPopover.vala',
 
+    'Settings.vala',
     'Application.vala',
     'Main.vala'
 )

@@ -144,9 +144,9 @@ namespace Tuner.DBus {
 			});
 
 			Application.instance.player.station_changed.connect ((station) => {
-					_current_title = station.title;
-					_current_artist = station.title;
-					_current_art_url = station.favicon_url;
+					_current_title = station.name;
+					_current_artist = station.name;
+					_current_art_url = station.favicon;
 					trigger_metadata_update ();
 				});
 

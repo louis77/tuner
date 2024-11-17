@@ -2,6 +2,7 @@ build
 builddir
 build-aux
 *~
+apidocs/*
 .vscode
 .buildconfig
 .flatpak-builder

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2020-2022 Louis Brauer / <louis@brauer.family> -->
+<!-- Copyright 2020-2024 Louis Brauer / <louis@brauer.family> -->
 <component type="desktop-application">
   <id>com.github.louis77.tuner</id>
   <metadata_license>FSFAP</metadata_license>
@@ -8,11 +8,14 @@
   <name>Tuner</name>
   <developer_name>Louis Brauer</developer_name>
   <launchable type="desktop-id">com.github.louis77.tuner.desktop</launchable>
-  <summary>Discover and listen to internet radio stations</summary>
-
+  <branding>
+    <color type="primary" scheme_preference="light">#fafafa</color>
+    <color type="primary" scheme_preference="dark">#abacae</color>
+  </branding>
+  <summary>Internet Radio</summary>
   <description>
-    <p>Make listening to internet radio stations fun again!</p>
-    <p>Instead of providing you with all the stations you already know,
+    <p><b>Make finding and listening to internet radio stations fun again!</b></p>
+    <p>Instead of showing all the stations you already know,
        Tuner presents you a new selection of stations from all over the world
        every time you hit the Shuffle button.</p>
     <p>Tuner uses the community-driven station catalog radio-browser.info.</p>
@@ -26,12 +29,15 @@
   <screenshots>
     <screenshot type="default">
       <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_light_1.4.2.png</image>
+      <caption>Tuner with light theme</caption>
     </screenshot>
     <screenshot>
       <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_light-2_1.4.2.png</image>
+      <caption>Tuner with light theme, Swiss stations</caption>
     </screenshot>
     <screenshot>
       <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_dark_1.4.2.png</image>
+      <caption>Tuner with dark theme</caption>
     </screenshot>
   </screenshots>
 
@@ -62,7 +68,15 @@
   </provides>
 
   <releases>
-    <release version="1.5.5" date="2024-11-08">
+    <release version="1.5.6" date="2024-12-08">
+      <description>
+        <p>Maintanance release:</p>
+        <ul>
+          <li>Removed shadow from.svg images per Flathub quality directives</li>
+          <li>Updated description and screenshots per Flathub quality directives</li>
+        </ul>
+      </description>
+    </release>     <release version="1.5.5" date="2024-11-08">
       <description>
         <p>Maintanance release:</p>
         <ul>
@@ -70,7 +84,6 @@
           <li>Increased Search re-fire interval to reduce number of concurrent searches</li>
           <li>Made Search asynchronous so UI remains responsive during searches</li>
           <li>Ignore request to load failing favicons URLs</li>
-          <li>Removed shadow from.svg images per Flathub quality directives</li>
           <li>Removed org.gnome.SettingsDaemon.MediaKeys from manifest per flathub</li>
         </ul>
       </description>
