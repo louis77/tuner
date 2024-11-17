@@ -112,29 +112,11 @@ public class Tuner.HttpClient : Object {
      * @param status_code Output parameter for the HTTP status code of the response
      * @return InputStream containing the response body, or null if the request failed
      */
-    public static async InputStream? GETasync(string url_string, out uint status_code) 
+    public static async InputStream? GETasync(Uri uri, out uint status_code) 
     {
         status_code = 0;
 
-        if (url_string == null || url_string.length  < 4 || url_string == "null") // domains are at least 4 chars
-        {
-            debug("GETasync - Invalid URL: %s", url_string ?? "null");
-            return null;
-        }
-
-        string sanitized_url = ensure_https_prefix(url_string);
-
-        try {
-            if (!Uri.is_valid(sanitized_url, UriFlags.NONE)) {
-                debug("GETasync - Invalid URL format: %s", sanitized_url);
-                return null;
-            }
-        } catch (GLib.UriError e) {
-            debug("GETasync - URI error: %s", e.message);
-            return null;
-        }
-
-        var msg = new Soup.Message("GET", sanitized_url);
+        var msg = new Soup.Message.from_uri("GET", uri);
 
         /*
             Ignore all TLS certificate errors
@@ -151,7 +133,7 @@ public class Tuner.HttpClient : Object {
 
         } catch (Error e) {
             warning("GETasync - Couldn't fetch resource: %s (%s)",
-                sanitized_url,
+            uri.to_string(),
                 e.message);
         }
 

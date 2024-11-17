@@ -40,7 +40,7 @@
             }
             _favicon_image = value;
             if (_favicon_image != null) {
-                _favicon_image.set_pixel_size (48);
+                //_favicon_image.set_pixel_size (48);
                 _favicon_image.halign = Gtk.Align.CENTER;
                 _favicon_image.valign = Gtk.Align.CENTER;
                 button_grid.attach (_favicon_image, 0, 0, 1, 2);

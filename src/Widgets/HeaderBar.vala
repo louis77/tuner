@@ -39,6 +39,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     // Public properties
     public Gtk.Button play_button { get; set; }
     public Gtk.VolumeButton volume_button;
+    public Gtk.Image favicon_image { get; private set; }
 
     // Signals
     public signal void star_clicked_sig (bool starred);
@@ -54,7 +55,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     private Model.Station _station;
     private Gtk.Label _title_label;
     private RevealLabel _subtitle_label;
-    private Gtk.Image _favicon_image;
 
     
     // Search-related variables
@@ -174,10 +174,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         set { _subtitle_label.label = value; }
     }
 
-    public Gtk.Image favicon {
-        get { return _favicon_image; }
-        set { _favicon_image = value; }
-    }
+    //  public Gtk.Image favicon {
+    //      get { return _favicon_image; }
+    //      set { _favicon_image = value; }
+    //  }
 
     /**
      * @brief Handle changes in the current station.
@@ -197,7 +197,12 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         if (_station != null) {
             _station.notify.disconnect (handle_station_change);
         }
-        load_favicon.begin (station); // Kick off first as its async and long running in comparison
+        //load_favicon.begin (station); // Kick off first as its async and long running in comparison
+        station.update_favicon_image.begin (favicon_image, true, (obj, res) => {
+            if (!station.update_favicon_image.end(res)) 
+            favicon_image.set_from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG);
+        });
+
         _station = station;
         _station.notify.connect ( (sender, property) => {
             handle_station_change ();
@@ -288,28 +293,5 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 _star_button.sensitive = false;
                 break;
         }
-    }
-
-    /**
-     * @brief Load and display the favicon for a station.
-     *
-     * This method asynchronously loads the favicon anew for 
-     * the given station and updates the favicon image.
-     * If the favicon is not available from the site, 
-     * it will load the cached favicon or use the default icon.
-     *
-     * @param station The station whose favicon should be loaded.
-     */
-    private async void load_favicon(Model.Station station)
-    {
-        if ( (yield station.get_favicon_uri(true)) == null )
-        // Favicon is unavailable, use default
-        {
-            this.favicon.set_from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG);
-            return;
-        }
-
-        this.favicon.clear ();
-        this.favicon.set_from_pixbuf (station.get_favicon_image ());
     }
 }

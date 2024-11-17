@@ -1,8 +1,9 @@
-/*
- * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
+/**
+ * @file RadioBrowser.vala
+ * @brief Interface to radio-browser.info API and servers
+ * @copyright 2020-2022 Louis Brauer <louis@brauer.family>
+ * @license GPL-3.0-or-later
  */
-
 
 using Gee;
 
@@ -10,72 +11,58 @@ using Gee;
  * @namespace Tuner.RadioBrowser
  * @brief Interface to radio-browser.info API and servers
  *
- * This namespace provides functionality to interact with the radio-browser.info API,
- * including searching for stations, retrieving station information, and managing user actions
- * such as voting and tracking listens.
+ * This namespace provides functionality to interact with the radio-browser.info API.
+ * It includes features for:
+ * - Searching and retrieving radio stations
+ * - Managing user interactions (voting, listen tracking)
+ * - Tag management and filtering
+ * - Server discovery and connection handling
  */
 namespace Tuner.RadioBrowser {
 
     private const string SRV_SERVICE = "api";
     private const string SRV_PROTOCOL = "tcp";
     private const string SRV_DOMAIN = "radio-browser.info";
-    private const string ALL_API = "https://all.api.radio-browser.info";
 
-    /**
-     * @class Station
-     * @brief Station data subset returned from radio-browser API
-     *
-     * This class represents a radio station with its properties as returned by the radio-browser API.
-     */
-    public class Station : Object {
-        /** @brief Unique identifier for the station */
-        public string stationuuid { get; set; }
-        /** @brief Name of the station */
-        public string name { get; set; }
-        /** @brief Resolved URL of the station's stream */
-        public string url_resolved { get; set; }
-        /** @brief Country where the station is located */
-        public string country { get; set; }
-        /** @brief Country code of the station's location */
-        public string countrycode { get; set; }
-        /** @brief URL of the station's favicon */
-        public string favicon { get; set; }
-        /** @brief Number of clicks/listens for the station */
-        public uint clickcount { get; set; }
-        /** @brief URL of the station's homepage */
-        public string homepage { get; set; }
-        /** @brief Audio codec used by the station */
-        public string codec { get; set; }
-        /** @brief Bitrate of the station's stream */
-        public int bitrate { get; set; }
-    }
+    private const string RBI_ALL_API = "https://all.api.radio-browser.info";
+    private const string RBI_SERVERS = "$ALL_API/json/servers";
+
+    // RB Queries
+    private const string RBI_STATION = "json/url/$stationuuid";
+    private const string RBI_SEARCH = "json/stations/search";
+    private const string RBI_VOTE = "json/vote/$stationuuid";
+    private const string RBI_UUID = "json/stations/byuuid";
+    private const string RBI_TAGS = "json/tags";
 
     /**
      * @struct SearchParams
      * @brief Parameters for searching radio stations
      *
-     * This struct defines the parameters used for searching radio stations.
+     * Defines the search criteria used when querying the radio-browser.info API
+     * for stations.
      */
     public struct SearchParams {
-        /** @brief Text to search for in station names */
+        /** @brief Search text to match against station names */
         string text;
-        /** @brief List of tags to filter stations */
+        /** @brief List of tags to filter stations by */
         ArrayList<string> tags;
-        /** @brief List of station UUIDs to retrieve */
+        /** @brief List of specific station UUIDs to retrieve */
         ArrayList<string> uuids;
-        /** @brief Country code to filter stations */
+        /** @brief ISO country code to filter stations by */
         string countrycode;
-        /** @brief Sort order for the search results */
+        /** @brief Sorting criteria for the results */
         SortOrder order;
         /** @brief Whether to reverse the sort order */
         bool reverse;
     }
 
     /**
-     * @brief Error domain for data-related errors
+     * @brief Error domain for RadioBrowser-related errors
      */
     public errordomain DataError {
+        /** @brief Error parsing API response data */
         PARSE_DATA,
+        /** @brief Unable to establish connection to API servers */
         NO_CONNECTION
     }
 
@@ -106,7 +93,7 @@ namespace Tuner.RadioBrowser {
          * @brief Convert SortOrder enum to string representation
          * @return String representation of the SortOrder
          */
-        public string to_string () {
+        public string to_string() {
             switch (this) {
                 case NAME:
                     return "name";
@@ -143,38 +130,58 @@ namespace Tuner.RadioBrowser {
                 case RANDOM:
                     return "random";
                 default:
-                    assert_not_reached ();
+                    assert_not_reached();
             }
         }
     }
 
     /**
      * @class Tag
-     * @brief Represents a tag associated with radio stations
+     * @brief Represents a radio station tag with usage statistics
+     *
+     * Encapsulates metadata about a tag used to categorize radio stations,
+     * including its name and the number of stations using it.
      */
     public class Tag : Object {
-        /** @brief Name of the tag */
+        /** @brief The tag name */
         public string name { get; set; }
-        /** @brief Number of stations associated with this tag */
+        /** @brief Number of stations using this tag */
         public uint stationcount { get; set; }
     }
 
     /**
-     * @brief Compare two strings for equality
+     * @brief String comparison utility function
      * @param a First string to compare
      * @param b Second string to compare
-     * @return True if strings are equal, false otherwise
+     * @return true if strings are equal, false otherwise
      */
-    public bool EqualCompareString (string a, string b) {
+    public bool EqualCompareString(string a, string b) {
         return a == b;
     }
 
     /**
      * @class Client
-     * @brief RadioBrowser API Client
+     * @brief Main RadioBrowser API client implementation
      *
-     * This class provides methods to interact with the RadioBrowser API, including
-     * searching for stations, retrieving station information, and managing user actions.
+     * Provides methods to interact with the radio-browser.info API, including:
+     * - Station search and retrieval
+     * - User interaction tracking (votes, listens)
+     * - Tag management
+     * - Server discovery and connection handling
+     *
+     * Example usage:
+     * @code
+     * try {
+     *     var client = new Client();
+     *     var params = SearchParams() {
+     *         text = "jazz",
+     *         order = SortOrder.NAME
+     *     };
+     *     var stations = client.search(params, 10);
+     * } catch (DataError e) {
+     *     error("Failed to search: %s", e.message);
+     * }
+     * @endcode
      */
     public class Client : Object {
         private string current_server;
@@ -187,44 +194,43 @@ namespace Tuner.RadioBrowser {
             Object();
 
             ArrayList<string> servers;
-            string _servers = GLib.Environment.get_variable ("TUNER_API");
-            if ( _servers != null ){
+            string _servers = GLib.Environment.get_variable("TUNER_API");  // Get servers from external var
+            if (_servers != null) {
                 servers = new Gee.ArrayList<string>.wrap(_servers.split(":"));
             } else {
-                //servers = DEFAULT_STATION_SERVERS;
-                servers = get_api_servers();
+                // Get servers from API
+                servers = get_srv_api_servers();
             }
 
-            if ( servers.size == 0 ) {
-                throw new DataError.NO_CONNECTION ("Unable to resolve API servers for radio-browser.info");
+            if (servers.size == 0) {
+                throw new DataError.NO_CONNECTION("Unable to resolve API servers for radio-browser.info");
             }
 
-            var chosen_server =  Random.int_range(0, servers.size);
-
+            var chosen_server = Random.int_range(0, servers.size);
             current_server = @"https://$(servers[chosen_server])";
-            debug (@"RadioBrowser Client - Chosen radio-browser.info server: $current_server");
+            debug(@"RadioBrowser Client - Chosen radio-browser.info server: $current_server");
         }
 
         /**
          * @brief Track a station listen event
          * @param stationuuid UUID of the station being listened to
          */
-        public void track (string stationuuid) {
-            debug (@"sending listening event for station $stationuuid");
+        public void track(string stationuuid) {
+            debug(@"sending listening event for station $(stationuuid)");
             uint status_code;
-            HttpClient.GET (@"$current_server/json/url/$stationuuid", out status_code);
-            debug (@"response: $(status_code)");
+            HttpClient.GET(@"$(current_server)/$(RBI_STATION)/$(stationuuid)", out status_code);
+            debug(@"response: $(status_code)");
         }
 
         /**
          * @brief Vote for a station
          * @param stationuuid UUID of the station being voted for
          */
-        public void vote (string stationuuid) {
-            debug (@"sending vote event for station $stationuuid");
+        public void vote(string stationuuid) {
+            debug(@"sending vote event for station $(stationuuid)");
             uint status_code;
-            HttpClient.GET(@"$current_server/json/vote/$stationuuid", out status_code);
-            debug (@"response: $(status_code)");
+            HttpClient.GET(@"$(current_server)/$(RBI_VOTE)/$(stationuuid)", out status_code);
+            debug(@"response: $(status_code)");
         }
 
         /**
@@ -233,34 +239,33 @@ namespace Tuner.RadioBrowser {
          * @return ArrayList of Station objects
          * @throw DataError if unable to retrieve or parse station data
          */
-        public ArrayList<Station> get_stations (string resource) throws DataError {
-            debug (@"RB $resource");
+        public ArrayList<Model.Station> get_stations(string resource) throws DataError {
+            warning(@"RB $resource");
 
             Json.Node rootnode;
 
             try {
                 uint status_code;
 
-                debug (@"Requesting from 'radio-browser.info'");
-                var response = HttpClient.GET(@"$current_server/$resource", out status_code);
-                debug (@"Response from 'radio-browser.info': $(status_code)");
+                warning(@"Requesting from 'radio-browser.info' $(current_server)/$(resource)");
+                var response = HttpClient.GET(@"$(current_server)/$(resource)", out status_code);
+                debug(@"Response from 'radio-browser.info': $(status_code)");
 
                 try {
                     var parser = new Json.Parser();
-                    parser.load_from_stream (response, null);
+                    parser.load_from_stream(response, null);
                     rootnode = parser.get_root();
                 } catch (Error e) {
-                    throw new DataError.PARSE_DATA (@"Unable to parse JSON response: $(e.message)");
+                    throw new DataError.PARSE_DATA(@"Unable to parse JSON response: $(e.message)");
                 }
-                var rootarray = rootnode.get_array ();
-
-                var stations = jarray_to_stations (rootarray);
+                var rootarray = rootnode.get_array();
+                var stations = jarray_to_stations(rootarray);
                 return stations;
             } catch (GLib.Error e) {
-                warning (@"Error retrieving stations: $(e.message)");
+                warning(@"Error retrieving stations: $(e.message)");
             }
 
-            return new ArrayList<Station>();
+            return new ArrayList<Model.Station>();
         }
 
         /**
@@ -271,33 +276,31 @@ namespace Tuner.RadioBrowser {
          * @return ArrayList of Station objects matching the search criteria
          * @throw DataError if unable to retrieve or parse station data
          */
-        public ArrayList<Station> search (SearchParams params,
-                                        uint rowcount,
-                                        uint offset = 0) throws DataError {
+        public ArrayList<Model.Station> search(SearchParams params, uint rowcount, uint offset = 0) throws DataError {
             // by uuids
             if (params.uuids != null) {
-                var stations = new ArrayList<Station> ();
+                var stations = new ArrayList<Model.Station>();
                 foreach (var uuid in params.uuids) {
                     var station = this.by_uuid(uuid);
                     if (station != null) {
-                        stations.add (station);
+                        stations.add(station);
                     }
                 }
                 return stations;
             }
 
             // by text or tags
-            var resource = @"json/stations/search?limit=$rowcount&order=$(params.order)&offset=$offset";
+            var resource = @"$(RBI_SEARCH)?limit=$rowcount&order=$(params.order)&offset=$offset";
 
-            debug (@"Search: $(resource)");
-            if ( params.text != "") { 
+            debug(@"Search: $(resource)");
+            if (params.text != "") {
                 resource += @"&name=$(params.text)";
             }
 
-            if (params.tags.size > 0 ) {
+            if (params.tags.size > 0) {
                 string tag_list = params.tags[0];
                 if (params.tags.size > 1) {
-                    tag_list = string.joinv (",", params.tags.to_array());
+                    tag_list = string.joinv(",", params.tags.to_array());
                 }
                 resource += @"&tagList=$tag_list&tagExact=true";
             }
@@ -308,7 +311,9 @@ namespace Tuner.RadioBrowser {
                 // random and reverse doesn't make sense
                 resource += @"&reverse=$(params.reverse)";
             }
-            return get_stations (resource);
+
+            warning(@"Search: $(resource)");
+            return get_stations(resource);
         }
 
         /**
@@ -317,9 +322,8 @@ namespace Tuner.RadioBrowser {
          * @return Station object if found, null otherwise
          * @throw DataError if unable to retrieve or parse station data
          */
-        public Station? by_uuid (string uuid) throws DataError {
-            var resource = @"json/stations/byuuid/$uuid";
-            var result = get_stations (resource);
+        public Model.Station? by_uuid(string uuid) throws DataError {
+            var result = get_stations(@"$(RBI_UUID)/$(uuid)");
             if (result.size == 0) {
                 return null;
             }
@@ -331,28 +335,26 @@ namespace Tuner.RadioBrowser {
          * @return ArrayList of Tag objects
          * @throw DataError if unable to retrieve or parse tag data
          */
-        public ArrayList<Tag> get_tags () throws DataError {
-
+        public ArrayList<Tag> get_tags() throws DataError {
             Json.Node rootnode;
 
             try {
                 uint status_code;
-                var stream = HttpClient.GET(@"$current_server/json/tags", out status_code);
+                var stream = HttpClient.GET(@"$(current_server)/$(RBI_TAGS)", out status_code);
 
-                debug (@"response from radio-browser.info: $(status_code)");
-                
+                debug(@"response from radio-browser.info: $(status_code)");
+
                 try {
                     var parser = new Json.Parser();
-                    parser.load_from_stream (stream);
-                    rootnode = parser.get_root ();
+                    parser.load_from_stream(stream);
+                    rootnode = parser.get_root();
                 } catch (Error e) {
-                    throw new DataError.PARSE_DATA (@"unable to parse JSON response: $(e.message)");
+                    throw new DataError.PARSE_DATA(@"unable to parse JSON response: $(e.message)");
                 }
-                var rootarray = rootnode.get_array ();
-
-                var tags = jarray_to_tags (rootarray);
+                var rootarray = rootnode.get_array();
+                var tags = jarray_to_tags(rootarray);
                 return tags;
-            } catch(GLib.Error e) {
+            } catch (GLib.Error e) {
                 debug("cannot get_tags()");
             }
 
@@ -360,19 +362,15 @@ namespace Tuner.RadioBrowser {
         }
 
         /**
+        *
+        *
          */
-        private Station jnode_to_station (Json.Node node) {
-            return Json.gobject_deserialize (typeof (Station), node) as Station;
-        }
+        private ArrayList<Model.Station> jarray_to_stations(Json.Array data) {
+            var stations = new ArrayList<Model.Station>();
 
-        /**
-         */
-        private ArrayList<Station> jarray_to_stations (Json.Array data) {
-            var stations = new ArrayList<Station> ();
-
-            data.foreach_element ((array, index, element) => {
-                Station s = jnode_to_station (element);
-                stations.add (s);
+            data.foreach_element((array, index, element) => {
+                Model.Station s = new Model.Station(element);
+                stations.add(s);
             });
 
             return stations;
@@ -380,94 +378,89 @@ namespace Tuner.RadioBrowser {
 
         /**
          */
-        private Tag jnode_to_tag (Json.Node node) {
-            return Json.gobject_deserialize (typeof (Tag), node) as Tag;
+        private Tag jnode_to_tag(Json.Node node) {
+            return Json.gobject_deserialize(typeof(Tag), node) as Tag;
         }
 
         /**
+        * @brief Marshals JSON tag data into an array of Tag
          */
-        private ArrayList<Tag> jarray_to_tags (Json.Array data) {
-            var tags = new ArrayList<Tag> ();
+        private ArrayList<Tag> jarray_to_tags(Json.Array data) {
+            var tags = new ArrayList<Tag>();
 
-            data.foreach_element ((array, index, element) => {
-                Tag s = jnode_to_tag (element);
-                tags.add (s);
+            data.foreach_element((array, index, element) => {
+                Tag s = jnode_to_tag(element);
+                tags.add(s);
             });
 
             return tags;
-        }
+        }   // jarray_to_tags
+
 
         /**
         * @brief Get all radio-browser.info API servers
         *
-        * Gets server list from 
+        * Gets server list from Radio Browser DNS SRV record, 
+        * and failing that, from the API
         *
         * @since 1.5.4
         * @return ArrayList of strings containing the resolved hostnames
         * @throw DataError if unable to resolve DNS records
         */
-        private ArrayList<string> get_api_servers() throws DataError {
-        
+        private ArrayList<string> get_srv_api_servers() throws DataError {
             var results = new ArrayList<string>();
-    
-            try             
-            /*
-                DNS SRV record lookup 
-            */
-            {
-                var srv_targets = GLib.Resolver.get_default().
-                lookup_service( SRV_SERVICE, SRV_PROTOCOL, SRV_DOMAIN, null );
+
+            try {
+                /*
+                    DNS SRV record lookup 
+                */
+                var srv_targets = GLib.Resolver.get_default().lookup_service(SRV_SERVICE, SRV_PROTOCOL, SRV_DOMAIN, null);
                 foreach (var target in srv_targets) {
                     results.add(target.get_hostname());
                 }
             } catch (GLib.Error e) {
                 @warning(@"Unable to resolve Radio-Browser SRV records: $(e.message)");
             }
-    
-            if (results.is_empty) 
-            /*
-                JSON API server lookup as SRV record lookup failed
-            */
-            {
-    
+
+            if (results.is_empty) {
+                /*
+                    JSON API server lookup as SRV record lookup failed
+                    Get the servers from the API itself from a round-robin server
+                */
                 try {
                     uint status_code;
-                    var stream = HttpClient.GET(@"$ALL_API/json/servers", out status_code);
-    
-                    debug (@"response from $(ALL_API)/json/servers: $(status_code)");
-    
+                    var stream = HttpClient.GET(@"$(current_server)/$(RBI_SERVERS)", out status_code);
+
+                    debug(@"response from $(RBI_ALL_API)/json/servers: $(status_code)");
+
                     if (status_code == 200) {
-    
                         Json.Node root_node;
-    
+
                         try {
                             var parser = new Json.Parser();
-                            parser.load_from_stream (stream);
-                            root_node = parser.get_root ();
+                            parser.load_from_stream(stream);
+                            root_node = parser.get_root();
                         } catch (Error e) {
-                            throw new DataError.PARSE_DATA (@"unable to parse JSON response: $(e.message)");
+                            throw new DataError.PARSE_DATA(@"RBI API get servers - unable to parse JSON response: $(e.message)");
                         }
-        
+
                         if (root_node != null && root_node.get_node_type() == Json.NodeType.ARRAY) {
-                
                             root_node.get_array().foreach_element((array, index_, element_node) => {
                                 var object = element_node.get_object();
                                 if (object != null) {
                                     var name = object.get_string_member("name");
-                                    if (name != null && !results.contains (name)) {
+                                    if (name != null && !results.contains(name)) {
                                         results.add(name);
                                     }
                                 }
                             });
-            
                         }
                     }
                 } catch (Error e) {
-                    warning("Failed to parse APIs JSON response: $(e.message)");
-                }                
+                    warning("Failed to parse RBI APIs JSON response: $(e.message)");
+                }
             }
-    
             return results;
         }
-    }
+    }   // get_srv_api_servers
 }
