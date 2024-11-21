@@ -2,11 +2,11 @@
 sources = files (
     'Controllers/DirectoryController.vala',
     'Controllers/PlayerController.vala',
+    'Controllers/StarredStationController.vala',
 
     'Models/Countries.vala',
     'Models/Genre.vala',
     'Models/Station.vala',
-    'Models/StarredStationStore.vala',
 
     'Services/DBusMediaPlayer.vala',
     'Services/DBusInterface.vala',
@@ -19,11 +19,11 @@ sources = files (
     'Widgets/ContentBox.vala',
     'Widgets/HeaderBar.vala',
     'Widgets/HeaderLabel.vala',
-    'Widgets/StationBox.vala',
+    'Widgets/StationButton.vala',
     'Widgets/StationContextMenu.vala',
     'Widgets/Window.vala',
     'Widgets/AboutDialog.vala',
-    'Widgets/WelcomeButton.vala',
+    'Widgets/DisplayButton.vala',
     #'Widgets/Theme.vala',
     'Widgets/CountryList.vala',
     'Widgets/StationList.vala',

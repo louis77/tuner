@@ -1,67 +1,81 @@
 /**
+ * SPDX-FileCopyrightText: Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
+ * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
  * @file RadioBrowser.vala
+ *
  * @brief Interface to radio-browser.info API and servers
- * @copyright 2020-2022 Louis Brauer <louis@brauer.family>
- * @license GPL-3.0-or-later
+ * 
  */
 
 using Gee;
 
 /**
  * @namespace Tuner.RadioBrowser
+ *
  * @brief Interface to radio-browser.info API and servers
  *
  * This namespace provides functionality to interact with the radio-browser.info API.
  * It includes features for:
- * - Searching and retrieving radio stations
- * - Managing user interactions (voting, listen tracking)
- * - Tag management and filtering
- * - Server discovery and connection handling
+ * - Retrieving radio station metadata JSON
+ * - Executing searches and retrieving radio station metadata JSON
+ * - Reporting back user interactions (voting, listen tracking)
+ * - Tag and other metadata retrieval
+ * - API Server discovery and connection handling from DNS and from round-robin API server
  */
 namespace Tuner.RadioBrowser {
 
-    private const string SRV_SERVICE = "api";
-    private const string SRV_PROTOCOL = "tcp";
-    private const string SRV_DOMAIN = "radio-browser.info";
+    private const string SRV_SERVICE    = "api";
+    private const string SRV_PROTOCOL   = "tcp";
+    private const string SRV_DOMAIN     = "radio-browser.info";
 
-    private const string RBI_ALL_API = "https://all.api.radio-browser.info";
-    private const string RBI_SERVERS = "$ALL_API/json/servers";
+    private const string RBI_ALL_API    = "https://all.api.radio-browser.info";    // Round-robin API address
+    private const string RBI_SERVERS    = "$ALL_API/json/servers";
 
     // RB Queries
-    private const string RBI_STATION = "json/url/$stationuuid";
-    private const string RBI_SEARCH = "json/stations/search";
-    private const string RBI_VOTE = "json/vote/$stationuuid";
-    private const string RBI_UUID = "json/stations/byuuid";
-    private const string RBI_TAGS = "json/tags";
+    private const string RBI_STATION    = "json/url/$stationuuid";
+    private const string RBI_SEARCH     = "json/stations/search";
+    private const string RBI_VOTE       = "json/vote/$stationuuid";
+    private const string RBI_UUID       = "json/stations/byuuid";
+    private const string RBI_TAGS       = "json/tags";
 
     /**
      * @struct SearchParams
-     * @brief Parameters for searching radio stations
-     *
+     * @brief API search parameters 
+     * 
      * Defines the search criteria used when querying the radio-browser.info API
      * for stations.
      */
     public struct SearchParams {
         /** @brief Search text to match against station names */
         string text;
+
         /** @brief List of tags to filter stations by */
         ArrayList<string> tags;
+
         /** @brief List of specific station UUIDs to retrieve */
         ArrayList<string> uuids;
+
         /** @brief ISO country code to filter stations by */
         string countrycode;
+
         /** @brief Sorting criteria for the results */
         SortOrder order;
+
         /** @brief Whether to reverse the sort order */
         bool reverse;
     }
 
     /**
      * @brief Error domain for RadioBrowser-related errors
+     * 
      */
     public errordomain DataError {
         /** @brief Error parsing API response data */
         PARSE_DATA,
+
         /** @brief Unable to establish connection to API servers */
         NO_CONNECTION
     }
@@ -69,6 +83,7 @@ namespace Tuner.RadioBrowser {
     /**
      * @enum SortOrder
      * @brief Enumeration of sorting options for station search results
+     * 
      */
     public enum SortOrder {
         NAME,
@@ -91,6 +106,7 @@ namespace Tuner.RadioBrowser {
 
         /**
          * @brief Convert SortOrder enum to string representation
+         *
          * @return String representation of the SortOrder
          */
         public string to_string() {
@@ -137,32 +153,36 @@ namespace Tuner.RadioBrowser {
 
     /**
      * @class Tag
-     * @brief Represents a radio station tag with usage statistics
      *
+     * @brief Represents a radio station tag with usage statistics
+     * 
      * Encapsulates metadata about a tag used to categorize radio stations,
      * including its name and the number of stations using it.
      */
     public class Tag : Object {
         /** @brief The tag name */
         public string name { get; set; }
+
         /** @brief Number of stations using this tag */
         public uint stationcount { get; set; }
     }
 
     /**
      * @brief String comparison utility function
+     * 
      * @param a First string to compare
      * @param b Second string to compare
      * @return true if strings are equal, false otherwise
      */
-    public bool EqualCompareString(string a, string b) {
-        return a == b;
-    }
+    //  public bool EqualCompareString(string a, string b) {
+    //      return a == b;
+    //  }
 
     /**
      * @class Client
-     * @brief Main RadioBrowser API client implementation
      *
+     * @brief Main RadioBrowser API client implementation
+     * 
      * Provides methods to interact with the radio-browser.info API, including:
      * - Station search and retrieval
      * - User interaction tracking (votes, listens)
@@ -183,11 +203,13 @@ namespace Tuner.RadioBrowser {
      * }
      * @endcode
      */
-    public class Client : Object {
+    public class Client : Object 
+    {
         private string current_server;
 
         /**
          * @brief Constructor for RadioBrowser Client
+         *
          * @throw DataError if unable to initialize the client
          */
         public Client() throws DataError {
@@ -195,10 +217,14 @@ namespace Tuner.RadioBrowser {
 
             ArrayList<string> servers;
             string _servers = GLib.Environment.get_variable("TUNER_API");  // Get servers from external var
-            if (_servers != null) {
+ 
+            if (_servers != null) 
+            // Run time server parameter was passed in
+            {
                 servers = new Gee.ArrayList<string>.wrap(_servers.split(":"));
-            } else {
-                // Get servers from API
+            } else 
+            // Get servers from DNS or API
+            {
                 servers = get_srv_api_servers();
             }
 
@@ -206,6 +232,8 @@ namespace Tuner.RadioBrowser {
                 throw new DataError.NO_CONNECTION("Unable to resolve API servers for radio-browser.info");
             }
 
+            // Randomize API server to use
+            // TODO Test server, choose another if necessary
             var chosen_server = Random.int_range(0, servers.size);
             current_server = @"https://$(servers[chosen_server])";
             debug(@"RadioBrowser Client - Chosen radio-browser.info server: $current_server");
@@ -213,6 +241,7 @@ namespace Tuner.RadioBrowser {
 
         /**
          * @brief Track a station listen event
+         *
          * @param stationuuid UUID of the station being listened to
          */
         public void track(string stationuuid) {
@@ -233,50 +262,66 @@ namespace Tuner.RadioBrowser {
             debug(@"response: $(status_code)");
         }
 
-        /**
-         * @brief Get stations from a specific API resource
-         * @param resource API resource path
-         * @return ArrayList of Station objects
-         * @throw DataError if unable to retrieve or parse station data
-         */
-        public ArrayList<Model.Station> get_stations(string resource) throws DataError {
-            warning(@"RB $resource");
 
+
+        /**
+         * @brief Get all available tags
+         *
+         * @return ArrayList of Tag objects
+         * @throw DataError if unable to retrieve or parse tag data
+         */
+         public ArrayList<Tag> get_tags() throws DataError {
             Json.Node rootnode;
 
             try {
                 uint status_code;
+                var stream = HttpClient.GET(@"$(current_server)/$(RBI_TAGS)", out status_code);
 
-                warning(@"Requesting from 'radio-browser.info' $(current_server)/$(resource)");
-                var response = HttpClient.GET(@"$(current_server)/$(resource)", out status_code);
-                debug(@"Response from 'radio-browser.info': $(status_code)");
+                debug(@"response from radio-browser.info: $(status_code)");
 
                 try {
                     var parser = new Json.Parser();
-                    parser.load_from_stream(response, null);
+                    parser.load_from_stream(stream);
                     rootnode = parser.get_root();
                 } catch (Error e) {
-                    throw new DataError.PARSE_DATA(@"Unable to parse JSON response: $(e.message)");
+                    throw new DataError.PARSE_DATA(@"unable to parse JSON response: $(e.message)");
                 }
                 var rootarray = rootnode.get_array();
-                var stations = jarray_to_stations(rootarray);
-                return stations;
+                var tags = jarray_to_tags(rootarray);
+                return tags;
             } catch (GLib.Error e) {
-                warning(@"Error retrieving stations: $(e.message)");
+                debug("cannot get_tags()");
             }
 
-            return new ArrayList<Model.Station>();
+            return new ArrayList<Tag>();
         }
+
+
+        /**
+         * @brief Get a station by its UUID
+         * @param uuid UUID of the station to retrieve
+         * @return Station object if found, null otherwise
+         * @throw DataError if unable to retrieve or parse station data
+         */
+         public Model.Station? by_uuid(string uuid) throws DataError {
+            var result = station_query(@"$(RBI_UUID)/$(uuid)");
+            if (result.size == 0) {
+                return null;
+            }
+            return result[0];
+        }
+
 
         /**
          * @brief Search for stations based on given parameters
+         *
          * @param params Search parameters
          * @param rowcount Maximum number of results to return
          * @param offset Offset for pagination
          * @return ArrayList of Station objects matching the search criteria
          * @throw DataError if unable to retrieve or parse station data
          */
-        public ArrayList<Model.Station> search(SearchParams params, uint rowcount, uint offset = 0) throws DataError {
+         public ArrayList<Model.Station> search(SearchParams params, uint rowcount, uint offset = 0) throws DataError {
             // by uuids
             if (params.uuids != null) {
                 var stations = new ArrayList<Model.Station>();
@@ -313,77 +358,83 @@ namespace Tuner.RadioBrowser {
             }
 
             warning(@"Search: $(resource)");
-            return get_stations(resource);
+            return station_query(resource);
         }
 
+
+        /*  ---------------------------------------------------------------
+            Private
+            ---------------------------------------------------------------*/
+
         /**
-         * @brief Get a station by its UUID
-         * @param uuid UUID of the station to retrieve
-         * @return Station object if found, null otherwise
+         * @brief Get stations by querying the API
+         *
+         * @param query the API query
+         * @return ArrayList of Station objects
          * @throw DataError if unable to retrieve or parse station data
          */
-        public Model.Station? by_uuid(string uuid) throws DataError {
-            var result = get_stations(@"$(RBI_UUID)/$(uuid)");
-            if (result.size == 0) {
-                return null;
-            }
-            return result[0];
-        }
+        private ArrayList<Model.Station> station_query(string query) throws DataError {
+            warning(@"RB $query");
 
-        /**
-         * @brief Get all available tags
-         * @return ArrayList of Tag objects
-         * @throw DataError if unable to retrieve or parse tag data
-         */
-        public ArrayList<Tag> get_tags() throws DataError {
             Json.Node rootnode;
 
             try {
                 uint status_code;
-                var stream = HttpClient.GET(@"$(current_server)/$(RBI_TAGS)", out status_code);
 
-                debug(@"response from radio-browser.info: $(status_code)");
+                debug(@"Requesting from 'radio-browser.info' $(current_server)/$(query)");
+                var response = HttpClient.GET(@"$(current_server)/$(query)", out status_code);
+                debug(@"Response from 'radio-browser.info': $(status_code)");
 
                 try {
                     var parser = new Json.Parser();
-                    parser.load_from_stream(stream);
+                    parser.load_from_stream(response, null);
                     rootnode = parser.get_root();
                 } catch (Error e) {
-                    throw new DataError.PARSE_DATA(@"unable to parse JSON response: $(e.message)");
+                    throw new DataError.PARSE_DATA(@"Unable to parse JSON response: $(e.message)");
                 }
                 var rootarray = rootnode.get_array();
-                var tags = jarray_to_tags(rootarray);
-                return tags;
+                var stations = jarray_to_stations(rootarray);
+                return stations;
             } catch (GLib.Error e) {
-                debug("cannot get_tags()");
+                warning(@"Error retrieving stations: $(e.message)");
             }
 
-            return new ArrayList<Tag>();
+            return new ArrayList<Model.Station>();
         }
 
+
         /**
-        *
-        *
+         * @brief Marshals JSON array data into an array of Station
+         *
+         * @param data JSON array containing station data
+         * @return ArrayList of Station objects
          */
         private ArrayList<Model.Station> jarray_to_stations(Json.Array data) {
             var stations = new ArrayList<Model.Station>();
 
             data.foreach_element((array, index, element) => {
-                Model.Station s = new Model.Station(element);
+                Model.Station s = Model.Station.make(element);
                 stations.add(s);
             });
 
             return stations;
-        }
+        } // jarray_to_stations
 
         /**
+         * @brief Converts a JSON node to a Tag object
+         *
+         * @param node JSON node representing a tag
+         * @return Tag object
          */
         private Tag jnode_to_tag(Json.Node node) {
             return Json.gobject_deserialize(typeof(Tag), node) as Tag;
-        }
+        } // jnode_to_tag
 
         /**
-        * @brief Marshals JSON tag data into an array of Tag
+         * @brief Marshals JSON tag data into an array of Tag
+         *
+         * @param data JSON array containing tag data
+         * @return ArrayList of Tag objects
          */
         private ArrayList<Tag> jarray_to_tags(Json.Array data) {
             var tags = new ArrayList<Tag>();
@@ -398,16 +449,17 @@ namespace Tuner.RadioBrowser {
 
 
         /**
-        * @brief Get all radio-browser.info API servers
-        *
-        * Gets server list from Radio Browser DNS SRV record, 
-        * and failing that, from the API
-        *
-        * @since 1.5.4
-        * @return ArrayList of strings containing the resolved hostnames
-        * @throw DataError if unable to resolve DNS records
-        */
-        private ArrayList<string> get_srv_api_servers() throws DataError {
+         * @brief Get all radio-browser.info API servers
+         * 
+         * Gets server list from Radio Browser DNS SRV record, 
+         * and failing that, from the API
+         *
+         * @since 1.5.4
+         * @return ArrayList of strings containing the resolved hostnames
+         * @throw DataError if unable to resolve DNS records
+         */
+        private ArrayList<string> get_srv_api_servers() throws DataError 
+        {
             var results = new ArrayList<string>();
 
             try {

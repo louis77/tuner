@@ -3,19 +3,38 @@
  * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
  */
 
- public class Tuner.WelcomeButton : Gtk.Button {
+/**
+ * @class Tuner.DisplayButton
+ * @brief A button widget that displays a title, tag, description, and an optional favicon.
+ *
+ * This class extends Gtk.Button and is used to represent a display button
+ * in the tuner application, showing relevant information about a station.
+ */
+public class Tuner.DisplayButton : Gtk.Button {
 
-    Gtk.Label button_title;
-    Gtk.Label button_tag;
-    Gtk.Label button_description;
-    Gtk.Image? _favicon_image;
-    Gtk.Grid button_grid;
+    /**
+     * @brief Default icon name for stations without a custom favicon.
+     */
+    Gtk.Label button_title; ///< The label displaying the title of the button.
+    Gtk.Label button_tag; ///< The label displaying the tag of the button.
+    Gtk.Label button_description; ///< The label displaying the description of the button.
+    Gtk.Grid button_grid; ///< The grid layout for organizing button contents.
 
+    protected Gtk.Image _favicon_image; ///< The image displayed as the favicon. Updated by derived classes
+
+    /**
+     * @brief Gets or sets the title of the button.
+     * @return The current title of the button.
+     */
     public string title {
         get { return button_title.get_text (); }
         set { button_title.set_text (value); }
     }
 
+    /**
+     * @brief Gets or sets the tag of the button.
+     * @return The current tag of the button.
+     */
     public string tag {
         get { return button_tag.get_text (); }
         set { 
@@ -25,40 +44,38 @@
         }
     }
 
+    /**
+     * @brief Gets or sets the description of the button.
+     * @return The current description of the button.
+     */
     public string description {
         get { return button_description.get_text (); }
-        set {
-            button_description.set_text (value);
-        }
+        set { button_description.set_text (value); }
     }
 
-    public Gtk.Image? favicon {
-        get { return _favicon_image; }
-        set {
-            if (_favicon_image != null) {
-                _favicon_image.destroy ();
-            }
-            _favicon_image = value;
-            if (_favicon_image != null) {
-                //_favicon_image.set_pixel_size (48);
-                _favicon_image.halign = Gtk.Align.CENTER;
-                _favicon_image.valign = Gtk.Align.CENTER;
-                button_grid.attach (_favicon_image, 0, 0, 1, 2);
-            }
-        }
-  }
-
-    /*
-    public WelcomeButton (Gtk.Image? image, string title, string description) {
-        Object (title: title, description: description, icon: image);
+    /**
+     * @brief Gets the favicon image.
+     * @return The current favicon image.
+     */
+    public Gtk.Image favicon_image 
+    { 
+        protected get { return _favicon_image; }
+        construct { _favicon_image = value;  } 
     }
 
-    public WelcomeButton.with_tag (Gtk.Image? image, string title, string description, string tag) {
-        Object (title: title, description: description, icon: image, tag: tag);
-    }
-*/
-
+    /**
+     * @brief Constructs a new DisplayButton instance.
+     *
+     * This constructor initializes the button's labels and layout,
+     * setting up the grid and adding the necessary styles.
+     */
     construct {
+        
+        // Favicon
+        _favicon_image.set_pixel_size (48);
+        _favicon_image.halign = Gtk.Align.CENTER;
+        _favicon_image.valign = Gtk.Align.CENTER;
+
         // Title label
         button_title = new Gtk.Label (null);
         button_title.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
@@ -92,7 +109,9 @@
         button_grid.attach (button_title, 1, 0, 2, 1);
         button_grid.attach (button_tag, 1, 1, 1, 1);
         button_grid.attach (button_description, 2, 1, 1, 1);
+        button_grid.attach (_favicon_image, 0, 0, 1, 2);
 
         this.add (button_grid);
     }
+
 }

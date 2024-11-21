@@ -125,18 +125,24 @@ public class Tuner.HttpClient : Object {
             return true;
         });
 
-        try {
+        uint loop = 1;
+        do 
+        /*
+            Try three times
+        */
+        {
+            try {
+                var inputStream = yield getSession().send_async(msg, Priority.LOW, null);
+                status_code = msg.status_code;
+                if ( status_code >= 200 && status_code < 300 ) return inputStream;
+            } catch (Error e) {
+                warning(@"GETasync - Couldn't fetch resource: $(uri.to_string()) $(e.message)");
+            }
 
-            var inputStream = yield getSession().send_async(msg, Priority.DEFAULT, null);
-            status_code = msg.status_code;
-            return inputStream;
+            yield Application.nap(200 * loop);   
+        } while( loop++ < 4);
 
-        } catch (Error e) {
-            warning("GETasync - Couldn't fetch resource: %s (%s)",
-            uri.to_string(),
-                e.message);
-        }
-
+        warning(@"GETasync - GETasync failed for: $(uri.to_string())");
         return null;
     }
 

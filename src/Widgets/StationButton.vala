@@ -13,11 +13,9 @@
  * 
  * @extends Tuner.WelcomeButton
  */
-public class Tuner.StationBox : Tuner.WelcomeButton {
+public class Tuner.StationButton : Tuner.DisplayButton {
 
-    /**
-     * @brief Default icon name for stations without a custom favicon.
-     */
+
     private const string DEFAULT_ICON_NAME = "internet-radio";
 
     /**
@@ -25,6 +23,8 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
      * @brief The radio station represented by this StationBox.
      */
     public Model.Station station { get; construct; }
+   //public Gtk.Image favicon { get; construct; }
+    //public Gtk.Image favicon_image { get; private set; }
 
     /**
      * @property menu
@@ -36,14 +36,17 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
      * @brief Constructs a new StationBox instance.
      * @param station The radio station to represent.
      */
-    public StationBox (Model.Station station) {
+    public StationButton (Model.Station station) {
         Object (
             description: make_description (station.countrycode),
             title: make_title (station.name, station.starred),
             tag: make_tag (station.codec, station.bitrate),
-            favicon: new Gtk.Image.from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG),
+            favicon_image: new Gtk.Image.from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG),
             station: station
         );
+
+        //warning (@"StationBox faveicon $(_favicon == null)");
+        //station.update_favicon_image.begin(_favicon_image);
     }
 
     /**
@@ -55,15 +58,12 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
     construct {
         debug (@"StationBox construct $(station.name)");
 
-        load_favicon.begin();
-
         get_style_context().add_class("station-button");
         always_show_image = true;
 
         this.station.notify["starred"].connect ( (sender, prop) => {
             this.title = make_title (this.station.name, this.station.starred);
         });
-
 
         event.connect ((e) => {
             if (e.type == Gdk.EventType.BUTTON_PRESS && e.button.button == 3) {
@@ -81,7 +81,20 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
             }
             return false;
         });
+
+        /*
+            Set the button image. Connect to the flag that the Station has loaded the favicon
+            and when it set, update the image. Check that if its already loaded, load now.
+        */        
+        station.notify["favicon-loaded"].connect((s, p) => {
+            station.update_favicon_image.begin (_favicon_image);
+        });
+        if ( station.favicon_loaded > 0 ) 
+        {
+            station.update_favicon_image.begin (_favicon_image);
+        }
     }
+
 
     /**
      * @brief Creates a title string for the station.
@@ -115,34 +128,10 @@ public class Tuner.StationBox : Tuner.WelcomeButton {
      * @param location The station's location.
      * @return The formatted description string.
      */
-    private static string make_description (string location) {
-        if (location.length > 0) 
+    private static string make_description (string? location) {
+        if ( location != null && location.length > 0) 
             return _(location);
         else
             return location;
     }
-
-    /**
-     * @brief Asynchronously loads the station's favicon.
-     *
-     * This method attempts to load the station's custom favicon and
-     * updates the StationBox's icon if successful.
-     */
-    private async void load_favicon()
-    {
-
-        warning("Station box 1");
-        if ( (yield station.get_favicon_uri()) != null )
-        // Favicon is unavailable, leave default
-        {
-            warning("Station box 2");
-            return;
-        }
-
-        warning("Station box 3");
-        ///return; // FIXME remove
-        //  this.favicon.clear ();
-        this.favicon.set_from_pixbuf (station.get_favicon_image ());
-    }
-
 }

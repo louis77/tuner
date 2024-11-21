@@ -50,7 +50,7 @@ public class Tuner.StationList : AbstractContentList {
      * When set, this property clears the existing list and populates it with
      * the new stations. It also sets up signal connections for each station.
      */
-    public ArrayList<Model.Station> stations {
+    public Collection<Model.Station> stations {
         set construct {
             clear ();
             if (value == null) return;
@@ -59,7 +59,7 @@ public class Tuner.StationList : AbstractContentList {
                 s.notify["starred"].connect ( () => {
                     favourites_changed ();
                 });
-                var box = new StationBox (s);
+                var box = new StationButton (s);
                 box.clicked.connect (() => {
                     selection_changed (box.station);
                     selected_station = box.station;
@@ -92,7 +92,7 @@ public class Tuner.StationList : AbstractContentList {
      * @brief Constructs a new StationList instance with a predefined list of stations.
      * @param stations The ArrayList of Model.Station objects to populate the list.
      */
-    public StationList.with_stations (Gee.ArrayList<Model.Station> stations) {
+    public StationList.with_stations (Gee.Collection<Model.Station> stations) {
         this ();
         this.stations = stations;
     }

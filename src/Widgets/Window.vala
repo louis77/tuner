@@ -44,6 +44,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public Settings settings { get; construct; }
     public Gtk.Stack stack { get; set; }
     public PlayerController player { get; construct; }
+    public StarredStationController starred { get; construct; }
 
 
     /* Private */   
@@ -88,7 +89,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @param app The Application instance.
      * @param player The PlayerController instance.
      */
-    public Window (Application app, PlayerController player, Settings settings) {
+    public Window (Application app, PlayerController player, Settings settings ) {
         Object (
             application: app,
             player: player,
@@ -104,6 +105,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     /* Construct */
     construct { // FIXME    Way to complex - should be in activate?
         
+        var starred_file = Path.build_filename (Application.instance.data_dir, Application.STARRED);
+        starred = new StarredStationController();
+
         this.set_icon_name(Application.APP_ID);
         add_action_entries (ACTION_ENTRIES, this);
         set_title (WINDOW_NAME);
@@ -157,9 +161,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var stack = new Gtk.Stack ();
         stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
 
-        var favorites_file = Path.build_filename (Application.instance.data_dir, "favorites.json");
-        var store = new Model.StarredStationStore (favorites_file);
-        _directory = new DirectoryController (store);
+        /*
+            Starred Stations
+         */
+       // var store = new Model.StarredStationStore ();
+        _directory = new DirectoryController (starred);
 
         var primary_box = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);
 
@@ -190,7 +196,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var s1 = _directory.load_random_stations(20);
         c1.realize.connect (() => {
             try {
-                var slist = new StationList.with_stations (s1.next ());
+                var slist = new StationList.with_stations (s1.next_page ());
                 slist.selection_changed.connect (handle_station_click);
                 slist.favourites_changed.connect (handle_favourites_changed);
                 c1.content = slist;
@@ -200,7 +206,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
         c1.action_activated_sig.connect (() => {
             try {
-                var slist = new StationList.with_stations (s1.next ());
+                var slist = new StationList.with_stations (s1.next_page ());
                 slist.selection_changed.connect (handle_station_click);
                 slist.favourites_changed.connect (handle_favourites_changed);
                 c1.content = slist;
@@ -209,6 +215,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             }
         });
 
+        /*
+            Trending
+        */
         // Trending Box
         var item2 = new Granite.Widgets.SourceList.Item (_("Trending"));
         item2.icon = new ThemedIcon ("playlist-queue");
@@ -220,7 +229,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var s2 = _directory.load_trending_stations(40);
         c2.realize.connect (() => {
             try {
-                var slist = new StationList.with_stations (s2.next ());
+                var slist = new StationList.with_stations (s2.next_page ());
                 slist.selection_changed.connect (handle_station_click);
                 slist.favourites_changed.connect (handle_favourites_changed);
                 c2.content = slist;
@@ -241,7 +250,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var s3 = _directory.load_popular_stations(40);
         c3.realize.connect (() => {
             try {
-                var slist = new StationList.with_stations (s3.next ());
+                var slist = new StationList.with_stations (s3.next_page ());
                 slist.selection_changed.connect (handle_station_click);
                 slist.favourites_changed.connect (handle_favourites_changed);
                 c3.content = slist;
@@ -269,7 +278,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                             _("Starred by You"), null, null,
                             stack, source_list, true);
 
-        var slist = new StationList.with_stations (_directory.get_stored ());
+        var slist = new StationList.with_stations (_directory.get_starred ());
         slist.selection_changed.connect (handle_station_click);
         slist.favourites_changed.connect (handle_favourites_changed);
         c4.content = slist;
@@ -293,7 +302,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             var ds = _directory.load_by_tags (tags);
             cb.realize.connect (() => {
                 try {
-                    var slist1 = new StationList.with_stations (ds.next ());
+                    var slist1 = new StationList.with_stations (ds.next_page ());
                     slist1.selection_changed.connect (handle_station_click);
                     slist1.favourites_changed.connect (handle_favourites_changed);
                     cb.content = slist1;
@@ -308,7 +317,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
 
         refresh_favourites_sig.connect ( () => {
-            var _slist = new StationList.with_stations (_directory.get_stored ());
+            var _slist = new StationList.with_stations (_directory.get_starred ());
             _slist.selection_changed.connect (handle_station_click);
             _slist.favourites_changed.connect (handle_favourites_changed);
             c4.content = _slist;
@@ -347,7 +356,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             var source = _directory.load_station_uuid (_settings.last_played_station);
 
             try {
-                foreach (var station in source.next ()) {   // FIXME  Why
+                foreach (var station in source.next_page ()) {   // FIXME  Why
                     handle_station_click(station);  
                     break;
                 }
@@ -602,7 +611,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         debug(@"Search done");
 
         try {
-            var stations = station_source.next();
+            var stations = station_source.next_page();
             debug(@"Search Next done");
             if (stations == null || stations.size == 0) {
                 contentBox.show_nothing_found();

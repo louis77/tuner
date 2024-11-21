@@ -29,6 +29,8 @@ public class Tuner.Application : Gtk.Application {  //TODO Add main here and ren
     /** @brief Unicode character for unstarred items */
     public const string UNSTAR_CHAR = "☆ ";
 
+    public const string STARRED = "favorites-test2.json";
+
     //  /**
     //   * @enum Theme
     //   * @brief Enumeration of available themes
@@ -40,11 +42,13 @@ public class Tuner.Application : Gtk.Application {  //TODO Add main here and ren
     //  }
 
     /** @brief Application settings */
-   // public GLib.Settings settings { get; construct; }  // TODO Can this go in Window?
-    public Settings settings { get; construct; }  // TODO Can this go in Window?
+   // public GLib.Settings settings { get; construct; }  
+    public Settings settings { get; construct; }  
     
     /** @brief Player controller */
-    public PlayerController player { get; construct; }  // TODO Can this go in Window?
+    public PlayerController player { get; construct; }  
+
+    public StarredStationController starred { get; construct; }
     
     /** @brief Cache directory path */
     public string? cache_dir { get; construct; }
@@ -84,6 +88,8 @@ public class Tuner.Application : Gtk.Application {  //TODO Add main here and ren
         player = new PlayerController ();
         //settings = new GLib.Settings (this.application_id);
 
+
+
         cache_dir = Path.build_filename (Environment.get_user_cache_dir (), application_id);
         ensure_dir (cache_dir);
 
@@ -113,25 +119,13 @@ public class Tuner.Application : Gtk.Application {  //TODO Add main here and ren
         }
     }
 
-    //  /**
-    //   * @brief Current theme of the application
-    //   */
-    //  public bool prefer_dark_theme { 
-    //      get {
-    //          return settings.get_boolean("prefer-dark-theme");
-    //      }
-    //      set {
-    //          var gtk_settings = Gtk.Settings.get_default();
-    //          if (gtk_settings == null) {
-    //              warning("Failed to get GTK settings");
-    //          }
-    //          else {
-    //              gtk_settings.gtk_application_prefer_dark_theme = value;
-    //          }
-    //          settings.set_boolean("prefer-dark-theme", value);
-    //      }
-    //  }
-
+    public static async void nap (uint interval, int priority = GLib.Priority.LOW) {
+        GLib.Timeout.add (interval, () => {
+            nap.callback ();
+            return false;
+          }, priority);
+        yield;
+    }
 
 
     /**
@@ -142,7 +136,7 @@ public class Tuner.Application : Gtk.Application {  //TODO Add main here and ren
      */
     protected override void activate() {
         if (window == null) {
-            window = new Window (this, player, settings);
+            window = new Window (this, player, settings );
             add_window (window);
             DBus.initialize ();
         } else {
@@ -180,20 +174,4 @@ public class Tuner.Application : Gtk.Application {  //TODO Add main here and ren
             }
         }
     }
-
-    //  /**
-    //   * @brief Converts a string to a Theme enum value
-    //   * @param theme The theme string to convert
-    //   * @return The corresponding Theme enum value
-    //   */
-    //  public static Theme theme_from_string(string theme_string) {
-
-    //      warning(@"Theme requested: $(theme_string)");
-    //      switch (theme_string) {
-    //          case "TUNER_APPLICATION_THEME_LIGHT": return Theme.LIGHT;
-    //          case "TUNER_APPLICATION_THEME_DARK": return Theme.DARK;
-    //          default: return Theme.SYSTEM;
-    //      }
-    //  }
-
 }

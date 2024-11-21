@@ -1,9 +1,7 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
  * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
- */
-
-/**
+ *
  * @class Tuner.HeaderBar
  * @brief Custom header bar for the Tuner application.
  *
@@ -174,10 +172,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         set { _subtitle_label.label = value; }
     }
 
-    //  public Gtk.Image favicon {
-    //      get { return _favicon_image; }
-    //      set { _favicon_image = value; }
-    //  }
 
     /**
      * @brief Handle changes in the current station.
@@ -193,15 +187,14 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
      *
      * @param station The new station to display information for.
      */
-    public void update_from_station (Model.Station station) {
+    public void update_from_station (Model.Station station) 
+    {
         if (_station != null) {
             _station.notify.disconnect (handle_station_change);
         }
-        //load_favicon.begin (station); // Kick off first as its async and long running in comparison
-        station.update_favicon_image.begin (favicon_image, true, (obj, res) => {
-            if (!station.update_favicon_image.end(res)) 
-            favicon_image.set_from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG);
-        });
+
+        // Kick off first as its async and long running in comparison
+        station.update_favicon_image.begin (favicon_image, true, DEFAULT_ICON_NAME);
 
         _station = station;
         _station.notify.connect ( (sender, property) => {
