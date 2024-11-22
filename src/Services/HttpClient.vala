@@ -136,11 +136,10 @@ public class Tuner.HttpClient : Object {
                 status_code = msg.status_code;
                 if ( status_code >= 200 && status_code < 300 ) return inputStream;
             } catch (Error e) {
-                warning(@"GETasync - Couldn't fetch resource: $(uri.to_string()) $(e.message)");
+                warning(@"GETasync - Try $(loop) failed to fetch: $(uri.to_string()) $(e.message)");
             }
-
             yield Application.nap(200 * loop);   
-        } while( loop++ < 4);
+        } while( loop++ < 3);
 
         warning(@"GETasync - GETasync failed for: $(uri.to_string())");
         return null;

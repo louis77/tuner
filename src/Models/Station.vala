@@ -304,15 +304,23 @@ public class Tuner.Model.Station : Object {
 
     /**
      * @brief Asynchronously loads the favicon for the station.
+     *
+     * Loads from cache is not requesting reload and cache exists
+     *
+     *
+     *
      * @param {bool} reload - Whether to force reload the favicon.
      */
     private async void load_favicon_async( bool reload = false )
     {
         debug(@"$(stationuuid) - Start - load_favicon_async for favicon: $(favicon)");
 
-        // Get favicon from cache file
-        // Check if not forcing reload and then if favicon is cached
-        if ( !reload && FileUtils.test(_favicon_cache_file, FileTest.EXISTS)) 
+        /*  
+            Get favicon from cache file if file is in cache AND
+            Not requesting reload Or favicon is currently failing
+        */
+        if (    ( !reload || STATION_FAILING_FAVICON.contains(stationuuid) )
+            &&  FileUtils.test(_favicon_cache_file, FileTest.EXISTS)) 
             {
             try {
                 var pixbuf = new Gdk.Pixbuf.from_file_at_scale(_favicon_cache_file, 48, 48, true);
@@ -325,18 +333,18 @@ public class Tuner.Model.Station : Object {
             }
         }
 
-        if ( _favicon_uri == null || (!reload && STATION_FAILING_FAVICON.contains(stationuuid)) ) return; // Favicon is erring out, so bypass loading it this session
+        if ( _favicon_uri == null ) return; // First load or reload requested and favicon is not failing
 
-        STATION_FAILING_FAVICON.remove(stationuuid);
+        //STATION_FAILING_FAVICON.remove(stationuuid);
         // If not in cache or force reload, fetch from internet
         uint status_code;
 
-        InputStream? stream = yield HttpClient.GETasync(_favicon_uri, out status_code);
+        InputStream? stream = yield HttpClient.GETasync(_favicon_uri, out status_code); // Will automatically try several times
 
         if ( stream != null && status_code == 200) 
         /*
             Input stream OK
-            */
+        */
         {
             try {
                 var pixbuf = yield new Gdk.Pixbuf.from_stream_at_scale_async(stream, 48, 48, true,null);
@@ -369,6 +377,7 @@ public class Tuner.Model.Station : Object {
             Reload requested, and favicon has not had reload requested before
         */
         { 
+            STATION_FAILING_FAVICON.remove(stationuuid);    // Give possible 2nd chance
             yield load_favicon_async(true); // Wait for load_favicon_async to complete
         }
 
