@@ -1,6 +1,13 @@
-/*
+/**
+ * SPDX-FileCopyrightText: Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
+ * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
+ *
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
+ *
+ * @file AboutDialog.vala
+ *
+ * @brief App About dialogue
+ * 
  */
 
 /**
@@ -24,7 +31,7 @@ public class Tuner.AboutDialog : Gtk.AboutDialog {
         set_modal (true);
 
         artists = {"https://faleksandar.com/"};
-        authors = {"Louis Brauer"};
+        authors = {"Louis Brauer, technosf"};
         documenters = null;
         translator_credits = """French translation by NathanBnm https://github.com/NathanBnm
 Italian translation by DevAlien https://github.com/DevAlien
@@ -33,11 +40,12 @@ Dutch translation by Vistaus https://github.com/Vistaus
 Turkish translation by safak45x https://github.com/safak45x""";
         logo_icon_name = Application.instance.get_application_id ();
         program_name = "Tuner";
-        comments = "Listen to internet radio stations";
-        copyright = "Copyright © 2020-2024 Louis Brauer";
+        comments = "Find & listen to internet radio stations";
+        copyright = "Copyright © 2020-2024 Louis Brauer\nCopyright © 2024 technosf https://github.com/technosf";
         version = @"v$(Application.APP_VERSION)";
 
-        license = """* Copyright (c) 2020-2024 Louis Brauer <louis@brauer.family>
+        license = """* Copyright (c) 2020-2024 Louis Brauer <louis@brauer.family>, 
+        Copyright © 2024 technosf <https://github.com/technosf>
 
         Tuner is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

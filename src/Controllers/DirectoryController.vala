@@ -46,19 +46,15 @@ public class Tuner.DirectoryController : Object {
      *
      * @param store The StationStore to use for managing stations.
      */
-    public DirectoryController (StarredStationController starred) {  // FIXME naming
+    public DirectoryController (StarredStationController starred) {  
         try {
             _provider = new RadioBrowser.Client ();
             _starred = starred;
         } catch (RadioBrowser.DataError e) {
             critical (@"RadioBrowser unavailable");
         }
-        
-        //  _starred = Application.;
-
-        // migrate from <= 1.2.3 settings to json based store
-        // this.migrate_favourites ();
-    }
+        _starred.load();        // Load needs to happen after Application creation
+    } // DirectoryController
 
     /**
      * @brief Get a collection of Station station by its UUID.
@@ -79,7 +75,7 @@ public class Tuner.DirectoryController : Object {
             }
         }
         return stations;
-    }
+    } // get_stations_by_uuid
 
     /**
      * @brief Load a station by its UUID.
@@ -94,7 +90,7 @@ public class Tuner.DirectoryController : Object {
         };
         var source = new StationSet(1, params, _provider, _starred);
         return source;
-    }
+    } // load_station_uuid
 
     /**
      * @brief Load a set of random stations.
@@ -111,7 +107,7 @@ public class Tuner.DirectoryController : Object {
         };
         var source = new StationSet(limit, params, _provider, _starred);
         return source;
-    }
+    } // load_random_stations
 
     /**
      * @brief Load trending stations.
@@ -239,9 +235,8 @@ public class Tuner.DirectoryController : Object {
         } catch (RadioBrowser.DataError e) {
             warning (@"Load tags failed with error: $(e.message)");
         }
-    }
-
-}
+    } // load_tags
+} // DirectoryController
 
 /**
  * @brief A pagable set of Stations
@@ -347,7 +342,7 @@ public class Tuner.StationSet : Object {
             stations.add (station);
         }
         return stations;
-    }
+    } // convert_stations
 
     public bool has_property(Json.Node node, string property_name) {
         // Check if the node is of type OBJECT
@@ -359,5 +354,5 @@ public class Tuner.StationSet : Object {
         }
     
         return false; // Not an object, so no properties exist
-    }
-}
+    } // has_property
+} // StationSet

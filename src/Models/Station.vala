@@ -151,7 +151,7 @@ public class Tuner.Model.Station : Object {
         }
 
         return STATIONS.get(station.stationuuid);
-    }
+    } // make
 
     
      /**
@@ -284,7 +284,8 @@ public class Tuner.Model.Station : Object {
             warning(@"$(stationuuid) - Failed to parse favicon URL: $(e.message)");
             STATION_FAILING_FAVICON.add(stationuuid);
         }  
-    }
+    } // Station.basic
+
 
     public bool toggle_starred()
     {
@@ -351,7 +352,7 @@ public class Tuner.Model.Station : Object {
         }
         warning(@"$(stationuuid) - Failed to load favicon $(_favicon_uri.to_string()) - Status code: $(status_code)");
         STATION_FAILING_FAVICON.add(stationuuid);
-    }
+    } // load_favicon_async
 
 
     /**
@@ -388,7 +389,7 @@ public class Tuner.Model.Station : Object {
         } finally {
             favicon_image.opacity = 1;
         }
-    }
+    } // update_favicon_image
 
     /**
      * @brief Asynchronously transitions the image with a fade effect.
@@ -408,5 +409,5 @@ public class Tuner.Model.Station : Object {
             image.opacity = op.clamp(0, 1); 
             yield Application.nap (interval);
         }
-    }
+    } // fade
 }

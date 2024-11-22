@@ -29,8 +29,6 @@ using Tuner.Model;
  *
  * DirectoryController uses StationStore to load the starred stations from RadioBrowser
  */
-
- // TODO Make a Singleton
 public class Tuner.StarredStationController : Object {
 
     private const string FAVORITES_PROPERTY_APP = "app";
@@ -42,12 +40,10 @@ public class Tuner.StarredStationController : Object {
 
     private const string M3U8 = "#EXTM3U\n#EXTENC:UTF-8\n#PLAYLIST:Tuner\n";
 
-   // public Set<Station> stations { get; construct; }
-
-   // private ArrayList<Station> _store; ///< Collection of favorite stations.
 
     private File _starred_file; ///< File to persist favorite stations.
     private Map<string,Station> _starred; ///< Collection of favorite station UUIDs.
+    private bool _loaded = false;
 
 
     // ----------------------------------------------------------
@@ -62,7 +58,7 @@ public class Tuner.StarredStationController : Object {
             playlist.append (@"#EXTINF:-1,$(station.name) - logo=\"$(station.favicon)\"\n$(station.url)\n");
         }
         return playlist.str;
-    }
+    } // export_m3u8
 
 
     // ----------------------------------------------------------
@@ -73,18 +69,12 @@ public class Tuner.StarredStationController : Object {
      * @brief Constructor for StationStore.
      * @param favorites_path The path to the JSON file where favorites are stored.
      */
-    public StarredStationController () {
+    public StarredStationController (File starred_file) 
+    {
         Object ();
-
+        _starred_file =  starred_file;
         _starred = new HashMap<string, Station> ();
-
-        var starred_file = Path.build_filename (Application.instance.data_dir, Application.STARRED);
-        _starred_file = File.new_for_path (starred_file);
-
-        load ();
-
-        debug (@"store initialized in path $(starred_file)");
-    }
+    } // StarredStationController
 
     /**
      * @brief Adds a station to the favorites and persists the change.
@@ -107,19 +97,6 @@ public class Tuner.StarredStationController : Object {
         persist ();
     }
 
-    /**
-     * @brief Deserializes the starred station JSON into Station objects.
-     * @return {Json.Node} A JSON representation of the starred station.
-     */
-    //  public static Gee.List<Station> deserialize(Json.Array array) {
-
-    //      Gee.List<Station> ss = new Gee.ArrayList<Station>();
-    //          // Define the function to process each element in the array
-    //      array.foreach_element((a, i, elem) => {
-    //                  ss.add(Json.gobject_deserialize(typeof(Station), elem) as Station);         
-    //      });
-    //      return ss;
-    //  }
 
     /**
      * @brief Serializes the current favorites to a JSON string.
@@ -151,7 +128,7 @@ public class Tuner.StarredStationController : Object {
         generator.set_root (builder.get_root ());
         string data = generator.to_data (null);
         return data;
-    }
+    } // serialize
 
 
     /**
@@ -181,12 +158,16 @@ public class Tuner.StarredStationController : Object {
 
     /**
      * @brief Loads the favorites from the JSON file.
+     *
+     *  Load needs to happen after Application creation
      * 
      * This method reads the JSON file and populates the _store with
      * the favorite stations.
      */
-    private void load () {
+    public void load () {
 
+        if ( _loaded) return;
+        _loaded = true;
         debug ("store file initial creation");
         try 
         // Create file if it does not already exist
@@ -258,9 +239,6 @@ public class Tuner.StarredStationController : Object {
     } // load
       
 
-
-
-
     /**
      * @brief Persists the current state of favorites to the JSON file.
      * 
@@ -282,7 +260,7 @@ public class Tuner.StarredStationController : Object {
         } catch (Error e) {
             warning (@"Persist failed with error: $(e.message)");
         }
-    }
+    } // persist
 
 
     private static Json.Node? get_member(Json.Node node, string property_name) {
@@ -295,5 +273,5 @@ public class Tuner.StarredStationController : Object {
                 return json_object.get_member (property_name);
         }
         return null; // Not an object, so no properties exist
-    }
+    } // get_member
 }

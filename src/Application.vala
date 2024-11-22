@@ -1,21 +1,32 @@
 /**
  * @file Application.vala
- * @brief Contains the main Application class for the Tuner application
- *
- * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
+ * @brief Main application class for the Tuner radio application
+ * @copyright Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
+ * @copyright Copyright © 2024 technosf <https://github.com/technosf>
+ * @license GPL-3.0-or-later
  */
 
 /**
- * @class Tuner.Application
- * @brief Main application class for Tuner
- * @extends Gtk.Application
- *
- * This class serves as the entry point for the Tuner application.
- * It handles application initialization, window management, and theme settings.
+ * @namespace Tuner
+ * @brief Main namespace for the Tuner application
  */
-public class Tuner.Application : Gtk.Application {  //TODO Add main here and rename to Tuner maybe use namespace
-    // FIXME https://valadoc.org/gio-2.0/GLib.Application.html
+
+/**
+ * @class Application
+ * @brief Main application class implementing core functionality
+ * @ingroup Tuner
+ * 
+ * The Application class serves as the primary entry point and controller for the Tuner
+ * application. It manages:
+ * - Window creation and presentation
+ * - Settings management
+ * - Player control
+ * - Directory structure
+ * - DBus initialization
+ * 
+ * @note This class follows the singleton pattern, accessible via Application.instance
+ */
+public class Tuner.Application : Gtk.Application {
 
     /** @brief Application version */
     public const string APP_VERSION = VERSION;
@@ -29,25 +40,24 @@ public class Tuner.Application : Gtk.Application {  //TODO Add main here and ren
     /** @brief Unicode character for unstarred items */
     public const string UNSTAR_CHAR = "☆ ";
 
+    /** @brief File name for starred station sore */
     public const string STARRED = "favorites-test2.json";
 
-    //  /**
-    //   * @enum Theme
-    //   * @brief Enumeration of available themes
-    //   */
-    //  public enum Theme {
-    //      SYSTEM,
-    //      LIGHT,
-    //      DARK
-    //  }
+
+    /** @brief Singleton instance of the Application */
+    private static Application _instance = null;
+
+
+    // -------------------------------------
+
 
     /** @brief Application settings */
-   // public GLib.Settings settings { get; construct; }  
     public Settings settings { get; construct; }  
     
     /** @brief Player controller */
     public PlayerController player { get; construct; }  
 
+    /** @brief Player controller */
     public StarredStationController starred { get; construct; }
     
     /** @brief Cache directory path */
@@ -56,18 +66,21 @@ public class Tuner.Application : Gtk.Application {  //TODO Add main here and ren
     /** @brief Data directory path */
     public string? data_dir { get; construct; }
 
+
     /** @brief Main application window */
     public Window window;
+
 
     /** @brief Action entries for the application */
     private const ActionEntry[] ACTION_ENTRIES = {
         { "resume-window", on_resume_window }
     };
 
+
     /**
      * @brief Constructor for the Application
      */
-    public Application () {
+    private Application () {
         Object (
             application_id: APP_ID,
             flags: ApplicationFlags.FLAGS_NONE
@@ -77,37 +90,51 @@ public class Tuner.Application : Gtk.Application {  //TODO Add main here and ren
     /**
      * @brief Construct block for initializing the application
      */
-    construct {
+    construct 
+    {
         GLib.Intl.setlocale (LocaleCategory.ALL, "");
         GLib.Intl.bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
         GLib.Intl.bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
         GLib.Intl.textdomain (GETTEXT_PACKAGE);
-
         
+        // Create required directories and files
+
+        cache_dir = stat_dir(Environment.get_user_cache_dir ());
+        data_dir = stat_dir(Environment.get_user_data_dir ());
+
+
+        warning(@"Directories $(cache_dir) to $(data_dir)");
+
+        /* 
+            Starred file and migration of favorites
+        */
+        var _favorites_file =  File.new_build_filename (data_dir, "favorites.json"); // v1 file
+        var _starred_file =  File.new_build_filename (data_dir, Application.STARRED);   // v2 file
+
+        warning(@"Migrate $(_favorites_file.get_path ()) to $(_starred_file.get_path ())");
+
+        try {
+            _favorites_file.open_readwrite().close ();   // Try to open, if succeeds it exists, if not err - no migration
+            _starred_file.create(NONE); // Try to create, if fails starred already exists, if not ok to migrate
+            _favorites_file.copy (_starred_file, FileCopyFlags.NONE);  // Copy
+            warning(@"Migrated v1 Favorites to v2 Starred");
+        }     
+        catch (Error e) {
+            // Peconditions not met
+        }
+
+
+        starred = new StarredStationController(_starred_file);
         settings = new Settings (this);
         player = new PlayerController ();
-        //settings = new GLib.Settings (this.application_id);
-
-
-
-        cache_dir = Path.build_filename (Environment.get_user_cache_dir (), application_id);
-        ensure_dir (cache_dir);
-
-        warning (@"Cache dir: $(cache_dir.to_string())");   // FIXME remove
-
-        data_dir = Path.build_filename (Environment.get_user_data_dir (), application_id);
-        ensure_dir (data_dir);
-
-        warning (@"Data dir: $(data_dir.to_string())"); // FIXME remove
 
         add_action_entries(ACTION_ENTRIES, this);
-    }
+    } // construct
 
-    /** @brief Singleton instance of the Application */
-    private static Application _instance = null;
 
     /**
      * @brief Getter for the singleton instance
+     *
      * @return The Application instance
      */
     public static Application instance {
@@ -117,15 +144,22 @@ public class Tuner.Application : Gtk.Application {  //TODO Add main here and ren
             }
             return _instance;
         }
-    }
+    } // instance
 
+
+    /**
+     * @brief Send the calling method for a nap
+     *
+     * @param interval the time to nap
+     * @param priority priority of chacking nap is over
+     */
     public static async void nap (uint interval, int priority = GLib.Priority.LOW) {
         GLib.Timeout.add (interval, () => {
             nap.callback ();
             return false;
           }, priority);
         yield;
-    }
+    } // nap
 
 
     /**
@@ -136,13 +170,14 @@ public class Tuner.Application : Gtk.Application {  //TODO Add main here and ren
      */
     protected override void activate() {
         if (window == null) {
-            window = new Window (this, player, settings );
+            window = new Window (this, player, settings, starred);
             add_window (window);
             DBus.initialize ();
         } else {
             window.present ();
         }
-    }
+    } // activate
+
 
     /**
      * @brief Resumes the window
@@ -154,24 +189,20 @@ public class Tuner.Application : Gtk.Application {  //TODO Add main here and ren
     }
 
     /**
-     * @brief Ensures a directory exists
-     * @param path The directory path to ensure
+     * @brief Create directory structure quietly
      *
-     * This method creates the specified directory if it doesn't exist.
      */
-    private void ensure_dir (string path) {
-        var dir = File.new_for_path (path);
-        
+    private string? stat_dir (string dir)
+    {
+        var _dir = File.new_build_filename (dir, application_id);
         try {
-            debug (@"Ensuring dir exists: $path");
-            dir.make_directory ();
-
+            _dir.make_directory_with_parents ();
+        } catch (IOError.EXISTS e) {
         } catch (Error e) {
-            // TODO not enough error handling
-            // What should happen when there is another IOERROR?
-            if (!(e is IOError.EXISTS)) {
-                warning (@"dir couldn't be created: %s", e.message);
-            }
+            warning(@"Stat Directory failed $(e.message)");
+            return null;
         }
-    }
+        return _dir.get_path ();
+
+    } // stat_dir
 }

@@ -89,11 +89,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @param app The Application instance.
      * @param player The PlayerController instance.
      */
-    public Window (Application app, PlayerController player, Settings settings ) {
+    public Window (Application app, PlayerController player, Settings settings, StarredStationController starred ) {
         Object (
             application: app,
             player: player,
-            settings: settings
+            settings: settings,
+            starred: starred
         );
 
         application.set_accels_for_action (ACTION_PREFIX + ACTION_PAUSE, {"<Control>5"});
@@ -105,8 +106,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     /* Construct */
     construct { // FIXME    Way to complex - should be in activate?
         
-        var starred_file = Path.build_filename (Application.instance.data_dir, Application.STARRED);
-        starred = new StarredStationController();
 
         this.set_icon_name(Application.APP_ID);
         add_action_entries (ACTION_ENTRIES, this);
@@ -363,9 +362,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             } catch (SourceError e) {
                 warning ("Error while trying to autoplay, aborting...");
             }
-
         }
-    }
+    } // construct
 
 
     /**
@@ -423,7 +421,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         stack.add_named (c, name);
 
         return c;
-    }
+    } // create_content_box
 
 
     /**
@@ -520,7 +518,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         _settings.last_played_station = station.stationuuid;
 
         set_title (WINDOW_NAME+": "+station.name);
-    }
+    } // handle_station_click
 
 
     /**
@@ -574,8 +572,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         }
 
         return;
-    }
-
+    } // handleplayer_state_changed
 
     /**
      * @brief Performs cleanup actions before the window is destroyed.
@@ -595,7 +592,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         }
 
         return false;
-    }
+    } // before_destroy
 
 
     /**
@@ -625,5 +622,5 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         } catch (SourceError e) {
             contentBox.show_alert();
         }
-    }
+    } // load_search_stations
 }

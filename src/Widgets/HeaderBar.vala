@@ -1,8 +1,18 @@
-/*
- * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
+/**
+ * SPDX-FileCopyrightText: Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
+ * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
  *
+ * SPDX-License-Identifier: GPL-3.0-or-later 
+ *
+ * @file HeaderBar.vala
+ *
+ * @brief HeaderBar classes
+ * 
+ */
+
+ /*
  * @class Tuner.HeaderBar
+ *
  * @brief Custom header bar for the Tuner application.
  *
  * This class extends Gtk.HeaderBar to create a specialized header bar
@@ -23,6 +33,11 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
     // Search delay in milliseconds
     private const uint REVEAL_DELAY = 400u; 
+
+    private static Gtk.Image STAR = new Gtk.Image.from_icon_name ("starred", Gtk.IconSize.LARGE_TOOLBAR);
+    private static Gtk.Image UNSTAR = new Gtk.Image.from_icon_name ("non-starred", Gtk.IconSize.LARGE_TOOLBAR);
+
+
 
     /* Public */
 
@@ -50,7 +65,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
     /* Private */
 
-    private GLib.Cancellable? _current_station_update;
 
     // Private member variables
     private Gtk.Button _star_button;
@@ -59,7 +73,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     private Gtk.Label _title_label;
     private RevealLabel _subtitle_label;
 
-    private Mutex _station_update_lock = Mutex();
+    private Mutex _station_update_lock = Mutex();   // Lock out concurrent updates
 
     
     // Search-related variables
@@ -167,13 +181,13 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         pack_start (volume_button);
 
         set_playstate (PlayState.PAUSE_INACTIVE);
-    }
+    } // construct
 
 
     /* Public */
 
 
-    // Properties for title and subtitle
+    // Properties for title and subtitle - These are active animations
     public new string title {
         get { return _title_label.label; }
         set { _title_label.label = value; }
@@ -241,7 +255,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 _station_update_lock.unlock();
             }
         }
-    }
+    } // update_from_station
     
 
     /* Private */
@@ -262,7 +276,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     
                 return Source.REMOVE;
             });
-    }
+    } // reset_timeout
 
 
     // Property for starred state
@@ -271,12 +285,14 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         set {
             _starred = value;
             if (!_starred) {
-                _star_button.image = new Gtk.Image.from_icon_name ("non-starred", Gtk.IconSize.LARGE_TOOLBAR);
+                //_star_button.image = new Gtk.Image.from_icon_name ("non-starred", Gtk.IconSize.LARGE_TOOLBAR);
+                _star_button.image = UNSTAR;
             } else {
-                _star_button.image = new Gtk.Image.from_icon_name ("starred", Gtk.IconSize.LARGE_TOOLBAR);
+               // _star_button.image = new Gtk.Image.from_icon_name ("starred", Gtk.IconSize.LARGE_TOOLBAR);
+                _star_button.image = STAR;
             }
         }
-    }
+    } // starred
 
 
     /**
@@ -324,7 +340,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 _star_button.sensitive = false;
                 break;
         }
-    }
+    } // set_playstate
 
     /**
      * @brief Override of the realize method from Gtk.Widget
@@ -336,12 +352,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         base.realize();
         
         var revealer = (Gtk.Revealer)custom_title;
-        revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_UP; // Optional: add animation
-     
-        
-        // First ensure the revealer is hidden
-        //  revealer.set_reveal_child(false);
-        
+        revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_UP; // Optional: add animation        
         revealer.set_transition_duration(REVEAL_DELAY*2);
 
         // Use Timeout to delay the reveal animation
@@ -349,5 +360,5 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             revealer.set_reveal_child(true);
             return Source.REMOVE;
         });
-    }
+    } // realize
 }

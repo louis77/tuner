@@ -11,9 +11,7 @@ sources = files (
     'Services/DBusMediaPlayer.vala',
     'Services/DBusInterface.vala',
     'Services/RadioBrowser.vala',
-  #  'Services/LocationDiscovery.vala',
     'Services/HttpClient.vala',
-    #'Services/Favicon.vala',
 
     'Widgets/AbstractContentList.vala',
     'Widgets/ContentBox.vala',
@@ -24,7 +22,6 @@ sources = files (
     'Widgets/Window.vala',
     'Widgets/AboutDialog.vala',
     'Widgets/DisplayButton.vala',
-    #'Widgets/Theme.vala',
     'Widgets/CountryList.vala',
     'Widgets/StationList.vala',
     'Widgets/RevealLabel.vala',
