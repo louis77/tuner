@@ -21,6 +21,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     // Search delay in milliseconds
     private const int SEARCH_DELAY = 400; 
 
+    // Search delay in milliseconds
+    private const uint REVEAL_DELAY = 400u; 
+
     /* Public */
 
     /**
@@ -47,12 +50,16 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
     /* Private */
 
+    private GLib.Cancellable? _current_station_update;
+
     // Private member variables
     private Gtk.Button _star_button;
     private bool _starred = false;
     private Model.Station _station;
     private Gtk.Label _title_label;
     private RevealLabel _subtitle_label;
+
+    private Mutex _station_update_lock = Mutex();
 
     
     // Search-related variables
@@ -70,12 +77,16 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     construct {
         show_close_button = true;
 
-        //
-        // Create and configure station info display
-        //
+        // Create station info container
         var station_info = new Gtk.Grid ();
         station_info.width_request = 200;
         station_info.column_spacing = 10;
+
+        // Create revealer and add station_info as child
+        var station_revealer = new Gtk.Revealer();
+        station_revealer.reveal_child = false; // Make it visible initially
+        station_revealer.transition_duration = REVEAL_DELAY;
+        station_revealer.add(station_info);
 
         _title_label = new Gtk.Label (_("Choose a station"));
         _title_label.get_style_context ().add_class (Granite.STYLE_CLASS_H4_LABEL);
@@ -83,11 +94,12 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         _subtitle_label = new RevealLabel ();
         _favicon_image = new Gtk.Image.from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG);
 
+
         station_info.attach (_favicon_image, 0, 0, 1, 2);
         station_info.attach (_title_label, 1, 0, 1, 1);
         station_info.attach (_subtitle_label, 1, 1, 1, 1);
 
-        custom_title = station_info;
+        custom_title = station_revealer;
 
         
         //
@@ -185,26 +197,52 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     /**
      * @brief Update the header bar with information from a new station.
      *
+     * Requires a lock so that too many clicks do not cause a race condition
+     *
      * @param station The new station to display information for.
      */
-    public void update_from_station (Model.Station station) 
-    {
-        if (_station != null) {
-            _station.notify.disconnect (handle_station_change);
+     public async void update_from_station(Model.Station station) 
+     {
+        if (_station_update_lock.trylock())
+        {
+            try {        
+                // Disconnect previous station signals if any
+                if (_station != null) {
+                    _station.notify.disconnect(handle_station_change);
+                }
+        
+                // Handle Revealer transition
+                Gtk.Revealer r = (Gtk.Revealer)custom_title;
+                r.transition_type = Gtk.RevealerTransitionType.CROSSFADE;
+                r.set_transition_duration(REVEAL_DELAY);
+                r.set_reveal_child(false);
+        
+                // Begin favicon update (non-blocking)
+                station.update_favicon_image.begin(favicon_image, true, DEFAULT_ICON_NAME);
+        
+                // Simulate a delay and check for cancellation
+                yield Application.nap(REVEAL_DELAY * 2);
+        
+                r.hide();
+        
+                // Update station details
+                _station = station;
+                _station.notify.connect(handle_station_change);
+        
+                title = station.name;
+                subtitle = _("Playing");
+                starred = station.starred;
+
+                r.show();
+                r.set_reveal_child(true);
+            }
+            finally 
+            {
+                _station_update_lock.unlock();
+            }
         }
-
-        // Kick off first as its async and long running in comparison
-        station.update_favicon_image.begin (favicon_image, true, DEFAULT_ICON_NAME);
-
-        _station = station;
-        _station.notify.connect ( (sender, property) => {
-            handle_station_change ();
-        });
-        title = station.name;
-        subtitle = _("Playing");
-        starred = station.starred;
     }
-
+    
 
     /* Private */
 
@@ -286,5 +324,30 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 _star_button.sensitive = false;
                 break;
         }
+    }
+
+    /**
+     * @brief Override of the realize method from Gtk.Widget
+     * 
+     * Called when the widget is being realized (created and prepared for display).
+     * This happens before the widget is actually shown on screen.
+     */
+    public override void realize() {
+        base.realize();
+        
+        var revealer = (Gtk.Revealer)custom_title;
+        revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_UP; // Optional: add animation
+     
+        
+        // First ensure the revealer is hidden
+        //  revealer.set_reveal_child(false);
+        
+        revealer.set_transition_duration(REVEAL_DELAY*2);
+
+        // Use Timeout to delay the reveal animation
+        Timeout.add(REVEAL_DELAY*2, () => {
+            revealer.set_reveal_child(true);
+            return Source.REMOVE;
+        });
     }
 }

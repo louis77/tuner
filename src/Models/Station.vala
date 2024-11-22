@@ -120,7 +120,7 @@ public class Tuner.Model.Station : Object {
     // Privates
     // ----------------------------------------------------------
     
-    private Uri favicon_uri;
+    private Uri _favicon_uri;
     private Gdk.Pixbuf _favicon_pixbuf;
     private string _favicon_cache_file;
 
@@ -128,7 +128,6 @@ public class Tuner.Model.Station : Object {
     // ----------------------------------------------------------
     // Functions
     // ----------------------------------------------------------
-
 
     /**
      * @brief Returns a unique, initiated Station instance for a given JSON node.
@@ -280,7 +279,7 @@ public class Tuner.Model.Station : Object {
                     
         try {
             debug(@"$(stationuuid) - constructed - Start parse favicon URL: $(favicon)");
-            favicon_uri = Uri.parse(favicon, NONE);
+            _favicon_uri = Uri.parse(favicon, NONE);
          } catch (GLib.UriError e) {
             warning(@"$(stationuuid) - Failed to parse favicon URL: $(e.message)");
             STATION_FAILING_FAVICON.add(stationuuid);
@@ -310,48 +309,48 @@ public class Tuner.Model.Station : Object {
     {
         debug(@"$(stationuuid) - Start - load_favicon_async for favicon: $(favicon)");
 
-            // Get favicon from cache file
-            // Check if not forcing reload and then if favicon is cached
-            if ( !reload && FileUtils.test(_favicon_cache_file, FileTest.EXISTS)) 
-                {
-                try {
-                    var pixbuf = new Gdk.Pixbuf.from_file_at_scale(_favicon_cache_file, 48, 48, true);
-                    _favicon_pixbuf = pixbuf;              
-                    debug(@"$(stationuuid) - Complete - load_favicon_async from cache stored in file://$(_favicon_cache_file)");
-                    favicon_loaded++;
-                    return;
-                } catch (Error e) {
-                    warning(@"$(stationuuid) - Failed to load cached favicon: $(e.message)");
-                }
-            }
-
-            if ( favicon_uri == null || (!reload && STATION_FAILING_FAVICON.contains(stationuuid)) ) return; // Favicon is erring out, so bypass loading it this session
-
-            STATION_FAILING_FAVICON.remove(stationuuid);
-            // If not in cache or force reload, fetch from internet
-            uint status_code;
-
-            InputStream? stream = yield HttpClient.GETasync(favicon_uri, out status_code);
-
-            if ( stream != null && status_code == 200) 
-            /*
-                Input stream OK
-             */
+        // Get favicon from cache file
+        // Check if not forcing reload and then if favicon is cached
+        if ( !reload && FileUtils.test(_favicon_cache_file, FileTest.EXISTS)) 
             {
-                try {
-                    var pixbuf = yield new Gdk.Pixbuf.from_stream_at_scale_async(stream, 48, 48, true,null);
-                    pixbuf.save(_favicon_cache_file, "png");
-                    _favicon_pixbuf = pixbuf;
-                    debug(@"$(stationuuid) - Complete - load_favicon_async from internet for $(favicon_uri.to_string())\nStored in file://$(_favicon_cache_file)");
-                    favicon_loaded++;
-                    return;
-
-                } catch (Error e) {
-                    warning(@"$(stationuuid) - Failed to process favicon $(favicon_uri.to_string()) - $(e.message)");
-                }
+            try {
+                var pixbuf = new Gdk.Pixbuf.from_file_at_scale(_favicon_cache_file, 48, 48, true);
+                _favicon_pixbuf = pixbuf;              
+                debug(@"$(stationuuid) - Complete - load_favicon_async from cache stored in file://$(_favicon_cache_file)");
+                favicon_loaded++;
+                return;
+            } catch (Error e) {
+                warning(@"$(stationuuid) - Failed to load cached favicon: $(e.message)");
             }
-            warning(@"$(stationuuid) - Failed to load favicon $(favicon_uri.to_string()) - Status code: $(status_code)");
-            STATION_FAILING_FAVICON.add(stationuuid);
+        }
+
+        if ( _favicon_uri == null || (!reload && STATION_FAILING_FAVICON.contains(stationuuid)) ) return; // Favicon is erring out, so bypass loading it this session
+
+        STATION_FAILING_FAVICON.remove(stationuuid);
+        // If not in cache or force reload, fetch from internet
+        uint status_code;
+
+        InputStream? stream = yield HttpClient.GETasync(_favicon_uri, out status_code);
+
+        if ( stream != null && status_code == 200) 
+        /*
+            Input stream OK
+            */
+        {
+            try {
+                var pixbuf = yield new Gdk.Pixbuf.from_stream_at_scale_async(stream, 48, 48, true,null);
+                pixbuf.save(_favicon_cache_file, "png");
+                _favicon_pixbuf = pixbuf;
+                debug(@"$(stationuuid) - Complete - load_favicon_async from internet for $(_favicon_uri.to_string())\nStored in file://$(_favicon_cache_file)");
+                favicon_loaded++;
+                return;
+
+            } catch (Error e) {
+                warning(@"$(stationuuid) - Failed to process favicon $(_favicon_uri.to_string()) - $(e.message)");
+            }
+        }
+        warning(@"$(stationuuid) - Failed to load favicon $(_favicon_uri.to_string()) - Status code: $(status_code)");
+        STATION_FAILING_FAVICON.add(stationuuid);
     }
 
 
@@ -364,14 +363,16 @@ public class Tuner.Model.Station : Object {
      */
     public async void update_favicon_image( Gtk.Image favicon_image, bool reload = false, string defaulticon = "")
     {
-            if (reload && favicon_loaded < 2 ) 
-            /*
-                Reload requested, and favicon has not had reload requested before
-            */
-            { 
-                yield load_favicon_async(true); // Wait for load_favicon_async to complete
-            }
+        if (reload && favicon_loaded < 2 ) 
+        /*
+            Reload requested, and favicon has not had reload requested before
+        */
+        { 
+            yield load_favicon_async(true); // Wait for load_favicon_async to complete
+        }
 
+
+        try{
             if ( _favicon_pixbuf == null || STATION_FAILING_FAVICON.contains(stationuuid)) 
             {
                 yield fade(favicon_image, FADE_MS, false);
@@ -383,6 +384,10 @@ public class Tuner.Model.Station : Object {
             yield fade(favicon_image, FADE_MS, false);
             favicon_image.set_from_pixbuf(_favicon_pixbuf);
             yield fade(favicon_image, FADE_MS, true);
+
+        } finally {
+            favicon_image.opacity = 1;
+        }
     }
 
     /**
