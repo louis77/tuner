@@ -1,9 +1,12 @@
 /**
+ * SPDX-FileCopyrightText: Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
+ * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
  * @file Application.vala
+ *
  * @brief Main application class for the Tuner radio application
- * @copyright Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
- * @copyright Copyright © 2024 technosf <https://github.com/technosf>
- * @license GPL-3.0-or-later
  */
 
 /**

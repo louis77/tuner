@@ -1,10 +1,17 @@
-/*
+/**
+ * SPDX-FileCopyrightText: Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
+ * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
+ *
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
+ *
+ * @file StationBox.vala
+ *
+ * @brief Station representation
  */
 
 /**
  * @class StationBox
+ *
  * @brief A custom button widget representing a radio station.
  * 
  * The StationBox class extends the WelcomeButton class to create a specialized
