@@ -69,39 +69,41 @@ public class Tuner.HttpClient : Object {
     {
         status_code = 0;
         
-        if (url_string == null || url_string.length < 4) // domains are at least 4 chars
+        if ( Application.instance.is_online)
         {
-            warning("GET - Invalid URL: %s", url_string ?? "null");
-            return null;
-        }
-
-        string sanitized_url = ensure_https_prefix(url_string);
-
-        var msg = new Soup.Message("GET", sanitized_url);
-
-        /*
-            Ignore all TLS certificate errors
-        */
-        msg.accept_certificate.connect ((msg, cert, errors) => {
-            return true;
-        });
-
-        try {
-
-            if (Uri.is_valid(sanitized_url, UriFlags.NONE))
+            if (url_string == null || url_string.length < 4) // domains are at least 4 chars
             {
-                var inputStream = getSession().send(msg);
-                status_code = msg.status_code;
-                return inputStream;
-            } else {
-                debug("GET - Invalid URL format: %s", sanitized_url);
+                warning("GET - Invalid URL: %s", url_string ?? "null");
+                return null;
             }
-        } catch (Error e) {
-            warning("GET - Error accessing URL: %s (%s)",
-                sanitized_url,
-                e.message);
-        }
 
+            string sanitized_url = ensure_https_prefix(url_string);
+
+            var msg = new Soup.Message("GET", sanitized_url);
+
+            /*
+                Ignore all TLS certificate errors
+            */
+            msg.accept_certificate.connect ((msg, cert, errors) => {
+                return true;
+            });
+
+            try {
+
+                if (Uri.is_valid(sanitized_url, UriFlags.NONE))
+                {
+                    var inputStream = getSession().send(msg);
+                    status_code = msg.status_code;
+                    return inputStream;
+                } else {
+                    debug("GET - Invalid URL format: %s", sanitized_url);
+                }
+            } catch (Error e) {
+                warning("GET - Error accessing URL: %s (%s)",
+                    sanitized_url,
+                    e.message);
+            }
+        }
         return null;
     }
 
@@ -116,31 +118,33 @@ public class Tuner.HttpClient : Object {
     {
         status_code = 0;
 
-        var msg = new Soup.Message.from_uri("GET", uri);
-
-        /*
-            Ignore all TLS certificate errors
-        */
-        msg.accept_certificate.connect ((msg, cert, errors) => {
-            return true;
-        });
-
-        uint loop = 1;
-        do 
-        /*
-            Try three times
-        */
+        if ( Application.instance.is_online)
         {
-            try {
-                var inputStream = yield getSession().send_async(msg, Priority.LOW, null);
-                status_code = msg.status_code;
-                if ( status_code >= 200 && status_code < 300 ) return inputStream;
-            } catch (Error e) {
-                warning(@"GETasync - Try $(loop) failed to fetch: $(uri.to_string()) $(e.message)");
-            }
-            yield Application.nap(200 * loop);   
-        } while( loop++ < 3);
+            var msg = new Soup.Message.from_uri("GET", uri);
 
+            /*
+                Ignore all TLS certificate errors
+            */
+            msg.accept_certificate.connect ((msg, cert, errors) => {
+                return true;
+            });
+
+            uint loop = 1;
+            do 
+            /*
+                Try three times
+            */
+            {
+                try {
+                    var inputStream = yield getSession().send_async(msg, Priority.LOW, Application.instance.offline_cancel);
+                    status_code = msg.status_code;
+                    if ( status_code >= 200 && status_code < 300 ) return inputStream;
+                } catch (Error e) {
+                    warning(@"GETasync - Try $(loop) failed to fetch: $(uri.to_string()) $(e.message)");
+                }
+                yield Application.nap(200 * loop);   
+            } while( loop++ < 3);
+        }
         warning(@"GETasync - GETasync failed for: $(uri.to_string())");
         return null;
     }

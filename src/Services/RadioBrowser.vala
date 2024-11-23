@@ -32,7 +32,7 @@ namespace Tuner.RadioBrowser {
     private const string SRV_DOMAIN     = "radio-browser.info";
 
     private const string RBI_ALL_API    = "https://all.api.radio-browser.info";    // Round-robin API address
-    private const string RBI_SERVERS    = "$ALL_API/json/servers";
+    private const string RBI_SERVERS    = "json/servers";
 
     // RB Queries
     private const string RBI_STATION    = "json/url/$stationuuid";
@@ -395,10 +395,11 @@ namespace Tuner.RadioBrowser {
                 var rootarray = rootnode.get_array();
                 var stations = jarray_to_stations(rootarray);
                 return stations;
-            } catch (GLib.Error e) {
-                warning(@"Error retrieving stations: $(e.message)");
+            } catch (Error e) {
+                warning(@"Error retrieving stations 1: $(e.message)");
             }
 
+            warning(@"Error retrieving stations 2");
             return new ArrayList<Model.Station>();
         }
 
@@ -481,9 +482,9 @@ namespace Tuner.RadioBrowser {
                 */
                 try {
                     uint status_code;
-                    var stream = HttpClient.GET(@"$(current_server)/$(RBI_SERVERS)", out status_code);
+                    var stream = HttpClient.GET(@"$(RBI_ALL_API)/$(RBI_SERVERS)", out status_code);
 
-                    debug(@"response from $(RBI_ALL_API)/json/servers: $(status_code)");
+                    warning(@"response from $(RBI_ALL_API)/$(RBI_SERVERS): $(status_code)");
 
                     if (status_code == 200) {
                         Json.Node root_node;
@@ -512,6 +513,8 @@ namespace Tuner.RadioBrowser {
                     warning("Failed to parse RBI APIs JSON response: $(e.message)");
                 }
             }
+
+            warning(@"Results $(results.size)");
             return results;
         }
     }   // get_srv_api_servers

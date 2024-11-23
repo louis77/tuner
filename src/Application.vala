@@ -69,13 +69,23 @@ public class Tuner.Application : Gtk.Application {
     /** @brief Data directory path */
     public string? data_dir { get; construct; }
 
+    public GLib.Cancellable offline_cancel { get; construct; }
 
     /** @brief Are we online */
-    public bool is_online { get; construct; }
+    private bool _is_online;
+    public bool is_online { get { return _is_online; } 
+                            construct {
+                                    if ( value ) 
+                                    { _offline_cancel.reset (); }
+                                    else 
+                                    { _offline_cancel.cancel (); }
+                                    _is_online = value;
+                                }
+                            }
 
 
     /** @brief Main application window */
-    public Window window;
+    public Window window { get; construct; }
 
 
     /** @brief Action entries for the application */
@@ -109,8 +119,7 @@ public class Tuner.Application : Gtk.Application {
         cache_dir = stat_dir(Environment.get_user_cache_dir ());
         data_dir = stat_dir(Environment.get_user_data_dir ());
 
-
-        warning(@"Directories $(cache_dir) to $(data_dir) - online: $(monitor.get_network_available ())");
+        debug(@"Directories $(cache_dir) to $(data_dir) - online: $(monitor.get_network_available ())");
 
         /* 
             Starred file and migration of favorites
@@ -131,6 +140,7 @@ public class Tuner.Application : Gtk.Application {
         }
 
         /* Wrap network monitoring into a bool property */
+        offline_cancel =  new GLib.Cancellable ();
         monitor.network_changed.connect((monitor, available) => {
             is_online = available;
         });
@@ -167,11 +177,11 @@ public class Tuner.Application : Gtk.Application {
      * @param interval the time to nap
      * @param priority priority of chacking nap is over
      */
-    public static async void nap (uint interval, int priority = GLib.Priority.LOW) {
+    public static async void nap (uint interval ) {
         GLib.Timeout.add (interval, () => {
             nap.callback ();
             return false;
-          }, priority);
+          }, GLib.Priority.LOW);
         yield;
     } // nap
 
@@ -184,7 +194,8 @@ public class Tuner.Application : Gtk.Application {
      */
     protected override void activate() {
         if (window == null) {
-            window = new Window (this, player, settings, starred);
+            _window = new Window (this, player, settings, starred);
+            settings.configure ();
             add_window (window);
             DBus.initialize ();
         } else {

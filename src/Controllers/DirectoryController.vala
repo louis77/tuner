@@ -51,7 +51,7 @@ public class Tuner.DirectoryController : Object {
             _provider = new RadioBrowser.Client ();
             _starred = starred;
         } catch (RadioBrowser.DataError e) {
-            critical (@"RadioBrowser unavailable");
+            critical (@"RadioBrowser unavailable: $(e.message)");
         }
         _starred.load();        // Load needs to happen after Application creation
     } // DirectoryController

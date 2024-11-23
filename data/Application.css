@@ -45,9 +45,12 @@
     padding-bottom: 0px;
 }
 
-window.offline { 
+.offline { 
     background: black; 
 }
-window.offline label { 
+.offline label { 
     color: darkslategray; 
+}
+.offline image { 
+    opacity: 0.5; 
 }

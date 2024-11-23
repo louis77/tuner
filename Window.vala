@@ -165,14 +165,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         {
             initialize();
         }
-        else 
-        /*
-            Offline, so set to look offline
-            Initialization will happen when online
-        */
-        { 
-            online_status_check();  
-        }
 
         delete_event.connect (e => {
             return before_destroy ();
