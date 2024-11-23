@@ -8,9 +8,11 @@ sources = files (
     'Models/Genre.vala',
     'Models/Station.vala',
 
+    'Providers/RadioBrowser.vala',
+
     'Services/DBusMediaPlayer.vala',
     'Services/DBusInterface.vala',
-    'Services/RadioBrowser.vala',
+    'Services/Provider.vala',
     'Services/HttpClient.vala',
 
     'Widgets/AbstractContentList.vala',

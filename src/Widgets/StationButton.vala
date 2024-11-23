@@ -39,6 +39,8 @@ public class Tuner.StationButton : Tuner.DisplayButton {
      */
     public StationContextMenu menu { get; private set; }
 
+    private Gtk.Overlay _overlay; // Declare an overlay
+
     /**
      * @brief Constructs a new StationBox instance.
      * @param station The radio station to represent.
@@ -100,6 +102,17 @@ public class Tuner.StationButton : Tuner.DisplayButton {
         {
             station.update_favicon_image.begin (_favicon_image);
         }
+
+        // Initialize the overlay
+        _overlay = new Gtk.Overlay();
+        add(_overlay); // Add the overlay to the window
+
+        // Create your main content (e.g., Gtk.Paned)
+        var primary_box = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
+        _overlay.add(primary_box); // Add the primary box to the overlay
+
+        // Show all widgets in the overlay
+        _overlay.show_all();
     }
 
 
@@ -140,5 +153,27 @@ public class Tuner.StationButton : Tuner.DisplayButton {
             return _(location);
         else
             return location;
+    }
+
+    /**
+     * @brief Dims the window and its contents.
+     * @param dim Whether to apply the dim effect (true) or remove it (false).
+     */
+    public void set_dim(bool dim) {
+        if (dim) {
+            // Create a dimming overlay
+            var overlay = new Gtk.EventBox();
+            overlay.set_size_request(get_allocated_width(), get_allocated_height());
+            overlay.set_opacity(0.5); // Set the opacity to 50%
+            overlay.set_sensitive(false); // Make it non-interactive
+            _overlay.add_overlay(overlay); // Add the overlay to the Gtk.Overlay
+        } else {
+            // Remove the dimming overlay if it exists
+            foreach (var child in _overlay.get_children()) {
+                if (child is Gtk.EventBox) {
+                    child.destroy(); // Remove the overlay
+                }
+            }
+        }
     }
 }

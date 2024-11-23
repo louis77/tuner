@@ -25,7 +25,7 @@ using Gee;
  * - Tag and other metadata retrieval
  * - API Server discovery and connection handling from DNS and from round-robin API server
  */
-namespace Tuner.RadioBrowser {
+namespace Tuner.Provider {
 
     private const string SRV_SERVICE    = "api";
     private const string SRV_PROTOCOL   = "tcp";
@@ -40,143 +40,8 @@ namespace Tuner.RadioBrowser {
     private const string RBI_VOTE       = "json/vote/$stationuuid";
     private const string RBI_UUID       = "json/stations/byuuid";
     private const string RBI_TAGS       = "json/tags";
+    
 
-    /**
-     * @struct SearchParams
-     * @brief API search parameters 
-     * 
-     * Defines the search criteria used when querying the radio-browser.info API
-     * for stations.
-     */
-    public struct SearchParams {
-        /** @brief Search text to match against station names */
-        string text;
-
-        /** @brief List of tags to filter stations by */
-        ArrayList<string> tags;
-
-        /** @brief List of specific station UUIDs to retrieve */
-        ArrayList<string> uuids;
-
-        /** @brief ISO country code to filter stations by */
-        string countrycode;
-
-        /** @brief Sorting criteria for the results */
-        SortOrder order;
-
-        /** @brief Whether to reverse the sort order */
-        bool reverse;
-    }
-
-    /**
-     * @brief Error domain for RadioBrowser-related errors
-     * 
-     */
-    public errordomain DataError {
-        /** @brief Error parsing API response data */
-        PARSE_DATA,
-
-        /** @brief Unable to establish connection to API servers */
-        NO_CONNECTION
-    }
-
-    /**
-     * @enum SortOrder
-     * @brief Enumeration of sorting options for station search results
-     * 
-     */
-    public enum SortOrder {
-        NAME,
-        URL,
-        HOMEPAGE,
-        FAVICON,
-        TAGS,
-        COUNTRY,
-        STATE,
-        LANGUAGE,
-        VOTES,
-        CODEC,
-        BITRATE,
-        LASTCHECKOK,
-        LASTCHECKTIME,
-        CLICKTIMESTAMP,
-        CLICKCOUNT,
-        CLICKTREND,
-        RANDOM;
-
-        /**
-         * @brief Convert SortOrder enum to string representation
-         *
-         * @return String representation of the SortOrder
-         */
-        public string to_string() {
-            switch (this) {
-                case NAME:
-                    return "name";
-                case URL:
-                    return "url";
-                case HOMEPAGE:
-                    return "homepage";
-                case FAVICON:
-                    return "favicon";
-                case TAGS:
-                    return "tags";
-                case COUNTRY:
-                    return "country";
-                case STATE:
-                    return "state";
-                case LANGUAGE:
-                    return "language";
-                case VOTES:
-                    return "votes";
-                case CODEC:
-                    return "codec";
-                case BITRATE:
-                    return "bitrate";
-                case LASTCHECKOK:
-                    return "lastcheckok";
-                case LASTCHECKTIME:
-                    return "lastchecktime";
-                case CLICKTIMESTAMP:
-                    return "clicktimestamp";
-                case CLICKCOUNT:
-                    return "clickcount";
-                case CLICKTREND:
-                    return "clicktrend";
-                case RANDOM:
-                    return "random";
-                default:
-                    assert_not_reached();
-            }
-        }
-    }
-
-    /**
-     * @class Tag
-     *
-     * @brief Represents a radio station tag with usage statistics
-     * 
-     * Encapsulates metadata about a tag used to categorize radio stations,
-     * including its name and the number of stations using it.
-     */
-    public class Tag : Object {
-        /** @brief The tag name */
-        public string name { get; set; }
-
-        /** @brief Number of stations using this tag */
-        public uint stationcount { get; set; }
-    }
-
-    /**
-     * @brief String comparison utility function
-     * 
-     * @param a First string to compare
-     * @param b Second string to compare
-     * @return true if strings are equal, false otherwise
-     */
-    //  public bool EqualCompareString(string a, string b) {
-    //      return a == b;
-    //  }
 
     /**
      * @class Client
@@ -203,40 +68,57 @@ namespace Tuner.RadioBrowser {
      * }
      * @endcode
      */
-    public class Client : Object 
+    public class RadioBrowser : Object, Provider.API 
     {
-        private string current_server;
+
+        public Status status { get; set; }
+
+        public DataError? last_data_error { get; set; }
+
+
+        private string _current_server;
 
         /**
          * @brief Constructor for RadioBrowser Client
          *
          * @throw DataError if unable to initialize the client
          */
-        public Client() throws DataError {
+        public RadioBrowser(string? optionalservers ) 
+        {
             Object();
 
             ArrayList<string> servers;
-            string _servers = GLib.Environment.get_variable("TUNER_API");  // Get servers from external var
  
-            if (_servers != null) 
+            if (optionalservers != null) 
             // Run time server parameter was passed in
             {
-                servers = new Gee.ArrayList<string>.wrap(_servers.split(":"));
+                servers = new Gee.ArrayList<string>.wrap(optionalservers.split(":"));
             } else 
-            // Get servers from DNS or API
+            // Identify servers from DNS or API
             {
-                servers = get_srv_api_servers();
+                try {
+                    servers = get_srv_api_servers();
+                } catch (DataError e) {
+                    last_data_error = new DataError.NO_CONNECTION(@"Failed to retrieve API servers: $(e.message)");
+                    status = NO_SERVER_LIST;
+                    return;
+                }
             }
 
             if (servers.size == 0) {
-                throw new DataError.NO_CONNECTION("Unable to resolve API servers for radio-browser.info");
+                last_data_error = new DataError.NO_CONNECTION("Unable to resolve API servers for radio-browser.info");
+                status = NO_SERVERS_PRESENTED;
+                return;
             }
 
             // Randomize API server to use
             // TODO Test server, choose another if necessary
             var chosen_server = Random.int_range(0, servers.size);
-            current_server = @"https://$(servers[chosen_server])";
-            debug(@"RadioBrowser Client - Chosen radio-browser.info server: $current_server");
+            _current_server = @"https://$(servers[chosen_server])";
+            warning(@"RadioBrowser Client - Chosen radio-browser.info server: $_current_server");
+
+            status = OK;
+            clear_last_error();
         }
 
         /**
@@ -247,7 +129,7 @@ namespace Tuner.RadioBrowser {
         public void track(string stationuuid) {
             debug(@"sending listening event for station $(stationuuid)");
             uint status_code;
-            HttpClient.GET(@"$(current_server)/$(RBI_STATION)/$(stationuuid)", out status_code);
+            HttpClient.GET(@"$(_current_server)/$(RBI_STATION)/$(stationuuid)", out status_code);
             debug(@"response: $(status_code)");
         }
 
@@ -258,7 +140,7 @@ namespace Tuner.RadioBrowser {
         public void vote(string stationuuid) {
             debug(@"sending vote event for station $(stationuuid)");
             uint status_code;
-            HttpClient.GET(@"$(current_server)/$(RBI_VOTE)/$(stationuuid)", out status_code);
+            HttpClient.GET(@"$(_current_server)/$(RBI_VOTE)/$(stationuuid)", out status_code);
             debug(@"response: $(status_code)");
         }
 
@@ -275,7 +157,7 @@ namespace Tuner.RadioBrowser {
 
             try {
                 uint status_code;
-                var stream = HttpClient.GET(@"$(current_server)/$(RBI_TAGS)", out status_code);
+                var stream = HttpClient.GET(@"$(_current_server)/$(RBI_TAGS)", out status_code);
 
                 debug(@"response from radio-browser.info: $(status_code)");
 
@@ -381,8 +263,8 @@ namespace Tuner.RadioBrowser {
             try {
                 uint status_code;
 
-                debug(@"Requesting from 'radio-browser.info' $(current_server)/$(query)");
-                var response = HttpClient.GET(@"$(current_server)/$(query)", out status_code);
+                debug(@"Requesting from 'radio-browser.info' $(_current_server)/$(query)");
+                var response = HttpClient.GET(@"$(_current_server)/$(query)", out status_code);
                 debug(@"Response from 'radio-browser.info': $(status_code)");
 
                 try {
@@ -514,7 +396,7 @@ namespace Tuner.RadioBrowser {
                 }
             }
 
-            warning(@"Results $(results.size)");
+            debug(@"Results $(results.size)");
             return results;
         }
     }   // get_srv_api_servers

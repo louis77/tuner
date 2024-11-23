@@ -45,7 +45,7 @@ public class Tuner.Window : Gtk.Window {    // Gtk.ApplicationWindow {
     public Settings settings { get; construct; }
     public Gtk.Stack stack { get; construct; }
     public PlayerController player { get; construct; }
-    public StarredStationController starred { get; construct; }
+    public DirectoryController directory { get; construct; }
 
 
     /* Private */   
@@ -68,12 +68,14 @@ public class Tuner.Window : Gtk.Window {    // Gtk.ApplicationWindow {
         { ACTION_ENABLE_AUTOPLAY, on_action_enable_autoplay, null, "false" }
     };
 
-    private DirectoryController _directory;
+   // private DirectoryController _directory;
     private HeaderBar _headerbar;
     private Granite.Widgets.SourceList _source_list;    // LHS list
     private bool _started_online = Application.instance.is_online;  // Initial online state
 
     private signal void refresh_favourites_sig ();
+
+    private Gtk.Overlay _overlay; // Declare an overlay
 
 
     /* Construct Static*/
@@ -93,12 +95,12 @@ public class Tuner.Window : Gtk.Window {    // Gtk.ApplicationWindow {
      * @param app The Application instance.
      * @param player The PlayerController instance.
      */
-    public Window (Application app, PlayerController player, Settings settings, StarredStationController starred ) {
+    public Window (Application app, PlayerController player, Settings settings, DirectoryController directory ) {
         Object (
             application: app,
             player: player,
             settings: settings,
-            starred: starred
+            directory: directory
         );
 
         
@@ -122,7 +124,8 @@ public class Tuner.Window : Gtk.Window {    // Gtk.ApplicationWindow {
 
 		size_allocate.connect(on_window_resize);
 
-        //_directory = new DirectoryController (starred);
+        _directory.load ();
+        
         _source_list = new Granite.Widgets.SourceList ();
 
         stack = new Gtk.Stack ();
@@ -184,6 +187,19 @@ public class Tuner.Window : Gtk.Window {    // Gtk.ApplicationWindow {
             Show the window
         */
         show_all ();
+
+        // Initialize the overlay
+        _overlay = new Gtk.Overlay();
+        add(_overlay); // Add the overlay to the window
+
+        // Create your main content (e.g., Gtk.Paned)
+        var primary_box = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
+        _overlay.add(primary_box); // Add the primary box to the overlay
+
+        // ... existing code for setting up the primary_box ...
+
+        // Show all widgets in the overlay
+        _overlay.show_all();
     }
 
     /**
@@ -191,7 +207,7 @@ public class Tuner.Window : Gtk.Window {    // Gtk.ApplicationWindow {
      */
     private void initialize() {
 
-        _directory = new DirectoryController (starred); // loads from online 
+       // _directory = new DirectoryController (starred); // loads from online 
 
         var primary_box = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);
 
@@ -550,10 +566,10 @@ public class Tuner.Window : Gtk.Window {    // Gtk.ApplicationWindow {
             overlay.set_size_request(get_allocated_width(), get_allocated_height());
             overlay.set_opacity(0.5); // Set the opacity to 50%
             overlay.set_sensitive(false); // Make it non-interactive
-            add(overlay); // Add the overlay to the window
+            _overlay.add_overlay(overlay); // Add the overlay to the Gtk.Overlay
         } else {
             // Remove the dimming overlay if it exists
-            foreach (var child in get_children()) {
+            foreach (var child in _overlay.get_children()) {
                 if (child is Gtk.EventBox) {
                     child.destroy(); // Remove the overlay
                 }
