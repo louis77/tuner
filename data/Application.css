@@ -45,3 +45,9 @@
     padding-bottom: 0px;
 }
 
+window.offline { 
+    background: black; 
+}
+window.offline label { 
+    color: darkslategray; 
+}

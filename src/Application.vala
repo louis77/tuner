@@ -47,6 +47,9 @@ public class Tuner.Application : Gtk.Application {
     /** @brief Singleton instance of the Application */
     private static Application _instance = null;
 
+    /** @brief Connectivity monitoring*/
+    private static NetworkMonitor monitor = NetworkMonitor.get_default ();
+
 
     // -------------------------------------
 
@@ -65,6 +68,10 @@ public class Tuner.Application : Gtk.Application {
     
     /** @brief Data directory path */
     public string? data_dir { get; construct; }
+
+
+    /** @brief Are we online */
+    public bool is_online { get; construct; }
 
 
     /** @brief Main application window */
@@ -103,7 +110,7 @@ public class Tuner.Application : Gtk.Application {
         data_dir = stat_dir(Environment.get_user_data_dir ());
 
 
-        warning(@"Directories $(cache_dir) to $(data_dir)");
+        warning(@"Directories $(cache_dir) to $(data_dir) - online: $(monitor.get_network_available ())");
 
         /* 
             Starred file and migration of favorites
@@ -111,7 +118,7 @@ public class Tuner.Application : Gtk.Application {
         var _favorites_file =  File.new_build_filename (data_dir, "favorites.json"); // v1 file
         var _starred_file =  File.new_build_filename (data_dir, Application.STARRED);   // v2 file
 
-        warning(@"Migrate $(_favorites_file.get_path ()) to $(_starred_file.get_path ())");
+        debug(@"Migrate $(_favorites_file.get_path ()) to $(_starred_file.get_path ())");
 
         try {
             _favorites_file.open_readwrite().close ();   // Try to open, if succeeds it exists, if not err - no migration
@@ -123,7 +130,14 @@ public class Tuner.Application : Gtk.Application {
             // Peconditions not met
         }
 
+        /* Wrap network monitoring into a bool property */
+        monitor.network_changed.connect((monitor, available) => {
+            is_online = available;
+        });
+        is_online = monitor.get_network_available ();
 
+
+        /* Init Tuner assets */
         starred = new StarredStationController(_starred_file);
         settings = new Settings (this);
         player = new PlayerController ();
