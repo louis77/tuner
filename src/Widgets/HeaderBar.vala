@@ -217,19 +217,14 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
      */
      public async void update_from_station(Model.Station station) 
      {
-        warning(@"Station value $(_station == null )");
         if (_station_update_lock.trylock())
         {
             try {        
                 // Disconnect previous station signals if any
-                warning(@"Station value 0 $(_station== null)");
                 if (_station != null) {
-                    warning(@"Station value 1 $(_station== null)");
                     _station.notify.disconnect(handle_station_change);
                 }
         
-                warning(@"Station value 2 $(_station== null)");
-
                 // Handle Revealer transition
                 Gtk.Revealer r = (Gtk.Revealer)custom_title;
                 r.transition_type = Gtk.RevealerTransitionType.CROSSFADE;

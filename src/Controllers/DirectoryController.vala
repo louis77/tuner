@@ -52,14 +52,17 @@ public class Tuner.DirectoryController : Object {
             _provider = provider;
             _starred = starred;
         //  } catch (Provider.DataError e) {
-        //      critical (@"Provider unavailable: $(e.message)");
+        //      critical (@"RadioBrowser unavailable");
         //  }
-        //_starred.load();        // TODO Does Load needs to happen after Application creation?
+        _starred.load();        // Load needs to happen after Application creation
+        _provider.initialize ();
     } // DirectoryController
 
     public void load()
     {
         if (_loaded) return;
+
+        _provider.initialize();
         _starred.load();
         _loaded = true;
     } // load
@@ -254,7 +257,7 @@ public class Tuner.StationSet : Object {
     private uint _page_size = 20;
     private bool _more = true;
     private Provider.SearchParams _params;
-    private Provider.API _client;
+    private Provider.API _provider;
     private StarredStationController _starred;
 
     /**
@@ -273,7 +276,7 @@ public class Tuner.StationSet : Object {
         // This disables paging for now
         _page_size = limit;
         _params = params;
-        _client = client;
+        _provider = client;
         _starred = starred;
     }
 
@@ -286,7 +289,7 @@ public class Tuner.StationSet : Object {
     public ArrayList<Model.Station>? next_page () throws SourceError {
         // Fetch one more to determine if source has more items than page size 
         try {
-            var raw_stations = _client.search (_params, _page_size + 1, _offset);
+            var raw_stations = _provider.search (_params, _page_size + 1, _offset);
             // TODO Place filter here?
             // var filtered_stations = raw_stations.filter (filterByCountry);
             var filtered_stations = raw_stations.iterator ();

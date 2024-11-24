@@ -205,6 +205,7 @@ namespace Tuner.Provider {
         public abstract DataError? last_data_error { get; protected set; }
         public virtual void clear_last_error() { last_data_error = null; }
 
+        public abstract bool initialize();
 
         /**
          * @brief Track a station listen event

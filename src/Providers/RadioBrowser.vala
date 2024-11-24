@@ -70,13 +70,17 @@ namespace Tuner.Provider {
      */
     public class RadioBrowser : Object, Provider.API 
     {
-
         public Status status { get; set; }
 
         public DataError? last_data_error { get; set; }
 
+        private const int DEGRADE_CAPITAL = 100;
+        private const int DEGRADE_COST = 7;
 
+        private string? _optionalservers;
+        private ArrayList<string> _servers;
         private string _current_server;
+        private int _degrade = DEGRADE_CAPITAL;
 
         /**
          * @brief Constructor for RadioBrowser Client
@@ -86,39 +90,71 @@ namespace Tuner.Provider {
         public RadioBrowser(string? optionalservers ) 
         {
             Object();
+            _optionalservers = optionalservers;
+        }
 
-            ArrayList<string> servers;
- 
-            if (optionalservers != null) 
+
+        public bool initialize()
+        {
+            if (_optionalservers != null) 
             // Run time server parameter was passed in
             {
-                servers = new Gee.ArrayList<string>.wrap(optionalservers.split(":"));
+                _servers = new Gee.ArrayList<string>.wrap(_optionalservers.split(":"));
             } else 
             // Identify servers from DNS or API
             {
                 try {
-                    servers = get_srv_api_servers();
+                    _servers = get_srv_api_servers();
                 } catch (DataError e) {
                     last_data_error = new DataError.NO_CONNECTION(@"Failed to retrieve API servers: $(e.message)");
                     status = NO_SERVER_LIST;
-                    return;
+                    return false;
                 }
             }
 
-            if (servers.size == 0) {
+            if (_servers.size == 0) {
                 last_data_error = new DataError.NO_CONNECTION("Unable to resolve API servers for radio-browser.info");
                 status = NO_SERVERS_PRESENTED;
-                return;
+                return false;
             }
 
-            // Randomize API server to use
-            // TODO Test server, choose another if necessary
-            var chosen_server = Random.int_range(0, servers.size);
-            _current_server = @"https://$(servers[chosen_server])";
-            warning(@"RadioBrowser Client - Chosen radio-browser.info server: $_current_server");
-
+            choose_server();
             status = OK;
             clear_last_error();
+            return true;
+        }
+
+        private void degrade(bool degraded = true )
+        {
+            if ( !degraded ) 
+            // Track nominal result
+            {
+                _degrade =+ ((_degrade > DEGRADE_CAPITAL) ? 0 : 1);
+            }
+            else
+            // Degraded result
+            {
+                _degrade =- DEGRADE_COST;
+                if ( _degrade < 0 ) 
+                // This server degraded to zero
+                {
+                    choose_server();
+                    _degrade = DEGRADE_CAPITAL;
+                }
+            }
+        }
+
+        private void choose_server()
+        {
+            var chosen_server = Random.int_range(0, _servers.size);
+            for (int a = 0; a < _servers.size; a++)
+            /* Randomly start checking servers, break on first good one */
+            {
+                var server =  (chosen_server + a) %_servers.size;
+                _current_server = @"https://$(_servers[server])";
+                if ( HttpClient.HEAD(_current_server) == 200 ) break;   // Check the server
+            }
+            warning(@"RadioBrowser Client - Chosen radio-browser.info server: $_current_server");
         }
 
         /**
@@ -219,7 +255,6 @@ namespace Tuner.Provider {
             // by text or tags
             var resource = @"$(RBI_SEARCH)?limit=$rowcount&order=$(params.order)&offset=$offset";
 
-            debug(@"Search: $(resource)");
             if (params.text != "") {
                 resource += @"&name=$(params.text)";
             }
@@ -239,7 +274,7 @@ namespace Tuner.Provider {
                 resource += @"&reverse=$(params.reverse)";
             }
 
-            warning(@"Search: $(resource)");
+            debug(@"Search: $(resource)");
             return station_query(resource);
         }
 
@@ -256,7 +291,7 @@ namespace Tuner.Provider {
          * @throw DataError if unable to retrieve or parse station data
          */
         private ArrayList<Model.Station> station_query(string query) throws DataError {
-            warning(@"RB $query");
+            //warning(@"RB $(_current_server)/$(query)");
 
             Json.Node rootnode;
 
@@ -272,15 +307,20 @@ namespace Tuner.Provider {
                     parser.load_from_stream(response, null);
                     rootnode = parser.get_root();
                 } catch (Error e) {
+                    warning(@"RB0 $(_current_server)/$(query)");
                     throw new DataError.PARSE_DATA(@"Unable to parse JSON response: $(e.message)");
                 }
                 var rootarray = rootnode.get_array();
                 var stations = jarray_to_stations(rootarray);
                 return stations;
             } catch (Error e) {
+
+                degrade();
+                warning(@"RB1 $(_current_server)/$(query)");
                 warning(@"Error retrieving stations 1: $(e.message)");
             }
 
+            warning(@"RB2 $(_current_server)/$(query)");
             warning(@"Error retrieving stations 2");
             return new ArrayList<Model.Station>();
         }

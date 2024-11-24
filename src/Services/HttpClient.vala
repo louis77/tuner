@@ -58,6 +58,45 @@ public class Tuner.HttpClient : Object {
     }
 
     /**
+     * @brief Perform a HEAD request to the specified URL
+     *
+     *  Does not sanity check the URL
+     *
+     * @param url_string The URL to send the GET request to     
+     * @return status_code the HTTP status code of the response
+     * @throws Error if there's an error sending the request or receiving the response
+     */
+     public static uint HEAD(string url_string) 
+     {         
+         if ( Application.instance.is_online)
+         { 
+            var msg = new Soup.Message("GET", url_string);
+             /*
+                 Ignore all TLS certificate errors
+             */
+             msg.accept_certificate.connect ((msg, cert, errors) => {
+                 return true;
+             });
+ 
+            try { 
+                 if (Uri.is_valid(url_string, UriFlags.NONE))
+                 {
+                     getSession().send(msg);
+                     return msg.status_code;
+                 } else {
+                     debug("GET - Invalid URL format: %s", url_string);
+                 }
+             } catch (Error e) {
+                 warning("GET - Error accessing URL: %s (%s)",
+                    url_string,
+                     e.message);
+             }
+         }
+         return 0;
+     }
+
+
+     /**
      * @brief Perform a GET request to the specified URL
      *
      * @param url_string The URL to send the GET request to
@@ -69,41 +108,39 @@ public class Tuner.HttpClient : Object {
     {
         status_code = 0;
         
-        if ( Application.instance.is_online)
+        if (url_string == null || url_string.length < 4) // domains are at least 4 chars
         {
-            if (url_string == null || url_string.length < 4) // domains are at least 4 chars
-            {
-                warning("GET - Invalid URL: %s", url_string ?? "null");
-                return null;
-            }
-
-            string sanitized_url = ensure_https_prefix(url_string);
-
-            var msg = new Soup.Message("GET", sanitized_url);
-
-            /*
-                Ignore all TLS certificate errors
-            */
-            msg.accept_certificate.connect ((msg, cert, errors) => {
-                return true;
-            });
-
-            try {
-
-                if (Uri.is_valid(sanitized_url, UriFlags.NONE))
-                {
-                    var inputStream = getSession().send(msg);
-                    status_code = msg.status_code;
-                    return inputStream;
-                } else {
-                    debug("GET - Invalid URL format: %s", sanitized_url);
-                }
-            } catch (Error e) {
-                warning("GET - Error accessing URL: %s (%s)",
-                    sanitized_url,
-                    e.message);
-            }
+            warning("GET - Invalid URL: %s", url_string ?? "null");
+            return null;
         }
+
+        string sanitized_url = ensure_https_prefix(url_string);
+
+        var msg = new Soup.Message("GET", sanitized_url);
+
+        /*
+            Ignore all TLS certificate errors
+        */
+        msg.accept_certificate.connect ((msg, cert, errors) => {
+            return true;
+        });
+
+        try {
+
+            if (Uri.is_valid(sanitized_url, UriFlags.NONE))
+            {
+                var inputStream = getSession().send(msg);
+                status_code = msg.status_code;
+                return inputStream;
+            } else {
+                debug("GET - Invalid URL format: %s", sanitized_url);
+            }
+        } catch (Error e) {
+            warning("GET - Error accessing URL: %s (%s)",
+                sanitized_url,
+                e.message);
+        }
+
         return null;
     }
 
@@ -118,33 +155,31 @@ public class Tuner.HttpClient : Object {
     {
         status_code = 0;
 
-        if ( Application.instance.is_online)
+        var msg = new Soup.Message.from_uri("GET", uri);
+
+        /*
+            Ignore all TLS certificate errors
+        */
+        msg.accept_certificate.connect ((msg, cert, errors) => {
+            return true;
+        });
+
+        uint loop = 1;
+        do 
+        /*
+            Try three times
+        */
         {
-            var msg = new Soup.Message.from_uri("GET", uri);
+            try {
+                var inputStream = yield getSession().send_async(msg, Priority.LOW, null);
+                status_code = msg.status_code;
+                if ( status_code >= 200 && status_code < 300 ) return inputStream;
+            } catch (Error e) {
+                warning(@"GETasync - Try $(loop) failed to fetch: $(uri.to_string()) $(e.message)");
+            }
+            yield Application.nap(200 * loop);   
+        } while( loop++ < 3);
 
-            /*
-                Ignore all TLS certificate errors
-            */
-            msg.accept_certificate.connect ((msg, cert, errors) => {
-                return true;
-            });
-
-            uint loop = 1;
-            do 
-            /*
-                Try three times
-            */
-            {
-                try {
-                    var inputStream = yield getSession().send_async(msg, Priority.LOW, Application.instance.offline_cancel);
-                    status_code = msg.status_code;
-                    if ( status_code >= 200 && status_code < 300 ) return inputStream;
-                } catch (Error e) {
-                    warning(@"GETasync - Try $(loop) failed to fetch: $(uri.to_string()) $(e.message)");
-                }
-                yield Application.nap(200 * loop);   
-            } while( loop++ < 3);
-        }
         warning(@"GETasync - GETasync failed for: $(uri.to_string())");
         return null;
     }

@@ -1,12 +1,9 @@
 /**
- * SPDX-FileCopyrightText: Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
- * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
- *
- * SPDX-License-Identifier: GPL-3.0-or-later
- *
  * @file Application.vala
- *
  * @brief Main application class for the Tuner radio application
+ * @copyright Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
+ * @copyright Copyright © 2024 technosf <https://github.com/technosf>
+ * @license GPL-3.0-or-later
  */
 
 /**
@@ -64,9 +61,7 @@ public class Tuner.Application : Gtk.Application {
     public PlayerController player { get; construct; }  
 
     /** @brief Player controller */
-    //public StarredStationController starred { get; construct; }
-
-    public DirectoryController directory { get; construct; }
+    public StarredStationController starred { get; construct; }
     
     /** @brief Cache directory path */
     public string? cache_dir { get; construct; }
@@ -90,7 +85,7 @@ public class Tuner.Application : Gtk.Application {
 
 
     /** @brief Main application window */
-    public Window window { get; construct; }
+    public Window window;
 
 
     /** @brief Action entries for the application */
@@ -124,20 +119,21 @@ public class Tuner.Application : Gtk.Application {
         cache_dir = stat_dir(Environment.get_user_cache_dir ());
         data_dir = stat_dir(Environment.get_user_data_dir ());
 
-        debug(@"Directories $(cache_dir) to $(data_dir) - online: $(monitor.get_network_available ())");
+
+        warning(@"Directories $(cache_dir) to $(data_dir) - online: $(monitor.get_network_available ())");
 
         /* 
             Starred file and migration of favorites
         */
-        var _favorites_file_path =  File.new_build_filename (data_dir, "favorites.json"); // v1 file
-        var _starred_file_path =  File.new_build_filename (data_dir, Application.STARRED);   // v2 file
+        var _favorites_file =  File.new_build_filename (data_dir, "favorites.json"); // v1 file
+        var _starred_file =  File.new_build_filename (data_dir, Application.STARRED);   // v2 file
 
-        debug(@"Migrate $(_favorites_file_path.get_path ()) to $(_starred_file_path.get_path ())");
+        debug(@"Migrate $(_favorites_file.get_path ()) to $(_starred_file.get_path ())");
 
         try {
-            _favorites_file_path.open_readwrite().close ();   // Try to open, if succeeds it exists, if not err - no migration
-            _starred_file_path.create(NONE); // Try to create, if fails starred already exists, if not ok to migrate
-            _favorites_file_path.copy (_starred_file_path, FileCopyFlags.NONE);  // Copy
+            _favorites_file.open_readwrite().close ();   // Try to open, if succeeds it exists, if not err - no migration
+            _starred_file.create(NONE); // Try to create, if fails starred already exists, if not ok to migrate
+            _favorites_file.copy (_starred_file, FileCopyFlags.NONE);  // Copy
             warning(@"Migrated v1 Favorites to v2 Starred");
         }     
         catch (Error e) {
@@ -145,23 +141,16 @@ public class Tuner.Application : Gtk.Application {
         }
 
         /* Wrap network monitoring into a bool property */
-        offline_cancel =  new GLib.Cancellable ();
         monitor.network_changed.connect((monitor, available) => {
             is_online = available;
         });
         is_online = monitor.get_network_available ();
 
 
-        string _servers = GLib.Environment.get_variable("TUNER_API");  // Get servers from external var
-        Provider.API provider = new Provider.RadioBrowser(_servers);
-
         /* Init Tuner assets */
-        var starred = new StarredStationController(_starred_file_path);
-
+        starred = new StarredStationController(_starred_file);
         settings = new Settings (this);
         player = new PlayerController ();
-        
-        directory = new DirectoryController(provider,starred);
 
         add_action_entries(ACTION_ENTRIES, this);
     } // construct
@@ -188,11 +177,11 @@ public class Tuner.Application : Gtk.Application {
      * @param interval the time to nap
      * @param priority priority of chacking nap is over
      */
-    public static async void nap (uint interval ) {
+    public static async void nap (uint interval, int priority = GLib.Priority.LOW) {
         GLib.Timeout.add (interval, () => {
             nap.callback ();
             return false;
-          }, GLib.Priority.LOW);
+          }, priority);
         yield;
     } // nap
 
@@ -205,8 +194,7 @@ public class Tuner.Application : Gtk.Application {
      */
     protected override void activate() {
         if (window == null) {
-            _window = new Window (this, player, settings, directory);
-            settings.configure ();
+            window = new Window (this, player, settings, starred);
             add_window (window);
             DBus.initialize ();
         } else {
