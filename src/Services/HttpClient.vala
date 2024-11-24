@@ -31,6 +31,8 @@ public class Tuner.HttpClient : Object {
      */
     private static Soup.Session _session;
 
+    //private GLib.Cancellable offline_cancel = Application.instance.offline_cancel;
+
     /**
      * @brief Get the singleton Soup.Session instance
      *
@@ -68,30 +70,30 @@ public class Tuner.HttpClient : Object {
      */
      public static uint HEAD(string url_string) 
      {         
-         if ( Application.instance.is_online)
-         { 
-            var msg = new Soup.Message("GET", url_string);
-             /*
-                 Ignore all TLS certificate errors
-             */
-             msg.accept_certificate.connect ((msg, cert, errors) => {
-                 return true;
-             });
- 
-            try { 
-                 if (Uri.is_valid(url_string, UriFlags.NONE))
-                 {
-                     getSession().send(msg);
-                     return msg.status_code;
-                 } else {
-                     debug("GET - Invalid URL format: %s", url_string);
-                 }
-             } catch (Error e) {
-                 warning("GET - Error accessing URL: %s (%s)",
-                    url_string,
-                     e.message);
-             }
-         }
+         if ( Application.instance.is_offline) return 0;
+
+        var msg = new Soup.Message("GET", url_string);
+            /*
+                Ignore all TLS certificate errors
+            */
+            msg.accept_certificate.connect ((msg, cert, errors) => {
+                return true;
+            });
+
+        try { 
+                if (Uri.is_valid(url_string, UriFlags.NONE))
+                {
+                    getSession().send(msg);
+                    return msg.status_code;
+                } else {
+                    debug("GET - Invalid URL format: %s", url_string);
+                }
+            } catch (Error e) {
+                warning("GET - Error accessing URL: %s (%s)",
+                url_string,
+                    e.message);
+            }
+
          return 0;
      }
 
@@ -108,6 +110,8 @@ public class Tuner.HttpClient : Object {
     {
         status_code = 0;
         
+        if ( Application.instance.is_offline) return null;
+
         if (url_string == null || url_string.length < 4) // domains are at least 4 chars
         {
             warning("GET - Invalid URL: %s", url_string ?? "null");
@@ -155,6 +159,8 @@ public class Tuner.HttpClient : Object {
     {
         status_code = 0;
 
+        if ( Application.instance.is_offline) return null;
+
         var msg = new Soup.Message.from_uri("GET", uri);
 
         /*
@@ -171,7 +177,7 @@ public class Tuner.HttpClient : Object {
         */
         {
             try {
-                var inputStream = yield getSession().send_async(msg, Priority.LOW, null);
+                var inputStream = yield getSession().send_async(msg, Priority.LOW, Application.instance.offline_cancel);
                 status_code = msg.status_code;
                 if ( status_code >= 200 && status_code < 300 ) return inputStream;
             } catch (Error e) {

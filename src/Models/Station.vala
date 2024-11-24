@@ -273,7 +273,7 @@ public class Tuner.Model.Station : Object {
         if ( favicon == null || favicon.length == 0 )
         {
             STATION_FAILING_FAVICON.add(stationuuid);
-            warning(@"$(stationuuid) - Favicon missing");
+            debug(@"$(stationuuid) - Favicon missing");
             return;
         }
                     

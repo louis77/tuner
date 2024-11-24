@@ -72,7 +72,7 @@ public class Tuner.Application : Gtk.Application {
     public GLib.Cancellable offline_cancel { get; construct; }
 
     /** @brief Are we online */
-    private bool _is_online;
+    private bool _is_online = false;
     public bool is_online { get { return _is_online; } 
                             construct {
                                     if ( value ) 
@@ -82,6 +82,7 @@ public class Tuner.Application : Gtk.Application {
                                     _is_online = value;
                                 }
                             }
+    public bool is_offline { get; construct; }      
 
 
     /** @brief Main application window */
@@ -140,14 +141,21 @@ public class Tuner.Application : Gtk.Application {
             // Peconditions not met
         }
 
-        /* Wrap network monitoring into a bool property */
+        /* 
+            Create the cancellable.
+            Wrap network monitoring into a bool property 
+        */
+        offline_cancel = new GLib.Cancellable();
         monitor.network_changed.connect((monitor, available) => {
             is_online = available;
+            is_offline = !available;
         });
         is_online = monitor.get_network_available ();
 
 
-        /* Init Tuner assets */
+        /* 
+            Init Tuner assets 
+        */
         starred = new StarredStationController(_starred_file);
         settings = new Settings (this);
         player = new PlayerController ();

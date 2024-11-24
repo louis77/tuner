@@ -124,6 +124,20 @@ namespace Tuner.Provider {
             return true;
         }
 
+        private void choose_server()
+        {
+            var random_server = Random.int_range(0, _servers.size);
+
+            for (int a = 0; a < _servers.size; a++)
+            /* Randomly start checking servers, break on first good one */
+            {
+                var server =  (random_server + a) %_servers.size;
+                _current_server = @"https://$(_servers[server])";
+                if ( HttpClient.HEAD(_current_server) == 200 ) break;   // Check the server
+            }
+            warning(@"RadioBrowser Client - Chosen radio-browser.info server: $_current_server");
+        }
+
         private void degrade(bool degraded = true )
         {
             if ( !degraded ) 
@@ -142,19 +156,6 @@ namespace Tuner.Provider {
                     _degrade = DEGRADE_CAPITAL;
                 }
             }
-        }
-
-        private void choose_server()
-        {
-            var chosen_server = Random.int_range(0, _servers.size);
-            for (int a = 0; a < _servers.size; a++)
-            /* Randomly start checking servers, break on first good one */
-            {
-                var server =  (chosen_server + a) %_servers.size;
-                _current_server = @"https://$(_servers[server])";
-                if ( HttpClient.HEAD(_current_server) == 200 ) break;   // Check the server
-            }
-            warning(@"RadioBrowser Client - Chosen radio-browser.info server: $_current_server");
         }
 
         /**
