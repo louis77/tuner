@@ -287,6 +287,7 @@ public class Tuner.StationSet : Object {
      * @throws SourceError If the source is unavailable.
      */
     public ArrayList<Model.Station>? next_page () throws SourceError {
+        
         // Fetch one more to determine if source has more items than page size 
         try {
             var raw_stations = _provider.search (_params, _page_size + 1, _offset);
@@ -326,22 +327,6 @@ public class Tuner.StationSet : Object {
         // foreach (var station in raw_stations) {
 
             var station = raw_stations.get ();
-
-            //  var s = new Model.Station (
-            //      station.stationuuid,
-            //      station.name,
-            //      Model.Countries.get_by_code(station.countrycode, station.country),
-            //      station.url_resolved);
-                
-            //  if (_starred.contains (station) && !station.starred) {
-            //      station.toggle_starred();
-            //  }
-
-            //  s.favicon_url = station.favicon;
-            //  s.clickcount = station.clickcount;
-            //  s.homepage = station.homepage;
-            //  s.codec = station.codec;
-            //  s.bitrate = station.bitrate;
 
             station.notify["starred"].connect ( (sender, property) => {
                 if (station.starred) {

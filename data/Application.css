@@ -3,6 +3,10 @@
  * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
  */
 
+ #bg {
+    background-image: url("resource:///tuner-on");
+ }
+
 .h2 {
     font-weight: 300;
     font-size: 18pt;
@@ -45,12 +49,3 @@
     padding-bottom: 0px;
 }
 
-.offline { 
-    background: black; 
-}
-.offline label { 
-    color: darkslategray; 
-}
-.offline image { 
-    opacity: 0.5; 
-}

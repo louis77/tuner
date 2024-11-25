@@ -53,6 +53,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     }
 
     // Public properties
+
+    public Gtk.Overlay tuner_icon { get; private set; }
     public Gtk.Button play_button { get; set; }
     public Gtk.VolumeButton volume_button;
     public Gtk.Image favicon_image { get; private set; }
@@ -119,10 +121,45 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         //
         // Create and configure play button
         //
+
+        tuner_icon = new Gtk.Overlay();
+        var tuner = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+
+        tuner.set_valign(Gtk.Align.CENTER);
+
+        //padded_box.set_margin_top(1);   // 20px padding on the right
+        tuner.set_margin_bottom(5);   // 20px padding on the right
+        tuner.set_margin_start(5);   // 20px padding on the right
+        tuner.set_margin_end(5);   // 20px padding on the right
+        tuner.add(tuner_icon);
+
+        Gtk.Image on = new Gtk.Image.from_icon_name("tuner-on", Gtk.IconSize.DIALOG);
+        Gtk.Image off = new Gtk.Image.from_icon_name("tuner-off", Gtk.IconSize.DIALOG);
+
+
+        //  Gtk.Overlay.set_overlay_pass_through(on, false);
+        //  on.set_halign(Gtk.Align.CENTER);
+        //  on.set_valign(Gtk.Align.CENTER);
+
+
+        tuner_icon.add(off);
+        tuner_icon.add_overlay(on);
+        //tuner_icon.valign = Gtk.Align.CENTER;
+        tuner_icon.valign = Gtk.Align.START;
+
+        off.set_valign(Gtk.Align.CENTER);
+        on.set_valign(Gtk.Align.CENTER);
+
+        off.opacity=0;
+        on.opacity=1.0;
+     
+       
+        //
+        // Create and configure play button
+        //
         play_button = new Gtk.Button ();
         play_button.valign = Gtk.Align.CENTER;
         play_button.action_name = Window.ACTION_PREFIX + Window.ACTION_PAUSE;
-        pack_start (play_button);
 
         
         //
@@ -133,8 +170,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         prefs_button.valign = Gtk.Align.CENTER;
         prefs_button.sensitive = true;
         prefs_button.tooltip_text = _("Preferences");
-        prefs_button.popover = new Tuner.PreferencesPopover();;
-        pack_end (prefs_button);
+        prefs_button.popover = new Tuner.PreferencesPopover();
 
 
         // 
@@ -151,7 +187,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             search_focused_sig ();
             return true;
         });
-        pack_end (searchentry);
 
 
         // 
@@ -167,18 +202,27 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         _star_button.clicked.connect (() => {
             star_clicked_sig (starred);     // FIXME refresh faves?
         });
-        pack_start (_star_button);
 
 
         // 
         // Create and configure volume button
         //
         volume_button = new Gtk.VolumeButton ();
+        volume_button.set_valign(Gtk.Align.CENTER);
+
+        
        // volume_button.value = Application.instance.settings.get_double ("volume");
         //  volume_button.value_changed.connect ((value) => {   // FIXME
         //      Application.instance.settings.set_double ("volume", value);
        // });
+
+
+        pack_start (tuner);
         pack_start (volume_button);
+        pack_start (_star_button);
+        pack_start (play_button);
+        pack_end (prefs_button);
+        pack_end (searchentry);
 
         set_playstate (PlayState.PAUSE_INACTIVE);
     } // construct
@@ -217,6 +261,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
      */
      public async void update_from_station(Model.Station station) 
      {
+        if (Application.instance.is_offline) return;
+        
         if (_station_update_lock.trylock())
         {
             try {        
