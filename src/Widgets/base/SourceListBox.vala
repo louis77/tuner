@@ -31,6 +31,10 @@ using Granite.Widgets;
  */
 public class Tuner.SourceListBox : Gtk.Box {
     
+    //  public string ident { get; construct; }
+
+   // public StationSet data { get; construct; }
+
     /**
      * @property header_label
      * @brief The label displayed in the header of the ContentBox.
@@ -57,6 +61,8 @@ public class Tuner.SourceListBox : Gtk.Box {
     private Gtk.Box _content = base_content();
     private AbstractContentList _content_list;
     private Gtk.Stack _substack = new Gtk.Stack ();
+    private StationSet? _data;
+
 
     
     /**
@@ -76,23 +82,23 @@ public class Tuner.SourceListBox : Gtk.Box {
         string icon,
         string title,
         string subtitle,
-        string? action_icon_name,
+        StationSet? data,
         string? action_tooltip_text,
+        string? action_icon_name,
         bool enable_count) 
     {
         Object (
+            name:name,
             orientation: Gtk.Orientation.VERTICAL,
             spacing: 0
         );
 
-        warning(@"Create: $name");
-        //_title_item = new Granite.Widgets.SourceList.Item (_(title));
+        _data = data;
 
         _icon = new ThemedIcon (icon);
         _list_item = new Granite.Widgets.SourceList.Item (title);
         _list_item.icon = _icon;
-
-       // _substack = new Gtk.Stack ();
+        _list_item.set_data<string> ("stack_child", name);  
 
         var alert = new AlertView (_("Nothing here"), _("Something went wrong loading radio stations data from radio-browser.info. Please try again later."), "dialog-warning");
         //  /*
@@ -132,22 +138,17 @@ public class Tuner.SourceListBox : Gtk.Box {
         });
 
         map.connect (() => {
-            warning (@"SS Selected: $(_list_item.name)");
             source_list.selected = _list_item;
         });
 
-        if (enable_count) {
-            content_changed_sig.connect (() => {
-                if (content == null) return;
-                var count = content.item_count;
-                category.badge = count.to_string ();
-            });
-        }
-
+        //  if (enable_count) {
+        //      content_changed_sig.connect (() => {
+        //          if (content == null) return;
+        //          var count = content.item_count;
+        //          category.badge = count.to_string ();
+        //      });
+        //  }
         category.add (_list_item);  
-        
-        warning (@"SS conn: $(_list_item.name)"); 
-
     } // ContentBox
 
        
@@ -161,6 +162,11 @@ public class Tuner.SourceListBox : Gtk.Box {
         get_style_context ().add_class ("color-dark");
     }
 
+
+    public ArrayList<Model.Station>? next_page () throws SourceError
+    {
+        return _data.next_page();
+    }
 
     /**
      * @brief Displays the alert view in the content area.
@@ -241,8 +247,9 @@ public class Tuner.SourceListBox : Gtk.Box {
         string icon,
         string title,
         string subtitle,
-        string? action_icon_name = null,
-        string? action_tooltip_text = null) 
+        StationSet? data = null,
+        string? action_tooltip_text = null,
+        string? action_icon_name = null) 
         {
             var slb = new SourceListBox(
                  stack,
@@ -252,13 +259,11 @@ public class Tuner.SourceListBox : Gtk.Box {
                  icon,
                  title,
                  subtitle,
-                 action_icon_name,
+                 data,
                 action_tooltip_text,
+                action_icon_name,
                 false);
 
-            category.set_data<string> ("stack_child", name);  
-
-            warning (@"SS Stack: $name");
             stack.add_named (slb, name);
 
             return slb;
@@ -272,8 +277,9 @@ public class Tuner.SourceListBox : Gtk.Box {
         string icon,
         string title,
         string subtitle,
-        string? action_icon_name = null,
-        string? action_tooltip_text = null) 
+        StationSet? data = null,
+        string? action_tooltip_text = null,
+        string? action_icon_name = null) 
         {
             var slb = new SourceListBox(
                     stack,
@@ -283,13 +289,18 @@ public class Tuner.SourceListBox : Gtk.Box {
                     icon,
                     title,
                     subtitle,
-                    action_icon_name,
+                    data,
                 action_tooltip_text,
+                action_icon_name,
                 true);
 
+                slb.content_changed_sig.connect (() => {
+                if (slb.content == null) return;
+                var count = slb.content.item_count;
+                category.badge = count.to_string ();
+            });
+            
 
-            warning (@"SS Stack: $name");
-            category.set_data<string> ("stack_child", name);  
             stack.add_named (slb, name);
 
             return slb;

@@ -183,82 +183,133 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         source_list = new Granite.Widgets.SourceList ();
 
+        // ---------------------------------------------------------------------------
         // Discover Box
-        var item1 = new Granite.Widgets.SourceList.Item (_("Discover"));
-        item1.icon = new ThemedIcon ("face-smile");
-        selections_category.add (item1);
+        //  var item1 = new Granite.Widgets.SourceList.Item (_("Discover"));
+        //  item1.icon = new ThemedIcon ("face-smile");
+        //  selections_category.add (item1);
 
-        var c1 = create_content_box ("discover", item1,
-                            _("Discover Stations"), "media-playlist-shuffle-symbolic",
-                            _("Discover more stations"),
-                            stack, source_list);
-        var s1 = _directory.load_random_stations(20);
-        c1.realize.connect (() => {
+        //  warning(@"xdb1 icon $(item1.name)"); 
+
+        //  var c1 = Xcreate_content_box ("discover", item1,
+        //                      _("Discover Stations"), "media-playlist-shuffle-symbolic",
+        //                      _("Discover more stations"),
+        //                      stack, source_list);
+        //  var s1 = _directory.load_random_stations(20);
+        //  c1.realize.connect (() => {
+        //      try {
+        //          var slist = new StationList.with_stations (s1.next_page ());
+        //          slist.selection_changed.connect (handle_station_click);
+        //          slist.favourites_changed.connect (handle_favourites_changed);
+        //          c1.content = slist;
+        //      } catch (SourceError e) {
+        //          c1.show_alert ();
+        //      }
+        //  });
+        //  c1.action_activated_sig.connect (() => {
+        //      try {
+        //          var slist = new StationList.with_stations (s1.next_page ());
+        //          slist.selection_changed.connect (handle_station_click);
+        //          slist.favourites_changed.connect (handle_favourites_changed);
+        //          c1.content = slist;
+        //      } catch (SourceError e) {
+        //          c1.show_alert ();
+        //      }
+        //  });
+
+        // ---------------------------------------------------------------------------
+        
+        // --------------------------------------------------------
+
+
+        var discover = SourceListBox.create ( stack
+            , source_list
+            ,  selections_category
+            , "discover"
+            , "face-smile"
+            , "Discover"
+            , "Stations to Explore"
+            ,_directory.load_random_stations(20)
+            , "Discover more stations"
+            , "media-playlist-shuffle-symbolic");
+        
+        stack.add_named (discover, discover.name);
+       // var dis_data = _directory.load_random_stations(20);
+        discover.realize.connect (() => {
             try {
-                var slist = new StationList.with_stations (s1.next_page ());
+                var slist = new StationList.with_stations (discover.next_page ());
                 slist.selection_changed.connect (handle_station_click);
                 slist.favourites_changed.connect (handle_favourites_changed);
-                c1.content = slist;
+                discover.content = slist;
             } catch (SourceError e) {
-                c1.show_alert ();
+                discover.show_alert ();
             }
         });
-        c1.action_activated_sig.connect (() => {
+        
+        discover.action_activated_sig.connect (() => {
             try {
-                var slist = new StationList.with_stations (s1.next_page ());
+                var slist = new StationList.with_stations (discover.next_page ());
                 slist.selection_changed.connect (handle_station_click);
                 slist.favourites_changed.connect (handle_favourites_changed);
-                c1.content = slist;
+                discover.content = slist;
             } catch (SourceError e) {
-                c1.show_alert ();
+                discover.show_alert ();
             }
         });
 
+        // --------------------------------------------------------
+        // ---------------------------------------------------------------------------
         /*
             Trending
         */
         // Trending Box
-        var item2 = new Granite.Widgets.SourceList.Item (_("Trending"));
-        item2.icon = new ThemedIcon ("playlist-queue");
-        selections_category.add (item2);
+        var trending = SourceListBox.create ( stack
+            , source_list
+            ,  selections_category
+            , "trending"
+            , "playlist-queue"
+            , "Trending"
+            , "Trending in the last 24 hours"
+        ,_directory.load_trending_stations(40));
 
-        var c2 = create_content_box ("trending", item2,
-                            _("Trending in the last 24 hours"), null, null,
-                            stack, source_list);
-        var s2 = _directory.load_trending_stations(40);
-        c2.realize.connect (() => {
+       // var s2 = _directory.load_trending_stations(40);
+        trending.realize.connect (() => {
             try {
-                var slist = new StationList.with_stations (s2.next_page ());
+                var slist = new StationList.with_stations (trending.next_page ());
                 slist.selection_changed.connect (handle_station_click);
                 slist.favourites_changed.connect (handle_favourites_changed);
-                c2.content = slist;
+                trending.content = slist;
             } catch (SourceError e) {
-                c2.show_alert ();
+                trending.show_alert ();
             }
 
         });
 
+        // ---------------------------------------------------------------------------
         // Popular Box
-        var item3 = new Granite.Widgets.SourceList.Item (_("Popular"));
-        item3.icon = new ThemedIcon ("playlist-similar");
-        selections_category.add (item3);
+        var popular = SourceListBox.create ( stack
+            , source_list
+            ,  selections_category
+            , "popular"
+            , "playlist-similar"
+            , "Popular"
+            , "Most-listened over 24 hours"
+        ,_directory.load_popular_stations(40));
 
-        var c3 = create_content_box ("popular", item3,
-                            _("Most-listened over 24 hours"), null, null,
-                            stack, source_list);
-        var s3 = _directory.load_popular_stations(40);
-        c3.realize.connect (() => {
+        popular.realize.connect (() => {
             try {
-                var slist = new StationList.with_stations (s3.next_page ());
+                var slist = new StationList.with_stations (popular.next_page ());
                 slist.selection_changed.connect (handle_station_click);
                 slist.favourites_changed.connect (handle_favourites_changed);
-                c3.content = slist;
+                popular.content = slist;
             } catch (SourceError e) {
-                c3.show_alert ();
+                popular.show_alert ();
             }
         });
 
+        // ---------------------------------------------------------------------------
         // Country-specific stations list
+        
         var item4 = new Granite.Widgets.SourceList.Item (_("Your Country"));
         item4.icon = new ThemedIcon ("emblem-web");
         ContentBox c_country;
@@ -282,7 +333,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         slist.favourites_changed.connect (handle_favourites_changed);
         c4.content = slist;
 
+        // ---------------------------------------------------------------------------
         // Search Results Box
+        
         var item6 = new Granite.Widgets.SourceList.Item (_("Recent Search"));
         item6.icon = new ThemedIcon ("folder-saved-search");
         searched_category.add (item6);
@@ -290,6 +343,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                             _("Search"), null, null,
                             stack, source_list, true);
 
+        // ---------------------------------------------------------------------------
         // Genre Boxes
         foreach (var genre in Model.genres ()) {
             var item8 = new Granite.Widgets.SourceList.Item (_(genre.name));
@@ -333,6 +387,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             stack.visible_child_name = selected_item;
         });
 
+        // ---------------------------------------------------------------------------
         // FIXME Should be in HeaderBar??
         _headerbar.searched_for_sig.connect ( (text) => {
             if (text.length > 0) {
@@ -390,38 +445,70 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @param enable_count Whether to enable item counting for the content box.
      * @return The created ContentBox.
      */
-    private ContentBox create_content_box (
-             string name,
-             Granite.Widgets.SourceList.Item item,
-             string full_title,
-             string? action_icon_name,
-             string? action_tooltip_text,
-             Gtk.Stack stack,
-             Granite.Widgets.SourceList source_list,
-             bool enable_count = false) 
-    {
-        item.set_data<string> ("stack_child", name);
-        var c = new ContentBox (
-            null,
-            full_title,
-            null,
-            action_icon_name,
-            action_tooltip_text
-        );
-        c.map.connect (() => {
-            source_list.selected = item;
-        });
-        if (enable_count) {
-            c.content_changed_sig.connect (() => {
-                if (c.content == null) return;
-                var count = c.content.item_count;
-                item.badge = @"$count";
-            });
-        }
-        stack.add_named (c, name);
+     private ContentBox create_content_box (
+        string name,
+        Granite.Widgets.SourceList.Item item,
+        string full_title,
+        string? action_icon_name,
+        string? action_tooltip_text,
+        Gtk.Stack stack,
+        Granite.Widgets.SourceList source_list,
+        bool enable_count = false) 
+{
+   item.set_data<string> ("stack_child", name);
+   var c = new ContentBox (
+       null,
+       full_title,
+       null,
+       action_icon_name,
+       action_tooltip_text
+   );
+   c.map.connect (() => {
+       source_list.selected = item;
+   });
+   if (enable_count) {
+       c.content_changed_sig.connect (() => {
+           if (c.content == null) return;
+           var count = c.content.item_count;
+           item.badge = @"$count";
+       });
+   }
+   stack.add_named (c, name);
 
-        return c;
-    } // create_content_box
+   return c;
+} // create_content_box
+
+
+//  private ContentBox Xcreate_content_box (
+//      string name,
+//      Granite.Widgets.SourceList.Item item,
+//      string full_title,
+//      string? action_icon_name,
+//      string? action_tooltip_text,
+//      Gtk.Stack stack,
+//      Granite.Widgets.SourceList source_list,
+//      bool enable_count = false) 
+//  {
+//   warning(@"xccb stack_child $(name)");   
+//  item.set_data<string> ("stack_child", name);
+//  var c = new ContentBox (
+//     null,
+//     full_title,
+//     null,
+//     action_icon_name,
+//     action_tooltip_text
+//  );
+//  c.map.connect (() => {
+
+//   warning(@"xccb selected $(item.name)");  
+//     source_list.selected = item;
+//  });
+
+//  warning(@"xccb stack add: $(name)"); 
+//  stack.add_named (c, name);
+
+//  return c;
+//  } // create_content_box
 
 
     /**
