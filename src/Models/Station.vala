@@ -355,7 +355,7 @@ public class Tuner.Model.Station : Object {
                 return;
 
             } catch (Error e) {
-                warning(@"$(stationuuid) - Failed to process favicon $(_favicon_uri.to_string()) - $(e.message)");
+                debug(@"$(stationuuid) - Failed to process favicon $(_favicon_uri.to_string()) - $(e.message)");
             }
         }
         warning(@"$(stationuuid) - Failed to load favicon $(_favicon_uri.to_string()) - Status code: $(status_code)");
@@ -370,7 +370,7 @@ public class Tuner.Model.Station : Object {
      * @param {bool} reload - Whether to force reload the favicon from source.
      * @return {bool} True if the favicon was available and the image updated.
      */
-    public async void update_favicon_image( Gtk.Image favicon_image, bool reload = false, string defaulticon = "")
+    public async bool update_favicon_image( Gtk.Image favicon_image, bool reload = false, string defaulticon = "")
     {
         if (reload && favicon_loaded < 2 ) 
         /*
@@ -388,13 +388,13 @@ public class Tuner.Model.Station : Object {
                 yield fade(favicon_image, FADE_MS, false);
                 favicon_image.set_from_icon_name(defaulticon,Gtk.IconSize.DIALOG);
                 yield fade(favicon_image, FADE_MS, true);
-                return;
+                return true;
             }
 
             yield fade(favicon_image, FADE_MS, false);
             favicon_image.set_from_pixbuf(_favicon_pixbuf);
             yield fade(favicon_image, FADE_MS, true);
-
+            return true;
         } finally {
             favicon_image.opacity = 1;
         }

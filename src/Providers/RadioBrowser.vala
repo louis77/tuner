@@ -32,6 +32,7 @@ namespace Tuner.Provider {
     private const string SRV_DOMAIN     = "radio-browser.info";
 
     private const string RBI_ALL_API    = "https://all.api.radio-browser.info";    // Round-robin API address
+    private const string RBI_STATS      = "json/stats";
     private const string RBI_SERVERS    = "json/servers";
 
     // RB Queries
@@ -70,10 +71,6 @@ namespace Tuner.Provider {
      */
     public class RadioBrowser : Object, Provider.API 
     {
-        public Status status { get; set; }
-
-        public DataError? last_data_error { get; set; }
-
         private const int DEGRADE_CAPITAL = 100;
         private const int DEGRADE_COST = 7;
 
@@ -81,6 +78,14 @@ namespace Tuner.Provider {
         private ArrayList<string> _servers;
         private string _current_server;
         private int _degrade = DEGRADE_CAPITAL;
+        private int _available_tags = 1000;     // default guess
+
+        public Status status { get; set; }
+
+        public DataError? last_data_error { get; set; }
+
+        public int available_tags() { return _available_tags; }
+
 
         /**
          * @brief Constructor for RadioBrowser Client
@@ -121,42 +126,9 @@ namespace Tuner.Provider {
             choose_server();
             status = OK;
             clear_last_error();
+            stats();
             return true;
-        }
-
-        private void choose_server()
-        {
-            var random_server = Random.int_range(0, _servers.size);
-
-            for (int a = 0; a < _servers.size; a++)
-            /* Randomly start checking servers, break on first good one */
-            {
-                var server =  (random_server + a) %_servers.size;
-                _current_server = @"https://$(_servers[server])";
-                if ( HttpClient.HEAD(_current_server) == 200 ) break;   // Check the server
-            }
-            warning(@"RadioBrowser Client - Chosen radio-browser.info server: $_current_server");
-        }
-
-        private void degrade(bool degraded = true )
-        {
-            if ( !degraded ) 
-            // Track nominal result
-            {
-                _degrade =+ ((_degrade > DEGRADE_CAPITAL) ? 0 : 1);
-            }
-            else
-            // Degraded result
-            {
-                _degrade =- DEGRADE_COST;
-                if ( _degrade < 0 ) 
-                // This server degraded to zero
-                {
-                    choose_server();
-                    _degrade = DEGRADE_CAPITAL;
-                }
-            }
-        }
+        } // initialize
 
         /**
          * @brief Track a station listen event
@@ -189,12 +161,15 @@ namespace Tuner.Provider {
          * @return ArrayList of Tag objects
          * @throw DataError if unable to retrieve or parse tag data
          */
-         public ArrayList<Tag> get_tags() throws DataError {
+         public Set<Tag> get_tags(int offset, int limit) throws DataError {
             Json.Node rootnode;
-
             try {
                 uint status_code;
-                var stream = HttpClient.GET(@"$(_current_server)/$(RBI_TAGS)", out status_code);
+                var query = @"$(RBI_TAGS)";
+                if (offset > 0) query = @"$query/?offset=$offset";
+                if (limit > 0) query = @"$query&limit=$limit";
+
+               var stream = HttpClient.GET(@"$(_current_server)/$(query)", out status_code);
 
                 debug(@"response from radio-browser.info: $(status_code)");
 
@@ -212,7 +187,7 @@ namespace Tuner.Provider {
                 debug("cannot get_tags()");
             }
 
-            return new ArrayList<Tag>();
+            return new HashSet<Tag>();
         }
 
 
@@ -227,7 +202,7 @@ namespace Tuner.Provider {
             if (result.size == 0) {
                 return null;
             }
-            return result[0];
+            return result.to_array()[0];
         }
 
 
@@ -240,10 +215,10 @@ namespace Tuner.Provider {
          * @return ArrayList of Station objects matching the search criteria
          * @throw DataError if unable to retrieve or parse station data
          */
-         public ArrayList<Model.Station> search(SearchParams params, uint rowcount, uint offset = 0) throws DataError {
+         public Set<Model.Station> search(SearchParams params, uint rowcount, uint offset = 0) throws DataError {
             // by uuids
             if (params.uuids != null) {
-                var stations = new ArrayList<Model.Station>();
+                var stations = new HashSet<Model.Station>();
                 foreach (var uuid in params.uuids) {
                     var station = this.by_uuid(uuid);
                     if (station != null) {
@@ -261,7 +236,7 @@ namespace Tuner.Provider {
             }
 
             if (params.tags.size > 0) {
-                string tag_list = params.tags[0];
+                string tag_list = params.tags.to_array()[0];
                 if (params.tags.size > 1) {
                     tag_list = string.joinv(",", params.tags.to_array());
                 }
@@ -284,6 +259,65 @@ namespace Tuner.Provider {
             Private
             ---------------------------------------------------------------*/
 
+            private void choose_server()
+            {
+                var random_server = Random.int_range(0, _servers.size);
+    
+                for (int a = 0; a < _servers.size; a++)
+                /* Randomly start checking servers, break on first good one */
+                {
+                    var server =  (random_server + a) %_servers.size;
+                    _current_server = @"https://$(_servers[server])";
+                    if ( HttpClient.HEAD(_current_server) == 200 ) break;   // Check the server
+                }
+                warning(@"RadioBrowser Client - Chosen radio-browser.info server: $_current_server");
+            }
+    
+            private void degrade(bool degraded = true )
+            {
+                if ( !degraded ) 
+                // Track nominal result
+                {
+                    _degrade =+ ((_degrade > DEGRADE_CAPITAL) ? 0 : 1);
+                }
+                else
+                // Degraded result
+                {
+                    _degrade =- DEGRADE_COST;
+                    if ( _degrade < 0 ) 
+                    // This server degraded to zero
+                    {
+                        choose_server();
+                        _degrade = DEGRADE_CAPITAL;
+                    }
+                }
+            }
+    
+        /**
+         * @brief Retrieve server stats
+         *
+         */
+         private void stats() 
+         {
+            uint status_code;
+            Json.Node rootnode;
+
+            var response = HttpClient.GET(@"$(_current_server)/$(RBI_STATS)", out status_code);
+
+            try {
+                var parser = new Json.Parser();
+                parser.load_from_stream(response, null);
+                rootnode = parser.get_root();
+                Json.Object json_object = rootnode.get_object();
+                _available_tags = (int)json_object.get_int_member("tags");
+            } catch (Error e) {
+                warning(@"Could not get server stats: $(e.message)");
+            }
+
+            debug(@"response: $(status_code)");
+        }
+
+            
         /**
          * @brief Get stations by querying the API
          *
@@ -291,7 +325,7 @@ namespace Tuner.Provider {
          * @return ArrayList of Station objects
          * @throw DataError if unable to retrieve or parse station data
          */
-        private ArrayList<Model.Station> station_query(string query) throws DataError {
+        private Set<Model.Station> station_query(string query) throws DataError {
             //warning(@"RB $(_current_server)/$(query)");
 
             Json.Node rootnode;
@@ -323,24 +357,28 @@ namespace Tuner.Provider {
 
             warning(@"RB2 $(_current_server)/$(query)");
             warning(@"Error retrieving stations 2");
-            return new ArrayList<Model.Station>();
+            return new HashSet<Model.Station>();
         }
 
 
         /**
          * @brief Marshals JSON array data into an array of Station
          *
+         * Not knowing what the produce did, allow null data
+         *
          * @param data JSON array containing station data
          * @return ArrayList of Station objects
          */
-        private ArrayList<Model.Station> jarray_to_stations(Json.Array data) {
-            var stations = new ArrayList<Model.Station>();
+        private Set<Model.Station> jarray_to_stations(Json.Array data) {
+            var stations = new HashSet<Model.Station>();
 
-            data.foreach_element((array, index, element) => {
-                Model.Station s = Model.Station.make(element);
-                stations.add(s);
-            });
-
+            if ( data != null )
+            {
+                data.foreach_element((array, index, element) => {
+                    Model.Station s = Model.Station.make(element);
+                    stations.add(s);
+                });
+            }
             return stations;
         } // jarray_to_stations
 
@@ -354,19 +392,25 @@ namespace Tuner.Provider {
             return Json.gobject_deserialize(typeof(Tag), node) as Tag;
         } // jnode_to_tag
 
+
         /**
          * @brief Marshals JSON tag data into an array of Tag
+         *
+         * Not knowing what the produce did, allow null data
          *
          * @param data JSON array containing tag data
          * @return ArrayList of Tag objects
          */
-        private ArrayList<Tag> jarray_to_tags(Json.Array data) {
-            var tags = new ArrayList<Tag>();
+        private Set<Tag> jarray_to_tags(Json.Array? data) {
+            var tags = new HashSet<Tag>();
 
-            data.foreach_element((array, index, element) => {
-                Tag s = jnode_to_tag(element);
-                tags.add(s);
-            });
+            if ( data != null )
+            {
+                data.foreach_element((array, index, element) => {
+                    Tag s = jnode_to_tag(element);
+                    tags.add(s);
+                });
+            }
 
             return tags;
         }   // jarray_to_tags

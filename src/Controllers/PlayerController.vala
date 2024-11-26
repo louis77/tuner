@@ -13,7 +13,7 @@
  */
 public class Tuner.PlayerController : Object {
     private Model.Station _station;
-    private Gst.PlayerState? _current_state = Gst.PlayerState.STOPPED;
+    private Gst.PlayerState _current_state = Gst.PlayerState.STOPPED;
     public Gst.Player player;
     public string currentTitle = " ";
 
@@ -51,7 +51,7 @@ public class Tuner.PlayerController : Object {
     /** 
      * @return The current state of the player.
      */
-    public Gst.PlayerState? current_state { 
+    public Gst.PlayerState current_state { 
         get {
             return _current_state;
         }

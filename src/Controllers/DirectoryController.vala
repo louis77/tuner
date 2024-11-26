@@ -27,7 +27,7 @@ public errordomain SourceError {
  * @return An ArrayList of RadioBrowser.Station objects.
  * @throws SourceError If the source is unavailable.
  */
-public delegate ArrayList<Model.Station> Tuner.FetchType(uint offset, uint limit) throws SourceError;
+//public delegate ArrayList<Model.Station> Tuner.FetchType(uint offset, uint limit) throws SourceError;
 
 
 /**
@@ -35,12 +35,14 @@ public delegate ArrayList<Model.Station> Tuner.FetchType(uint offset, uint limit
  */
 public class Tuner.DirectoryController : Object {
 
+    private const int TAG_COUNT = 10000;
+
     //private RadioBrowser.Client? _provider { get; set; }
     private Provider.API _provider;
     private StarredStationController _starred;
     private bool _loaded = false;
 
-    public signal void tags_updated (ArrayList<Provider.Tag> tags);
+    public signal void tags_updated (Set<Provider.Tag> tags);
 
     /**
      * @brief Constructor for DirectoryController.
@@ -95,10 +97,10 @@ public class Tuner.DirectoryController : Object {
      * @return A StationSet object for the requested station.
      */
     public StationSet load_station_uuid (string uuid) {
-        string[] lps_arr = { uuid }; 
         var params = Provider.SearchParams() {
-            uuids = new ArrayList<string>.wrap (lps_arr)
+            uuids = new HashSet<string>()
         };
+        params.uuids.add (uuid);
         var source = new StationSet(1, params, _provider, _starred);
         return source;
     } // load_station_uuid
@@ -113,7 +115,7 @@ public class Tuner.DirectoryController : Object {
         var params = Provider.SearchParams() {
             text  = "",
             countrycode = "",
-            tags  = new ArrayList<string>(),
+            tags  = new HashSet<string>(),
             order = Provider.SortOrder.RANDOM
         };
         var source = new StationSet(limit, params, _provider, _starred);
@@ -130,7 +132,7 @@ public class Tuner.DirectoryController : Object {
         var params = Provider.SearchParams() {
             text    = "",
             countrycode = "",
-            tags    = new ArrayList<string>(),
+            tags    = new HashSet<string>(),
             order   = Provider.SortOrder.CLICKTREND,
             reverse = true
         };
@@ -148,7 +150,7 @@ public class Tuner.DirectoryController : Object {
         var params = Provider.SearchParams() {
             text    = "",
             countrycode = "",
-            tags    = new ArrayList<string>(),
+            tags    = new HashSet<string>(),
             order   = Provider.SortOrder.CLICKCOUNT,
             reverse = true
         };
@@ -167,7 +169,7 @@ public class Tuner.DirectoryController : Object {
         var params = Provider.SearchParams () {
             text        = "",
             countrycode = countrycode,
-            tags  = new ArrayList<string>(),
+            tags  = new HashSet<string>(),
             order   = Provider.SortOrder.CLICKCOUNT,
             reverse = true
         };
@@ -182,11 +184,11 @@ public class Tuner.DirectoryController : Object {
      * @param limit The maximum number of stations to load.
      * @return A StationSet object with stations matching the search text.
      */
-    public StationSet load_search_stations (owned string utext, uint limit) {
+    public StationSet load_search_stations (string utext, uint limit) {
         var params = Provider.SearchParams() {
             text    = utext,
             countrycode = "",
-            tags    = new ArrayList<string>(),
+            tags    = new HashSet<string>(),
             order   = Provider.SortOrder.CLICKCOUNT,
             reverse = true
         };
@@ -209,7 +211,13 @@ public class Tuner.DirectoryController : Object {
      * @param utags An ArrayList of tags to filter stations.
      * @return A StationSet object with stations matching the given tags.
      */
-    public StationSet load_by_tags (owned ArrayList<string> utags) {
+    public StationSet load_by_tags (string[] utags) {
+        Set<string> tags = new HashSet<string>();
+        foreach (var a in utags) { tags.add(a); }
+        return load_by_tag_set(tags);
+    }
+
+    public StationSet load_by_tag_set (Set<string> utags) {
         var params = Provider.SearchParams() {
             text    = "",
             countrycode = "",
@@ -247,6 +255,23 @@ public class Tuner.DirectoryController : Object {
             warning (@"Load tags failed with error: $(e.message)");
         }
     } // load_tags
+
+    
+    public Set<Provider.Tag> load_random_genres(int genres)
+    {
+        Set<Provider.Tag> result = new HashSet<Provider.Tag>();
+
+        while (result.size < genres)
+        {
+            try {
+                var offset = Random.int_range(0, _provider.available_tags());
+               // , _provider.available_tags());
+                var tag = _provider.get_tags (offset,1); // Get a random tag
+                result.add_all (tag);
+            } catch ( Error e) {}
+        }
+        return result;
+    }
 } // DirectoryController
 
 /**
@@ -286,7 +311,7 @@ public class Tuner.StationSet : Object {
      * @return An ArrayList of Model.Station objects.
      * @throws SourceError If the source is unavailable.
      */
-    public ArrayList<Model.Station>? next_page () throws SourceError {
+    public Set<Model.Station>? next_page () throws SourceError {
         
         // Fetch one more to determine if source has more items than page size 
         try {
@@ -298,7 +323,7 @@ public class Tuner.StationSet : Object {
             var stations = convert_stations (filtered_stations);
             _offset += _page_size;
             _more = stations.size > _page_size;
-            if (_more) stations.remove_at( (int)_page_size);
+            if (_more) stations.remove(stations.to_array ()[(int)_page_size]);
             return stations;    
         } catch (Provider.DataError e) {
             throw new SourceError.UNAVAILABLE("Directory Error");
@@ -313,6 +338,8 @@ public class Tuner.StationSet : Object {
     public bool has_more () {
         return _more;
     }
+    
+
 
     /**
      * @brief Convert RadioBrowser.Station objects to Model.Station objects.
@@ -320,8 +347,8 @@ public class Tuner.StationSet : Object {
      * @param raw_stations An iterator of RadioBrowser.Station objects.
      * @return An ArrayList of converted Model.Station objects.
      */
-    private ArrayList<Model.Station> convert_stations (Iterator<Model.Station> raw_stations) {
-        var stations = new ArrayList<Model.Station> ();
+    private Set<Model.Station> convert_stations (Iterator<Model.Station> raw_stations) {
+        var stations = new HashSet<Model.Station> ();
         
         while (raw_stations.next()) {
         // foreach (var station in raw_stations) {

@@ -163,7 +163,7 @@ public class Tuner.SourceListBox : Gtk.Box {
     }
 
 
-    public ArrayList<Model.Station>? next_page () throws SourceError
+    public Set<Model.Station>? next_page () throws SourceError
     {
         return _data.next_page();
     }
@@ -269,41 +269,41 @@ public class Tuner.SourceListBox : Gtk.Box {
             return slb;
         }    
 
-    public static SourceListBox create_count(
-        Gtk.Stack stack,
-        SourceList source_list,
-        SourceList.ExpandableItem category,
-        string name,
-        string icon,
-        string title,
-        string subtitle,
-        StationSet? data = null,
-        string? action_tooltip_text = null,
-        string? action_icon_name = null) 
-        {
-            var slb = new SourceListBox(
-                    stack,
-                    source_list,
-                    category,
-                    name,
-                    icon,
-                    title,
-                    subtitle,
-                    data,
-                action_tooltip_text,
-                action_icon_name,
-                true);
+    //  public static SourceListBox create_count(
+    //      Gtk.Stack stack,
+    //      SourceList source_list,
+    //      SourceList.ExpandableItem category,
+    //      string name,
+    //      string icon,
+    //      string title,
+    //      string subtitle,
+    //      StationSet? data = null,
+    //      string? action_tooltip_text = null,
+    //      string? action_icon_name = null) 
+    //      {
+    //          var slb = new SourceListBox(
+    //                  stack,
+    //                  source_list,
+    //                  category,
+    //                  name,
+    //                  icon,
+    //                  title,
+    //                  subtitle,
+    //                  data,
+    //              action_tooltip_text,
+    //              action_icon_name,
+    //              true);
 
-                slb.content_changed_sig.connect (() => {
-                if (slb.content == null) return;
-                var count = slb.content.item_count;
-                category.badge = count.to_string ();
-            });
+    //              slb.content_changed_sig.connect (() => {
+    //              if (slb.content == null) return;
+    //              var count = slb.content.item_count;
+    //              category.badge = count.to_string ();
+    //          });
             
 
-            stack.add_named (slb, name);
+    //          stack.add_named (slb, name);
 
-            return slb;
-        }
+    //          return slb;
+    //      }
 
 }

@@ -278,12 +278,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 r.set_reveal_child(false);
         
                 // Begin favicon update (non-blocking)
-                station.update_favicon_image.begin(favicon_image, true, DEFAULT_ICON_NAME);
+                yield station.update_favicon_image(favicon_image, true, DEFAULT_ICON_NAME);
         
-                // Simulate a delay and check for cancellation
-                yield Application.nap(REVEAL_DELAY * 2);
-        
-                r.hide();
+                r.hide();   // Waits for reveal to be hiden
         
                 // Update station details
                 _station = station;
@@ -293,8 +290,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 subtitle = _("Playing");
                 starred = station.starred;
 
-                r.show();
+                r.show();              
                 r.set_reveal_child(true);
+
             }
             finally 
             {

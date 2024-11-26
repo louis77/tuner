@@ -40,10 +40,10 @@ namespace Tuner.Provider {
         string text;
 
         /** @brief List of tags to filter stations by */
-        ArrayList<string> tags;
+        Set<string> tags;
 
         /** @brief List of specific station UUIDs to retrieve */
-        ArrayList<string> uuids;
+        Set<string> uuids;
 
         /** @brief ISO country code to filter stations by */
         string countrycode;
@@ -202,7 +202,11 @@ namespace Tuner.Provider {
         }
 
         public abstract Status status { get; protected set; }
+
         public abstract DataError? last_data_error { get; protected set; }
+
+        public abstract int available_tags();   // Number of tags available
+
         public virtual void clear_last_error() { last_data_error = null; }
 
         public abstract bool initialize();
@@ -228,7 +232,8 @@ namespace Tuner.Provider {
          * @return ArrayList of Tag objects
          * @throw DataError if unable to retrieve or parse tag data
          */
-         public abstract ArrayList<Tag> get_tags() throws DataError;
+         public abstract Set<Tag> get_tags(int offset = 0, int limit = 0) throws DataError;
+         //public abstract Tag> get_tag_by_offset() throws DataError;
 
 
         /**
@@ -249,6 +254,6 @@ namespace Tuner.Provider {
          * @return ArrayList of Station objects matching the search criteria
          * @throw DataError if unable to retrieve or parse station data
          */
-         public abstract ArrayList<Model.Station> search(SearchParams params, uint rowcount, uint offset = 0) throws DataError;
+         public abstract Set<Model.Station> search(SearchParams params, uint rowcount, uint offset = 0) throws DataError;
     }
 }
