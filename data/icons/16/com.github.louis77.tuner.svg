@@ -32,18 +32,18 @@
    id="namedview60"
    showgrid="false"
    inkscape:zoom="14.75"
-   inkscape:cx="8"
+   inkscape:cx="8.0338983"
    inkscape:cy="8"
-   inkscape:window-x="0"
-   inkscape:window-y="360"
+   inkscape:window-x="27"
+   inkscape:window-y="86"
    inkscape:window-maximized="0"
-   inkscape:current-layer="Layer_2"
+   inkscape:current-layer="svg3473"
    inkscape:showpageshadow="2"
    inkscape:pagecheckerboard="0"
    inkscape:deskcolor="#d1d1d1" /><metadata
    id="metadata3479"><rdf:RDF><cc:Work
        rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
    id="defs3477" />
 <style
    type="text/css"
@@ -73,7 +73,7 @@
 </g>
 <g
    id="Layer_2"
-   transform="translate(0,-2)">
+   transform="matrix(1.0056817,0,0,0.9999276,5.0286435e-4,-1.9992104)">
 	
 	
 		<radialGradient
@@ -96,7 +96,7 @@
    class="st5"
    d="M 13.9,14.5 H 2.1 C 1.2,14.5 0.5,13.8 0.5,12.9 V 6.1 C 0.5,5.2 1.2,4.5 2.1,4.5 h 11.7 c 0.9,0 1.6,0.7 1.6,1.6 v 6.7 c 0.1,1 -0.6,1.7 -1.5,1.7 z"
    id="path3408"
-   style="fill:url(#SVGID_4_);stroke:#910e38;stroke-width:1.00100005"
+   style="fill:url(#SVGID_4_);stroke:#910e38;stroke-width:1.001"
    inkscape:connector-curvature="0" />
 	
 		<linearGradient
@@ -193,7 +193,7 @@
    x2="6.8000002"
    y2="9.5"
    id="line3434"
-   style="fill:none;stroke:#de3e80;stroke-width:0.27379999;stroke-miterlimit:10" />
+   style="fill:none;stroke:#de3e80;stroke-width:0.2738;stroke-miterlimit:10" />
 	</g>
 	<g
    id="g3454">
@@ -250,7 +250,8 @@
    cx="8.1000004"
    cy="12.3"
    r="1.5"
-   id="circle3452" />
+   id="circle3452"
+   style="fill:url(#SVGID_8_)" />
 	</g>
 	<g
    id="g3458">

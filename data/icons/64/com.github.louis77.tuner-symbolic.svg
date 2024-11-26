@@ -7,9 +7,9 @@
    style="enable-background:new 0 0 64 64;"
    xml:space="preserve"
    id="svg1076"
-   sodipodi:docname="com.github.louis77.tuner.svg"
+   sodipodi:docname="com.github.louis77.tuner-symbolic.svg"
    inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
-   inkscape:export-filename="com.github.louis77.tuner.png"
+   inkscape:export-filename="com.github.louis77.tuner-symbolic.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -27,15 +27,15 @@
    guidetolerance="10"
    inkscape:pageopacity="0"
    inkscape:pageshadow="2"
-   inkscape:window-width="1145"
-   inkscape:window-height="735"
+   inkscape:window-width="1236"
+   inkscape:window-height="717"
    id="namedview99"
    showgrid="false"
-   inkscape:zoom="3.6875"
-   inkscape:cx="32.677966"
-   inkscape:cy="30.508475"
-   inkscape:window-x="76"
-   inkscape:window-y="41"
+   inkscape:zoom="7.375"
+   inkscape:cx="29.966102"
+   inkscape:cy="27.728814"
+   inkscape:window-x="204"
+   inkscape:window-y="206"
    inkscape:window-maximized="0"
    inkscape:current-layer="svg1076"
    inkscape:showpageshadow="2"
@@ -72,15 +72,17 @@
 </style>
 <g
    id="Layer_1"
-   class="st0">
+   class="st0"
+   sodipodi:insensitive="true">
 	<path
    class="st1"
-   d="M64,47.1H0 M64,49.1H0 M64,51.1H0 M64,46.1H0 M64,48.1H0 M64,50.1H0 M64,41.1H0 M64,43.1H0 M64,45.1H0    M64,40.1H0 M64,42.1H0 M64,44.1H0 M64,35.1H0 M64,37.1H0 M64,39.1H0 M64,34.1H0 M64,36.1H0 M64,38.1H0 M64,29.1H0 M64,31.1H0    M64,33.1H0 M64,28.1H0 M64,30.1H0 M64,32.1H0 M64,23.1H0 M64,25.1H0 M64,27.1H0 M64,22.1H0 M64,24.1H0 M64,26.1H0 M64,19.1H0    M64,21.1H0 M64,18.1H0 M64,20.1H0 M64,13.1H0 M64,15.1H0 M64,17.1H0 M64,12.1H0 M64,14.1H0 M64,16.1H0 M64,7.1H0 M64,9.1H0    M64,11.1H0 M64,6.1H0 M64,8.1H0 M64,10.1H0 M64,1.1H0 M64,3.1H0 M64,5.1H0 M64,2.1H0 M64,4.1H0 M64,58.1H0 M64,60.1H0 M64,62.1H0    M64,57.1H0 M64,59.1H0 M64,61.1H0 M64,52.1H0 M64,54.1H0 M64,56.1H0 M64,53.1H0 M64,55.1H0 M64,63.1H0 M17.1,64V0 M15.1,64V0    M13.1,64V0 M18.1,64V0 M16.1,64V0 M14.1,64V0 M23.1,64V0 M21.1,64V0 M19.1,64V0 M24.1,64V0 M22.1,64V0 M20.1,64V0 M29.1,64V0    M27.1,64V0 M25.1,64V0 M30.1,64V0 M28.1,64V0 M26.1,64V0 M35.1,64V0 M33.1,64V0 M31.1,64V0 M36.1,64V0 M34.1,64V0 M32.1,64V0    M41.1,64V0 M39.1,64V0 M37.1,64V0 M42.1,64V0 M40.1,64V0 M38.1,64V0 M45.1,64V0 M43.1,64V0 M46.1,64V0 M44.1,64V0 M51.1,64V0    M49.1,64V0 M47.1,64V0 M52.1,64V0 M50.1,64V0 M48.1,64V0 M57.1,64V0 M55.1,64V0 M53.1,64V0 M58.1,64V0 M56.1,64V0 M54.1,64V0    M63.1,64V0 M61.1,64V0 M59.1,64V0 M62.1,64V0 M60.1,64V0 M6.1,64V0 M4.1,64V0 M2.1,64V0 M7.1,64V0 M5.1,64V0 M3.1,64V0 M12.1,64V0    M10.1,64V0 M8.1,64V0 M11.1,64V0 M9.1,64V0 M1.1,64V0"
+   d="M 64,47.1 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-5 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-9 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-5 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-9 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-5 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-9 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-5 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-9 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-5 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-7 H 0 m 64,2 H 0 m 64,-3 H 0 m 64,2 H 0 m 64,-7 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-5 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-9 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-5 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-9 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-3 H 0 m 64,2 H 0 m 64,54 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-5 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-9 H 0 m 64,2 H 0 m 64,2 H 0 m 64,-3 H 0 m 64,2 H 0 m 64,8 H 0 M 17.1,64 V 0 m -2,64 V 0 m -2,64 V 0 m 5,64 V 0 m -2,64 V 0 m -2,64 V 0 m 9,64 V 0 m -2,64 V 0 m -2,64 V 0 m 5,64 V 0 m -2,64 V 0 m -2,64 V 0 m 9,64 V 0 m -2,64 V 0 m -2,64 V 0 m 5,64 V 0 m -2,64 V 0 m -2,64 V 0 m 9,64 V 0 m -2,64 V 0 m -2,64 V 0 m 5,64 V 0 m -2,64 V 0 m -2,64 V 0 m 9,64 V 0 m -2,64 V 0 m -2,64 V 0 m 5,64 V 0 m -2,64 V 0 m -2,64 V 0 m 7,64 V 0 m -2,64 V 0 m 3,64 V 0 m -2,64 V 0 m 7,64 V 0 m -2,64 V 0 m -2,64 V 0 m 5,64 V 0 m -2,64 V 0 m -2,64 V 0 m 9,64 V 0 m -2,64 V 0 m -2,64 V 0 m 5,64 V 0 m -2,64 V 0 m -2,64 V 0 m 9,64 V 0 m -2,64 V 0 m -2,64 V 0 m 3,64 V 0 m -2,64 V 0 M 6.1,64 V 0 m -2,64 V 0 m -2,64 V 0 m 5,64 V 0 m -2,64 V 0 m -2,64 V 0 m 9,64 V 0 m -2,64 V 0 m -2,64 V 0 m 3,64 V 0 m -2,64 V 0 m -8,64 V 0"
    id="path906" />
 </g>
 <g
    id="Layer_2"
-   transform="matrix(0.99827915,0,0,0.99999956,0.00559248,-5.9999825)">
+   transform="translate(0,-6)"
+   style="display:inline">
 	
 	
 		<radialGradient
@@ -101,10 +103,11 @@
 	</radialGradient>
 	<path
    class="st5"
-   d="M 53.9,60.5 H 10.1 C 6.5,60.5 3.5,57.6 3.5,53.9 V 26.1 c 0,-3.6 2.9,-6.6 6.6,-6.6 H 54 c 3.6,0 6.6,2.9 6.6,6.6 V 54 c -0.1,3.6 -3,6.5 -6.7,6.5 z"
+   d="M 53.033597,59.483262 H 10.870134 c -3.4654908,0 -6.3533986,-2.756172 -6.3533986,-6.272659 V 26.789401 c 0,-3.421462 2.7916442,-6.272665 6.3533986,-6.272665 h 42.259727 c 3.465493,0 6.353396,2.75618 6.353396,6.272665 v 26.516235 c -0.09626,3.421454 -2.887903,6.177626 -6.44966,6.177626 z"
    id="path939"
-   style="fill:url(#SVGID_4_);stroke:#910e38"
-   inkscape:connector-curvature="0" />
+   style="display:inline;fill:none;stroke:#b3b3b3;stroke-width:3.03348;stroke-dasharray:none;stroke-opacity:1"
+   inkscape:connector-curvature="0"
+   sodipodi:insensitive="true" />
 	
 		<linearGradient
    id="SVGID_5_"
@@ -125,9 +128,9 @@
 	</linearGradient>
 	<path
    class="st6"
-   d="m 7,35.5 v -8 c 0,-2.4 2,-4.4 4.4,-4.4 h 41.1 c 2.4,0 4.4,2 4.4,4.4 v 8 c 0,2.4 -2,4.4 -4.4,4.4 H 11.4 C 9,39.9 7,37.9 7,35.5 Z"
+   d="m 7.990754,36.404406 v -8.008807 c 0,-2.402641 1.9245886,-4.404844 4.234096,-4.404844 h 39.550301 c 2.309505,0 4.234095,2.002203 4.234095,4.404844 v 8.008807 c 0,2.402642 -1.92459,4.404845 -4.234095,4.404845 H 12.22485 c -2.3095074,0 -4.234096,-2.002203 -4.234096,-4.404845 z"
    id="path946"
-   style="fill:url(#SVGID_5_)"
+   style="display:inline;fill:none;stroke:#b3b3b3;stroke-width:1.5;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:1;stroke-dasharray:none;stroke-opacity:1"
    inkscape:connector-curvature="0" />
 	<linearGradient
    id="SVGID_6_"
@@ -145,14 +148,12 @@
    style="stop-color:#ABACAE"
    id="stop950" />
 	</linearGradient>
-	<path
-   class="st7"
-   d="M 52.6,38 H 11.4 C 9.8,38 8.5,36.7 8.5,35.1 V 28 c 0,-1.6 1.3,-2.9 2.9,-2.9 h 41.1 c 1.6,0 2.9,1.3 2.9,2.9 v 7.1 c 0.1,1.6 -1.2,2.9 -2.8,2.9 z"
-   id="path953"
-   style="fill:url(#SVGID_6_)"
-   inkscape:connector-curvature="0" />
+	
 	<g
-   id="g983">
+   id="g983"
+   style="display:inline;fill:#000000;fill-opacity:0"
+   sodipodi:insensitive="true"
+   transform="translate(0,0.6)">
 		<line
    class="st8"
    x1="12.5"
@@ -160,7 +161,7 @@
    x2="12.5"
    y2="36"
    id="line955"
-   style="fill:none;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
+   style="fill:#000000;fill-opacity:0;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
 		<line
    class="st8"
    x1="15.5"
@@ -168,7 +169,7 @@
    x2="15.5"
    y2="34"
    id="line957"
-   style="fill:none;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
+   style="fill:#000000;fill-opacity:0;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
 		<line
    class="st8"
    x1="18.5"
@@ -176,7 +177,7 @@
    x2="18.5"
    y2="34"
    id="line959"
-   style="fill:none;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
+   style="fill:#000000;fill-opacity:0;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
 		<line
    class="st8"
    x1="22.5"
@@ -184,7 +185,7 @@
    x2="22.5"
    y2="36"
    id="line961"
-   style="fill:none;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
+   style="fill:#000000;fill-opacity:0;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
 		<line
    class="st8"
    x1="25.5"
@@ -192,7 +193,7 @@
    x2="25.5"
    y2="34"
    id="line963"
-   style="fill:none;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
+   style="fill:#000000;fill-opacity:0;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
 		<line
    class="st8"
    x1="28.5"
@@ -200,7 +201,7 @@
    x2="28.5"
    y2="34"
    id="line965"
-   style="fill:none;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
+   style="fill:#000000;fill-opacity:0;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
 		<line
    class="st8"
    x1="32.5"
@@ -208,7 +209,7 @@
    x2="32.5"
    y2="36"
    id="line967"
-   style="fill:none;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
+   style="fill:#000000;fill-opacity:0;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
 		<line
    class="st8"
    x1="35.5"
@@ -216,7 +217,7 @@
    x2="35.5"
    y2="34"
    id="line969"
-   style="fill:none;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
+   style="fill:#000000;fill-opacity:0;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
 		<line
    class="st8"
    x1="39.5"
@@ -224,7 +225,7 @@
    x2="39.5"
    y2="34"
    id="line971"
-   style="fill:none;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
+   style="fill:#000000;fill-opacity:0;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
 		<line
    class="st8"
    x1="43.5"
@@ -232,7 +233,7 @@
    x2="43.5"
    y2="36"
    id="line973"
-   style="fill:none;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
+   style="fill:#000000;fill-opacity:0;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
 		<line
    class="st8"
    x1="52.5"
@@ -240,7 +241,7 @@
    x2="52.5"
    y2="36"
    id="line975"
-   style="fill:none;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
+   style="fill:#000000;fill-opacity:0;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
 		<line
    class="st8"
    x1="46.5"
@@ -248,7 +249,7 @@
    x2="46.5"
    y2="34"
    id="line977"
-   style="fill:none;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
+   style="fill:#000000;fill-opacity:0;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
 		<line
    class="st8"
    x1="49.5"
@@ -256,7 +257,7 @@
    x2="49.5"
    y2="34"
    id="line979"
-   style="fill:none;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
+   style="fill:#000000;fill-opacity:0;stroke:#abacae;stroke-width:0.8938;stroke-miterlimit:10" />
 		<line
    class="st9"
    x1="27.5"
@@ -264,10 +265,12 @@
    x2="27.5"
    y2="38"
    id="line981"
-   style="fill:none;stroke:#de3e80;stroke-width:1.0954;stroke-miterlimit:10" />
+   style="fill:#000000;fill-opacity:0;stroke:#3e6ede;stroke-width:1.095;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1" />
 	</g>
 	<g
-   id="g1003">
+   id="g1003"
+   style="display:inline"
+   sodipodi:insensitive="true">
 		
 			<radialGradient
    id="SVGID_7_"
@@ -285,20 +288,8 @@
    style="stop-color:#D4D4D4"
    id="stop987" />
 		</radialGradient>
-		<circle
-   class="st10"
-   cx="32"
-   cy="49"
-   r="9"
-   id="circle990"
-   style="fill:url(#SVGID_7_)" />
-		<circle
-   class="st11"
-   cx="32"
-   cy="49"
-   r="7"
-   id="circle992"
-   style="fill:#273445;stroke:#de3e80;stroke-width:0.4568;stroke-linecap:round;stroke-linejoin:round" />
+		
+		
 		
 			<radialGradient
    id="SVGID_8_"
@@ -322,16 +313,20 @@
    cy="49"
    r="6"
    id="circle999"
-   style="fill:url(#SVGID_8_);stroke:#abacae;stroke-width:0.3279;stroke-linecap:round;stroke-linejoin:round" />
+   style="fill:#b3b3b3;fill-opacity:1;stroke:#abacae;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+   sodipodi:insensitive="true" />
 		<path
    class="st13"
-   d="m 32,46.4 c -0.1,0 -0.2,-0.1 -0.2,-0.2 v -2.3 c 0,-0.1 0.1,-0.2 0.2,-0.2 0.1,0 0.2,0.1 0.2,0.2 v 2.3 c 0,0.1 -0.1,0.2 -0.2,0.2 z"
+   d="m 32,47.74995 c -0.149984,0 -0.3,-0.149984 -0.3,-0.3 v -3.45 c 0,-0.149986 0.150007,-0.3 0.3,-0.3 0.149984,0 0.3,0.149984 0.3,0.3 v 3.45 c 0,0.149984 -0.149984,0.3 -0.3,0.3 z"
    id="path1001"
    inkscape:connector-curvature="0"
-   style="fill:#d4d4d4;stroke:#abacae;stroke-width:0.1334" />
+   style="fill:#d4d4d4;stroke:#abacae;stroke-width:0;stroke-dasharray:none"
+   sodipodi:insensitive="true" />
 	</g>
 	<g
-   id="g1038">
+   id="g1038"
+   style="display:inline"
+   sodipodi:insensitive="true">
 		<g
    id="g1014">
 			<linearGradient
@@ -350,18 +345,13 @@
    style="stop-color:#910E38"
    id="stop1007" />
 			</linearGradient>
-			<path
-   class="st14"
-   d="m 44.8,47 c -1.1,0 -2,-1.1 -1.8,-2.3 0.2,-1 1,-1.6 1.8,-1.6 H 55 c 0.9,0 1.7,0.6 1.8,1.6 C 57,45.9 56.1,47 55,47 Z"
-   id="path1010"
-   style="fill:url(#SVGID_9_)"
-   inkscape:connector-curvature="0" />
+			
 			<path
    class="st15"
    d="M 55,46 H 45 c -0.5,0 -1,-0.4 -1,-1 v 0 c 0,-0.5 0.4,-1 1,-1 h 10 c 0.5,0 1,0.4 1,1 v 0 c 0,0.6 -0.4,1 -1,1 z"
    id="path1012"
    inkscape:connector-curvature="0"
-   style="fill:#0e141f" />
+   style="fill:#b3b3b3" />
 		</g>
 		<g
    id="g1025">
@@ -381,18 +371,13 @@
    style="stop-color:#910E38"
    id="stop1018" />
 			</linearGradient>
-			<path
-   class="st16"
-   d="m 45.7,51 c -1.1,0 -1.9,-1.1 -1.7,-2.3 0.2,-0.9 0.9,-1.6 1.8,-1.6 h 9.3 c 0.9,0 1.6,0.6 1.8,1.6 0.2,1.2 -0.6,2.3 -1.7,2.3 z"
-   id="path1021"
-   style="fill:url(#SVGID_10_)"
-   inkscape:connector-curvature="0" />
+			
 			<path
    class="st15"
    d="m 55.1,50.1 h -9.2 c -0.5,0 -1,-0.4 -1,-1 V 49 c 0,-0.5 0.4,-1 1,-1 h 9.2 c 0.5,0 1,0.4 1,1 v 0.1 c -0.1,0.5 -0.5,1 -1,1 z"
    id="path1023"
    inkscape:connector-curvature="0"
-   style="fill:#0e141f" />
+   style="fill:#b3b3b3" />
 		</g>
 		<g
    id="g1036">
@@ -412,22 +397,19 @@
    style="stop-color:#910E38"
    id="stop1029" />
 			</linearGradient>
-			<path
-   class="st17"
-   d="m 44.8,55 c -1.1,0 -2,-1.1 -1.8,-2.4 0.2,-1 1,-1.6 1.8,-1.6 H 55 c 0.9,0 1.7,0.7 1.8,1.6 C 57,53.9 56.1,55 55,55 Z"
-   id="path1032"
-   style="fill:url(#SVGID_11_)"
-   inkscape:connector-curvature="0" />
+			
 			<path
    class="st15"
    d="M 55.1,54 H 44.9 c -0.5,0 -1,-0.4 -1,-1 v 0 c 0,-0.5 0.4,-1 1,-1 H 55 c 0.5,0 1,0.4 1,1 v 0 c 0,0.6 -0.4,1 -0.9,1 z"
    id="path1034"
    inkscape:connector-curvature="0"
-   style="fill:#0e141f" />
+   style="fill:#b3b3b3" />
 		</g>
 	</g>
 	<g
-   id="g1073">
+   id="g1073"
+   style="display:inline"
+   sodipodi:insensitive="true">
 		<g
    id="g1049">
 			
@@ -448,18 +430,13 @@
    style="stop-color:#910E38"
    id="stop1042" />
 			</linearGradient>
-			<path
-   class="st18"
-   d="m 19.2,47 c 1.1,0 2,-1.1 1.8,-2.3 -0.2,-1 -1,-1.6 -1.8,-1.6 H 8.9 C 8,43.1 7.2,43.7 7.1,44.7 6.8,45.9 7.7,47 8.8,47 Z"
-   id="path1045"
-   style="fill:url(#SVGID_12_)"
-   inkscape:connector-curvature="0" />
+			
 			<path
    class="st15"
    d="m 9,46 h 10 c 0.5,0 1,-0.4 1,-1 v 0 c 0,-0.5 -0.4,-1 -1,-1 H 9 c -0.5,0 -1,0.4 -1,1 v 0 c 0,0.6 0.4,1 1,1 z"
    id="path1047"
    inkscape:connector-curvature="0"
-   style="fill:#0e141f" />
+   style="fill:#b3b3b3" />
 		</g>
 		<g
    id="g1060">
@@ -481,18 +458,13 @@
    style="stop-color:#910E38"
    id="stop1053" />
 			</linearGradient>
-			<path
-   class="st19"
-   d="m 18.3,51 c 1.1,0 1.9,-1.1 1.7,-2.3 -0.2,-0.9 -0.9,-1.6 -1.8,-1.6 H 8.9 C 8,47.1 7.3,47.7 7.1,48.7 6.9,49.9 7.7,51 8.8,51 Z"
-   id="path1056"
-   style="fill:url(#SVGID_13_)"
-   inkscape:connector-curvature="0" />
+			
 			<path
    class="st15"
    d="m 8.9,50.1 h 9.2 c 0.5,0 1,-0.4 1,-1 V 49 c 0,-0.5 -0.4,-1 -1,-1 H 8.9 c -0.5,0 -1,0.4 -1,1 v 0.1 c 0.1,0.5 0.5,1 1,1 z"
    id="path1058"
    inkscape:connector-curvature="0"
-   style="fill:#0e141f" />
+   style="fill:#b3b3b3" />
 		</g>
 		<g
    id="g1071">
@@ -514,18 +486,13 @@
    style="stop-color:#910E38"
    id="stop1064" />
 			</linearGradient>
-			<path
-   class="st20"
-   d="m 19.2,55 c 1.1,0 2,-1.1 1.8,-2.4 C 20.8,51.6 20,51 19.2,51 H 8.9 C 8,51 7.2,51.6 7,52.6 6.8,53.9 7.7,55 8.8,55 Z"
-   id="path1067"
-   style="fill:url(#SVGID_14_)"
-   inkscape:connector-curvature="0" />
+			
 			<path
    class="st15"
    d="M 8.9,54 H 19 c 0.5,0 1,-0.4 1,-1 v 0 c 0,-0.5 -0.4,-1 -1,-1 H 8.9 c -0.5,0 -1,0.4 -1,1 v 0 c 0.1,0.6 0.5,1 1,1 z"
    id="path1069"
    inkscape:connector-curvature="0"
-   style="fill:#0e141f" />
+   style="fill:#b3b3b3" />
 		</g>
 	</g>
 </g>
