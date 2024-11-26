@@ -74,6 +74,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     private Model.Station _station;
     private Gtk.Label _title_label;
     private RevealLabel _subtitle_label;
+    private Gtk.Image tuner_on = new Gtk.Image.from_icon_name("tuner-on", Gtk.IconSize.DIALOG);
 
     private Mutex _station_update_lock = Mutex();   // Lock out concurrent updates
 
@@ -118,40 +119,25 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         custom_title = station_revealer;
 
         
-        //
-        // Create and configure play button
-        //
+    /*
+        Tuner icon and online/offline behavior    
+    */
+        Application.instance.notify["is-online"].connect(() => {
+            warning(@"is-online??  $(Application.instance.is_online)");
+            check_online_status();
+        });      
 
         tuner_icon = new Gtk.Overlay();
+        tuner_icon.add(new Gtk.Image.from_icon_name("tuner-off", Gtk.IconSize.DIALOG));
+        tuner_icon.add_overlay(tuner_on);
+        tuner_icon.valign = Gtk.Align.START;
+
         var tuner = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-
+        tuner.add(tuner_icon);
         tuner.set_valign(Gtk.Align.CENTER);
-
-        //padded_box.set_margin_top(1);   // 20px padding on the right
         tuner.set_margin_bottom(5);   // 20px padding on the right
         tuner.set_margin_start(5);   // 20px padding on the right
         tuner.set_margin_end(5);   // 20px padding on the right
-        tuner.add(tuner_icon);
-
-        Gtk.Image on = new Gtk.Image.from_icon_name("tuner-on", Gtk.IconSize.DIALOG);
-        Gtk.Image off = new Gtk.Image.from_icon_name("tuner-off", Gtk.IconSize.DIALOG);
-
-
-        //  Gtk.Overlay.set_overlay_pass_through(on, false);
-        //  on.set_halign(Gtk.Align.CENTER);
-        //  on.set_valign(Gtk.Align.CENTER);
-
-
-        tuner_icon.add(off);
-        tuner_icon.add_overlay(on);
-        //tuner_icon.valign = Gtk.Align.CENTER;
-        tuner_icon.valign = Gtk.Align.START;
-
-        off.set_valign(Gtk.Align.CENTER);
-        on.set_valign(Gtk.Align.CENTER);
-
-        off.opacity=0;
-        on.opacity=1.0;
      
        
         //
@@ -405,4 +391,18 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             return Source.REMOVE;
         });
     } // realize
+
+    private void check_online_status()
+    {
+        if (Application.instance.is_offline) {
+            tuner_on.opacity=0.0;
+
+            warning("Offline >>");
+        }
+        else
+        {
+            warning("Online <<");
+            tuner_on.opacity=1.0;
+        }
+    }
 }

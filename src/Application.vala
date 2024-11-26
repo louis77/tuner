@@ -49,6 +49,7 @@ public class Tuner.Application : Gtk.Application {
 
     /** @brief Connectivity monitoring*/
     private static NetworkMonitor monitor = NetworkMonitor.get_default ();
+    private uint _monitor_changed_id = 0;
 
 
     // -------------------------------------
@@ -72,17 +73,22 @@ public class Tuner.Application : Gtk.Application {
     public GLib.Cancellable offline_cancel { get; construct; }
 
     /** @brief Are we online */
+    public bool is_offline { get; private set; }   
     private bool _is_online = false;
     public bool is_online { get { return _is_online; } 
-                            construct {
+                            private set {
                                     if ( value ) 
-                                    { _offline_cancel.reset (); }
+                                    { 
+                                        _offline_cancel.reset (); 
+                                    }
                                     else 
-                                    { _offline_cancel.cancel (); }
+                                    { 
+                                        _offline_cancel.cancel (); 
+                                    }
                                     _is_online = value;
+                                    is_offline = !value;
                                 }
-                            }
-    public bool is_offline { get; construct; }      
+                            }   
 
 
     /** @brief Main application window */
@@ -146,9 +152,8 @@ public class Tuner.Application : Gtk.Application {
             Wrap network monitoring into a bool property 
         */
         offline_cancel = new GLib.Cancellable();
-        monitor.network_changed.connect((monitor, available) => {
-            is_online = available;
-            is_offline = !available;
+        monitor.network_changed.connect((monitor) => {
+            check_online_status();
         });
         is_online = monitor.get_network_available ();
 
@@ -237,4 +242,42 @@ public class Tuner.Application : Gtk.Application {
         return _dir.get_path ();
 
     } // stat_dir
+
+    /**
+     * @brief Set the network availability
+     *
+     * If going offline, set immediately.
+     * Going online - wait a second to allow network to stabilize
+     * This method removes any existing timeout and sets a new one 
+     * reduces network state bouncyness
+     */
+     private void check_online_status()
+     {
+        warning(@"check_online_status  $(_monitor_changed_id)");
+        if(_monitor_changed_id > 0) Source.remove(_monitor_changed_id);
+
+        /*
+            If change to online from offline state
+            wait 2 seconds before setting to online status
+            to whatever the state is at that time
+        */
+        if ( is_offline && monitor.get_network_available ()  )
+        {
+            warning(@"check_online_status  offline > online");
+            _monitor_changed_id = Timeout.add( 2000, () => 
+            {           
+                warning(@"check_online_status  waking up");
+                _monitor_changed_id = 0; // Reset timeout ID after scheduling  
+                is_online = monitor.get_network_available ();
+                return Source.REMOVE;
+            });
+
+            warning(@"check_online_status  online wait $(_monitor_changed_id)");
+            return;
+        }
+
+        warning(@"check_online_status  online > offline");
+        // network is unavailable 
+        is_online = false;
+    } // check_online_status
 }

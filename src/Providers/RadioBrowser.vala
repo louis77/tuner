@@ -173,20 +173,22 @@ namespace Tuner.Provider {
 
                 debug(@"response from radio-browser.info: $(status_code)");
 
-                try {
-                    var parser = new Json.Parser();
-                    parser.load_from_stream(stream);
-                    rootnode = parser.get_root();
-                } catch (Error e) {
-                    throw new DataError.PARSE_DATA(@"unable to parse JSON response: $(e.message)");
+                if ( status_code != 0 && stream != null)
+                {
+                    try {
+                        var parser =  new Json.Parser();
+                        parser.load_from_stream(stream);
+                        rootnode = parser.get_root();
+                    } catch (Error e) {
+                        throw new DataError.PARSE_DATA(@"unable to parse JSON response: $(e.message)");
+                    }
+                    var rootarray = rootnode.get_array();
+                    var tags = jarray_to_tags(rootarray);
+                    return tags;
                 }
-                var rootarray = rootnode.get_array();
-                var tags = jarray_to_tags(rootarray);
-                return tags;
             } catch (GLib.Error e) {
                 debug("cannot get_tags()");
             }
-
             return new HashSet<Tag>();
         }
 
@@ -302,18 +304,21 @@ namespace Tuner.Provider {
             uint status_code;
             Json.Node rootnode;
 
-            var response = HttpClient.GET(@"$(_current_server)/$(RBI_STATS)", out status_code);
+            var stream = HttpClient.GET(@"$(_current_server)/$(RBI_STATS)", out status_code);
 
-            try {
-                var parser = new Json.Parser();
-                parser.load_from_stream(response, null);
-                rootnode = parser.get_root();
-                Json.Object json_object = rootnode.get_object();
-                _available_tags = (int)json_object.get_int_member("tags");
-            } catch (Error e) {
-                warning(@"Could not get server stats: $(e.message)");
+
+            if ( status_code != 0 && stream != null)
+            {
+                try {
+                    var parser = new Json.Parser();
+                    parser.load_from_stream(stream, null);
+                    rootnode = parser.get_root();
+                    Json.Object json_object = rootnode.get_object();
+                    _available_tags = (int)json_object.get_int_member("tags");
+                } catch (Error e) {
+                    warning(@"Could not get server stats: $(e.message)");
+                }
             }
-
             debug(@"response: $(status_code)");
         }
 
@@ -334,22 +339,25 @@ namespace Tuner.Provider {
                 uint status_code;
 
                 debug(@"Requesting from 'radio-browser.info' $(_current_server)/$(query)");
-                var response = HttpClient.GET(@"$(_current_server)/$(query)", out status_code);
+                var stream = HttpClient.GET(@"$(_current_server)/$(query)", out status_code);
                 debug(@"Response from 'radio-browser.info': $(status_code)");
 
-                try {
-                    var parser = new Json.Parser();
-                    parser.load_from_stream(response, null);
-                    rootnode = parser.get_root();
-                } catch (Error e) {
-                    warning(@"RB0 $(_current_server)/$(query)");
-                    throw new DataError.PARSE_DATA(@"Unable to parse JSON response: $(e.message)");
+                if ( status_code != 0 && stream != null)
+                {
+                    try {
+                        var parser = new Json.Parser();
+                        parser.load_from_stream(stream, null);
+                        rootnode = parser.get_root();
+                    } catch (Error e) {
+                        warning(@"RB0 $(_current_server)/$(query)");
+                        throw new DataError.PARSE_DATA(@"Unable to parse JSON response: $(e.message)");
+                    }
+                    var rootarray = rootnode.get_array();
+                    var stations = jarray_to_stations(rootarray);
+                    return stations;
                 }
-                var rootarray = rootnode.get_array();
-                var stations = jarray_to_stations(rootarray);
-                return stations;
-            } catch (Error e) {
-
+            } catch (Error e) 
+            {
                 degrade();
                 warning(@"RB1 $(_current_server)/$(query)");
                 warning(@"Error retrieving stations 1: $(e.message)");

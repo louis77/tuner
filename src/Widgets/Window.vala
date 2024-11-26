@@ -45,10 +45,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public Gtk.Stack stack { get; set; }
     public PlayerController player { get; construct; }
     public StarredStationController starred { get; construct; }
+    public bool active { get; private set; } // Window is active
 
 
     /* Private */   
 
+    private const string STACK_SEARCHED = "searched";
     private const string CSS = "com/github/louis77/tuner/Application.css";
     private const string NOTIFICATION_PLAYING_BACKGROUND = "Playing in background";
     private const string NOTIFICATION_CLICK_RESUME = "Click here to resume window. To quit Tuner, pause playback and close the window.";
@@ -69,6 +71,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     private DirectoryController _directory;
     private HeaderBar _headerbar;
     private Granite.Widgets.SourceList source_list;
+
+     /** @brief Indicates if the application started online. */
+     private bool _started_online = Application.instance.is_online;  // Initial online state
 
     private signal void refresh_favourites_sig ();
 
@@ -116,8 +121,46 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         change_action_state (ACTION_DISABLE_TRACKING, settings.do_not_track);
         change_action_state (ACTION_ENABLE_AUTOPLAY, settings.auto_play);
 
+
+        /*
+            Headerbar
+        */
         _headerbar = new HeaderBar ();
         set_titlebar (_headerbar);
+
+        _headerbar.volume_button.value_changed.connect ((value) => {
+            player.volume = value;
+        });
+
+        _headerbar.search_focused_sig.connect (() => {
+            stack.visible_child_name = STACK_SEARCHED;
+        });
+
+
+        /*
+            Online checks & behavior
+
+            Keep in mind that network availability is noisy
+        */
+        Application.instance.notify["is-online"].connect(() => {
+            check_online_status();
+        });
+
+
+        /* Do an initial check */
+        if (Application.instance.is_online)
+        {
+            //initialize();
+           active = true;
+        }
+        else 
+        /*
+            Starting Offline, so set to look offline
+            Initialization will happen when online
+        */
+        { 
+            check_online_status();  
+        }
 
         player.state_changed.connect (handleplayer_state_changed);
         player.station_changed.connect (_headerbar.update_from_station);
@@ -127,9 +170,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         player.volume_changed.connect ((volume) => {
             _headerbar.volume_button.value = volume;
         });
-        _headerbar.volume_button.value_changed.connect ((value) => {
-            player.volume = value;
-        });
+
+
+
+
+
+
 
         //  adjust_theme();    // TODO Theme management needs research in flatpak as nonfunctional
         //  settings.changed.connect( (key) => {
@@ -316,7 +362,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var search = new Granite.Widgets.SourceList.Item (_("Recent Search"));
         search.icon = new ThemedIcon ("folder-saved-search");
         searched_category.add (search);
-        var c5 = create_content_box ("searched", search,
+        var search_results = create_content_box (STACK_SEARCHED, search,
                             _("Search"), null, null,
                             stack, source_list, true);
 
@@ -409,13 +455,10 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         _headerbar.searched_for_sig.connect ( (text) => {
             if (text.length > 0) {
-                load_search_stations.begin(text, c5);
+                load_search_stations.begin(text, search_results);
             }
         });
 
-        _headerbar.search_focused_sig.connect (() => {
-            stack.visible_child_name = "searched";
-        });
 
         primary_box.pack1 (source_list, false, false);
         primary_box.pack2 (stack, true, false);
@@ -680,4 +723,34 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             contentBox.show_alert();
         }
     } // load_search_stations
+
+
+    private void check_online_status()
+    {
+        if ( Application.instance.is_offline )
+        /* Present Offline look */
+        {
+            warning("Offline >>");
+            this.accept_focus = false;
+            active = false;
+            return;
+        }
+
+        if ( !active )
+        // Online but not active
+        {
+            if (!_started_online)
+            /*
+                Window not initialized, refresh
+            */
+            {
+                //  initialize();
+                //  show_all();            
+                _started_online = true;
+            }
+            this.accept_focus = true;
+            active = true;
+            warning("Online <<");
+        }
+    } // check_online_status
 }

@@ -313,6 +313,8 @@ public class Tuner.StationSet : Object {
      */
     public Set<Model.Station>? next_page () throws SourceError {
         
+        if ( Application.instance.is_offline) return null;
+
         // Fetch one more to determine if source has more items than page size 
         try {
             var raw_stations = _provider.search (_params, _page_size + 1, _offset);
@@ -330,6 +332,7 @@ public class Tuner.StationSet : Object {
         }
     }
 
+    
     /**
      * @brief Check if there are more stations to fetch.
      *
@@ -339,7 +342,6 @@ public class Tuner.StationSet : Object {
         return _more;
     }
     
-
 
     /**
      * @brief Convert RadioBrowser.Station objects to Model.Station objects.
