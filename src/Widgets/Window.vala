@@ -73,7 +73,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     private Granite.Widgets.SourceList source_list;
 
      /** @brief Indicates if the application started online. */
-     private bool _started_online = Application.instance.is_online;  // Initial online state
+     private bool _started_online = app().is_online;  // Initial online state
 
     private signal void refresh_favourites_sig ();
 
@@ -142,13 +142,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
             Keep in mind that network availability is noisy
         */
-        Application.instance.notify["is-online"].connect(() => {
+            app().notify["is-online"].connect(() => {
             check_online_status();
         });
 
 
         /* Do an initial check */
-        if (Application.instance.is_online)
+        if (app().is_online)
         {
             //initialize();
            active = true;
@@ -230,6 +230,14 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var genres_category = new Granite.Widgets.SourceList.ExpandableItem (_("Genres"));
         genres_category.collapsible = true;
         genres_category.expanded = true;
+
+        var eras_category = new Granite.Widgets.SourceList.ExpandableItem (_("Eras"));
+        eras_category.collapsible = true;
+        eras_category.expanded = false;
+
+        var talk_category = new Granite.Widgets.SourceList.ExpandableItem (_("Talk, News, Sport"));
+        talk_category.collapsible = true;
+        talk_category.expanded = false;
 
         source_list = new Granite.Widgets.SourceList ();
 
@@ -404,29 +412,85 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         // ---------------------------------------------------------------------------
         // Genre Boxes
         foreach (var new_genre
-             in Model.genres ()) {
+            in Model.genres ()) {
 
-            var genre = SourceListBox.create ( stack
-                , source_list
-                , genres_category
-                , new_genre.name
-                , "playlist-symbolic"
-                , new_genre.name
-                , new_genre.name);
+           var genre = SourceListBox.create ( stack
+               , source_list
+               , genres_category
+               , new_genre.name
+               , "playlist-symbolic"
+               , new_genre.name
+               , new_genre.name);
 
-            var ds = _directory.load_by_tags (new_genre.tags);
+           var ds = _directory.load_by_tags (new_genre.tags);
 
-            genre.realize.connect (() => {
-                try {
-                    var slist1 = new StationList.with_stations (ds.next_page ());
-                    slist1.selection_changed.connect (handle_station_click);
-                    slist1.favourites_changed.connect (handle_favourites_changed);
-                    genre.content = slist1;
-                } catch (SourceError e) {
-                    genre.show_alert ();
-                }
-            });
-        }
+           genre.realize.connect (() => {
+               try {
+                   var slist1 = new StationList.with_stations (ds.next_page ());
+                   slist1.selection_changed.connect (handle_station_click);
+                   slist1.favourites_changed.connect (handle_favourites_changed);
+                   genre.content = slist1;
+               } catch (SourceError e) {
+                   genre.show_alert ();
+               }
+           });
+       }
+
+        // ---------------------------------------------------------------------------
+        // Eras Boxes
+        foreach (var new_genre
+            in Model.eras ()) {
+
+           var genre = SourceListBox.create ( stack
+               , source_list
+               , eras_category
+               , new_genre.name
+               , "playlist-symbolic"
+               , new_genre.name
+               , new_genre.name);
+
+           var ds = _directory.load_by_tags (new_genre.tags);
+
+           genre.realize.connect (() => {
+               try {
+                   var slist1 = new StationList.with_stations (ds.next_page ());
+                   slist1.selection_changed.connect (handle_station_click);
+                   slist1.favourites_changed.connect (handle_favourites_changed);
+                   genre.content = slist1;
+               } catch (SourceError e) {
+                   genre.show_alert ();
+               }
+           });
+       }
+
+        // ---------------------------------------------------------------------------
+        // Talk Boxes
+        foreach (var new_genre
+            in Model.talk ()) {
+
+           var genre = SourceListBox.create ( stack
+               , source_list
+               , talk_category
+               , new_genre.name
+               , "playlist-symbolic"
+               , new_genre.name
+               , new_genre.name);
+
+           var ds = _directory.load_by_tags (new_genre.tags);
+
+           genre.realize.connect (() => {
+               try {
+                   var slist1 = new StationList.with_stations (ds.next_page ());
+                   slist1.selection_changed.connect (handle_station_click);
+                   slist1.favourites_changed.connect (handle_favourites_changed);
+                   genre.content = slist1;
+               } catch (SourceError e) {
+                   genre.show_alert ();
+               }
+           });
+       }
+
+       // ---------------------------------------------------
 
         _headerbar.star_clicked_sig.connect ( (starred) => {
             player.station.toggle_starred ();
@@ -443,6 +507,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         source_list.root.add (searched_category);
         source_list.root.add (explore_category);
         source_list.root.add (genres_category);
+        source_list.root.add (eras_category);
+        source_list.root.add (talk_category);
 
         source_list.ellipsize_mode = Pango.EllipsizeMode.NONE;
         source_list.selected = source_list.get_first_child (selections_category);
@@ -687,7 +753,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             var notification = new GLib.Notification(NOTIFICATION_PLAYING_BACKGROUND);
             notification.set_body(NOTIFICATION_CLICK_RESUME);
             notification.set_default_action(NOTIFICATION_APP_RESUME_WINDOW);
-            Application.instance.send_notification(NOTIFICATION_APP_PLAYING_CONTINUE, notification);
+            app().send_notification(NOTIFICATION_APP_PLAYING_CONTINUE, notification);
             return true;
         }
 
@@ -727,10 +793,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     private void check_online_status()
     {
-        if ( Application.instance.is_offline )
+        if ( app().is_offline )
         /* Present Offline look */
         {
-            warning("Offline >>");
             this.accept_focus = false;
             active = false;
             return;
@@ -750,7 +815,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             }
             this.accept_focus = true;
             active = true;
-            warning("Online <<");
         }
     } // check_online_status
 }

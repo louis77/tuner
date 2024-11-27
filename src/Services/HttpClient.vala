@@ -31,7 +31,7 @@ public class Tuner.HttpClient : Object {
      */
     private static Soup.Session _session;
 
-    //private GLib.Cancellable offline_cancel = Application.instance.offline_cancel;
+    //private GLib.Cancellable offline_cancel = app().offline_cancel;
 
     /**
      * @brief Get the singleton Soup.Session instance
@@ -70,7 +70,7 @@ public class Tuner.HttpClient : Object {
      */
      public static uint HEAD(string url_string) 
      {         
-         if ( Application.instance.is_offline) return 0;
+         if ( app().is_offline) return 0;
 
         var msg = new Soup.Message("GET", url_string);
             /*
@@ -110,7 +110,7 @@ public class Tuner.HttpClient : Object {
     {
         status_code = 0;
         
-        if ( Application.instance.is_offline) return null;
+        if ( app().is_offline) return null;
 
         if (url_string == null || url_string.length < 4) // domains are at least 4 chars
         {
@@ -159,7 +159,7 @@ public class Tuner.HttpClient : Object {
     {
         status_code = 0;
 
-        if ( Application.instance.is_offline) return null;
+        if ( app().is_offline) return null;
 
         var msg = new Soup.Message.from_uri("GET", uri);
 
@@ -177,13 +177,13 @@ public class Tuner.HttpClient : Object {
         */
         {
             try {
-                var inputStream = yield getSession().send_async(msg, Priority.LOW, Application.instance.offline_cancel);
+                var inputStream = yield getSession().send_async(msg, Priority.LOW, app().offline_cancel);
                 status_code = msg.status_code;
                 if ( status_code >= 200 && status_code < 300 ) return inputStream;
             } catch (Error e) {
                 warning(@"GETasync - Try $(loop) failed to fetch: $(uri.to_string()) $(e.message)");
             }
-            yield Application.nap(200 * loop);   
+            yield nap(200 * loop);   
         } while( loop++ < 3);
 
         warning(@"GETasync - GETasync failed for: $(uri.to_string())");

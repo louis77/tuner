@@ -23,8 +23,6 @@ public class Tuner.StationButton : Tuner.DisplayButton {
      * @brief The radio station represented by this StationBox.
      */
     public Model.Station station { get; construct; }
-   //public Gtk.Image favicon { get; construct; }
-    //public Gtk.Image favicon_image { get; private set; }
 
     /**
      * @property menu
@@ -44,9 +42,6 @@ public class Tuner.StationButton : Tuner.DisplayButton {
             favicon_image: new Gtk.Image.from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG),
             station: station
         );
-
-        //warning (@"StationBox faveicon $(_favicon == null)");
-        //station.update_favicon_image.begin(_favicon_image);
     }
 
     /**

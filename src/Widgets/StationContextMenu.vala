@@ -79,7 +79,7 @@ public class Tuner.StationContextMenu : Gtk.Menu {
      */
     private void on_website_handler () {
         try {
-            Gtk.show_uri_on_window (Application.instance.window, station.homepage, Gdk.CURRENT_TIME);
+            Gtk.show_uri_on_window (app().window, station.homepage, Gdk.CURRENT_TIME);
         } catch (Error e) {
             warning (@"Unable to open website: $(e.message)");
         }

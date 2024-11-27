@@ -235,8 +235,7 @@ public class Tuner.DirectoryController : Object {
      * @param station The station that was clicked.
      */
     public void count_station_click (Model.Station station) {
-        // if (!Application.instance.settings.get_boolean ("do-not-track")) {
-            if (!Application.instance.settings.do_not_track) {
+            if (!app().settings.do_not_track) {
             debug (@"Send listening event for station $(station.stationuuid)");
             _provider.track (station.stationuuid);
         } else {
@@ -265,7 +264,6 @@ public class Tuner.DirectoryController : Object {
         {
             try {
                 var offset = Random.int_range(0, _provider.available_tags());
-               // , _provider.available_tags());
                 var tag = _provider.get_tags (offset,1); // Get a random tag
                 result.add_all (tag);
             } catch ( Error e) {}
@@ -313,7 +311,7 @@ public class Tuner.StationSet : Object {
      */
     public Set<Model.Station>? next_page () throws SourceError {
         
-        if ( Application.instance.is_offline) return null;
+        if ( app().is_offline) return null;
 
         // Fetch one more to determine if source has more items than page size 
         try {

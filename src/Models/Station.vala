@@ -399,24 +399,4 @@ public class Tuner.Model.Station : Object {
             favicon_image.opacity = 1;
         }
     } // update_favicon_image
-
-    /**
-     * @brief Asynchronously transitions the image with a fade effect.
-     * 
-     * @param {Gtk.Image} image - The image to transition.
-     * @param {uint} duration_ms - Duration of the fade effect in milliseconds.
-     * @param {Closure} callback - Optional callback function to execute after fading.
-     */
-    private static async void fade(Gtk.Image image, uint duration_ms, bool fading_in) 
-    {
-        double step = 0.05; // Adjust opacity in 5% increments
-        uint interval = (uint) (duration_ms / (1.0 / step)); // Interval based on duration
-
-        while ( ( !fading_in && image.opacity != 0 ) || (fading_in && image.opacity != 1) ) 
-        {      
-            double op = image.opacity + (fading_in ? step : -step); 
-            image.opacity = op.clamp(0, 1); 
-            yield Application.nap (interval);
-        }
-    } // fade
 }

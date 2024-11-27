@@ -46,7 +46,7 @@ namespace Tuner.DBus {
             debug ("DBus Raise() requested");
             var now = new DateTime.now_local ();
             var timestamp = (uint32) now.to_unix ();
-            Application.instance.window.present_with_time (timestamp);
+            app().window.present_with_time (timestamp);
         }
 
         public void quit() throws DBusError, IOError {
@@ -123,7 +123,7 @@ namespace Tuner.DBus {
 
         public MediaPlayerPlayer (DBusConnection conn) {
             Object (conn: conn);
-            Application.instance.player.state_changed.connect ((state) => {
+            app().player.state_changed.connect ((state) => {
                 switch (state) {
                 case Gst.PlayerState.PLAYING:
                 case Gst.PlayerState.BUFFERING:
@@ -138,12 +138,12 @@ namespace Tuner.DBus {
                 }
             });
 
-			Application.instance.player.title_changed.connect ((title) => {
+			app().player.title_changed.connect ((title) => {
 					_current_title = title;
 					trigger_metadata_update ();
 			});
 
-			Application.instance.player.station_changed.connect ((station) => {
+			app().player.station_changed.connect ((station) => {
 					_current_title = station.name;
 					_current_artist = station.name;
 					_current_art_url = station.favicon;
@@ -166,17 +166,17 @@ namespace Tuner.DBus {
 
         public void play_pause() throws DBusError, IOError {
             //  debug ("DBus PlayPause() requested");
-            Application.instance.player.play_pause();
+            app().player.play_pause();
         }
 
         public void stop() throws DBusError, IOError {
             //  debug ("DBus stop() requested");
-            Application.instance.player.player.stop();
+            app().player.player.stop();
         }
 
         public void play() throws DBusError, IOError {
             //  debug ("DBus Play() requested");
-            Application.instance.player.play_pause ();
+            app().player.play_pause ();
         }
 
         public void seek(int64 Offset) throws DBusError, IOError {
@@ -252,7 +252,7 @@ namespace Tuner.DBus {
         public bool can_play {
             get {
                 //  debug ("CanPlay() requested");
-                return Application.instance.player.can_play ();
+                return app().player.can_play ();
             }
         }
 	    public bool can_pause {  get; }

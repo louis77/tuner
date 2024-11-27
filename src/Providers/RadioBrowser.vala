@@ -242,7 +242,7 @@ namespace Tuner.Provider {
                 if (params.tags.size > 1) {
                     tag_list = string.joinv(",", params.tags.to_array());
                 }
-                resource += @"&tagList=$tag_list&tagExact=true";
+                resource += @"&tagList=$tag_list&tagExact=false";
             }
             if (params.countrycode.length > 0) {
                 resource += @"&countrycode=$(params.countrycode)";
@@ -252,7 +252,7 @@ namespace Tuner.Provider {
                 resource += @"&reverse=$(params.reverse)";
             }
 
-            debug(@"Search: $(resource)");
+            warning(@"Search: $(resource)");
             return station_query(resource);
         }
 

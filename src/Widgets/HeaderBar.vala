@@ -53,29 +53,38 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     }
 
     // Public properties
-
-    public Gtk.Overlay tuner_icon { get; private set; }
-    public Gtk.Button play_button { get; set; }
     public Gtk.VolumeButton volume_button;
-    public Gtk.Image favicon_image { get; private set; }
 
     // Signals
     public signal void star_clicked_sig (bool starred);
     public signal void searched_for_sig (string text);
     public signal void search_focused_sig ();
 
+    /*
+        Private 
+    */
 
-    /* Private */
+    /* main display assets */
+    private Gtk.Box _tuner = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+    private Gtk.Button _star_button = new Gtk.Button.from_icon_name (
+        "non-starred",
+        Gtk.IconSize.LARGE_TOOLBAR
+    );
+    private Gtk.Button _play_button = new Gtk.Button ();
+    private Gtk.MenuButton _prefs_button = new Gtk.MenuButton ();
+    private Gtk.SearchEntry _searchentry = new Gtk.SearchEntry ();
 
-
-    // Private member variables
-    private Gtk.Button _star_button;
-    private bool _starred = false;
-    private Model.Station _station;
+    /* secondary display assets */
+    private Gtk.Overlay _tuner_icon ;
+    private Gtk.Image _favicon_image ;
     private Gtk.Label _title_label;
     private RevealLabel _subtitle_label;
-    private Gtk.Image tuner_on = new Gtk.Image.from_icon_name("tuner-on", Gtk.IconSize.DIALOG);
+    private Gtk.Image _tuner_on = new Gtk.Image.from_icon_name("tuner-on", Gtk.IconSize.DIALOG);
 
+    // data and state variables
+
+    private bool _starred = false;
+    private Model.Station _station;
     private Mutex _station_update_lock = Mutex();   // Lock out concurrent updates
 
     
@@ -119,57 +128,55 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         custom_title = station_revealer;
 
         
-    /*
-        Tuner icon and online/offline behavior    
-    */
-        Application.instance.notify["is-online"].connect(() => {
-            warning(@"is-online??  $(Application.instance.is_online)");
-            check_online_status();
-        });      
+        /*
+            Tuner icon and online/offline behavior    
+        */
+        app().notify["is-online"].connect(() => {
+                check_online_status();
+            });      
 
-        tuner_icon = new Gtk.Overlay();
-        tuner_icon.add(new Gtk.Image.from_icon_name("tuner-off", Gtk.IconSize.DIALOG));
-        tuner_icon.add_overlay(tuner_on);
-        tuner_icon.valign = Gtk.Align.START;
+        _tuner_icon = new Gtk.Overlay();
+        _tuner_icon.add(new Gtk.Image.from_icon_name("tuner-off", Gtk.IconSize.DIALOG));
+        _tuner_icon.add_overlay(_tuner_on);
+        _tuner_icon.valign = Gtk.Align.START;
 
-        var tuner = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-        tuner.add(tuner_icon);
-        tuner.set_valign(Gtk.Align.CENTER);
-        tuner.set_margin_bottom(5);   // 20px padding on the right
-        tuner.set_margin_start(5);   // 20px padding on the right
-        tuner.set_margin_end(5);   // 20px padding on the right
+        //var tuner = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+        _tuner.add(_tuner_icon);
+        _tuner.set_valign(Gtk.Align.CENTER);
+        _tuner.set_margin_bottom(5);   // 20px padding on the right
+        _tuner.set_margin_start(5);   // 20px padding on the right
+        _tuner.set_margin_end(5);   // 20px padding on the right
      
        
         //
         // Create and configure play button
         //
-        play_button = new Gtk.Button ();
-        play_button.valign = Gtk.Align.CENTER;
-        play_button.action_name = Window.ACTION_PREFIX + Window.ACTION_PAUSE;
+        _play_button = new Gtk.Button ();
+        _play_button.valign = Gtk.Align.CENTER;
+        _play_button.action_name = Window.ACTION_PREFIX + Window.ACTION_PAUSE;
 
         
         //
         // Create and configure preferences button
         //
-        var prefs_button = new Gtk.MenuButton ();
-        prefs_button.image = new Gtk.Image.from_icon_name ("open-menu", Gtk.IconSize.LARGE_TOOLBAR);
-        prefs_button.valign = Gtk.Align.CENTER;
-        prefs_button.sensitive = true;
-        prefs_button.tooltip_text = _("Preferences");
-        prefs_button.popover = new Tuner.PreferencesPopover();
+       // var prefs_button = new Gtk.MenuButton ();
+       _prefs_button.image = new Gtk.Image.from_icon_name ("open-menu", Gtk.IconSize.LARGE_TOOLBAR);
+       _prefs_button.valign = Gtk.Align.CENTER;
+       _prefs_button.sensitive = true;
+       _prefs_button.tooltip_text = _("Preferences");
+       _prefs_button.popover = new Tuner.PreferencesPopover();
 
 
         // 
         // Create and configure search entry
         //
-        var searchentry = new Gtk.SearchEntry ();
-        searchentry.valign = Gtk.Align.CENTER;
-        searchentry.placeholder_text = _("Station name");
-        searchentry.changed.connect (() => {
-            _searchentry_text = searchentry.text;
+        _searchentry.valign = Gtk.Align.CENTER;
+        _searchentry.placeholder_text = _("Station name");
+        _searchentry.changed.connect (() => {
+            _searchentry_text = _searchentry.text;
             reset_timeout();
         });
-        searchentry.focus_in_event.connect ((e) => {
+        _searchentry.focus_in_event.connect ((e) => {
             search_focused_sig ();
             return true;
         });
@@ -178,10 +185,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         // 
         //Create and configure star button
         //
-        _star_button = new Gtk.Button.from_icon_name (
-            "non-starred",
-            Gtk.IconSize.LARGE_TOOLBAR
-        );
         _star_button.valign = Gtk.Align.CENTER;
         _star_button.sensitive = true;
         _star_button.tooltip_text = _("Star this station");
@@ -203,12 +206,12 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
        // });
 
 
-        pack_start (tuner);
+        pack_start (_tuner);
         pack_start (volume_button);
         pack_start (_star_button);
-        pack_start (play_button);
-        pack_end (prefs_button);
-        pack_end (searchentry);
+        pack_start (_play_button);
+        pack_end (_prefs_button);
+        pack_end (_searchentry);
 
         set_playstate (PlayState.PAUSE_INACTIVE);
     } // construct
@@ -247,7 +250,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
      */
      public async void update_from_station(Model.Station station) 
      {
-        if (Application.instance.is_offline) return;
+        if (app().is_offline) return;
         
         if (_station_update_lock.trylock())
         {
@@ -264,7 +267,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 r.set_reveal_child(false);
         
                 // Begin favicon update (non-blocking)
-                yield station.update_favicon_image(favicon_image, true, DEFAULT_ICON_NAME);
+                yield station.update_favicon_image(_favicon_image, true, DEFAULT_ICON_NAME);
         
                 r.hide();   // Waits for reveal to be hiden
         
@@ -315,10 +318,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         set {
             _starred = value;
             if (!_starred) {
-                //_star_button.image = new Gtk.Image.from_icon_name ("non-starred", Gtk.IconSize.LARGE_TOOLBAR);
                 _star_button.image = UNSTAR;
             } else {
-               // _star_button.image = new Gtk.Image.from_icon_name ("starred", Gtk.IconSize.LARGE_TOOLBAR);
                 _star_button.image = STAR;
             }
         }
@@ -335,38 +336,38 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     public void set_playstate (PlayState state) {
         switch (state) {
             case PlayState.PLAY_ACTIVE:
-                play_button.image = new Gtk.Image.from_icon_name (
+                _play_button.image = new Gtk.Image.from_icon_name (
                     "media-playback-start-symbolic",
                     Gtk.IconSize.LARGE_TOOLBAR
                 );
-                play_button.sensitive = true;
+                _play_button.sensitive = true;
                 _star_button.sensitive = true;
                 break;
 
             case PlayState.PLAY_INACTIVE:
-                play_button.image = new Gtk.Image.from_icon_name (
+                _play_button.image = new Gtk.Image.from_icon_name (
                     "media-playback-pause-symbolic",
                     Gtk.IconSize.LARGE_TOOLBAR
                 );
-                play_button.sensitive = false;
+                _play_button.sensitive = false;
                 _star_button.sensitive = false;
                 break;
 
             case PlayState.PAUSE_ACTIVE:
-                play_button.image = new Gtk.Image.from_icon_name (
+                _play_button.image = new Gtk.Image.from_icon_name (
                     "media-playback-stop-symbolic",
                     Gtk.IconSize.LARGE_TOOLBAR
                 );
-                play_button.sensitive = true;
+                _play_button.sensitive = true;
                 _star_button.sensitive = true;
                 break;
 
             case PlayState.PAUSE_INACTIVE:
-                play_button.image = new Gtk.Image.from_icon_name (
+                _play_button.image = new Gtk.Image.from_icon_name (
                     "media-playback-stop-symbolic",
                     Gtk.IconSize.LARGE_TOOLBAR
                 );
-                play_button.sensitive = false;
+                _play_button.sensitive = false;
                 _star_button.sensitive = false;
                 break;
         }
@@ -394,15 +395,17 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
     private void check_online_status()
     {
-        if (Application.instance.is_offline) {
-            tuner_on.opacity=0.0;
-
-            warning("Offline >>");
+        if (app().is_offline) {
+            _tuner_on.opacity = 0.0;
+            _favicon_image.opacity = 0.5;
+            _play_button.sensitive = false;
+            
         }
         else
         {
-            warning("Online <<");
-            tuner_on.opacity=1.0;
+            _tuner_on.opacity = 1.0;
+            _favicon_image.opacity = 1.0;
+            _play_button.sensitive = true;
         }
     }
 }
