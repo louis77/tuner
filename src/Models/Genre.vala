@@ -30,7 +30,6 @@ namespace Tuner.Model.Genre {
         "Oldies",
         "Punk",
         "Rap",
-        "Pop",
         "Reggae",
         "Salsa"
     };     
@@ -38,7 +37,7 @@ namespace Tuner.Model.Genre {
     public const string[] ERAS = {
         "40s",
         "50s",
-            "60s",
+        "60s",
         "70s",
         "80s",
         "90s",

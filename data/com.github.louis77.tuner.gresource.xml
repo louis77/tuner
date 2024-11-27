@@ -10,8 +10,9 @@
     <file alias="playlist-symbolic.svg" compressed="true">icons/16/playlist-symbolic.svg</file>
     <file alias="internet-radio-symbolic.svg" compressed="true">icons/16/internet-radio-symbolic.svg</file>
     <file alias="internet-radio.svg" compressed="true">icons/16/internet-radio.svg</file>
-    <file alias="tuner-on.svg" compressed="true">icons/128/com.github.louis77.tuner.svg</file>
-    <file alias="tuner-off.png" compressed="true">icons/128/com.github.louis77.tuner-symbolic.png</file>
+    <file alias="tuner-on.svg" compressed="true">icons/48/com.github.louis77.tuner.svg</file>
+    <file alias="tuner-off.svg" compressed="true">icons/48/com.github.louis77.tuner-symbolic.svg</file>
+    <file alias="background" compressed="true">icons/128/com.github.louis77.tuner.svg</file>
   </gresource>
 </gresources>
 

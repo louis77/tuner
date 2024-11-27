@@ -205,6 +205,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
 
         var stack = new Gtk.Stack ();
+        var overlay = new Gtk.Overlay ();
+
+        var background = new Gtk.Image.from_resource("/com/github/louis77/tuner/icons/background");
+        background.opacity = 0.2;
+        overlay.add (background);
+        overlay.add_overlay(stack);
         stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
 
         // ---------------------------------------------------------------------------
@@ -373,14 +379,14 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         // Get random categories and stations in them
         Set<Provider.Tag> result = _directory.load_random_genres(3);
 
-        foreach (var a in result)
+        foreach (var tag in result)
         {
             create_category_specific( stack, source_list, explore_category
-                , a.name
+                , tag.name
                 , "playlist-symbolic"
-                , a.name
-                , a.name
-                , _directory.load_by_tag (a.name));
+                , tag.name
+                , tag.name
+                , _directory.load_by_tag (tag.name));
 
         }
 
@@ -437,7 +443,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
 
         primary_box.pack1 (source_list, false, false);
-        primary_box.pack2 (stack, true, false);
+       // primary_box.pack2 (stack, true, false);
+        primary_box.pack2 (overlay, true, false);
         add (primary_box);
         show_all ();
 
@@ -467,7 +474,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 		int width = allocation.width;
 		int height = allocation.height;
 		debug (@"Window resized: w$(width) h$(height)");
-	}
+	} // 
 
 
     /**
@@ -492,27 +499,27 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         Granite.Widgets.SourceList source_list,
         bool enable_count = false) 
     {
-    item.set_data<string> ("stack_child", name);
-    var c = new ContentBox (
-        null,
-        full_title,
-        null,
-        action_icon_name,
-        action_tooltip_text
-    );
-    c.map.connect (() => {
-        source_list.selected = item;
-    });
-    if (enable_count) {
-        c.content_changed_sig.connect (() => {
-            if (c.content == null) return;
-            var count = c.content.item_count;
-            item.badge = @"$count\t";
+        item.set_data<string> ("stack_child", name);
+        var c = new ContentBox (
+            null,
+            full_title,
+            null,
+            action_icon_name,
+            action_tooltip_text
+        );
+        c.map.connect (() => {
+            source_list.selected = item;
         });
-    }
-    stack.add_named (c, name);
+        if (enable_count) {
+            c.content_changed_sig.connect (() => {
+                if (c.content == null) return;
+                var count = c.content.item_count;
+                item.badge = @"$count\t";
+            });
+        }
+        stack.add_named (c, name);
 
-    return c;
+        return c;
     } // create_content_box
 
 
@@ -728,7 +735,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             active = true;
         }
     } // check_online_status
-    
+
 
     // -------------------------------------------------
 
