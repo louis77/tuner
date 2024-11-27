@@ -251,6 +251,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         /*
             Discover
         */
+        //  create_category_specific( stack, source_list, selections_category, "trending"
+        //  , "playlist-queue"
+        //  , "Trending"
+        //  , "Trending in the last 24 hours",_directory,   {"trending"} );
+
         var discover = SourceListBox.create ( stack
             , source_list
             ,  selections_category
@@ -291,52 +296,34 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         /*
             Trending
         */
-        var trending = SourceListBox.create ( stack
-            , source_list
-            ,  selections_category
-            , "trending"
-            , "playlist-queue"
-            , "Trending"
-            , "Trending in the last 24 hours"
-        ,_directory.load_trending_stations(40));
-
-       // var s2 = _directory.load_trending_stations(40);
-        trending.realize.connect (() => {
-            try {
-                var slist = new StationList.with_stations (trending.next_page ());
-                slist.selection_changed.connect (handle_station_click);
-                slist.favourites_changed.connect (handle_favourites_changed);
-                trending.content = slist;
-            } catch (SourceError e) {
-                trending.show_alert ();
-            }
-
-        });
+        create_category_specific
+            ( stack
+                , source_list
+                , selections_category
+                , "trending"
+                , "playlist-queue"
+                , "Trending"
+                , "Trending in the last 24 hours"
+                ,_directory.load_trending_stations(40) 
+            );
 
         // ---------------------------------------------------------------------------
 
         /*
             Popular
         */
-        var popular = SourceListBox.create ( stack
-            , source_list
-            ,  selections_category
-            , "popular"
-            , "playlist-similar"
-            , "Popular"
-            , "Most-listened over 24 hours"
-        ,_directory.load_popular_stations(40));
 
-        popular.realize.connect (() => {
-            try {
-                var slist = new StationList.with_stations (popular.next_page ());
-                slist.selection_changed.connect (handle_station_click);
-                slist.favourites_changed.connect (handle_favourites_changed);
-                popular.content = slist;
-            } catch (SourceError e) {
-                popular.show_alert ();
-            }
-        });
+        create_category_specific
+            ( stack
+                , source_list
+                , selections_category
+                , "popular"
+                , "playlist-similar"
+                , "Popular"
+                , "Most-listened over 24 hours"
+                ,_directory.load_popular_stations(40)
+            );
+    
 
         // ---------------------------------------------------------------------------
         // Country-specific stations list
@@ -356,17 +343,17 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         /*
             Starred
         */
-        var item5 = new Granite.Widgets.SourceList.Item (_("Starred by You"));
-        item5.icon = new ThemedIcon ("starred");
-        searched_category.add (item5);
-        var c4 = create_content_box ("starred", item5,
-                            _("Starred by You"), null, null,
-                            stack, source_list, true);
 
-        var slist = new StationList.with_stations (_directory.get_starred ());
-        slist.selection_changed.connect (handle_station_click);
-        slist.favourites_changed.connect (handle_favourites_changed);
-        c4.content = slist;
+        var starred = create_category_predefined
+            (   stack
+                , source_list
+                , selections_category
+                , "starred"
+                , "starred"
+                , "Starred by You"
+                , "Starred by You"
+                ,_directory.get_starred() 
+            );
 
         // ---------------------------------------------------------------------------
         // Search Results Box
@@ -382,46 +369,34 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         // Explore Categories category
 
+
         // Get random categories and stations in them
         Set<Provider.Tag> result = _directory.load_random_genres(3);
 
         foreach (var a in result)
         {
-            var genre = SourceListBox.create ( stack
-                , source_list
-                , explore_category
+            create_category_specific( stack, source_list, explore_category
                 , a.name
                 , "playlist-symbolic"
                 , a.name
-                , a.name);
+                , a.name
+                , _directory.load_by_tag (a.name));
 
-            var ds = _directory.load_by_tag (a.name);
-
-            genre.realize.connect (() => {
-                try {
-                    var slist1 = new StationList.with_stations (ds.next_page ());
-                    slist1.selection_changed.connect (handle_station_click);
-                    slist1.favourites_changed.connect (handle_favourites_changed);
-                    genre.content = slist1;
-                } catch (SourceError e) {
-                    genre.show_alert ();
-                }
-            });
         }
 
         // ---------------------------------------------------------------------------
 
         // Genre Boxes
-        category_genre( stack, source_list, _directory, genres_category,   Model.Genre.GENRES );
+        create_category_genre( stack, source_list, genres_category, _directory,   Model.Genre.GENRES );
 
         // Sub Genre Boxes
-        category_genre( stack, source_list, _directory, subgenres_category,   Model.Genre.SUBGENRES );
+        create_category_genre( stack, source_list, subgenres_category, _directory,   Model.Genre.SUBGENRES );
 
         // Eras Boxes
-        category_genre( stack, source_list, _directory, eras_category,   Model.Genre.ERAS );
+        create_category_genre( stack, source_list, eras_category,   _directory, Model.Genre.ERAS );
     
         // Talk Boxes
-        category_genre( stack, source_list, _directory, talk_category,   Model.Genre.TALK );
+        create_category_genre( stack, source_list, talk_category, _directory,   Model.Genre.TALK );
     
 
        // ---------------------------------------------------
@@ -434,7 +409,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             var _slist = new StationList.with_stations (_directory.get_starred ());
             _slist.selection_changed.connect (handle_station_click);
             _slist.favourites_changed.connect (handle_favourites_changed);
-            c4.content = _slist;
+            starred.content = _slist;
         });
 
         source_list.root.add (selections_category);
@@ -753,38 +728,94 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             active = true;
         }
     } // check_online_status
+    
 
     // -------------------------------------------------
 
-    private void category_genre( Gtk.Stack stack
-        , Granite.Widgets.SourceList source_list
-        , DirectoryController directory
-        , Granite.Widgets.SourceList.ExpandableItem category
-        , string[] genres)
-    {
-        foreach (var new_genre in genres ) {
 
-            warning(@"tag: $(new_genre.down())");
-            var genre = SourceListBox.create ( stack
+    private SourceListBox create_category_predefined
+        ( Gtk.Stack stack
+        , Granite.Widgets.SourceList source_list
+        , Granite.Widgets.SourceList.ExpandableItem category
+        , string name
+        , string icon
+        , string title
+        , string subtitle
+        , Collection<Model.Station> stations
+        )
+    {
+        var genre = SourceListBox.create 
+            ( stack
+            , source_list
+            , category
+            , name
+            , icon
+            , title
+            , subtitle 
+            );
+
+        var slist1 = new StationList.with_stations (stations);
+        slist1.selection_changed.connect (handle_station_click);
+        slist1.favourites_changed.connect (handle_favourites_changed);
+        genre.content = slist1;
+
+        return genre;
+    
+    } // create_category_predefined
+
+
+    private void create_category_specific 
+        ( Gtk.Stack stack
+        , Granite.Widgets.SourceList source_list
+        , Granite.Widgets.SourceList.ExpandableItem category
+        , string name
+        , string icon
+        , string title
+        , string subtitle
+        , StationSet station_set
+        )
+    {
+        var genre = SourceListBox.create 
+            ( stack
+            , source_list
+            , category
+            , name
+            , icon
+            , title
+            , subtitle 
+            , station_set
+            );
+
+        genre.realize.connect (() => {
+            try {
+                var slist1 = new StationList.with_stations (genre.next_page ());
+                slist1.selection_changed.connect (handle_station_click);
+                slist1.favourites_changed.connect (handle_favourites_changed);
+                genre.content = slist1;
+            } catch (SourceError e) {
+                genre.show_alert ();
+            }
+        });        
+    } // create_category_specific
+
+
+    private void create_category_genre
+        ( Gtk.Stack stack
+        , Granite.Widgets.SourceList source_list
+        , Granite.Widgets.SourceList.ExpandableItem category
+        , DirectoryController directory
+        , string[] genres
+        )
+    {
+        foreach (var genre in genres ) {
+            create_category_specific(stack
                 , source_list
                 , category
-                , new_genre
+                , genre
                 , "playlist-symbolic"
-                , new_genre
-                , new_genre);
-
-            var ds = directory.load_by_tag (new_genre.down ());
-
-            genre.realize.connect (() => {
-                try {
-                    var slist1 = new StationList.with_stations (ds.next_page ());
-                    slist1.selection_changed.connect (handle_station_click);
-                    slist1.favourites_changed.connect (handle_favourites_changed);
-                    genre.content = slist1;
-                } catch (SourceError e) {
-                    genre.show_alert ();
-                }
-            });
+                , genre
+                , genre
+                , directory.load_by_tag (genre.down ()));
         }
-    }
+    } // create_category_genre
 }
