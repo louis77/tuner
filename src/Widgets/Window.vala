@@ -231,6 +231,10 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         genres_category.collapsible = true;
         genres_category.expanded = true;
 
+        var subgenres_category = new Granite.Widgets.SourceList.ExpandableItem (_("Sub Genres"));
+        subgenres_category.collapsible = true;
+        subgenres_category.expanded = false;
+
         var eras_category = new Granite.Widgets.SourceList.ExpandableItem (_("Eras"));
         eras_category.collapsible = true;
         eras_category.expanded = false;
@@ -391,7 +395,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 , a.name
                 , a.name);
 
-            var ds = _directory.load_by_tags ({a.name});
+            var ds = _directory.load_by_tag (a.name);
 
             genre.realize.connect (() => {
                 try {
@@ -405,90 +409,20 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             });
         }
 
-
-
-
-
         // ---------------------------------------------------------------------------
+
         // Genre Boxes
-        foreach (var new_genre
-            in Model.genres ()) {
+        category_genre( stack, source_list, _directory, genres_category,   Model.Genre.GENRES );
 
-           var genre = SourceListBox.create ( stack
-               , source_list
-               , genres_category
-               , new_genre.name
-               , "playlist-symbolic"
-               , new_genre.name
-               , new_genre.name);
+        // Sub Genre Boxes
+        category_genre( stack, source_list, _directory, subgenres_category,   Model.Genre.SUBGENRES );
 
-           var ds = _directory.load_by_tags (new_genre.tags);
-
-           genre.realize.connect (() => {
-               try {
-                   var slist1 = new StationList.with_stations (ds.next_page ());
-                   slist1.selection_changed.connect (handle_station_click);
-                   slist1.favourites_changed.connect (handle_favourites_changed);
-                   genre.content = slist1;
-               } catch (SourceError e) {
-                   genre.show_alert ();
-               }
-           });
-       }
-
-        // ---------------------------------------------------------------------------
         // Eras Boxes
-        foreach (var new_genre
-            in Model.eras ()) {
-
-           var genre = SourceListBox.create ( stack
-               , source_list
-               , eras_category
-               , new_genre.name
-               , "playlist-symbolic"
-               , new_genre.name
-               , new_genre.name);
-
-           var ds = _directory.load_by_tags (new_genre.tags);
-
-           genre.realize.connect (() => {
-               try {
-                   var slist1 = new StationList.with_stations (ds.next_page ());
-                   slist1.selection_changed.connect (handle_station_click);
-                   slist1.favourites_changed.connect (handle_favourites_changed);
-                   genre.content = slist1;
-               } catch (SourceError e) {
-                   genre.show_alert ();
-               }
-           });
-       }
-
-        // ---------------------------------------------------------------------------
+        category_genre( stack, source_list, _directory, eras_category,   Model.Genre.ERAS );
+    
         // Talk Boxes
-        foreach (var new_genre
-            in Model.talk ()) {
-
-           var genre = SourceListBox.create ( stack
-               , source_list
-               , talk_category
-               , new_genre.name
-               , "playlist-symbolic"
-               , new_genre.name
-               , new_genre.name);
-
-           var ds = _directory.load_by_tags (new_genre.tags);
-
-           genre.realize.connect (() => {
-               try {
-                   var slist1 = new StationList.with_stations (ds.next_page ());
-                   slist1.selection_changed.connect (handle_station_click);
-                   slist1.favourites_changed.connect (handle_favourites_changed);
-                   genre.content = slist1;
-               } catch (SourceError e) {
-                   genre.show_alert ();
-               }
-           });
-       }
+        category_genre( stack, source_list, _directory, talk_category,   Model.Genre.TALK );
+    
 
        // ---------------------------------------------------
 
@@ -507,6 +441,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         source_list.root.add (searched_category);
         source_list.root.add (explore_category);
         source_list.root.add (genres_category);
+        source_list.root.add (subgenres_category);
         source_list.root.add (eras_category);
         source_list.root.add (talk_category);
 
@@ -597,7 +532,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         c.content_changed_sig.connect (() => {
             if (c.content == null) return;
             var count = c.content.item_count;
-            item.badge = @"$count";
+            item.badge = @"$count\t";
         });
     }
     stack.add_named (c, name);
@@ -693,6 +628,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public void handle_favourites_changed () {
         refresh_favourites_sig ();
     }
+
     /**
      * @brief Handles player state changes.
      * @param state The new player state.
@@ -817,4 +753,38 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             active = true;
         }
     } // check_online_status
+
+    // -------------------------------------------------
+
+    private void category_genre( Gtk.Stack stack
+        , Granite.Widgets.SourceList source_list
+        , DirectoryController directory
+        , Granite.Widgets.SourceList.ExpandableItem category
+        , string[] genres)
+    {
+        foreach (var new_genre in genres ) {
+
+            warning(@"tag: $(new_genre.down())");
+            var genre = SourceListBox.create ( stack
+                , source_list
+                , category
+                , new_genre
+                , "playlist-symbolic"
+                , new_genre
+                , new_genre);
+
+            var ds = directory.load_by_tag (new_genre.down ());
+
+            genre.realize.connect (() => {
+                try {
+                    var slist1 = new StationList.with_stations (ds.next_page ());
+                    slist1.selection_changed.connect (handle_station_click);
+                    slist1.favourites_changed.connect (handle_favourites_changed);
+                    genre.content = slist1;
+                } catch (SourceError e) {
+                    genre.show_alert ();
+                }
+            });
+        }
+    }
 }

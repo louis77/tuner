@@ -211,10 +211,18 @@ public class Tuner.DirectoryController : Object {
      * @param utags An ArrayList of tags to filter stations.
      * @return A StationSet object with stations matching the given tags.
      */
-    public StationSet load_by_tags (string[] utags) {
-        Set<string> tags = new HashSet<string>();
-        foreach (var a in utags) { tags.add(a); }
-        return load_by_tag_set(tags);
+    public StationSet load_by_tag (string utag) {
+        var t =new HashSet<string>();
+        t.add (utag.down());
+        var params = Provider.SearchParams() {
+            text    = "",
+            countrycode = "",
+            tags    = t,
+            order   = Provider.SortOrder.VOTES,
+            reverse = true
+        };
+        var source = new StationSet(40, params, _provider, _starred);
+        return source;
     }
 
     public StationSet load_by_tag_set (Set<string> utags) {
