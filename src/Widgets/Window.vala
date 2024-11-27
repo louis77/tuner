@@ -50,12 +50,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     /* Private */   
 
-    private const string STACK_SEARCHED = "searched";
     private const string CSS = "com/github/louis77/tuner/Application.css";
     private const string NOTIFICATION_PLAYING_BACKGROUND = "Playing in background";
     private const string NOTIFICATION_CLICK_RESUME = "Click here to resume window. To quit Tuner, pause playback and close the window.";
     private const string NOTIFICATION_APP_RESUME_WINDOW = "app.resume-window";
     private const string NOTIFICATION_APP_PLAYING_CONTINUE = "continue-playing";
+
+    private const int RANDOM_CATEGORIES = 5;
 
     private const int GEOMETRY_MIN_HEIGHT = 440;
     private const int GEOMETRY_MIN_WIDTH = 600;
@@ -133,7 +134,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
 
         _headerbar.search_focused_sig.connect (() => {
-            stack.visible_child_name = STACK_SEARCHED;
+            stack.visible_child_name = "searched";
         });
 
 
@@ -172,11 +173,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
 
 
-
-
-
-
-
         //  adjust_theme();    // TODO Theme management needs research in flatpak as nonfunctional
         //  settings.changed.connect( (key) => {
         //      if (key == "theme-mode") {
@@ -208,14 +204,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var overlay = new Gtk.Overlay ();
 
         var background = new Gtk.Image.from_resource("/com/github/louis77/tuner/icons/background");
-        background.opacity = 0.2;
+        background.opacity = 0.1;
         overlay.add (background);
         overlay.add_overlay(stack);
         stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
 
         // ---------------------------------------------------------------------------
 
-       // var store = new Model.StarredStationStore ();
         _directory = new DirectoryController (new Provider.RadioBrowser(null),starred);
 
         var primary_box = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);
@@ -257,10 +252,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         /*
             Discover
         */
-        //  create_category_specific( stack, source_list, selections_category, "trending"
-        //  , "playlist-queue"
-        //  , "Trending"
-        //  , "Trending in the last 24 hours",_directory,   {"trending"} );
 
         var discover = SourceListBox.create ( stack
             , source_list
@@ -361,15 +352,31 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 ,_directory.get_starred() 
             );
 
+            starred.badge ( @"$(starred.item_count)\t");
+            starred.notify["item-count"].connect (()=> {
+                starred.badge ( @"$(starred.item_count)\t");
+            });
+
+
         // ---------------------------------------------------------------------------
         // Search Results Box
         
-        var search = new Granite.Widgets.SourceList.Item (_("Recent Search"));
-        search.icon = new ThemedIcon ("folder-saved-search");
-        searched_category.add (search);
-        var search_results = create_content_box (STACK_SEARCHED, search,
-                            _("Search"), null, null,
-                            stack, source_list, true);
+        //  var search = new Granite.Widgets.SourceList.Item (_("Recent Search"));
+        //  search.icon = new ThemedIcon ("folder-saved-search");
+        //  searched_category.add (search);
+        //  var search_results = create_content_box (STACK_SEARCHED, search,
+        //                      _("Search"), null, null,
+        //                      stack, source_list, true);
+
+        var search_results = SourceListBox.create 
+        ( stack
+        , source_list
+        , searched_category
+        , "Recent Search"
+        , "folder-saved-search"
+        , "Search"
+        , "Search" 
+        );
 
         // ---------------------------------------------------------------------------
 
@@ -377,9 +384,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
 
         // Get random categories and stations in them
-        Set<Provider.Tag> result = _directory.load_random_genres(3);
-
-        foreach (var tag in result)
+        foreach (var tag in _directory.load_random_genres(RANDOM_CATEGORIES))
         {
             create_category_specific( stack, source_list, explore_category
                 , tag.name
@@ -465,6 +470,15 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     } // construct
 
 
+    /* --------------------------------------------------------
+    
+        Methods
+
+        ----------------------------------------------------------
+    */
+
+
+
     /**
      * @brief Handles window resizing.
      * @param self The widget being resized.
@@ -475,53 +489,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 		int height = allocation.height;
 		debug (@"Window resized: w$(width) h$(height)");
 	} // 
-
-
-    /**
-     * @brief Creates a new ContentBox and adds it to the stack.
-     * @param name The name of the content box.
-     * @param item The SourceList item associated with the content box.
-     * @param full_title The full title of the content box.
-     * @param action_icon_name The name of the action icon (or null if none).
-     * @param action_tooltip_text The tooltip text for the action (or null if none).
-     * @param stack The Gtk.Stack to add the content box to.
-     * @param source_list The SourceList to update when the content box is selected.
-     * @param enable_count Whether to enable item counting for the content box.
-     * @return The created ContentBox.
-     */
-     private ContentBox create_content_box (
-        string name,
-        Granite.Widgets.SourceList.Item item,
-        string full_title,
-        string? action_icon_name,
-        string? action_tooltip_text,
-        Gtk.Stack stack,
-        Granite.Widgets.SourceList source_list,
-        bool enable_count = false) 
-    {
-        item.set_data<string> ("stack_child", name);
-        var c = new ContentBox (
-            null,
-            full_title,
-            null,
-            action_icon_name,
-            action_tooltip_text
-        );
-        c.map.connect (() => {
-            source_list.selected = item;
-        });
-        if (enable_count) {
-            c.content_changed_sig.connect (() => {
-                if (c.content == null) return;
-                var count = c.content.item_count;
-                item.badge = @"$count\t";
-            });
-        }
-        stack.add_named (c, name);
-
-        return c;
-    } // create_content_box
-
 
 
     // ----------------------------------------------------------------------
@@ -683,9 +650,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @brief Loads search stations based on the provided text and updates the content box.
      * Async since 1.5.5 so that UI is responsive during long searches
      * @param searchText The text to search for stations.
-     * @param contentBox The ContentBox to update with the search results.
+     * @param search_box The ContentBox to update with the search results.
      */
-    private async void load_search_stations(string searchText, ContentBox contentBox) {
+    private async void load_search_stations(string searchText, SourceListBox search_box) {
 
         debug(@"Searching for: $(searchText)");        // FIXME warnings to debugs
         var station_source = _directory.load_search_stations(searchText, 100);
@@ -695,16 +662,16 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             var stations = station_source.next_page();
             debug(@"Search Next done");
             if (stations == null || stations.size == 0) {
-                contentBox.show_nothing_found();
+                search_box.show_nothing_found();
             } else {
                 debug(@"Search found $(stations.size) stations");
                 var _slist = new StationList.with_stations(stations);
                 _slist.selection_changed.connect(handle_station_click);
                 _slist.favourites_changed.connect(handle_favourites_changed);
-                contentBox.content = _slist;
+                search_box.content = _slist;
             }
         } catch (SourceError e) {
-            contentBox.show_alert();
+            search_box.show_alert();
         }
     } // load_search_stations
 
@@ -737,6 +704,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     } // check_online_status
 
 
+    // -------------------------------------------------
+    // Helpers
     // -------------------------------------------------
 
 

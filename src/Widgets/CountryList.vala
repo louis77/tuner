@@ -12,7 +12,7 @@
  *
  * @extends AbstractContentList
  */
-public class Tuner.CountryList : AbstractContentList {
+public class Tuner.CountryList : ContentList {
 
     /**
      * @brief Constructs a new CountryList.

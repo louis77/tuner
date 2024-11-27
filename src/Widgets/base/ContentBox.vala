@@ -51,7 +51,7 @@ public class Tuner.ContentBox : Gtk.Box {
 
     private Gtk.Box _header;
     private Gtk.Box _content;
-    private AbstractContentList _content_list;
+    private ContentList _content_list;
     private Gtk.Stack _stack;
 
     
@@ -176,7 +176,7 @@ public class Tuner.ContentBox : Gtk.Box {
      * When setting this property, it replaces the current content with the new
      * AbstractContentList and emits the content_changed_sig signal.
      */
-    public AbstractContentList content { 
+    public ContentList content { 
         set {
         
             foreach (var child in _content.get_children ()) { child.destroy (); }

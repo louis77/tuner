@@ -15,7 +15,7 @@ using Gee;
  *
  * @extends AbstractContentList
  */
-public class Tuner.StationList : AbstractContentList {
+public class Tuner.StationList : ContentList {
 
     /**
      * @signal selection_changed

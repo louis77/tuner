@@ -13,7 +13,7 @@
  *
  * @extends Gtk.FlowBox
  */
-public abstract class Tuner.AbstractContentList : Gtk.FlowBox {
+public abstract class Tuner.ContentList : Gtk.FlowBox {
 
     /**
      * @property item_count

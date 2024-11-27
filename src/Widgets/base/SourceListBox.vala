@@ -30,16 +30,19 @@ using Granite.Widgets;
  * @extends Gtk.Box
  */
 public class Tuner.SourceListBox : Gtk.Box {
-    
-    //  public string ident { get; construct; }
-
-   // public StationSet data { get; construct; }
 
     /**
      * @property header_label
      * @brief The label displayed in the header of the ContentBox.
      */
     public HeaderLabel header_label;
+
+    public uint item_count { get; private set; }
+
+    public void badge (string badge)
+    {
+        _list_item.badge = badge;
+    }
 
     /**
      * @signal action_activated_sig
@@ -51,15 +54,16 @@ public class Tuner.SourceListBox : Gtk.Box {
      * @signal content_changed_sig
      * @brief Emitted when the content of the ContentBox is changed.
      */
-    public signal void content_changed_sig ();
+    public signal void content_changed_sig (uint count);
 
     // -----------------------------------
     
+    private SourceList.ExpandableItem _category;
     private SourceList.Item _list_item;
     private ThemedIcon _icon;
     private Gtk.Box _header = base_header();
     private Gtk.Box _content = base_content();
-    private AbstractContentList _content_list;
+    private ContentList _content_list;
     private Gtk.Stack _substack = new Gtk.Stack ();
     private StationSet? _data;
 
@@ -141,13 +145,7 @@ public class Tuner.SourceListBox : Gtk.Box {
             source_list.selected = _list_item;
         });
 
-        //  if (enable_count) {
-        //      content_changed_sig.connect (() => {
-        //          if (content == null) return;
-        //          var count = content.item_count;
-        //          category.badge = count.to_string ();
-        //      });
-        //  }
+        _category = category;
         category.add (_list_item);  
     } // ContentBox
 
@@ -191,7 +189,7 @@ public class Tuner.SourceListBox : Gtk.Box {
      * When setting this property, it replaces the current content with the new
      * AbstractContentList and emits the content_changed_sig signal.
      */
-    public AbstractContentList content { 
+    public ContentList content { 
         set {
         
             foreach (var child in _content.get_children ()) { child.destroy (); }
@@ -200,7 +198,7 @@ public class Tuner.SourceListBox : Gtk.Box {
             _content_list = value;
             _content.add (_content_list);
             _content.show_all ();
-            content_changed_sig ();
+            item_count = _content_list.item_count;
         }
 
         get {
@@ -262,48 +260,10 @@ public class Tuner.SourceListBox : Gtk.Box {
                  data,
                 action_tooltip_text,
                 action_icon_name,
-                false);
+                true);
 
             stack.add_named (slb, name);
 
             return slb;
-        }    
-
-    //  public static SourceListBox create_count(
-    //      Gtk.Stack stack,
-    //      SourceList source_list,
-    //      SourceList.ExpandableItem category,
-    //      string name,
-    //      string icon,
-    //      string title,
-    //      string subtitle,
-    //      StationSet? data = null,
-    //      string? action_tooltip_text = null,
-    //      string? action_icon_name = null) 
-    //      {
-    //          var slb = new SourceListBox(
-    //                  stack,
-    //                  source_list,
-    //                  category,
-    //                  name,
-    //                  icon,
-    //                  title,
-    //                  subtitle,
-    //                  data,
-    //              action_tooltip_text,
-    //              action_icon_name,
-    //              true);
-
-    //              slb.content_changed_sig.connect (() => {
-    //              if (slb.content == null) return;
-    //              var count = slb.content.item_count;
-    //              category.badge = count.to_string ();
-    //          });
-            
-
-    //          stack.add_named (slb, name);
-
-    //          return slb;
-    //      }
-
+        } // create
 }
