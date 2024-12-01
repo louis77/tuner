@@ -214,6 +214,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         pack_end (_searchentry);
 
         set_playstate (PlayState.PAUSE_INACTIVE);
+        check_online_status();
     } // construct
 
 
@@ -268,7 +269,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         
                 // Begin favicon update (non-blocking)
                 yield station.update_favicon_image(_favicon_image, true, DEFAULT_ICON_NAME);
-        
+                title = "";
+                subtitle = "";
                 r.hide();   // Waits for reveal to be hiden
         
                 // Update station details
@@ -276,7 +278,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 _station.notify.connect(handle_station_change);
         
                 title = station.name;
-                subtitle = _("Playing");
+                subtitle = "Buffering";
                 starred = station.starred;
 
                 r.show();              
@@ -398,14 +400,17 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         if (app().is_offline) {
             _tuner_on.opacity = 0.0;
             _favicon_image.opacity = 0.5;
+            _star_button.sensitive = false;
             _play_button.sensitive = false;
-            
+            volume_button.sensitive = false;
         }
         else
         {
             _tuner_on.opacity = 1.0;
             _favicon_image.opacity = 1.0;
+            _star_button.sensitive = true;
             _play_button.sensitive = true;
+            volume_button.sensitive = true;
         }
     }
 }

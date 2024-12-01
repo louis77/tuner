@@ -44,7 +44,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public Settings settings { get; construct; }
     public Gtk.Stack stack { get; set; }
     public PlayerController player { get; construct; }
-    public StarredStationController starred { get; construct; }
+    public StarredController starred { get; construct; }
     public bool active { get; private set; } // Window is active
 
 
@@ -96,7 +96,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @param app The Application instance.
      * @param player The PlayerController instance.
      */
-    public Window (Application app, PlayerController player, Settings settings, StarredStationController starred ) {
+    public Window (Application app, PlayerController player, Settings settings, StarredController starred ) {
         Object (
             application: app,
             player: player,
@@ -114,7 +114,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     construct { // FIXME    Way to complex - should be in activate?
         
 
-        this.set_icon_name(Application.APP_ID);
+        set_icon_name(Application.APP_ID);
         add_action_entries (ACTION_ENTRIES, this);
         set_title (WINDOW_NAME);
         window_position = Gtk.WindowPosition.CENTER;
@@ -211,7 +211,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         // ---------------------------------------------------------------------------
 
-        _directory = new DirectoryController (new Provider.RadioBrowser(null),starred);
+        _directory = new DirectoryController (starred);
 
         var primary_box = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);
 
@@ -220,11 +220,15 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         selections_category.collapsible = false;
         selections_category.expanded = true;
 
-        var searched_category = new Granite.Widgets.SourceList.ExpandableItem (_("Library"));
-        searched_category.collapsible = false;
-        searched_category.expanded = true;
+        var library_category = new Granite.Widgets.SourceList.ExpandableItem (_("Library"));
+        library_category.collapsible = false;
+        library_category.expanded = true;
 
-        var explore_category = new Granite.Widgets.SourceList.ExpandableItem (_("Explore"));
+        var saved_searches_category = new Granite.Widgets.SourceList.ExpandableItem (_("Saved Searches"));
+        saved_searches_category.collapsible = false;
+        saved_searches_category.expanded = false;
+
+        var explore_category = new Granite.Widgets.SourceList.ExpandableItem (_("Explore")); 
         explore_category.collapsible = true;
         explore_category.expanded = false;
 
@@ -263,10 +267,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             ,_directory.load_random_stations(20)
             , "Discover more stations"
             , "media-playlist-shuffle-symbolic");
-        
-        stack.add_named (discover, discover.name);
-       // var dis_data = _directory.load_random_stations(20);
+            
         discover.realize.connect (() => {
+            if ( app().is_offline ) return;
             try {
                 var slist = new StationList.with_stations (discover.next_page ());
                 slist.selection_changed.connect (handle_station_click);
@@ -278,6 +281,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
         
         discover.action_activated_sig.connect (() => {
+            if ( app().is_offline ) return;
             try {
                 var slist = new StationList.with_stations (discover.next_page ());
                 slist.selection_changed.connect (handle_station_click);
@@ -344,7 +348,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var starred = create_category_predefined
             (   stack
                 , source_list
-                , selections_category
+                , library_category
                 , "starred"
                 , "starred"
                 , "Starred by You"
@@ -371,28 +375,31 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var search_results = SourceListBox.create 
         ( stack
         , source_list
-        , searched_category
+        , library_category
         , "Recent Search"
         , "folder-saved-search"
-        , "Search"
-        , "Search" 
+        , "Recent Search"
+        , "Search Results" 
         );
+
+        saved_searches_category.icon = new ThemedIcon ("library-music");
 
         // ---------------------------------------------------------------------------
 
         // Explore Categories category
-
-
         // Get random categories and stations in them
-        foreach (var tag in _directory.load_random_genres(RANDOM_CATEGORIES))
+        if ( app().is_online)
         {
-            create_category_specific( stack, source_list, explore_category
-                , tag.name
-                , "playlist-symbolic"
-                , tag.name
-                , tag.name
-                , _directory.load_by_tag (tag.name));
-
+            foreach (var tag in _directory.load_random_genres(RANDOM_CATEGORIES))
+            {
+            if ( Model.Genre.in_genre (tag.name)) break;  // Predefined genre, ignore
+                create_category_specific( stack, source_list, explore_category
+                    , tag.name
+                    , "playlist-symbolic"
+                    , tag.name
+                    , tag.name
+                    , _directory.load_by_tag (tag.name));
+            }
         }
 
         // ---------------------------------------------------------------------------
@@ -417,6 +424,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
 
         refresh_favourites_sig.connect ( () => {
+            if ( app().is_offline ) return;
             var _slist = new StationList.with_stations (_directory.get_starred ());
             _slist.selection_changed.connect (handle_station_click);
             _slist.favourites_changed.connect (handle_favourites_changed);
@@ -424,7 +432,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
 
         source_list.root.add (selections_category);
-        source_list.root.add (searched_category);
+        source_list.root.add (library_category);
+        library_category.add (saved_searches_category);
         source_list.root.add (explore_category);
         source_list.root.add (genres_category);
         source_list.root.add (subgenres_category);
@@ -717,7 +726,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         , string icon
         , string title
         , string subtitle
-        , Collection<Model.Station> stations
+        , Collection<Model.Station>? stations
         )
     {
         var genre = SourceListBox.create 
@@ -730,10 +739,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             , subtitle 
             );
 
-        var slist1 = new StationList.with_stations (stations);
-        slist1.selection_changed.connect (handle_station_click);
-        slist1.favourites_changed.connect (handle_favourites_changed);
-        genre.content = slist1;
+        if (stations != null)
+        {    
+            var slist1 = new StationList.with_stations (stations);
+            slist1.selection_changed.connect (handle_station_click);
+            slist1.favourites_changed.connect (handle_favourites_changed);
+            genre.content = slist1;
+        }
 
         return genre;
     

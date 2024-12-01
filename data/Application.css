@@ -3,10 +3,6 @@
  * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
  */
 
- #bg {
-    background-image: url("resource:///tuner-on");
- }
-
 .h2 {
     font-weight: 300;
     font-size: 18pt;
@@ -17,24 +13,31 @@
 	font-weight: 500;
 }
 
-.station-button-description {
+.station-button-description { 
     font-size: 14px;
-    color: rgb(100, 100, 100);
+    color: gray; 
+    background-color: transparent;
+    border: none;
 }
+
+/* .station-button {
+    background-color: darker(@bg_color); 
+    border: none;
+} */
 
 .station-button:hover {
-        background-color: darker(@bg_color);
+        background-color: transparent;
+        border: none;
+        border-style: none;
 }
-
+/* 
 .station-button image {
 	border-width: 0;
-	border-style: solid;
-    border-color: #dddddd;
-	box-shadow: 2px 2px 3px grey;
-	background-color: #eee;
+	border: none;
+	background-color: darker(@bg_color);
 	margin-right: 5px;
     min-width: 48px;
-}
+} */
 
 /* Used in Station Button for Codec/Bitrate Tag */
 .tag {

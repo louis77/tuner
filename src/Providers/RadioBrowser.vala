@@ -200,6 +200,7 @@ namespace Tuner.Provider {
          * @throw DataError if unable to retrieve or parse station data
          */
          public Model.Station? by_uuid(string uuid) throws DataError {
+            if ( app().is_offline ) return null;
             var result = station_query(@"$(RBI_UUID)/$(uuid)");
             if (result.size == 0) {
                 return null;
@@ -252,7 +253,7 @@ namespace Tuner.Provider {
                 resource += @"&reverse=$(params.reverse)";
             }
 
-            warning(@"Search: $(resource)");
+            debug(@"Search: $(resource)");
             return station_query(resource);
         }
 
@@ -272,7 +273,7 @@ namespace Tuner.Provider {
                     _current_server = @"https://$(_servers[server])";
                     if ( HttpClient.HEAD(_current_server) == 200 ) break;   // Check the server
                 }
-                warning(@"RadioBrowser Client - Chosen radio-browser.info server: $_current_server");
+                debug(@"RadioBrowser Client - Chosen radio-browser.info server: $_current_server");
             }
     
             private void degrade(bool degraded = true )
@@ -285,6 +286,7 @@ namespace Tuner.Provider {
                 else
                 // Degraded result
                 {
+                    warning(@"RadioBrowser degrading server: $_current_server");
                     _degrade =- DEGRADE_COST;
                     if ( _degrade < 0 ) 
                     // This server degraded to zero

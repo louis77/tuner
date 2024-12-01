@@ -80,8 +80,6 @@ namespace Tuner {
     } // fade
 
 
-    //private static Application app = null;
-
     /*
         Application
     */
@@ -102,7 +100,7 @@ namespace Tuner {
         public const string UNSTAR_CHAR = "☆ ";
 
         /** @brief File name for starred station sore */
-        public const string STARRED = "favorites-test2.json";
+        public const string STARRED = "starred.json";
 
 
         /** @brief Singleton instance of the Application */
@@ -123,7 +121,10 @@ namespace Tuner {
         public PlayerController player { get; construct; }  
 
         /** @brief Player controller */
-        public StarredStationController starred { get; construct; }
+        public StarredController starred { get; construct; }
+        
+        /** @brief API Provider */
+        public Provider.API provider { get; construct; }
         
         /** @brief Cache directory path */
         public string? cache_dir { get; construct; }
@@ -201,7 +202,7 @@ namespace Tuner {
             var _favorites_file =  File.new_build_filename (data_dir, "favorites.json"); // v1 file
             var _starred_file =  File.new_build_filename (data_dir, Application.STARRED);   // v2 file
 
-            debug(@"Migrate $(_favorites_file.get_path ()) to $(_starred_file.get_path ())");
+            warning(@"Migrate $(_favorites_file.get_path ()) to $(_starred_file.get_path ())");
 
             try {
                 _favorites_file.open_readwrite().close ();   // Try to open, if succeeds it exists, if not err - no migration
@@ -227,8 +228,9 @@ namespace Tuner {
             /* 
                 Init Tuner assets 
             */
-            starred = new StarredStationController(_starred_file);
-            settings = new Settings (this);
+            provider = new Provider.RadioBrowser(null);
+            starred = new StarredController(_starred_file);
+            settings = new Settings ();
             player = new PlayerController ();
 
             add_action_entries(ACTION_ENTRIES, this);

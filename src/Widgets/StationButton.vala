@@ -102,6 +102,7 @@ public class Tuner.StationButton : Tuner.DisplayButton {
         return Application.STAR_CHAR + title;
     }
 
+
     /**
      * @brief Creates a tag string combining codec and bitrate information.
      * @param codec The station's codec.
@@ -117,6 +118,7 @@ public class Tuner.StationButton : Tuner.DisplayButton {
 
         return tag;
     }
+
 
     /**
      * @brief Creates a description string based on the station's location.

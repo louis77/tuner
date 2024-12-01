@@ -25,7 +25,6 @@ public class Tuner.Settings : Object
     public bool do_not_track { get; set; }
     public string last_played_station { get; set; }
 
-    private Application _application;
     private int _pos_x;
     private int _pos_y;
     private int _window_height;
@@ -35,9 +34,10 @@ public class Tuner.Settings : Object
 
     private static GLib.Settings _settings ;
 
-    public Settings( Application application)
+   // public Settings( Application application)
+    public Settings()
     {
-        _application = application;
+      //  _application = application;
     }
     
     static construct  {
@@ -58,16 +58,16 @@ public class Tuner.Settings : Object
 
     public void configure()
     {
-        _application.window.set_default_size(_window_height, _window_width);
-        _application.window.move(_pos_x, _pos_y);
-        _application.player.volume = _volume;
+        app().window.set_default_size(_window_height, _window_width);
+        app().window.move(_pos_x, _pos_y);
+        app().player.volume = _volume;
     }
 
 
     public void save()
     {
-        _application.window.get_size(out _window_width, out _window_width);
-        _application.window.get_position(out _pos_x, out _pos_y);
+        app().window.get_size(out _window_width, out _window_width);
+        app().window.get_position(out _pos_x, out _pos_y);
 
         _settings.set_int(SETTINGS_WINDOW_HEIGHT, _window_height);
         _settings.set_int(SETTINGS_WINDOW_WIDTH, _window_width);
@@ -81,7 +81,7 @@ public class Tuner.Settings : Object
         _settings.set_boolean(SETTINGS_DO_NOT_TRACK, do_not_track);
         _settings.set_string(SETTINGS_LAST_PLAYYED_STATION, last_played_station);
 
-        _settings.set_double(SETTINGS_VOLUME, _application.player.volume);
+        _settings.set_double(SETTINGS_VOLUME, app().player.volume);
 
     }
 }

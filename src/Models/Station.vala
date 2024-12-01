@@ -111,6 +111,9 @@ public class Tuner.Model.Station : Object {
     /** @property {int} favicon_loaded - Indicates the number of times the favicon has been loaded from cache or internet.*/
     public int favicon_loaded { get; private set; }
 
+   /** @property {bool} is_up_to_date - Indicates the station is up-to-date after a test */
+   public bool is_up_to_date { get; private set; }
+
 
 
     //  public uint clickcount = 0;
@@ -140,6 +143,7 @@ public class Tuner.Model.Station : Object {
     public static Station make(Json.Node json_node)
     {
         Station station = new Station.basic(json_node);
+        station.is_up_to_date = true; // Assume loaded from the provider as we're adding this to the list
 
         if ( !STATIONS.has_key(station.stationuuid)) 
         /*
@@ -147,7 +151,7 @@ public class Tuner.Model.Station : Object {
         */
         {
             STATIONS.set(station.stationuuid,station);
-            station.load_favicon_async.begin();
+           // station.load_favicon_async.begin();
         }
 
         return STATIONS.get(station.stationuuid);
@@ -264,6 +268,8 @@ public class Tuner.Model.Station : Object {
             GLib.Log.remove_handler("Json", log_handler_1);
         }
 
+        is_up_to_date = false; // Basic station creation - assum not up-to-date with provider
+
         /*
             Favicon setup
         */
@@ -284,6 +290,8 @@ public class Tuner.Model.Station : Object {
             warning(@"$(stationuuid) - Failed to parse favicon URL: $(e.message)");
             STATION_FAILING_FAVICON.add(stationuuid);
         }  
+
+        load_favicon_async.begin();
     } // Station.basic
 
 
@@ -399,4 +407,19 @@ public class Tuner.Model.Station : Object {
             favicon_image.opacity = 1;
         }
     } // update_favicon_image
+
+
+    public bool set_up_to_date_with(Station p) 
+    { 
+        if ( this.stationuuid != p.stationuuid) return false;
+        if ( (this.changeuuid == p.changeuuid) 
+            && ( this.url == p.url) 
+            && (this.bitrate == p.bitrate) 
+            && ( this.codec == p.codec)) { is_up_to_date = true; }
+        else
+            {   
+                is_up_to_date = false;
+            }
+        return true;
+    }
 }

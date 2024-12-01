@@ -11,18 +11,25 @@
  * from the media stream. It emits signals when the station, state, title,
  * or volume changes.
  */
-public class Tuner.PlayerController : Object {
-    private Model.Station _station;
-    private Gst.PlayerState _current_state = Gst.PlayerState.STOPPED;
-    public Gst.Player player;
-    public string currentTitle = " ";
+public class Tuner.PlayerController : Object 
+{
+    public enum Is {
+        PLAYING,
+        BUFFERING,
+        STOPPED,
+        PAUSED
+    }
+
 
     /** Signal emitted when the station changes. */
     public signal void station_changed (Model.Station station);
+
     /** Signal emitted when the player state changes. */
-    public signal void state_changed (Gst.PlayerState state);
+    public signal void state_changed (Is state);
+
     /** Signal emitted when the title changes. */
     public signal void title_changed (string title);
+
     /** Signal emitted when the volume changes. */
     public signal void volume_changed (double volume);
 

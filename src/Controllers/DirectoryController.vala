@@ -39,7 +39,7 @@ public class Tuner.DirectoryController : Object {
 
     //private RadioBrowser.Client? _provider { get; set; }
     private Provider.API _provider;
-    private StarredStationController _starred;
+    private StarredController _starred;
     private bool _loaded = false;
 
     public signal void tags_updated (Set<Provider.Tag> tags);
@@ -49,15 +49,16 @@ public class Tuner.DirectoryController : Object {
      *
      * @param store The StationStore to use for managing stations.
      */
-    public DirectoryController (Provider.API provider, StarredStationController starred) {  
+    public DirectoryController (StarredController starred) {  
+        Object();
        // try {
-            _provider = provider;
+            _provider = app().provider;
             _starred = starred;
         //  } catch (Provider.DataError e) {
         //      critical (@"RadioBrowser unavailable");
         //  }
-        _starred.load();        // Load needs to happen after Application creation
         _provider.initialize ();
+        _starred.load.begin();        // Load needs to happen after Application creation
     } // DirectoryController
 
     public void load()
@@ -65,7 +66,7 @@ public class Tuner.DirectoryController : Object {
         if (_loaded) return;
 
         _provider.initialize();
-        _starred.load();
+        _starred.load.begin();
         _loaded = true;
     } // load
 
@@ -202,7 +203,7 @@ public class Tuner.DirectoryController : Object {
      * @return An ArrayList of stored Model.Station objects.
      */
     public Collection<Model.Station> get_starred () {
-        return _starred.get_all();
+        return _starred.get_all_stations();
     }
 
     /**
@@ -289,7 +290,7 @@ public class Tuner.StationSet : Object {
     private bool _more = true;
     private Provider.SearchParams _params;
     private Provider.API _provider;
-    private StarredStationController _starred;
+    private StarredController _starred;
 
     /**
      * @brief Constructor for StationSet.
@@ -302,7 +303,7 @@ public class Tuner.StationSet : Object {
     public StationSet (uint limit, 
                         Provider.SearchParams params, 
                         Provider.API client,
-                        StarredStationController starred) {
+                        StarredController starred) {
         Object ();
         // This disables paging for now
         _page_size = limit;

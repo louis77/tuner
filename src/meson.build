@@ -2,7 +2,7 @@
 sources = files (
     'Controllers/DirectoryController.vala',
     'Controllers/PlayerController.vala',
-    'Controllers/StarredStationController.vala',
+    'Controllers/StarredController.vala',
 
     'Models/Countries.vala',
     'Models/Genre.vala',
@@ -23,6 +23,7 @@ sources = files (
 
     'Widgets/HeaderBar.vala',
     'Widgets/HeaderLabel.vala',
+    'Widgets/PlayButton.vala',
     'Widgets/StationButton.vala',
     'Widgets/StationContextMenu.vala',
     'Widgets/Window.vala',

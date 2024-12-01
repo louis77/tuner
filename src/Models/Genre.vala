@@ -7,7 +7,22 @@ using Gee;
 
 namespace Tuner.Model.Genre {
 
-    public const string[] GENRES = {
+    private static Set<string> PREDEFINED;
+
+    public static bool in_genre(string genre)
+    {
+        if ( PREDEFINED == null)
+        {
+            PREDEFINED = new HashSet<string>();
+            foreach( var a in GENRES) {PREDEFINED.add(a); }
+            foreach( var a in SUBGENRES) {PREDEFINED.add(a); }
+            foreach( var a in ERAS) {PREDEFINED.add(a); }
+            foreach( var a in TALK) {PREDEFINED.add(a); }
+        }
+        return PREDEFINED.contains(genre);
+    }
+
+    public  const string[] GENRES = {
         "Blues",
         "Classical",
         "Country",
@@ -21,7 +36,7 @@ namespace Tuner.Model.Genre {
         "Soul"
         };   
 
-    public const string[] SUBGENRES = {
+    public  const string[] SUBGENRES = {
         "Alternative",
         "Electronic", 
         "House",
@@ -34,7 +49,7 @@ namespace Tuner.Model.Genre {
         "Salsa"
     };     
         
-    public const string[] ERAS = {
+    public  const string[] ERAS = {
         "40s",
         "50s",
         "60s",
@@ -46,7 +61,7 @@ namespace Tuner.Model.Genre {
         "Contemporary"
     };         
         
-    public const string[] TALK = 
+    public  const string[] TALK = 
     {   "AM"
         ,"Public Radio"
         , "News"

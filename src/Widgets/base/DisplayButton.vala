@@ -77,7 +77,7 @@ public class Tuner.DisplayButton : Gtk.Button {
         _favicon_image.set_pixel_size (48);
         _favicon_image.halign = Gtk.Align.CENTER;
         _favicon_image.valign = Gtk.Align.CENTER;
-
+      
         // Title label
         button_title = new Gtk.Label (null);
         button_title.set_max_width_chars (TITLE_WIDTH);
