@@ -80,7 +80,7 @@ namespace Tuner.Provider {
         private int _degrade = DEGRADE_CAPITAL;
         private int _available_tags = 1000;     // default guess
 
-        public Status status { get; set; }
+        public Status status { get; protected set; }
 
         public DataError? last_data_error { get; set; }
 
@@ -94,13 +94,17 @@ namespace Tuner.Provider {
          */
         public RadioBrowser(string? optionalservers ) 
         {
-            Object();
+            Object( );
             _optionalservers = optionalservers;
+            status = NOT_AVAILABLE;
+
         }
 
 
         public bool initialize()
         {
+            if ( app().is_offline ) return false;
+            
             if (_optionalservers != null) 
             // Run time server parameter was passed in
             {

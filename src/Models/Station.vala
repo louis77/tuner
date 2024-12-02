@@ -409,9 +409,9 @@ public class Tuner.Model.Station : Object {
     } // update_favicon_image
 
 
-    public bool set_up_to_date_with(Station p) 
+    public bool set_up_to_date_with(Station? p) 
     { 
-        if ( this.stationuuid != p.stationuuid) return false;
+        if ( p == null || this.stationuuid != p.stationuuid) return false;
         if ( (this.changeuuid == p.changeuuid) 
             && ( this.url == p.url) 
             && (this.bitrate == p.bitrate) 

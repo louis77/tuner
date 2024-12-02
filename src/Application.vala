@@ -99,6 +99,9 @@ namespace Tuner {
         /** @brief Unicode character for unstarred items */
         public const string UNSTAR_CHAR = "☆ ";
 
+        /** @brief Unicode character for out-of-date items */
+        public const string EXCLAIM_CHAR = "⚠ ";
+
         /** @brief File name for starred station sore */
         public const string STARRED = "starred.json";
 

@@ -25,7 +25,7 @@ public class Tuner.PlayerController : Object
     public signal void station_changed (Model.Station station);
 
     /** Signal emitted when the player state changes. */
-    public signal void state_changed (Is state);
+    public signal void state_changed (Gst.PlayerState state);
 
     /** Signal emitted when the title changes. */
     public signal void title_changed (string title);
@@ -33,7 +33,15 @@ public class Tuner.PlayerController : Object
     /** Signal emitted when the volume changes. */
     public signal void volume_changed (double volume);
 
+   // public Is playing { get; private set;}
+    
+    private Model.Station _station;
+    private Gst.PlayerState _current_state;
+    public Gst.Player player;
+    public string currentTitle = " ";
+
     construct {
+        //playing = Is.STOPPED;
         player = new Gst.Player (null, null);
         player.state_changed.connect ((state) => {
             // Don't forward flickering between playing and buffering
@@ -141,4 +149,22 @@ public class Tuner.PlayerController : Object
         }
         return title;
     }
+
+    //  private static Is playstate (Gst.PlayerState state) {
+    //      warning(@"playstate ...");
+    //      warning(@"playstate State:$(state)");
+    //      switch (state) {
+    //          case  Gst.PlayerState.PLAYING:
+    //              return Is.PLAYING;
+    //          case  Gst.PlayerState.BUFFERING:
+    //              return Is.BUFFERING;
+    //          case Gst.PlayerState.STOPPED:
+    //              return Is.STOPPED;
+    //          case Gst.PlayerState.PAUSED:
+    //              return Is.STOPPED;
+    //          default:
+    //          warning(@"Problemo ...");
+    //              assert_not_reached();
+    //      }
+    //  }
 }

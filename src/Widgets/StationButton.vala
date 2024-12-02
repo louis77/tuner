@@ -97,8 +97,9 @@ public class Tuner.StationButton : Tuner.DisplayButton {
      * @param starred Whether the station is starred (favorited).
      * @return The formatted title string.
      */
-    private static string make_title (string title, bool starred) {
+    private static string make_title (string title, bool starred,bool is_up_to_date = true) {
         if (!starred) return title;
+        if ( !is_up_to_date ) return Application.EXCLAIM_CHAR + title;
         return Application.STAR_CHAR + title;
     }
 

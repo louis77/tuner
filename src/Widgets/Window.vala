@@ -22,6 +22,7 @@
 
 
 using Gee;
+using Granite.Widgets;
 
 /**
     Window
@@ -69,9 +70,23 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         { ACTION_ENABLE_AUTOPLAY, on_action_enable_autoplay, null, "false" }
     };
 
+    /*
+        Assets
+    */
+
     private DirectoryController _directory;
     private HeaderBar _headerbar;
-    private Granite.Widgets.SourceList source_list;
+    private Granite.Widgets.SourceList _source_list;
+
+    private SourceList.ExpandableItem _selections_category = new SourceList.ExpandableItem (_("Selections"));
+    private SourceList.ExpandableItem _library_category = new SourceList.ExpandableItem (_("Library"));
+    private SourceList.ExpandableItem _saved_searches_category = new SourceList.ExpandableItem (_("Saved Searches"));
+    private SourceList.ExpandableItem _explore_category = new SourceList.ExpandableItem (_("Explore")); 
+    private SourceList.ExpandableItem _genres_category = new SourceList.ExpandableItem (_("Genres"));
+    private SourceList.ExpandableItem _subgenres_category = new SourceList.ExpandableItem (_("Sub Genres"));
+    private SourceList.ExpandableItem _eras_category = new SourceList.ExpandableItem (_("Eras"));
+    private SourceList.ExpandableItem _talk_category = new SourceList.ExpandableItem (_("Talk, News, Sport"));
+
 
      /** @brief Indicates if the application started online. */
      private bool _started_online = app().is_online;  // Initial online state
@@ -111,7 +126,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
 
     /* Construct */
-    construct { // FIXME    Way to complex - should be in activate?
+    construct { 
         
 
         set_icon_name(Application.APP_ID);
@@ -194,13 +209,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         //resize (settings.get_int ("window-width"), settings.get_int ("window-height"));
 
 
-		this.size_allocate.connect(on_window_resize);
+		size_allocate.connect(on_window_resize);
 
         delete_event.connect (e => {
             return before_destroy ();
         });
 
-        var stack = new Gtk.Stack ();
+        stack = new Gtk.Stack ();
         var overlay = new Gtk.Overlay ();
 
         var background = new Gtk.Image.from_resource("/com/github/louis77/tuner/icons/background");
@@ -216,50 +231,105 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         var primary_box = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);
 
 
-        var selections_category = new Granite.Widgets.SourceList.ExpandableItem (_("Selections"));
-        selections_category.collapsible = false;
-        selections_category.expanded = true;
+        _selections_category.collapsible = false;
+        _selections_category.expanded = true;
+        _library_category.collapsible = false;
+        _library_category.expanded = true;
 
-        var library_category = new Granite.Widgets.SourceList.ExpandableItem (_("Library"));
-        library_category.collapsible = false;
-        library_category.expanded = true;
+        _saved_searches_category.collapsible = false;
+        _saved_searches_category.expanded = false;
 
-        var saved_searches_category = new Granite.Widgets.SourceList.ExpandableItem (_("Saved Searches"));
-        saved_searches_category.collapsible = false;
-        saved_searches_category.expanded = false;
+        _explore_category.collapsible = true;
+        _explore_category.expanded = false;
 
-        var explore_category = new Granite.Widgets.SourceList.ExpandableItem (_("Explore")); 
-        explore_category.collapsible = true;
-        explore_category.expanded = false;
+        _genres_category.collapsible = true;
+        _genres_category.expanded = false;
 
-        var genres_category = new Granite.Widgets.SourceList.ExpandableItem (_("Genres"));
-        genres_category.collapsible = true;
-        genres_category.expanded = true;
+        _subgenres_category.collapsible = true;
+        _subgenres_category.expanded = false;
 
-        var subgenres_category = new Granite.Widgets.SourceList.ExpandableItem (_("Sub Genres"));
-        subgenres_category.collapsible = true;
-        subgenres_category.expanded = false;
+        _eras_category.collapsible = true;
+        _eras_category.expanded = false;
 
-        var eras_category = new Granite.Widgets.SourceList.ExpandableItem (_("Eras"));
-        eras_category.collapsible = true;
-        eras_category.expanded = false;
+        _talk_category.collapsible = true;
+        _talk_category.expanded = false;
 
-        var talk_category = new Granite.Widgets.SourceList.ExpandableItem (_("Talk, News, Sport"));
-        talk_category.collapsible = true;
-        talk_category.expanded = false;
-
-        source_list = new Granite.Widgets.SourceList ();
+        _source_list = new SourceList ();
 
         
+        _source_list.root.add (_selections_category);
+        _source_list.root.add (_library_category);
+       // _library_category.add (_saved_searches_category);   // FIXME  At end of cat
+        _source_list.root.add (_explore_category);
+        _source_list.root.add (_genres_category);
+        _source_list.root.add (_subgenres_category);
+        _source_list.root.add (_eras_category);
+        _source_list.root.add (_talk_category);
+
+        _source_list.ellipsize_mode = Pango.EllipsizeMode.NONE;
+        _source_list.selected = _source_list.get_first_child (_selections_category);
+        _source_list.item_selected.connect  ((item) => {
+            var selected_item = item.get_data<string> ("stack_child");
+            stack.visible_child_name = selected_item;
+        });
+
         // ---------------------------------------------------------------------------
 
+        //  _headerbar.searched_for_sig.connect ( (text) => {
+        //      if (text.length > 0) {
+        //          load_search_stations.begin(text, search_results);
+        //      }
+        //  });
+
+
+        primary_box.pack1 (_source_list, false, false);
+       // primary_box.pack2 (stack, true, false);
+        primary_box.pack2 (overlay, true, false);
+        add (primary_box);
+
+        // Auto-play
+        if (_settings.auto_play) {
+            debug (@"Auto-play enabled");
+            var source = _directory.load_station_uuid (_settings.last_played_station);
+
+            try {
+                foreach (var station in source.next_page ()) {   // FIXME  Why
+                    handle_station_click(station);  
+                    break;
+                }
+            } catch (SourceError e) {
+                warning ("Error while trying to autoplay, aborting...");
+            }
+        }
+        init();
+
+        _library_category.add (_saved_searches_category);   // FIXME  At end of cat
+
+        show_all ();
+    } // construct
+
+    //  protected override void activate() {
+    //      init();
+    //  }
+
+
+    /* --------------------------------------------------------
+    
+        Methods
+
+        ----------------------------------------------------------
+    */
+
+    private void init()
+    {
+        
         /*
             Discover
         */
 
         var discover = SourceListBox.create ( stack
-            , source_list
-            ,  selections_category
+            , _source_list
+            ,  _selections_category
             , "discover"
             , "face-smile"
             , "Discover"
@@ -299,8 +369,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         */
         create_category_specific
             ( stack
-                , source_list
-                , selections_category
+                , _source_list
+                , _selections_category
                 , "trending"
                 , "playlist-queue"
                 , "Trending"
@@ -316,8 +386,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         create_category_specific
             ( stack
-                , source_list
-                , selections_category
+                , _source_list
+                , _selections_category
                 , "popular"
                 , "playlist-similar"
                 , "Popular"
@@ -347,8 +417,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         var starred = create_category_predefined
             (   stack
-                , source_list
-                , library_category
+                , _source_list
+                , _library_category
                 , "starred"
                 , "starred"
                 , "Starred by You"
@@ -374,15 +444,15 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         var search_results = SourceListBox.create 
         ( stack
-        , source_list
-        , library_category
-        , "Recent Search"
+        , _source_list
+        , _library_category
+        , "searched"
         , "folder-saved-search"
         , "Recent Search"
         , "Search Results" 
         );
 
-        saved_searches_category.icon = new ThemedIcon ("library-music");
+        _saved_searches_category.icon = new ThemedIcon ("library-music");
 
         // ---------------------------------------------------------------------------
 
@@ -393,7 +463,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             foreach (var tag in _directory.load_random_genres(RANDOM_CATEGORIES))
             {
             if ( Model.Genre.in_genre (tag.name)) break;  // Predefined genre, ignore
-                create_category_specific( stack, source_list, explore_category
+                create_category_specific( stack, _source_list, _explore_category
                     , tag.name
                     , "playlist-symbolic"
                     , tag.name
@@ -405,19 +475,18 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         // ---------------------------------------------------------------------------
 
         // Genre Boxes
-        create_category_genre( stack, source_list, genres_category, _directory,   Model.Genre.GENRES );
+        create_category_genre( stack, _source_list, _genres_category, _directory,   Model.Genre.GENRES );
 
         // Sub Genre Boxes
-        create_category_genre( stack, source_list, subgenres_category, _directory,   Model.Genre.SUBGENRES );
+        create_category_genre( stack, _source_list, _subgenres_category, _directory,   Model.Genre.SUBGENRES );
 
         // Eras Boxes
-        create_category_genre( stack, source_list, eras_category,   _directory, Model.Genre.ERAS );
+        create_category_genre( stack, _source_list, _eras_category,   _directory, Model.Genre.ERAS );
     
         // Talk Boxes
-        create_category_genre( stack, source_list, talk_category, _directory,   Model.Genre.TALK );
+        create_category_genre( stack, _source_list, _talk_category, _directory,   Model.Genre.TALK );
     
-
-       // ---------------------------------------------------
+        // --------------------------------------------------------------------
 
         _headerbar.star_clicked_sig.connect ( (starred) => {
             player.station.toggle_starred ();
@@ -431,23 +500,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             starred.content = _slist;
         });
 
-        source_list.root.add (selections_category);
-        source_list.root.add (library_category);
-        library_category.add (saved_searches_category);
-        source_list.root.add (explore_category);
-        source_list.root.add (genres_category);
-        source_list.root.add (subgenres_category);
-        source_list.root.add (eras_category);
-        source_list.root.add (talk_category);
-
-        source_list.ellipsize_mode = Pango.EllipsizeMode.NONE;
-        source_list.selected = source_list.get_first_child (selections_category);
-        source_list.item_selected.connect  ((item) => {
-            var selected_item = item.get_data<string> ("stack_child");
-            stack.visible_child_name = selected_item;
-        });
-
-        // ---------------------------------------------------------------------------
 
         _headerbar.searched_for_sig.connect ( (text) => {
             if (text.length > 0) {
@@ -455,37 +507,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             }
         });
 
-
-        primary_box.pack1 (source_list, false, false);
-       // primary_box.pack2 (stack, true, false);
-        primary_box.pack2 (overlay, true, false);
-        add (primary_box);
-        show_all ();
-
-        // Auto-play
-        if (_settings.auto_play) {
-            debug (@"Auto-play enabled");
-            var source = _directory.load_station_uuid (_settings.last_played_station);
-
-            try {
-                foreach (var station in source.next_page ()) {   // FIXME  Why
-                    handle_station_click(station);  
-                    break;
-                }
-            } catch (SourceError e) {
-                warning ("Error while trying to autoplay, aborting...");
-            }
-        }
-    } // construct
-
-
-    /* --------------------------------------------------------
-    
-        Methods
-
-        ----------------------------------------------------------
-    */
-
+    } // init
 
 
     /**
@@ -569,6 +591,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @param station The selected station.
      */
      public void handle_station_click (Model.Station station) {
+        if ( app().is_offline ) return;
         debug (@"handle station click for $(station.name)");
         _directory.count_station_click (station);
         player.station = station;
@@ -775,6 +798,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             );
 
         genre.realize.connect (() => {
+            if ( app().is_offline ) return;
             try {
                 var slist1 = new StationList.with_stations (genre.next_page ());
                 slist1.selection_changed.connect (handle_station_click);

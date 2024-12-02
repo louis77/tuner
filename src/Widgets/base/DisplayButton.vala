@@ -12,7 +12,7 @@
  */
 public class Tuner.DisplayButton : Gtk.Button {
 
-    private const int TITLE_WIDTH =  30;
+    private const int TITLE_WIDTH =  25;
 
     /**
      * @brief Default icon name for stations without a custom favicon.
@@ -114,7 +114,7 @@ public class Tuner.DisplayButton : Gtk.Button {
         button_grid.attach (button_description, 2, 1, 1, 1);
         button_grid.attach (_favicon_image, 0, 0, 1, 2);
 
-        this.add (button_grid);
+        add (button_grid);
     }
 
 }
