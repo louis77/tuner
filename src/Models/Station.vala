@@ -347,7 +347,7 @@ public class Tuner.Model.Station : Object {
         // If not in cache or force reload, fetch from internet
         uint status_code;
 
-        InputStream? stream = yield HttpClient.GETasync(_favicon_uri, out status_code); // Will automatically try several times
+        InputStream? stream = yield HttpClient.GETasync(_favicon_uri, Priority.LOW, out status_code); // Will automatically try several times
 
         if ( stream != null && status_code == 200) 
         /*

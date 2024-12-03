@@ -31,16 +31,16 @@ namespace Tuner.Provider {
     private const string SRV_PROTOCOL   = "tcp";
     private const string SRV_DOMAIN     = "radio-browser.info";
 
-    private const string RBI_ALL_API    = "https://all.api.radio-browser.info";    // Round-robin API address
-    private const string RBI_STATS      = "json/stats";
-    private const string RBI_SERVERS    = "json/servers";
+    private const string RBI_ALL_API    = "all.api.radio-browser.info";    // Round-robin API address
+    private const string RBI_STATS      = "/json/stats";
+    private const string RBI_SERVERS    = "/json/servers";
 
     // RB Queries
-    private const string RBI_STATION    = "json/url/$stationuuid";
-    private const string RBI_SEARCH     = "json/stations/search";
-    private const string RBI_VOTE       = "json/vote/$stationuuid";
-    private const string RBI_UUID       = "json/stations/byuuid";
-    private const string RBI_TAGS       = "json/tags";
+    private const string RBI_STATION    = "/json/url/$stationuuid";
+    private const string RBI_SEARCH     = "/json/stations/search";
+    private const string RBI_VOTE       = "/json/vote/$stationuuid";
+    private const string RBI_UUID       = "/json/stations/byuuid";
+    private const string RBI_TAGS       = "/json/tags";
     
 
 
@@ -100,6 +100,30 @@ namespace Tuner.Provider {
 
         }
 
+        private Uri? build_uri(string path, string? query = null)
+        {
+            try {
+                return Uri.parse(@"http://$_current_server$path?$query",UriFlags.ENCODED);
+            } catch (UriError e)
+            {
+                debug(@"Server: $_current_server  Path: $path  Query: $query  Error: $(e.message)");
+            }
+            return null;
+
+            //  var uri = Uri.build(
+            //      UriFlags.NONE,
+            //      "http",
+            //      null,
+            //      _current_server,
+            //       -1,                           // Default port for the scheme (e.g., 80 for HTTP)
+            //      path,
+            //      query, 
+            //      null
+            //  );
+        
+            //  warning(@"Server: $_current_server  Path: $path  Query: $query  URI: $(uri.to_string())");
+            //  return uri;
+        }
 
         public bool initialize()
         {
@@ -142,9 +166,11 @@ namespace Tuner.Provider {
         public void track(string stationuuid) {
             debug(@"sending listening event for station $(stationuuid)");
             uint status_code;
-            HttpClient.GET(@"$(_current_server)/$(RBI_STATION)/$(stationuuid)", out status_code);
+          //  var uri = Uri.build(NONE, "http", null, _current_server, -1, RBI_STATION, stationuuid, null);
+            HttpClient.GET(build_uri(RBI_STATION, stationuuid), out status_code);
+           // HttpClient.GET(@"$(_current_server)/$(RBI_STATION)/$(stationuuid)", out status_code);
             debug(@"response: $(status_code)");
-        }
+        } // track
 
         /**
          * @brief Vote for a station
@@ -153,9 +179,12 @@ namespace Tuner.Provider {
         public void vote(string stationuuid) {
             debug(@"sending vote event for station $(stationuuid)");
             uint status_code;
-            HttpClient.GET(@"$(_current_server)/$(RBI_VOTE)/$(stationuuid)", out status_code);
+            //var uri = Uri.build(NONE, "http", null, _current_server, -1, RBI_VOTE, stationuuid, null);
+            HttpClient.GET(build_uri(RBI_VOTE, stationuuid), out status_code);            
+            //HttpClient.GET(@"$(_current_server)/$(RBI_VOTE)/$(stationuuid)", Priority.HIGH, out status_code);
+            //  HttpClient.GETasync(@"$(_current_server)/$(RBI_VOTE)/$(stationuuid)", out status_code);
             debug(@"response: $(status_code)");
-        }
+        } // vote
 
 
 
@@ -169,13 +198,12 @@ namespace Tuner.Provider {
             Json.Node rootnode;
             try {
                 uint status_code;
-                var query = @"$(RBI_TAGS)";
-                if (offset > 0) query = @"$query/?offset=$offset";
+                var query = "";
+                if (offset > 0) query = @"offset=$offset";
                 if (limit > 0) query = @"$query&limit=$limit";
 
-               var stream = HttpClient.GET(@"$(_current_server)/$(query)", out status_code);
-
-                debug(@"response from radio-browser.info: $(status_code)");
+               var uri = build_uri(RBI_TAGS, query);
+               var stream = HttpClient.GET(uri, out status_code);   
 
                 if ( status_code != 0 && stream != null)
                 {
@@ -194,7 +222,7 @@ namespace Tuner.Provider {
                 debug("cannot get_tags()");
             }
             return new HashSet<Tag>();
-        }
+        } // get_tags
 
 
         /**
@@ -205,12 +233,12 @@ namespace Tuner.Provider {
          */
          public Model.Station? by_uuid(string uuid) throws DataError {
             if ( app().is_offline ) return null;
-            var result = station_query(@"$(RBI_UUID)/$(uuid)");
+            var result = station_query(RBI_UUID,uuid);
             if (result.size == 0) {
                 return null;
             }
             return result.to_array()[0];
-        }
+        } // by_uuid
 
 
         /**
@@ -236,30 +264,30 @@ namespace Tuner.Provider {
             }
 
             // by text or tags
-            var resource = @"$(RBI_SEARCH)?limit=$rowcount&order=$(params.order)&offset=$offset";
+            var query = @"limit=$rowcount&order=$(params.order)&offset=$offset";
 
             if (params.text != "") {
-                resource += @"&name=$(params.text)";
+                query += @"&name=$(encode_text(params.text))";  // Encode text for ampersands etc
             }
-
+            if (params.countrycode.length > 0) {
+                query += @"&countrycode=$(params.countrycode)";
+            }
+            if (params.order != SortOrder.RANDOM) {
+                // random and reverse doesn't make sense
+                query += @"&reverse=$(params.reverse)";
+            }
+            // Put tags last
             if (params.tags.size > 0) {
                 string tag_list = params.tags.to_array()[0];
                 if (params.tags.size > 1) {
                     tag_list = string.joinv(",", params.tags.to_array());
                 }
-                resource += @"&tagList=$tag_list&tagExact=false";
-            }
-            if (params.countrycode.length > 0) {
-                resource += @"&countrycode=$(params.countrycode)";
-            }
-            if (params.order != SortOrder.RANDOM) {
-                // random and reverse doesn't make sense
-                resource += @"&reverse=$(params.reverse)";
+                query += @"&tagExact=false&tagList=$(encode_text(tag_list))"; // Encode text for ampersands etc
             }
 
-            debug(@"Search: $(resource)");
-            return station_query(resource);
-        }
+            debug(@"Search: $(query)");
+            return  station_query(RBI_SEARCH, query);
+        } // search
 
 
         /*  ---------------------------------------------------------------
@@ -273,12 +301,21 @@ namespace Tuner.Provider {
                 for (int a = 0; a < _servers.size; a++)
                 /* Randomly start checking servers, break on first good one */
                 {
+                    uint status = 0;
                     var server =  (random_server + a) %_servers.size;
-                    _current_server = @"https://$(_servers[server])";
-                    if ( HttpClient.HEAD(_current_server) == 200 ) break;   // Check the server
+                    _current_server = _servers[server];
+                    try {
+                        var uri = Uri.parse(@"http://$_current_server/json/stats",UriFlags.NONE);  
+                        //status = HttpClient.HEAD(uri);  // RB doesn't support HEAD
+                        HttpClient.GET(uri,out status);
+                    } catch (UriError e)
+                    {
+                        debug(@"Server - bad Uri from $_current_server");
+                    }
+                    if ( status == 200 ) break;   // Check the server
                 }
                 debug(@"RadioBrowser Client - Chosen radio-browser.info server: $_current_server");
-            }
+            } // choose_server
     
             private void degrade(bool degraded = true )
             {
@@ -299,7 +336,7 @@ namespace Tuner.Provider {
                         _degrade = DEGRADE_CAPITAL;
                     }
                 }
-            }
+            } // degrade
     
         /**
          * @brief Retrieve server stats
@@ -310,7 +347,7 @@ namespace Tuner.Provider {
             uint status_code;
             Json.Node rootnode;
 
-            var stream = HttpClient.GET(@"$(_current_server)/$(RBI_STATS)", out status_code);
+            var stream = HttpClient.GET(build_uri(RBI_STATS), out status_code);
 
 
             if ( status_code != 0 && stream != null)
@@ -326,7 +363,7 @@ namespace Tuner.Provider {
                 }
             }
             debug(@"response: $(status_code)");
-        }
+        } // stats
 
             
         /**
@@ -336,43 +373,34 @@ namespace Tuner.Provider {
          * @return ArrayList of Station objects
          * @throw DataError if unable to retrieve or parse station data
          */
-        private Set<Model.Station> station_query(string query) throws DataError {
-            //warning(@"RB $(_current_server)/$(query)");
+        private Set<Model.Station> station_query(string path, string query) throws DataError {
+            uint status_code;
+            var uri = build_uri(path, query);  
+            
+            debug(@"Requesting url: $(uri.to_string())");          
+            var stream =  HttpClient.GET(uri,  out status_code);                
 
-            Json.Node rootnode;
-
-            try {
-                uint status_code;
-
-                debug(@"Requesting from 'radio-browser.info' $(_current_server)/$(query)");
-                var stream = HttpClient.GET(@"$(_current_server)/$(query)", out status_code);
-                debug(@"Response from 'radio-browser.info': $(status_code)");
-
-                if ( status_code != 0 && stream != null)
-                {
-                    try {
-                        var parser = new Json.Parser();
-                        parser.load_from_stream(stream, null);
-                        rootnode = parser.get_root();
-                    } catch (Error e) {
-                        warning(@"RB0 $(_current_server)/$(query)");
-                        throw new DataError.PARSE_DATA(@"Unable to parse JSON response: $(e.message)");
-                    }
+            if ( status_code == 200 && stream != null)
+            {
+                degrade(false);
+                try {
+                    var parser = new Json.Parser.immutable_new ();
+                    parser.load_from_stream(stream, null);
+                    var rootnode = parser.get_root();
                     var rootarray = rootnode.get_array();
                     var stations = jarray_to_stations(rootarray);
                     return stations;
+                } catch (Error e) {
+                    debug(@"JSON error \"$(e.message)\" for uri $(uri)");
                 }
-            } catch (Error e) 
-            {
-                degrade();
-                warning(@"RB1 $(_current_server)/$(query)");
-                warning(@"Error retrieving stations 1: $(e.message)");
             }
-
-            warning(@"RB2 $(_current_server)/$(query)");
-            warning(@"Error retrieving stations 2");
+            else
+            {
+                debug(@"Response from 'radio-browser.info': $(status_code) for url: $(uri.to_string())");
+                degrade();
+            }
             return new HashSet<Model.Station>();
-        }
+        } // station_query
 
 
         /**
@@ -463,7 +491,9 @@ namespace Tuner.Provider {
                 */
                 try {
                     uint status_code;
-                    var stream = HttpClient.GET(@"$(RBI_ALL_API)/$(RBI_SERVERS)", out status_code);
+                   // Uri uri = Uri.build(GLib.UriFlags flags, string scheme, string? userinfo, string? host, int port, string path, string? query, string? fragment)
+                    
+                    var stream = HttpClient.GET(build_uri(@"$(RBI_ALL_API)/$(RBI_SERVERS)"), out status_code);
 
                     warning(@"response from $(RBI_ALL_API)/$(RBI_SERVERS): $(status_code)");
 
@@ -497,6 +527,30 @@ namespace Tuner.Provider {
 
             debug(@"Results $(results.size)");
             return results;
-        }
-    }   // get_srv_api_servers
+        } // get_srv_api_servers
+
+
+        private static string encode_text(string tag) {
+
+            string output = tag;
+            string[,] x = new string[,]
+            {    
+                {"%","%25"}
+                ,{":","%3B"}
+                ,{"/","%2F"}
+                ,{"#","%23"}
+                ,{"?","%3F"}
+                ,{"&","%26"}
+                ,{"@","%40"}
+                ,{"+","%2B"}
+                ,{" ","%20"}
+            };
+
+            for (int a = 0 ; a < 9; a++)
+            {   
+                output = output.replace(x[a,0], x[a,1]);
+            }
+            return output;
+        } // encode_tag
+    }   // RadioBrowser
 }

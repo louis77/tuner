@@ -460,11 +460,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         // Get random categories and stations in them
         if ( app().is_online)
         {
+            uint explore = 0;
             foreach (var tag in _directory.load_random_genres(RANDOM_CATEGORIES))
             {
             if ( Model.Genre.in_genre (tag.name)) break;  // Predefined genre, ignore
                 create_category_specific( stack, _source_list, _explore_category
-                    , tag.name
+                    , @"$(explore++)"   // tag names can have charaters that are not suitable for name
                     , "playlist-symbolic"
                     , tag.name
                     , tag.name

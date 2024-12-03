@@ -68,31 +68,26 @@ public class Tuner.HttpClient : Object {
      * @return status_code the HTTP status code of the response
      * @throws Error if there's an error sending the request or receiving the response
      */
-     public static uint HEAD(string url_string) 
+     public static uint HEAD(Uri uri) 
      {         
-         if ( app().is_offline) return 0;
+        if ( app().is_offline) return 0;
 
-        var msg = new Soup.Message("GET", url_string);
-            /*
-                Ignore all TLS certificate errors
-            */
-            msg.accept_certificate.connect ((msg, cert, errors) => {
-                return true;
-            });
+        var msg = new Soup.Message.from_uri("HEAD", uri);
+        /*
+            Ignore all TLS certificate errors
+        */
+        msg.accept_certificate.connect ((msg, cert, errors) => {
+            return true;
+        });
 
         try { 
-                if (Uri.is_valid(url_string, UriFlags.NONE))
-                {
-                    getSession().send(msg);
-                    return msg.status_code;
-                } else {
-                    debug("GET - Invalid URL format: %s", url_string);
-                }
-            } catch (Error e) {
-                warning("GET - Error accessing URL: %s (%s)",
-                url_string,
-                    e.message);
-            }
+            getSession().send(msg);
+            return msg.status_code;
+        } catch (Error e) {
+            warning("HEAD - Error accessing URL: %s (%s)",
+            uri.to_string(),
+                e.message);
+        }
 
          return 0;
      }
@@ -106,21 +101,13 @@ public class Tuner.HttpClient : Object {
      * @return InputStream containing the response body, or null if the request failed
      * @throws Error if there's an error sending the request or receiving the response
      */
-    public static InputStream? GET(string url_string, out uint status_code) 
+    public static InputStream? GET(Uri uri, out uint status_code) 
     {
         status_code = 0;
         
         if ( app().is_offline) return null;
 
-        if (url_string == null || url_string.length < 4) // domains are at least 4 chars
-        {
-            warning("GET - Invalid URL: %s", url_string ?? "null");
-            return null;
-        }
-
-        string sanitized_url = ensure_https_prefix(url_string);
-
-        var msg = new Soup.Message("GET", sanitized_url);
+        var msg = new Soup.Message.from_uri("GET", uri);
 
         /*
             Ignore all TLS certificate errors
@@ -130,18 +117,12 @@ public class Tuner.HttpClient : Object {
         });
 
         try {
-
-            if (Uri.is_valid(sanitized_url, UriFlags.NONE))
-            {
-                var inputStream = getSession().send(msg);
-                status_code = msg.status_code;
-                return inputStream;
-            } else {
-                debug("GET - Invalid URL format: %s", sanitized_url);
-            }
+            var inputStream = getSession().send(msg);
+            status_code = msg.status_code;
+            return inputStream;
         } catch (Error e) {
             warning("GET - Error accessing URL: %s (%s)",
-                sanitized_url,
+            uri.to_string(),
                 e.message);
         }
 
@@ -155,7 +136,7 @@ public class Tuner.HttpClient : Object {
      * @param status_code Output parameter for the HTTP status code of the response
      * @return InputStream containing the response body, or null if the request failed
      */
-    public static async InputStream? GETasync(Uri uri, out uint status_code) 
+    public static async InputStream? GETasync(Uri uri, int priority, out uint status_code) 
     {
         status_code = 0;
 
@@ -177,7 +158,7 @@ public class Tuner.HttpClient : Object {
         */
         {
             try {
-                var inputStream = yield getSession().send_async(msg, Priority.LOW, app().offline_cancel);
+                var inputStream = yield getSession().send_async(msg, priority, app().offline_cancel);
                 status_code = msg.status_code;
                 if ( status_code >= 200 && status_code < 300 ) return inputStream;
             } catch (Error e) {
@@ -188,25 +169,5 @@ public class Tuner.HttpClient : Object {
 
         warning(@"GETasync - GETasync failed for: $(uri.to_string())");
         return null;
-    }
-
-    /**
-     * @brief Ensures that the given URL has an HTTPS prefix
-     *
-     * This method checks if the provided URL starts with either "http://" or "https://".
-     * If it doesn't have either prefix, it adds "https://" to the beginning of the URL.
-     *
-     * @param url The input URL string to be checked and potentially modified
-     * @return A string representing the URL with an HTTPS prefix
-     *
-     * @note This method does not validate the URL structure beyond checking for the protocol prefix
-     */
-    private static string ensure_https_prefix(string url) {
-        // Check if the string starts with "http://" or "https://"
-        if (!url.has_prefix("http://") && !url.has_prefix("https://")) {
-            // If it doesn't, prefix the string with "https://"
-            return "https://" + url;
-        }
-        return url;
     }
 }
