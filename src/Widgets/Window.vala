@@ -44,8 +44,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     public Settings settings { get; construct; }
     public Gtk.Stack stack { get; set; }
-    public PlayerController player { get; construct; }
-    public StarredController starred { get; construct; }
+    public PlayerController player_ctrl { get; construct; }
+    public StarredController starred_ctrl { get; construct; }
     public bool active { get; private set; } // Window is active
 
 
@@ -114,9 +114,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public Window (Application app, PlayerController player, Settings settings, StarredController starred ) {
         Object (
             application: app,
-            player: player,
+            player_ctrl: player,
             settings: settings,
-            starred: starred
+            starred_ctrl: starred
         );
 
         application.set_accels_for_action (ACTION_PREFIX + ACTION_PAUSE, {"<Control>5"});
@@ -127,7 +127,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     /* Construct */
     construct { 
-        
 
         set_icon_name(Application.APP_ID);
         add_action_entries (ACTION_ENTRIES, this);
@@ -145,45 +144,16 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         set_titlebar (_headerbar);
 
         _headerbar.volume_button.value_changed.connect ((value) => {
-            player.volume = value;
-        });
-
-        _headerbar.search_focused_sig.connect (() => {
-            stack.visible_child_name = "searched";
+            player_ctrl.volume = value;
         });
 
 
-        /*
-            Online checks & behavior
-
-            Keep in mind that network availability is noisy
-        */
-            app().notify["is-online"].connect(() => {
-            check_online_status();
-        });
-
-
-        /* Do an initial check */
-        if (app().is_online)
-        {
-            //initialize();
-           active = true;
-        }
-        else 
-        /*
-            Starting Offline, so set to look offline
-            Initialization will happen when online
-        */
-        { 
-            check_online_status();  
-        }
-
-        player.state_changed.connect (handleplayer_state_changed);
-        player.station_changed.connect (_headerbar.update_from_station);
-        player.title_changed.connect ((title) => {
+        player_ctrl.state_changed.connect (handleplayer_state_changed);
+        player_ctrl.station_changed.connect (_headerbar.update_from_station);
+        player_ctrl.title_changed.connect ((title) => {
             _headerbar.subtitle = title;
         });
-        player.volume_changed.connect ((volume) => {
+        player_ctrl.volume_changed.connect ((volume) => {
             _headerbar.volume_button.value = volume;
         });
 
@@ -226,7 +196,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         // ---------------------------------------------------------------------------
 
-        _directory = new DirectoryController (starred);
 
         var primary_box = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);
 
@@ -259,7 +228,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         
         _source_list.root.add (_selections_category);
         _source_list.root.add (_library_category);
-       // _library_category.add (_saved_searches_category);   // FIXME  At end of cat
         _source_list.root.add (_explore_category);
         _source_list.root.add (_genres_category);
         _source_list.root.add (_subgenres_category);
@@ -274,13 +242,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
 
         // ---------------------------------------------------------------------------
-
-        //  _headerbar.searched_for_sig.connect ( (text) => {
-        //      if (text.length > 0) {
-        //          load_search_stations.begin(text, search_results);
-        //      }
-        //  });
-
 
         primary_box.pack1 (_source_list, false, false);
        // primary_box.pack2 (stack, true, false);
@@ -301,16 +262,39 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 warning ("Error while trying to autoplay, aborting...");
             }
         }
-        init();
 
-        _library_category.add (_saved_searches_category);   // FIXME  At end of cat
+        // Set the directory up prior to its use.
+        _directory = new DirectoryController (starred_ctrl);
 
+        /*
+            Online checks & behavior
+
+            Keep in mind that network availability is noisy
+        */
+        app().notify["is-online"].connect(() => {
+            check_online_status();
+        });
+
+
+        /* Do an initial check */
+        if (app().is_online)
+        {
+            init();
+            _library_category.add (_saved_searches_category);   // Added as last item of library category
+            _saved_searches_category.icon = new ThemedIcon ("library-music");
+            active = true;
+        }
+        else 
+        /*
+            Starting Offline, so set to look offline
+            Initialization will happen when online
+        */
+        { 
+            check_online_status();  
+        }
+                    
         show_all ();
     } // construct
-
-    //  protected override void activate() {
-    //      init();
-    //  }
 
 
     /* --------------------------------------------------------
@@ -322,7 +306,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     private void init()
     {
-        
+        _directory.load ();
+
         /*
             Discover
         */
@@ -452,7 +437,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         , "Search Results" 
         );
 
-        _saved_searches_category.icon = new ThemedIcon ("library-music");
 
         // ---------------------------------------------------------------------------
 
@@ -489,9 +473,24 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     
         // --------------------------------------------------------------------
 
-        _headerbar.star_clicked_sig.connect ( (starred) => {
-            player.station.toggle_starred ();
+
+
+
+        _headerbar.search_focused_sig.connect (() => {
+            stack.visible_child_name = "searched";
         });
+
+        _headerbar.searched_for_sig.connect ( (text) => {
+            if (text.length > 0) {
+                load_search_stations.begin(text, search_results);
+            }
+        });
+
+
+        _headerbar.star_clicked_sig.connect ( (starred) => {
+            player_ctrl.station.toggle_starred ();
+        });
+
 
         refresh_favourites_sig.connect ( () => {
             if ( app().is_offline ) return;
@@ -501,12 +500,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             starred.content = _slist;
         });
 
-
-        _headerbar.searched_for_sig.connect ( (text) => {
-            if (text.length > 0) {
-                load_search_stations.begin(text, search_results);
-            }
-        });
 
     } // init
 
@@ -547,13 +540,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     }
 
 
-
     /**
      * @brief Toggles playback state.
      */
     public void on_toggle_playback() {
         info ("Stop Playback requested");
-        player.play_pause ();
+        player_ctrl.play_pause ();
     }
 
 
@@ -595,7 +587,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         if ( app().is_offline ) return;
         debug (@"handle station click for $(station.name)");
         _directory.count_station_click (station);
-        player.station = station;
+        player_ctrl.station = station;
 
         debug (@"Storing last played station: $(station.stationuuid)");
         _settings.last_played_station = station.stationuuid;
@@ -609,7 +601,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      */
     public void handle_favourites_changed () {
         refresh_favourites_sig ();
-    }
+    } // handle_favourites_changed
+
 
     /**
      * @brief Handles player state changes.
@@ -627,7 +620,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             case Gst.PlayerState.PAUSED:
                 debug ("player state changed to Paused");
                 Gdk.threads_add_idle (() => {
-                    if (player.can_play()) {
+                    if (player_ctrl.can_play()) {
                         _headerbar.set_playstate (HeaderBar.PlayState.PLAY_ACTIVE);
                     } else {
                         _headerbar.set_playstate (HeaderBar.PlayState.PLAY_INACTIVE);
@@ -645,7 +638,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             case Gst.PlayerState.STOPPED:
                 debug ("player state changed to Stopped");
                 Gdk.threads_add_idle (() => {
-                    if (player.can_play()) {
+                    if (player_ctrl.can_play()) {
                         _headerbar.set_playstate (HeaderBar.PlayState.PLAY_ACTIVE);
                     } else {
                         _headerbar.set_playstate (HeaderBar.PlayState.PLAY_INACTIVE);
@@ -658,6 +651,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         return;
     } // handleplayer_state_changed
 
+
     /**
      * @brief Performs cleanup actions before the window is destroyed.
      * @return true if the window should be hidden instead of destroyed, false otherwise.
@@ -666,7 +660,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         _settings.save ();
 
-        if (player.current_state == Gst.PlayerState.PLAYING) {
+        if (player_ctrl.current_state == Gst.PlayerState.PLAYING) {
             hide_on_delete();
             var notification = new GLib.Notification(NOTIFICATION_PLAYING_BACKGROUND);
             notification.set_body(NOTIFICATION_CLICK_RESUME);
@@ -727,8 +721,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 Window not initialized, refresh
             */
             {
-                //  initialize();
-                //  show_all();            
+
+                show_all();   
+                init();
+
+                _library_category.add (_saved_searches_category);   // Added as last item of library category
+                _saved_searches_category.icon = new ThemedIcon ("library-music");
+       
                 _started_online = true;
             }
             this.accept_focus = true;

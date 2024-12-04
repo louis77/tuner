@@ -51,19 +51,20 @@ public class Tuner.DirectoryController : Object {
      */
     public DirectoryController (StarredController starred) {  
         Object();
-       // try {
-            _provider = app().provider;
-            _starred = starred;
-        //  } catch (Provider.DataError e) {
-        //      critical (@"RadioBrowser unavailable");
-        //  }
-        _provider.initialize ();
-        _starred.load.begin();        // Load needs to happen after Application creation
+
+        _provider = app().provider;
+        _starred = starred;
+        load();
     } // DirectoryController
 
+        
+    /**
+     * @brief Loads 
+     *
+     */
     public void load()
     {
-        if (_loaded) return;
+        if (_loaded || app().is_offline ) return;
 
         _provider.initialize();
         _starred.load.begin();
@@ -77,20 +78,15 @@ public class Tuner.DirectoryController : Object {
      * @return A StationSet object for the requested station.
      * @todo radio-browser should handle multiple UUID on a query, but is broken
      */
-     public Set<Tuner.Model.Station> get_stations_by_uuid (Collection<string> uuids) {
-
-        Set<Tuner.Model.Station> stations = new HashSet<Tuner.Model.Station>();
-        foreach (var uuid in uuids)
-        {
-            try {
-                stations.add (_provider.by_uuid(uuid));
-            } catch (Tuner.Provider.DataError e) {
-                critical (@"RadioBrowser unavailable");
-            }
+     public Set<Model.Station>? get_stations_by_uuid (Collection<string> uuids) {
+        try {
+            return _provider.by_uuids(uuids);
+        } catch (Tuner.Provider.DataError e) {
+            critical (@"RadioBrowser unavailable");
         }
-        return stations;
+        return new HashSet<Model.Station>();
     } // get_stations_by_uuid
-
+    
     /**
      * @brief Load a station by its UUID.
      *
@@ -269,7 +265,7 @@ public class Tuner.DirectoryController : Object {
     {
         Set<Provider.Tag> result = new HashSet<Provider.Tag>();
 
-        while (result.size < genres)
+        while (app().is_online && result.size < genres)
         {
             try {
                 var offset = Random.int_range(0, _provider.available_tags());

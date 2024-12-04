@@ -97,34 +97,31 @@ namespace Tuner.Provider {
             Object( );
             _optionalservers = optionalservers;
             status = NOT_AVAILABLE;
+        } // RadioBrowser
+        
 
-        }
-
-        private Uri? build_uri(string path, string? query = null)
-        {
+        private Uri? build_uri(string path, string query = "")
+        {          
             try {
-                return Uri.parse(@"http://$_current_server$path?$query",UriFlags.ENCODED);
+                if (query == "") 
+                { 
+                    return Uri.parse(@"http://$_current_server$path",UriFlags.ENCODED);
+                }
+                else
+                {
+                    return Uri.parse(@"http://$_current_server$path?$query",UriFlags.ENCODED);
+                }
             } catch (UriError e)
             {
-                debug(@"Server: $_current_server  Path: $path  Query: $query  Error: $(e.message)");
+                warning(@"Server: $_current_server  Path: $path  Query: $query  Error: $(e.message)");
             }
             return null;
+        } // build_uri
 
-            //  var uri = Uri.build(
-            //      UriFlags.NONE,
-            //      "http",
-            //      null,
-            //      _current_server,
-            //       -1,                           // Default port for the scheme (e.g., 80 for HTTP)
-            //      path,
-            //      query, 
-            //      null
-            //  );
-        
-            //  warning(@"Server: $_current_server  Path: $path  Query: $query  URI: $(uri.to_string())");
-            //  return uri;
-        }
-
+        /**
+        *
+        *
+        */
         public bool initialize()
         {
             if ( app().is_offline ) return false;
@@ -166,9 +163,7 @@ namespace Tuner.Provider {
         public void track(string stationuuid) {
             debug(@"sending listening event for station $(stationuuid)");
             uint status_code;
-          //  var uri = Uri.build(NONE, "http", null, _current_server, -1, RBI_STATION, stationuuid, null);
             HttpClient.GET(build_uri(RBI_STATION, stationuuid), out status_code);
-           // HttpClient.GET(@"$(_current_server)/$(RBI_STATION)/$(stationuuid)", out status_code);
             debug(@"response: $(status_code)");
         } // track
 
@@ -226,18 +221,22 @@ namespace Tuner.Provider {
 
 
         /**
-         * @brief Get a station by its UUID
-         * @param uuid UUID of the station to retrieve
+         * @brief Get a station or stations by UUID
+         *
+         * @param uuids comma seperated lists of the stations to retrieve
          * @return Station object if found, null otherwise
          * @throw DataError if unable to retrieve or parse station data
          */
-         public Model.Station? by_uuid(string uuid) throws DataError {
-            if ( app().is_offline ) return null;
-            var result = station_query(RBI_UUID,uuid);
-            if (result.size == 0) {
-                return null;
-            }
-            return result.to_array()[0];
+         public Set<Model.Station> by_uuid(string uuids) throws DataError {
+            if ( app().is_offline ) return new HashSet<Model.Station>();
+            var result = station_query(RBI_UUID,@"uuids=$uuids");
+            return result;
+        } // by_uuid
+
+        public Set<Model.Station> by_uuids(Collection<string> uuids) throws DataError {
+            StringBuilder sb = new StringBuilder();
+            foreach ( var uuid in uuids) { sb.append(uuid).append(",");}
+            return by_uuid(sb.str);
         } // by_uuid
 
 
@@ -250,18 +249,12 @@ namespace Tuner.Provider {
          * @return ArrayList of Station objects matching the search criteria
          * @throw DataError if unable to retrieve or parse station data
          */
-         public Set<Model.Station> search(SearchParams params, uint rowcount, uint offset = 0) throws DataError {
+         public Set<Model.Station> search(SearchParams params, uint rowcount, uint offset = 0) throws DataError 
+         {
             // by uuids
-            if (params.uuids != null) {
-                var stations = new HashSet<Model.Station>();
-                foreach (var uuid in params.uuids) {
-                    var station = this.by_uuid(uuid);
-                    if (station != null) {
-                        stations.add(station);
-                    }
-                }
-                return stations;
-            }
+            if (params.uuids != null) { return by_uuids(params.uuids); }
+
+            // OR
 
             // by text or tags
             var query = @"limit=$rowcount&order=$(params.order)&offset=$offset";
@@ -358,11 +351,23 @@ namespace Tuner.Provider {
                     rootnode = parser.get_root();
                     Json.Object json_object = rootnode.get_object();
                     _available_tags = (int)json_object.get_int_member("tags");
+
+                    Json.Generator generator = new Json.Generator();
+
+                    // Set the root node for the generator
+                    generator.set_root(rootnode);
+
+                    // Get the string representation of the root node
+                    size_t size;
+                    string root_as_string = generator.to_data(out size);
+                    warning(@"stats: $(root_as_string)");
+                    warning(@"stats: $(json_object.get_int_member("tags"))");
+
                 } catch (Error e) {
                     warning(@"Could not get server stats: $(e.message)");
                 }
             }
-            debug(@"response: $(status_code)");
+            warning(@"response: $(status_code) - Tags: $(_available_tags)");
         } // stats
 
             
@@ -377,7 +382,7 @@ namespace Tuner.Provider {
             uint status_code;
             var uri = build_uri(path, query);  
             
-            debug(@"Requesting url: $(uri.to_string())");          
+            warning(@"Requesting url: $(uri.to_string())");          
             var stream =  HttpClient.GET(uri,  out status_code);                
 
             if ( status_code == 200 && stream != null)
@@ -396,7 +401,7 @@ namespace Tuner.Provider {
             }
             else
             {
-                debug(@"Response from 'radio-browser.info': $(status_code) for url: $(uri.to_string())");
+                warning(@"Response from 'radio-browser.info': $(status_code) for url: $(uri.to_string())");
                 degrade();
             }
             return new HashSet<Model.Station>();

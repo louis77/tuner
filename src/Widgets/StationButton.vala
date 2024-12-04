@@ -37,7 +37,7 @@ public class Tuner.StationButton : Tuner.DisplayButton {
     public StationButton (Model.Station station) {
         Object (
             description: make_description (station.countrycode),
-            title: make_title (station.name, station.starred),
+            title: make_title (station.name, station.starred, station.is_up_to_date),
             tag: make_tag (station.codec, station.bitrate),
             favicon_image: new Gtk.Image.from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG),
             station: station

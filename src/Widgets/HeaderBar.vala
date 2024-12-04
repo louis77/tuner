@@ -303,12 +303,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
      private void reset_timeout(){
         if(_delayed_changed_id > 0)
             Source.remove(_delayed_changed_id);
-            //  _delayed_changed_id = Timeout.add(SEARCH_DELAY, search_timeout);
-            _delayed_changed_id = Timeout.add(SEARCH_DELAY, () => {              
-                
+
+            _delayed_changed_id = Timeout.add(SEARCH_DELAY, () => {                   
                 _delayed_changed_id = 0; // Reset timeout ID after scheduling               
                 searched_for_sig (_searchentry_text); // Emit the custom signal with the search query
-    
                 return Source.REMOVE;
             });
     } // reset_timeout

@@ -237,12 +237,14 @@ namespace Tuner.Provider {
 
 
         /**
-         * @brief Get a station by its UUID
-         * @param uuid UUID of the station to retrieve
+         * @brief Get a station or stations by UUID
+         *
+         * @param uuids comma seperated lists of the stations to retrieve
          * @return Station object if found, null otherwise
          * @throw DataError if unable to retrieve or parse station data
          */
-         public abstract Model.Station? by_uuid(string uuid) throws DataError;
+         public abstract Set<Model.Station> by_uuid(string uuids) throws DataError;
+         public abstract Set<Model.Station> by_uuids(Collection<string> uuids) throws DataError;
 
 
         /**

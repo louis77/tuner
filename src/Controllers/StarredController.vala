@@ -44,8 +44,8 @@ public class Tuner.StarredController : Object {
     private File _starred_file; ///< File to persist favorite stations.
     //private Provider.API _provider;
 
-    private Map<string,Station> _starred = new HashMap<string, Station> (); ///< Collection of starred station UUIDs.
-    private Gee.List<string> _searches = new ArrayList<string> (); ///< Collection of saved searchess.
+    private Map<string,Station> _starred_station_map = new HashMap<string, Station> (); ///< Collection of starred station UUIDs.
+    private Gee.List<string> _searches_saved = new ArrayList<string> (); ///< Collection of saved searchess.
     private bool _loaded = false;
 
 
@@ -56,7 +56,7 @@ public class Tuner.StarredController : Object {
     public string export_m3u8()
     {
         StringBuilder playlist = new StringBuilder(M3U8);
-        foreach ( var station in _starred.values)
+        foreach ( var station in _starred_station_map.values)
         {
             playlist.append (@"#EXTINF:-1,$(station.name) - logo=\"$(station.favicon)\"\n$(station.url)\n");
         }
@@ -83,8 +83,8 @@ public class Tuner.StarredController : Object {
      * @param station The station to be added.
      */
     public void add (Station station) {
-        if (_starred.has_key (station.stationuuid)) return;
-        _starred.set (station.stationuuid, station);
+        if (_starred_station_map.has_key (station.stationuuid)) return;
+        _starred_station_map.set (station.stationuuid, station);
         persist ();
     }
 
@@ -95,7 +95,7 @@ public class Tuner.StarredController : Object {
      * @param station The station to be removed.
      */
     public void remove (Station station) {
-        _starred.unset (station.stationuuid);
+        _starred_station_map.unset (station.stationuuid);
         persist ();
     }
 
@@ -119,7 +119,7 @@ public class Tuner.StarredController : Object {
         // Starred Stations
 	    builder.set_member_name (FAVORITES_PROPERTY_STATIONS);
         builder.begin_array ();
-        foreach (var starred in _starred.values) {
+        foreach (var starred in _starred_station_map.values) {
             var node = Json.gobject_serialize (starred);
             builder.add_value (node);
         }
@@ -128,7 +128,7 @@ public class Tuner.StarredController : Object {
         // Saved Searches
 	    builder.set_member_name (FAVORITES_PROPERTY_SEARCHES);
         builder.begin_array ();
-        foreach (var searched in _searches) {
+        foreach (var searched in _searches_saved) {
             builder.add_string_value (searched);
         }
         builder.end_array ();
@@ -148,7 +148,7 @@ public class Tuner.StarredController : Object {
      * @return An ArrayList of favorite stations.
      */
      public Collection<Station> get_all_stations () {
-        return _starred.values;
+        return _starred_station_map.values;
     }
 
     /**
@@ -157,7 +157,7 @@ public class Tuner.StarredController : Object {
      * @return An ArrayList of favorite stations.
      */
      public Gee.List<string> get_all_searches () {
-        return _searches;
+        return _searches_saved;
     }
 
     /**
@@ -167,7 +167,7 @@ public class Tuner.StarredController : Object {
      * @return True if the station is in favorites, false otherwise.
      */
     public bool contains (Station station) {
-        return _starred.has_key (station.stationuuid);
+        return _starred_station_map.has_key (station.stationuuid);
     }
 
 
@@ -179,7 +179,10 @@ public class Tuner.StarredController : Object {
     /**
      * @brief Loads the favorites from the JSON file.
      *
-     *  Load needs to happen after Application creation
+     * Starred staions are defined by the file and do not load from the Provider
+     * and so can deviate. If the station disapears from the Provider, a copy
+     * of its info remain in the starred file.
+     * Load needs to happen after Application creation. 
      * 
      * This method reads the JSON file and populates the _store with
      * the favorite stations.
@@ -214,10 +217,10 @@ public class Tuner.StarredController : Object {
 
         if ( root == null ) return; // No favorites stored  
 
-        //Set<Station> starred_stations = new HashSet<Station>();
         Json.Array jstarred;
         Json.Array jsearches;
 
+        // Check for schema versions
         if ( get_member( root, FAVORITES_PROPERTY_SCHEMA) == null ) 
         /*
             v1 Schema
@@ -236,61 +239,48 @@ public class Tuner.StarredController : Object {
             var searches = get_member( root, FAVORITES_PROPERTY_SEARCHES);
             jsearches = searches.get_array ();
         }
-        
-        jstarred.foreach_element ((a, i, elem) => {           
-            var s = new Station.basic(elem); // 
-            Station p;
-            try {
-                p = app().provider.by_uuid (s.stationuuid);
-                s.set_up_to_date_with (p);
-            }
-            catch (Provider.DataError e) {
-            }
 
-            _starred.set (s.stationuuid, s ); // v1 captures multiple datums. We want id
+        /*
+            Read in each starred item
+        */
+        jstarred.foreach_element ((a, i, elem) => 
+        {           
+            var s = new Station.basic(elem); // Creates a basic station without adding it to the main station directory
+            _starred_station_map.set (s.stationuuid, s);
             if (!s.starred)  s.toggle_starred ();
-            debug(@"UUID:$(s.stationuuid)   Name:$(s.name)  Stared:$(s.starred)");
+
+            // Connect the star button
+            s.notify["starred"].connect ( (sender, property) => {
+                if (app().is_offline) return;
+                    if (s.starred) {
+                        debug (@"Fav add: $(s.stationuuid)");
+                        this.add (s);
+                    } else {
+                        debug (@"Fav remove: $(s.stationuuid)");
+                        this.remove (s);
+                    }
+                }); // s.notify
         });
 
+        // Check starred station currency - doing this way means once call to Provider for all the stations
+        try {
+            var provider_station = app().provider.by_uuids( _starred_station_map.keys);
+            foreach ( var ps in provider_station)
+            {
+                var ss = _starred_station_map.get (ps.stationuuid);
+                if ( ss != null) ss.set_up_to_date_with (ps);
+            }
+        }
+        catch (Provider.DataError e) {
+            warning(@"Comparing with Provider copy of station: $(e.message)");
+        }
+
+        // Read each stored search
         jsearches.foreach_element ((a, i, elem) => {         
             //  _searches.add (elem.get_string ());
             //  debug(@"Search:$(elem.get_string ())");
-        });
+        }); // jsearches.foreach_element
 
-
-        foreach ( var ss in _starred.values)
-        /*
-            Check against station def at Provider
-        */
-        {
-            var uuid = ss.stationuuid;
-            try {
-                var from_provider = app().provider.by_uuid(uuid);
-                if (from_provider != null && ss.changeuuid != from_provider.changeuuid)
-                {
-                    warning(@"Station data superceded: $(ss.name) - $(from_provider.name)");
-                    
-                    _starred.unset (ss.stationuuid);
-                    _starred.set(uuid,from_provider);
-                    ss = from_provider;
-                }
-
-               // ss.load_favicon_async.begin ();
-
-                ss.notify["starred"].connect ( (sender, property) => {
-                   if (app().is_offline) return;
-                    if (ss.starred) {
-                        warning (@"Fav add: $(ss.stationuuid)");
-                        this.add (ss);
-                    } else {
-                        warning (@"Fav remove: $(ss.stationuuid)");
-                        this.remove (ss);
-                    }
-                });
-            } 
-            catch (Provider.DataError e) 
-            {}
-        }
     } // load
       
 
@@ -316,6 +306,7 @@ public class Tuner.StarredController : Object {
             warning (@"Persist failed with error: $(e.message)");
         }
     } // persist
+
 
     /**
      * @brief Returns the given property from the JSON node.
