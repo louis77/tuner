@@ -2,7 +2,6 @@
 sources = files (
     'Controllers/DirectoryController.vala',
     'Controllers/PlayerController.vala',
-    'Controllers/StarredController.vala',
 
     'Models/Countries.vala',
     'Models/Genre.vala',
@@ -12,8 +11,9 @@ sources = files (
 
     'Services/DBusMediaPlayer.vala',
     'Services/DBusInterface.vala',
-    'Services/Provider.vala',
+    'Services/DataProvider.vala',
     'Services/HttpClient.vala',
+    'Services/StarStore.vala',
 
     'Widgets/base/AbstractContentList.vala',
     'Widgets/base/DisplayButton.vala',
@@ -26,6 +26,7 @@ sources = files (
     'Widgets/PlayButton.vala',
     'Widgets/StationButton.vala',
     'Widgets/StationContextMenu.vala',
+    'Widgets/Display.vala',
     'Widgets/Window.vala',
     'Widgets/AboutDialog.vala',
     'Widgets/CountryList.vala',

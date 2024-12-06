@@ -35,26 +35,27 @@ public errordomain SourceError {
  */
 public class Tuner.DirectoryController : Object {
 
-    private const int TAG_COUNT = 10000;
+    private const uint DIRECTORY_LIMIT = 41;
 
     //private RadioBrowser.Client? _provider { get; set; }
-    private Provider.API _provider;
-    private StarredController _starred;
+    private DataProvider.API _provider;
+    private StarStore _star_store;
     private bool _loaded = false;
 
-    public signal void tags_updated (Set<Provider.Tag> tags);
+    public signal void tags_updated (Set<DataProvider.Tag> tags);
+
+    public string provider_name() { return _provider.name; }
 
     /**
      * @brief Constructor for DirectoryController.
      *
      * @param store The StationStore to use for managing stations.
      */
-    public DirectoryController (StarredController starred) {  
+    public DirectoryController (DataProvider.API provider, StarStore star_store) {  
         Object();
 
-        _provider = app().provider;
-        _starred = starred;
-        load();
+        _provider = provider;
+        _star_store = star_store;
     } // DirectoryController
 
         
@@ -64,12 +65,16 @@ public class Tuner.DirectoryController : Object {
      */
     public void load()
     {
+
+        warning(@"DC init: $(_provider.name)");
+
         if (_loaded || app().is_offline ) return;
 
         _provider.initialize();
-        _starred.load.begin();
+        _star_store.load.begin();
         _loaded = true;
     } // load
+
 
     /**
      * @brief Get a collection of Station station by its UUID.
@@ -81,11 +86,12 @@ public class Tuner.DirectoryController : Object {
      public Set<Model.Station>? get_stations_by_uuid (Collection<string> uuids) {
         try {
             return _provider.by_uuids(uuids);
-        } catch (Tuner.Provider.DataError e) {
+        } catch (Tuner.DataProvider.DataError e) {
             critical (@"RadioBrowser unavailable");
         }
         return new HashSet<Model.Station>();
     } // get_stations_by_uuid
+
     
     /**
      * @brief Load a station by its UUID.
@@ -94,13 +100,14 @@ public class Tuner.DirectoryController : Object {
      * @return A StationSet object for the requested station.
      */
     public StationSet load_station_uuid (string uuid) {
-        var params = Provider.SearchParams() {
+        var params = DataProvider.SearchParams() {
             uuids = new HashSet<string>()
         };
         params.uuids.add (uuid);
-        var source = new StationSet(1, params, _provider, _starred);
+        var source = new StationSet(1, params, _provider, _star_store);
         return source;
     } // load_station_uuid
+
 
     /**
      * @brief Load a set of random stations.
@@ -109,15 +116,16 @@ public class Tuner.DirectoryController : Object {
      * @return A StationSet object with random stations.
      */
     public StationSet load_random_stations (uint limit) {
-        var params = Provider.SearchParams() {
+        var params = DataProvider.SearchParams() {
             text  = "",
             countrycode = "",
             tags  = new HashSet<string>(),
-            order = Provider.SortOrder.RANDOM
+            order = DataProvider.SortOrder.RANDOM
         };
-        var source = new StationSet(limit, params, _provider, _starred);
+        var source = new StationSet(limit, params, _provider, _star_store);
         return source;
     } // load_random_stations
+
 
     /**
      * @brief Load trending stations.
@@ -126,16 +134,17 @@ public class Tuner.DirectoryController : Object {
      * @return A StationSet object with trending stations.
      */
     public StationSet load_trending_stations (uint limit) {
-        var params = Provider.SearchParams() {
+        var params = DataProvider.SearchParams() {
             text    = "",
             countrycode = "",
             tags    = new HashSet<string>(),
-            order   = Provider.SortOrder.CLICKTREND,
+            order   = DataProvider.SortOrder.CLICKTREND,
             reverse = true
         };
-        var source = new StationSet(limit, params, _provider, _starred);
+        var source = new StationSet(limit, params, _provider, _star_store);
         return source;
     }
+
 
     /**
      * @brief Load popular stations.
@@ -144,16 +153,17 @@ public class Tuner.DirectoryController : Object {
      * @return A StationSet object with popular stations.
      */
     public StationSet load_popular_stations (uint limit) {
-        var params = Provider.SearchParams() {
+        var params = DataProvider.SearchParams() {
             text    = "",
             countrycode = "",
             tags    = new HashSet<string>(),
-            order   = Provider.SortOrder.CLICKCOUNT,
+            order   = DataProvider.SortOrder.CLICKCOUNT,
             reverse = true
         };
-        var source = new StationSet(limit, params, _provider, _starred);
+        var source = new StationSet(limit, params, _provider, _star_store);
         return source;
     }
+
 
     /**
      * @brief Load stations by country code.
@@ -163,16 +173,17 @@ public class Tuner.DirectoryController : Object {
      * @return A StationSet object with stations from the specified country.
      */
     public StationSet load_by_country (uint limit, string countrycode) {
-        var params = Provider.SearchParams () {
+        var params = DataProvider.SearchParams () {
             text        = "",
             countrycode = countrycode,
             tags  = new HashSet<string>(),
-            order   = Provider.SortOrder.CLICKCOUNT,
+            order   = DataProvider.SortOrder.CLICKCOUNT,
             reverse = true
         };
-        var source = new StationSet(limit, params, _provider, _starred);
+        var source = new StationSet(limit, params, _provider, _star_store);
         return source;
     }
+
 
     /**
      * @brief Load stations based on search text.
@@ -182,25 +193,54 @@ public class Tuner.DirectoryController : Object {
      * @return A StationSet object with stations matching the search text.
      */
     public StationSet load_search_stations (string utext, uint limit) {
-        var params = Provider.SearchParams() {
+        var params = DataProvider.SearchParams() {
             text    = utext,
             countrycode = "",
             tags    = new HashSet<string>(),
-            order   = Provider.SortOrder.CLICKCOUNT,
+            order   = DataProvider.SortOrder.CLICKCOUNT,
             reverse = true
         };
-        var source = new StationSet(limit, params, _provider, _starred); 
+        var source = new StationSet(limit, params, _provider, _star_store); 
         return source;
     }
 
+
     /**
-     * @brief Get all stored stations.
+     * @brief Get all starred stations.
      *
-     * @return An ArrayList of stored Model.Station objects.
+     * @return An Collection of starred Model.Station objects.
      */
     public Collection<Model.Station> get_starred () {
-        return _starred.get_all_stations();
+        return _star_store.get_all_stations();
     }
+
+
+    // --------------------------------------------------
+
+    public StationSet add_saved_search( string search_text)
+    {
+        _star_store.add_saved_search ( search_text);
+        return load_search_stations(search_text,DIRECTORY_LIMIT);
+    }
+
+    public void remove_saved_search( string search_text)
+    {
+        _star_store.remove_saved_search ( search_text);
+    }
+
+
+    public Map<string, StationSet> load_saved_searches()
+    {
+        Map<string, StationSet> searches = new HashMap<string, StationSet>();
+        foreach( var search in _star_store.get_all_searches ())
+        {
+            searches.set (search, load_search_stations(search,DIRECTORY_LIMIT));
+        }
+        return searches;
+    }
+
+
+    // -------------------------------------------------
 
     /**
      * @brief Load stations by tags.
@@ -211,28 +251,30 @@ public class Tuner.DirectoryController : Object {
     public StationSet load_by_tag (string utag) {
         var t =new HashSet<string>();
         t.add (utag.down());
-        var params = Provider.SearchParams() {
+        var params = DataProvider.SearchParams() {
             text    = "",
             countrycode = "",
             tags    = t,
-            order   = Provider.SortOrder.VOTES,
+            order   = DataProvider.SortOrder.VOTES,
             reverse = true
         };
-        var source = new StationSet(40, params, _provider, _starred);
+        var source = new StationSet(40, params, _provider, _star_store);
         return source;
     }
 
+
     public StationSet load_by_tag_set (Set<string> utags) {
-        var params = Provider.SearchParams() {
+        var params = DataProvider.SearchParams() {
             text    = "",
             countrycode = "",
             tags    = utags,
-            order   = Provider.SortOrder.VOTES,
+            order   = DataProvider.SortOrder.VOTES,
             reverse = true
         };
-        var source = new StationSet(40, params, _provider, _starred);
+        var source = new StationSet(40, params, _provider, _star_store);
         return source;
     }
+
 
     /**
      * @brief Count a click for a station.
@@ -248,6 +290,7 @@ public class Tuner.DirectoryController : Object {
         }
     }
 
+
     /**
      * @brief Load tags from the _provider.
      */
@@ -255,15 +298,15 @@ public class Tuner.DirectoryController : Object {
         try {
             var tags = _provider.get_tags ();
             tags_updated (tags);
-        } catch (Provider.DataError e) {
+        } catch (DataProvider.DataError e) {
             warning (@"Load tags failed with error: $(e.message)");
         }
     } // load_tags
 
     
-    public Set<Provider.Tag> load_random_genres(int genres)
+    public Set<DataProvider.Tag> load_random_genres(int genres)
     {
-        Set<Provider.Tag> result = new HashSet<Provider.Tag>();
+        Set<DataProvider.Tag> result = new HashSet<DataProvider.Tag>();
 
         while (app().is_online && result.size < genres)
         {
@@ -277,6 +320,7 @@ public class Tuner.DirectoryController : Object {
     }
 } // DirectoryController
 
+
 /**
  * @brief A pagable set of Stations
  */
@@ -284,9 +328,9 @@ public class Tuner.StationSet : Object {
     private uint _offset = 0;
     private uint _page_size = 20;
     private bool _more = true;
-    private Provider.SearchParams _params;
-    private Provider.API _provider;
-    private StarredController _starred;
+    private DataProvider.SearchParams _params;
+    private DataProvider.API _provider;
+    private StarStore _star_store;
 
     /**
      * @brief Constructor for StationSet.
@@ -294,19 +338,20 @@ public class Tuner.StationSet : Object {
      * @param limit The maximum number of stations to fetch.
      * @param params The search parameters for fetching stations.
      * @param client The RadioBrowser client to use for fetching stations.
-     * @param starred The StationStore to use for managing stations.
+     * @param star_store The StationStore to use for managing stations.
      */
     public StationSet (uint limit, 
-                        Provider.SearchParams params, 
-                        Provider.API client,
-                        StarredController starred) {
+                        DataProvider.SearchParams params, 
+                        DataProvider.API client,
+                        StarStore star_store) {
         Object ();
         // This disables paging for now
         _page_size = limit;
         _params = params;
         _provider = client;
-        _starred = starred;
+        _star_store = star_store;
     }
+
 
     /**
      * @brief Fetch the next set of stations.
@@ -330,7 +375,7 @@ public class Tuner.StationSet : Object {
             _more = stations.size > _page_size;
             if (_more) stations.remove(stations.to_array ()[(int)_page_size]);
             return stations;    
-        } catch (Provider.DataError e) {
+        } catch (DataProvider.DataError e) {
             throw new SourceError.UNAVAILABLE("Directory Error");
         }
     }
@@ -362,15 +407,16 @@ public class Tuner.StationSet : Object {
 
             station.notify["starred"].connect ( (sender, property) => {
                 if (station.starred) {
-                    _starred.add (station);
+                    _star_store.add_station (station);
                 } else {
-                    _starred.remove (station);
+                    _star_store.remove_station (station);
                 }
             });
             stations.add (station);
         }
         return stations;
     } // convert_stations
+
 
     public bool has_property(Json.Node node, string property_name) {
         // Check if the node is of type OBJECT

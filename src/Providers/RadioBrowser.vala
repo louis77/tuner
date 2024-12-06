@@ -25,7 +25,7 @@ using Gee;
  * - Tag and other metadata retrieval
  * - API Server discovery and connection handling from DNS and from round-robin API server
  */
-namespace Tuner.Provider {
+namespace Tuner.DataProvider {
 
     private const string SRV_SERVICE    = "api";
     private const string SRV_PROTOCOL   = "tcp";
@@ -69,7 +69,7 @@ namespace Tuner.Provider {
      * }
      * @endcode
      */
-    public class RadioBrowser : Object, Provider.API 
+    public class RadioBrowser : Object, DataProvider.API 
     {
         private const int DEGRADE_CAPITAL = 100;
         private const int DEGRADE_COST = 7;
@@ -79,6 +79,10 @@ namespace Tuner.Provider {
         private string _current_server;
         private int _degrade = DEGRADE_CAPITAL;
         private int _available_tags = 1000;     // default guess
+
+
+        public string name { get { return "RadioBrowser 2.0"; } 
+                            protected set {} }
 
         public Status status { get; protected set; }
 
@@ -228,14 +232,14 @@ namespace Tuner.Provider {
          * @throw DataError if unable to retrieve or parse station data
          */
          public Set<Model.Station> by_uuid(string uuids) throws DataError {
-            if ( app().is_offline ) return new HashSet<Model.Station>();
+            if ( app().is_offline || uuids.strip().length == 0 ) return new HashSet<Model.Station>();
             var result = station_query(RBI_UUID,@"uuids=$uuids");
             return result;
         } // by_uuid
 
         public Set<Model.Station> by_uuids(Collection<string> uuids) throws DataError {
             StringBuilder sb = new StringBuilder();
-            foreach ( var uuid in uuids) { sb.append(uuid).append(",");}
+            foreach ( var uuid in uuids) { sb.append(uuid).append(","); }
             return by_uuid(sb.str);
         } // by_uuid
 

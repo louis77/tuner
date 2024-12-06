@@ -19,23 +19,28 @@ public class Tuner.StationList : ContentList {
 
     /**
      * @signal selection_changed
+     *
      * @brief Emitted when a station is selected.
+     *
      * @param station The selected Model.Station.
      */
-    public signal void selection_changed (Model.Station station);
+    public signal void selection_changed_sig (Model.Station station);
 
     /**
      * @signal station_count_changed
+     *
      * @brief Emitted when the number of stations changes.
+     *
      * @param count The new number of stations.
      */
-    public signal void station_count_changed (uint count);
+   // public signal void station_count_changed_sig (uint count);
 
     /**
      * @signal favourites_changed
+     *
      * @brief Emitted when a station's favorite status changes.
      */
-    public signal void favourites_changed ();
+    public signal void favourites_changed_sig ();
 
     /**
      * @property selected_station
@@ -44,7 +49,6 @@ public class Tuner.StationList : ContentList {
     public Model.Station selected_station;
     
     /**
-     * @property stations
      * @brief The list of stations to display.
      *
      * When set, this property clears the existing list and populates it with
@@ -57,11 +61,11 @@ public class Tuner.StationList : ContentList {
             
             foreach (var s in value) {
                 s.notify["starred"].connect ( () => {
-                    favourites_changed ();
+                    favourites_changed_sig ();
                 });
                 var box = new StationButton (s);
                 box.clicked.connect (() => {
-                    selection_changed (box.station);
+                    selection_changed_sig (box.station);
                     selected_station = box.station;
                 });
                 add (box);
@@ -90,6 +94,7 @@ public class Tuner.StationList : ContentList {
 
     /**
      * @brief Constructs a new StationList instance with a predefined list of stations.
+     *
      * @param stations The ArrayList of Model.Station objects to populate the list.
      */
     public StationList.with_stations (Gee.Collection<Model.Station> stations) {
@@ -111,6 +116,7 @@ public class Tuner.StationList : ContentList {
 
     /**
      * @property item_count
+     *
      * @brief The number of stations in the list.
      *
      * This property implements the abstract property from AbstractContentList.

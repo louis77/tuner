@@ -29,7 +29,7 @@ using Tuner.Model;
  *
  * DirectoryController uses StationStore to load the starred stations from RadioBrowser
  */
-public class Tuner.StarredController : Object {
+public class Tuner.StarStore : Object {
 
     private const string FAVORITES_PROPERTY_APP = "app";
     private const string FAVORITES_PROPERTY_FILE = "file";
@@ -42,10 +42,10 @@ public class Tuner.StarredController : Object {
     private const string M3U8 = "#EXTM3U\n#EXTENC:UTF-8\n#PLAYLIST:Tuner\n";
 
     private File _starred_file; ///< File to persist favorite stations.
-    //private Provider.API _provider;
+
 
     private Map<string,Station> _starred_station_map = new HashMap<string, Station> (); ///< Collection of starred station UUIDs.
-    private Gee.List<string> _searches_saved = new ArrayList<string> (); ///< Collection of saved searchess.
+    private Gee.Set<string> _saved_searches = new HashSet<string> (); ///< Collection of saved searchess.
     private bool _loaded = false;
 
 
@@ -72,7 +72,7 @@ public class Tuner.StarredController : Object {
      * @brief Constructor for StationStore.
      * @param favorites_path The path to the JSON file where favorites are stored.
      */
-    public StarredController (File starred_file)
+    public StarStore (File starred_file)
     {
         Object ();
         _starred_file =  starred_file;
@@ -82,7 +82,7 @@ public class Tuner.StarredController : Object {
      * @brief Adds a station to the favorites and persists the change.
      * @param station The station to be added.
      */
-    public void add (Station station) {
+    public void add_station (Station station) {
         if (_starred_station_map.has_key (station.stationuuid)) return;
         _starred_station_map.set (station.stationuuid, station);
         persist ();
@@ -94,9 +94,22 @@ public class Tuner.StarredController : Object {
      *
      * @param station The station to be removed.
      */
-    public void remove (Station station) {
+    public void remove_station (Station station) {
         _starred_station_map.unset (station.stationuuid);
         persist ();
+    }
+
+
+    public void add_saved_search(string search_text)
+    {
+        _saved_searches.add (search_text);
+        persist();
+    }
+
+    public void remove_saved_search(string search_text)
+    {
+        _saved_searches.remove (search_text);
+        persist();
     }
 
 
@@ -128,7 +141,7 @@ public class Tuner.StarredController : Object {
         // Saved Searches
 	    builder.set_member_name (FAVORITES_PROPERTY_SEARCHES);
         builder.begin_array ();
-        foreach (var searched in _searches_saved) {
+        foreach (var searched in _saved_searches) {
             builder.add_string_value (searched);
         }
         builder.end_array ();
@@ -156,8 +169,8 @@ public class Tuner.StarredController : Object {
      *
      * @return An ArrayList of favorite stations.
      */
-     public Gee.List<string> get_all_searches () {
-        return _searches_saved;
+     public Gee.Set<string> get_all_searches () {
+        return _saved_searches;
     }
 
     /**
@@ -179,8 +192,8 @@ public class Tuner.StarredController : Object {
     /**
      * @brief Loads the favorites from the JSON file.
      *
-     * Starred staions are defined by the file and do not load from the Provider
-     * and so can deviate. If the station disapears from the Provider, a copy
+     * Starred staions are defined by the file and do not load from the DataProvider
+     * and so can deviate. If the station disapears from the DataProvider, a copy
      * of its info remain in the starred file.
      * Load needs to happen after Application creation. 
      * 
@@ -247,6 +260,8 @@ public class Tuner.StarredController : Object {
         {           
             var s = new Station.basic(elem); // Creates a basic station without adding it to the main station directory
             _starred_station_map.set (s.stationuuid, s);
+
+            warning(@"Starred station: $(s.stationuuid)");
             if (!s.starred)  s.toggle_starred ();
 
             // Connect the star button
@@ -254,15 +269,15 @@ public class Tuner.StarredController : Object {
                 if (app().is_offline) return;
                     if (s.starred) {
                         debug (@"Fav add: $(s.stationuuid)");
-                        this.add (s);
+                        this.add_station (s);
                     } else {
                         debug (@"Fav remove: $(s.stationuuid)");
-                        this.remove (s);
+                        this.remove_station (s);
                     }
                 }); // s.notify
         });
 
-        // Check starred station currency - doing this way means once call to Provider for all the stations
+        // Check starred station currency - doing this way means once call to DataProvider for all the stations
         try {
             var provider_station = app().provider.by_uuids( _starred_station_map.keys);
             foreach ( var ps in provider_station)
@@ -271,14 +286,14 @@ public class Tuner.StarredController : Object {
                 if ( ss != null) ss.set_up_to_date_with (ps);
             }
         }
-        catch (Provider.DataError e) {
-            warning(@"Comparing with Provider copy of station: $(e.message)");
+        catch (DataProvider.DataError e) {
+            warning(@"Comparing with DataProvider copy of station: $(e.message)");
         }
 
         // Read each stored search
-        jsearches.foreach_element ((a, i, elem) => {         
-            //  _searches.add (elem.get_string ());
-            //  debug(@"Search:$(elem.get_string ())");
+        jsearches.foreach_element ((a, i, elem) => {    
+            _saved_searches.add (elem.get_string ());
+            debug(@"Search:$(elem.get_string ())");
         }); // jsearches.foreach_element
 
     } // load

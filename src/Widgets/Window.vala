@@ -1,23 +1,27 @@
-/*
- * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
- */
 /**
+ * SPDX-FileCopyrightText: Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
+ * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
  * @file Window.vala
+ *
  * @brief Defines the main application window for the Tuner application.
  *
  * This file contains the Window class, which is responsible for creating and
- * managing the main application window. It handles the layout, user interface
- * elements, and interactions with other components of the application.
+ * managing the main application window. It handles the major layout, user interface
+ * elements, and interactions with other non-display components of the application.
  *
  * The Window class inherits from Gtk.ApplicationWindow and implements various
- * features such as a header bar, source list, content stack, and player controls.
+ * features such as a header bar, main display and player controls.
  * It also manages application settings and handles user actions like playback
  * control, station selection, and theme adjustments.
  *
  * @see Tuner.Application
  * @see Tuner.PlayerController
  * @see Tuner.DirectoryController
+ * @see Tuner.HeaderBar
+ * @see Tuner.Display
  */
 
 
@@ -41,11 +45,10 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public const string ACTION_ENABLE_AUTOPLAY = "action_enable_autoplay";
 
 
-
     public Settings settings { get; construct; }
-    public Gtk.Stack stack { get; set; }
     public PlayerController player_ctrl { get; construct; }
-    public StarredController starred_ctrl { get; construct; }
+    public DirectoryController directory { get; construct; }
+
     public bool active { get; private set; } // Window is active
 
 
@@ -74,24 +77,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         Assets
     */
 
-    private DirectoryController _directory;
     private HeaderBar _headerbar;
-    private Granite.Widgets.SourceList _source_list;
+    private Display _display;
 
-    private SourceList.ExpandableItem _selections_category = new SourceList.ExpandableItem (_("Selections"));
-    private SourceList.ExpandableItem _library_category = new SourceList.ExpandableItem (_("Library"));
-    private SourceList.ExpandableItem _saved_searches_category = new SourceList.ExpandableItem (_("Saved Searches"));
-    private SourceList.ExpandableItem _explore_category = new SourceList.ExpandableItem (_("Explore")); 
-    private SourceList.ExpandableItem _genres_category = new SourceList.ExpandableItem (_("Genres"));
-    private SourceList.ExpandableItem _subgenres_category = new SourceList.ExpandableItem (_("Sub Genres"));
-    private SourceList.ExpandableItem _eras_category = new SourceList.ExpandableItem (_("Eras"));
-    private SourceList.ExpandableItem _talk_category = new SourceList.ExpandableItem (_("Talk, News, Sport"));
-
-
-     /** @brief Indicates if the application started online. */
-     private bool _started_online = app().is_online;  // Initial online state
-
-    private signal void refresh_favourites_sig ();
+    private signal void refresh_starred_stations_sig ();
+    
+    private signal void refresh_saved_searches_sig (bool add, string search_text);
 
 
     /* Construct Static*/
@@ -103,29 +94,32 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
-    }
+    } // static construct
 
 
     /**
      * @brief Constructs a new Window instance.
+     *
      * @param app The Application instance.
      * @param player The PlayerController instance.
      */
-    public Window (Application app, PlayerController player, Settings settings, StarredController starred ) {
+    public Window (Application app, PlayerController player, Settings settings, DirectoryController directory ) {
         Object (
             application: app,
             player_ctrl: player,
             settings: settings,
-            starred_ctrl: starred
+            directory: directory
         );
 
         application.set_accels_for_action (ACTION_PREFIX + ACTION_PAUSE, {"<Control>5"});
         application.set_accels_for_action (ACTION_PREFIX + ACTION_QUIT, {"<Control>q"});
         application.set_accels_for_action (ACTION_PREFIX + ACTION_QUIT, {"<Control>w"});
-    }
+    } // Window
 
 
-    /* Construct */
+    /* 
+        Construct 
+    */
     construct { 
 
         set_icon_name(Application.APP_ID);
@@ -137,16 +131,23 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         change_action_state (ACTION_ENABLE_AUTOPLAY, settings.auto_play);
 
 
+
+        /*
+            Display
+        */
+        _display = new Display(directory);   
+        _display.selection_changed_sig.connect (handle_station_click);
+       // _display.favourites_changed_sig.connect (handle_starred_stations_changed);            
+        add (_display);
+
         /*
             Headerbar
         */
         _headerbar = new HeaderBar ();
-        set_titlebar (_headerbar);
 
         _headerbar.volume_button.value_changed.connect ((value) => {
             player_ctrl.volume = value;
         });
-
 
         player_ctrl.state_changed.connect (handleplayer_state_changed);
         player_ctrl.station_changed.connect (_headerbar.update_from_station);
@@ -156,97 +157,21 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         player_ctrl.volume_changed.connect ((volume) => {
             _headerbar.volume_button.value = volume;
         });
+        _headerbar.star_clicked_sig.connect ( (starred) => {
+            player_ctrl.station.toggle_starred ();
+        });
 
+        set_titlebar (_headerbar);
 
-        //  adjust_theme();    // TODO Theme management needs research in flatpak as nonfunctional
-        //  settings.changed.connect( (key) => {
-        //      if (key == "theme-mode") {
-        //          debug("theme-mode changed");
-        //          adjust_theme();                     
-        //      }
-        //  });
-
-        var granite_settings = Granite.Settings.get_default ();
-        //  granite_settings.notify.connect( (key) => { // FIXME
-        //          debug("theme-mode changed");
-        //          adjust_theme();
-        //  });
-
-
-       // set_default_size (900, 680);
-       // move (settings.get_int ("pos-x"), settings.get_int ("pos-y"));
-
-        //resize (settings.get_int ("window-width"), settings.get_int ("window-height"));
-
-
+               
+        /*
+            Setup
+        */
 		size_allocate.connect(on_window_resize);
 
         delete_event.connect (e => {
             return before_destroy ();
         });
-
-        stack = new Gtk.Stack ();
-        var overlay = new Gtk.Overlay ();
-
-        var background = new Gtk.Image.from_resource("/com/github/louis77/tuner/icons/background");
-        background.opacity = 0.1;
-        overlay.add (background);
-        overlay.add_overlay(stack);
-        stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
-
-        // ---------------------------------------------------------------------------
-
-
-        var primary_box = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);
-
-
-        _selections_category.collapsible = false;
-        _selections_category.expanded = true;
-        _library_category.collapsible = false;
-        _library_category.expanded = true;
-
-        _saved_searches_category.collapsible = false;
-        _saved_searches_category.expanded = false;
-
-        _explore_category.collapsible = true;
-        _explore_category.expanded = false;
-
-        _genres_category.collapsible = true;
-        _genres_category.expanded = false;
-
-        _subgenres_category.collapsible = true;
-        _subgenres_category.expanded = false;
-
-        _eras_category.collapsible = true;
-        _eras_category.expanded = false;
-
-        _talk_category.collapsible = true;
-        _talk_category.expanded = false;
-
-        _source_list = new SourceList ();
-
-        
-        _source_list.root.add (_selections_category);
-        _source_list.root.add (_library_category);
-        _source_list.root.add (_explore_category);
-        _source_list.root.add (_genres_category);
-        _source_list.root.add (_subgenres_category);
-        _source_list.root.add (_eras_category);
-        _source_list.root.add (_talk_category);
-
-        _source_list.ellipsize_mode = Pango.EllipsizeMode.NONE;
-        _source_list.selected = _source_list.get_first_child (_selections_category);
-        _source_list.item_selected.connect  ((item) => {
-            var selected_item = item.get_data<string> ("stack_child");
-            stack.visible_child_name = selected_item;
-        });
-
-        // ---------------------------------------------------------------------------
-
-        primary_box.pack1 (_source_list, false, false);
-       // primary_box.pack2 (stack, true, false);
-        primary_box.pack2 (overlay, true, false);
-        add (primary_box);
 
         // Auto-play
         if (_settings.auto_play) {
@@ -254,7 +179,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             var source = _directory.load_station_uuid (_settings.last_played_station);
 
             try {
-                foreach (var station in source.next_page ()) {   // FIXME  Why
+                foreach (var station in source.next_page ()) { 
                     handle_station_click(station);  
                     break;
                 }
@@ -262,9 +187,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 warning ("Error while trying to autoplay, aborting...");
             }
         }
-
-        // Set the directory up prior to its use.
-        _directory = new DirectoryController (starred_ctrl);
 
         /*
             Online checks & behavior
@@ -275,24 +197,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             check_online_status();
         });
 
+        check_online_status();
 
-        /* Do an initial check */
-        if (app().is_online)
-        {
-            init();
-            _library_category.add (_saved_searches_category);   // Added as last item of library category
-            _saved_searches_category.icon = new ThemedIcon ("library-music");
-            active = true;
-        }
-        else 
-        /*
-            Starting Offline, so set to look offline
-            Initialization will happen when online
-        */
-        { 
-            check_online_status();  
-        }
-                    
         show_all ();
     } // construct
 
@@ -304,206 +210,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         ----------------------------------------------------------
     */
 
-    private void init()
-    {
-        _directory.load ();
-
-        /*
-            Discover
-        */
-
-        var discover = SourceListBox.create ( stack
-            , _source_list
-            ,  _selections_category
-            , "discover"
-            , "face-smile"
-            , "Discover"
-            , "Stations to Explore"
-            ,_directory.load_random_stations(20)
-            , "Discover more stations"
-            , "media-playlist-shuffle-symbolic");
-            
-        discover.realize.connect (() => {
-            if ( app().is_offline ) return;
-            try {
-                var slist = new StationList.with_stations (discover.next_page ());
-                slist.selection_changed.connect (handle_station_click);
-                slist.favourites_changed.connect (handle_favourites_changed);
-                discover.content = slist;
-            } catch (SourceError e) {
-                discover.show_alert ();
-            }
-        });
-        
-        discover.action_activated_sig.connect (() => {
-            if ( app().is_offline ) return;
-            try {
-                var slist = new StationList.with_stations (discover.next_page ());
-                slist.selection_changed.connect (handle_station_click);
-                slist.favourites_changed.connect (handle_favourites_changed);
-                discover.content = slist;
-            } catch (SourceError e) {
-                discover.show_alert ();
-            }
-        });
-
-        // ---------------------------------------------------------------------------
-
-        /*
-            Trending
-        */
-        create_category_specific
-            ( stack
-                , _source_list
-                , _selections_category
-                , "trending"
-                , "playlist-queue"
-                , "Trending"
-                , "Trending in the last 24 hours"
-                ,_directory.load_trending_stations(40) 
-            );
-
-        // ---------------------------------------------------------------------------
-
-        /*
-            Popular
-        */
-
-        create_category_specific
-            ( stack
-                , _source_list
-                , _selections_category
-                , "popular"
-                , "playlist-similar"
-                , "Popular"
-                , "Most-listened over 24 hours"
-                ,_directory.load_popular_stations(40)
-            );
-    
-
-        // ---------------------------------------------------------------------------
-        // Country-specific stations list
-        
-        //  var item4 = new Granite.Widgets.SourceList.Item (_("Your Country"));
-        //  item4.icon = new ThemedIcon ("emblem-web");
-        //  ContentBox c_country;
-        //  c_country = create_content_box ("my-country", item4,
-        //                      _("Your Country"), null, null,
-        //                      stack, source_list, true);
-        //  var c_slist = new StationList ();
-        //  c_slist.selection_changed.connect (handle_station_click);
-        //  c_slist.favourites_changed.connect (handle_favourites_changed);
-
-        // ---------------------------------------------------------------------------
-
-        /*
-            Starred
-        */
-
-        var starred = create_category_predefined
-            (   stack
-                , _source_list
-                , _library_category
-                , "starred"
-                , "starred"
-                , "Starred by You"
-                , "Starred by You"
-                ,_directory.get_starred() 
-            );
-
-            starred.badge ( @"$(starred.item_count)\t");
-            starred.notify["item-count"].connect (()=> {
-                starred.badge ( @"$(starred.item_count)\t");
-            });
-
-
-        // ---------------------------------------------------------------------------
-        // Search Results Box
-        
-        //  var search = new Granite.Widgets.SourceList.Item (_("Recent Search"));
-        //  search.icon = new ThemedIcon ("folder-saved-search");
-        //  searched_category.add (search);
-        //  var search_results = create_content_box (STACK_SEARCHED, search,
-        //                      _("Search"), null, null,
-        //                      stack, source_list, true);
-
-        var search_results = SourceListBox.create 
-        ( stack
-        , _source_list
-        , _library_category
-        , "searched"
-        , "folder-saved-search"
-        , "Recent Search"
-        , "Search Results" 
-        );
-
-
-        // ---------------------------------------------------------------------------
-
-        // Explore Categories category
-        // Get random categories and stations in them
-        if ( app().is_online)
-        {
-            uint explore = 0;
-            foreach (var tag in _directory.load_random_genres(RANDOM_CATEGORIES))
-            {
-            if ( Model.Genre.in_genre (tag.name)) break;  // Predefined genre, ignore
-                create_category_specific( stack, _source_list, _explore_category
-                    , @"$(explore++)"   // tag names can have charaters that are not suitable for name
-                    , "playlist-symbolic"
-                    , tag.name
-                    , tag.name
-                    , _directory.load_by_tag (tag.name));
-            }
-        }
-
-        // ---------------------------------------------------------------------------
-
-        // Genre Boxes
-        create_category_genre( stack, _source_list, _genres_category, _directory,   Model.Genre.GENRES );
-
-        // Sub Genre Boxes
-        create_category_genre( stack, _source_list, _subgenres_category, _directory,   Model.Genre.SUBGENRES );
-
-        // Eras Boxes
-        create_category_genre( stack, _source_list, _eras_category,   _directory, Model.Genre.ERAS );
-    
-        // Talk Boxes
-        create_category_genre( stack, _source_list, _talk_category, _directory,   Model.Genre.TALK );
-    
-        // --------------------------------------------------------------------
-
-
-
-
-        _headerbar.search_focused_sig.connect (() => {
-            stack.visible_child_name = "searched";
-        });
-
-        _headerbar.searched_for_sig.connect ( (text) => {
-            if (text.length > 0) {
-                load_search_stations.begin(text, search_results);
-            }
-        });
-
-
-        _headerbar.star_clicked_sig.connect ( (starred) => {
-            player_ctrl.station.toggle_starred ();
-        });
-
-
-        refresh_favourites_sig.connect ( () => {
-            if ( app().is_offline ) return;
-            var _slist = new StationList.with_stations (_directory.get_starred ());
-            _slist.selection_changed.connect (handle_station_click);
-            _slist.favourites_changed.connect (handle_favourites_changed);
-            starred.content = _slist;
-        });
-
-
-    } // init
-
-
     /**
      * @brief Handles window resizing.
      * @param self The widget being resized.
@@ -513,12 +219,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 		int width = allocation.width;
 		int height = allocation.height;
 		debug (@"Window resized: w$(width) h$(height)");
-	} // 
+	} // on_window_resize
 
 
     // ----------------------------------------------------------------------
     //
-    // Handlers
+    // Actions
     //
     // ----------------------------------------------------------------------
 
@@ -528,7 +234,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      */
     private void on_action_quit () {
         close ();
-    }
+    } // on_action_quit
 
 
     /**
@@ -537,7 +243,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     private void on_action_about () {
         var dialog = new AboutDialog (this);
         dialog.present ();
-    }
+    } // on_action_about
 
 
     /**
@@ -546,7 +252,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public void on_toggle_playback() {
         info ("Stop Playback requested");
         player_ctrl.play_pause ();
-    }
+    } // on_toggle_playback
 
 
     /**
@@ -558,7 +264,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         settings.do_not_track = !settings.do_not_track;
         action.set_state (settings.do_not_track);
         debug (@"on_action_disable_tracking: $(settings.do_not_track)");
-    }
+    } // on_action_disable_tracking
 
 
     /**
@@ -570,7 +276,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         settings.auto_play = !settings.auto_play;
         action.set_state (settings.auto_play);
         debug (@"on_action_enable_autoplay: $(settings.auto_play)");
-    }
+    } // on_action_enable_autoplay
+
 
     // ----------------------------------------------------------------------
     //
@@ -599,8 +306,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     /**
      * @brief Handles changes to the favorites list.
      */
-    public void handle_favourites_changed () {
-        refresh_favourites_sig ();
+    public void handle_starred_stations_changed () {
+        _display.refresh_starred_stations_sig ();
     } // handle_favourites_changed
 
 
@@ -647,10 +354,14 @@ public class Tuner.Window : Gtk.ApplicationWindow {
                 });
                 break;
         }
-
-        return;
     } // handleplayer_state_changed
 
+
+    // ----------------------------------------------------------------------
+    //
+    // State management
+    //
+    // ----------------------------------------------------------------------
 
     /**
      * @brief Performs cleanup actions before the window is destroyed.
@@ -673,161 +384,22 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     } // before_destroy
 
 
-    /**
-     * @brief Loads search stations based on the provided text and updates the content box.
-     * Async since 1.5.5 so that UI is responsive during long searches
-     * @param searchText The text to search for stations.
-     * @param search_box The ContentBox to update with the search results.
-     */
-    private async void load_search_stations(string searchText, SourceListBox search_box) {
-
-        debug(@"Searching for: $(searchText)");        // FIXME warnings to debugs
-        var station_source = _directory.load_search_stations(searchText, 100);
-        debug(@"Search done");
-
-        try {
-            var stations = station_source.next_page();
-            debug(@"Search Next done");
-            if (stations == null || stations.size == 0) {
-                search_box.show_nothing_found();
-            } else {
-                debug(@"Search found $(stations.size) stations");
-                var _slist = new StationList.with_stations(stations);
-                _slist.selection_changed.connect(handle_station_click);
-                _slist.favourites_changed.connect(handle_favourites_changed);
-                search_box.content = _slist;
-            }
-        } catch (SourceError e) {
-            search_box.show_alert();
-        }
-    } // load_search_stations
-
-
     private void check_online_status()
     {
-        if ( app().is_offline )
+        if ( active && app().is_offline )
         /* Present Offline look */
         {
             this.accept_focus = false;
             active = false;
-            return;
         }
 
-        if ( !active )
+        if ( !active && app().is_online)
         // Online but not active
         {
-            if (!_started_online)
-            /*
-                Window not initialized, refresh
-            */
-            {
-
-                show_all();   
-                init();
-
-                _library_category.add (_saved_searches_category);   // Added as last item of library category
-                _saved_searches_category.icon = new ThemedIcon ("library-music");
-       
-                _started_online = true;
-            }
             this.accept_focus = true;
             active = true;
         }
+
+        _display.update_state (active);
     } // check_online_status
-
-
-    // -------------------------------------------------
-    // Helpers
-    // -------------------------------------------------
-
-
-    private SourceListBox create_category_predefined
-        ( Gtk.Stack stack
-        , Granite.Widgets.SourceList source_list
-        , Granite.Widgets.SourceList.ExpandableItem category
-        , string name
-        , string icon
-        , string title
-        , string subtitle
-        , Collection<Model.Station>? stations
-        )
-    {
-        var genre = SourceListBox.create 
-            ( stack
-            , source_list
-            , category
-            , name
-            , icon
-            , title
-            , subtitle 
-            );
-
-        if (stations != null)
-        {    
-            var slist1 = new StationList.with_stations (stations);
-            slist1.selection_changed.connect (handle_station_click);
-            slist1.favourites_changed.connect (handle_favourites_changed);
-            genre.content = slist1;
-        }
-
-        return genre;
-    
-    } // create_category_predefined
-
-
-    private void create_category_specific 
-        ( Gtk.Stack stack
-        , Granite.Widgets.SourceList source_list
-        , Granite.Widgets.SourceList.ExpandableItem category
-        , string name
-        , string icon
-        , string title
-        , string subtitle
-        , StationSet station_set
-        )
-    {
-        var genre = SourceListBox.create 
-            ( stack
-            , source_list
-            , category
-            , name
-            , icon
-            , title
-            , subtitle 
-            , station_set
-            );
-
-        genre.realize.connect (() => {
-            if ( app().is_offline ) return;
-            try {
-                var slist1 = new StationList.with_stations (genre.next_page ());
-                slist1.selection_changed.connect (handle_station_click);
-                slist1.favourites_changed.connect (handle_favourites_changed);
-                genre.content = slist1;
-            } catch (SourceError e) {
-                genre.show_alert ();
-            }
-        });        
-    } // create_category_specific
-
-
-    private void create_category_genre
-        ( Gtk.Stack stack
-        , Granite.Widgets.SourceList source_list
-        , Granite.Widgets.SourceList.ExpandableItem category
-        , DirectoryController directory
-        , string[] genres
-        )
-    {
-        foreach (var genre in genres ) {
-            create_category_specific(stack
-                , source_list
-                , category
-                , genre
-                , "playlist-symbolic"
-                , genre
-                , genre
-                , directory.load_by_tag (genre.down ()));
-        }
-    } // create_category_genre
 }

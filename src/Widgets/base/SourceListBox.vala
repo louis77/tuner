@@ -37,11 +37,14 @@ public class Tuner.SourceListBox : Gtk.Box {
      */
     public HeaderLabel header_label;
 
+    public Gtk.Button tooltip_button{ get; private set; }
+    public SourceList.Item item { get; private set; }
     public uint item_count { get; private set; }
+    public string parameter { get; set; }
 
     public void badge (string badge)
     {
-        _list_item.badge = badge;
+        item.badge = badge;
     }
 
     /**
@@ -56,14 +59,16 @@ public class Tuner.SourceListBox : Gtk.Box {
      */
     public signal void content_changed_sig (uint count);
 
+    public signal void item_selected_sig (SourceList.Item? item);
+
     // -----------------------------------
     
     private SourceList.ExpandableItem _category;
-    private SourceList.Item _list_item;
     private ThemedIcon _icon;
-    private Gtk.Box _header = base_header();
     private Gtk.Box _content = base_content();
     private ContentList _content_list;
+    private Gtk.Stack _stack;
+    private SourceList _source_list;
     private Gtk.Stack _substack = new Gtk.Stack ();
     private StationSet? _data;
 
@@ -97,12 +102,18 @@ public class Tuner.SourceListBox : Gtk.Box {
             spacing: 0
         );
 
-        _data = data;
+        
+        var _header = base_header();
 
+        _stack = stack;
+        _source_list = source_list;
+        _category = category;
+
+        _data = data;
         _icon = new ThemedIcon (icon);
-        _list_item = new Granite.Widgets.SourceList.Item (title);
-        _list_item.icon = _icon;
-        _list_item.set_data<string> ("stack_child", name);  
+        item = new Granite.Widgets.SourceList.Item (title);
+        item.icon = _icon;
+        item.set_data<string> ("stack_child", name);  
 
         var alert = new AlertView (_("Nothing here"), _("Something went wrong loading radio stations data from radio-browser.info. Please try again later."), "dialog-warning");
         //  /*
@@ -120,14 +131,14 @@ public class Tuner.SourceListBox : Gtk.Box {
         _header.pack_start (new HeaderLabel (subtitle, 20, 20 ), false, false);
 
         if (action_icon_name != null && action_tooltip_text != null) {
-            var shuffle_button = new Gtk.Button.from_icon_name (
+            tooltip_button = new Gtk.Button.from_icon_name (
                 action_icon_name,
                 Gtk.IconSize.LARGE_TOOLBAR
             );
-            shuffle_button.valign = Gtk.Align.CENTER;
-            shuffle_button.tooltip_text = action_tooltip_text;
-            shuffle_button.clicked.connect (() => { action_activated_sig (); });
-            _header.pack_start (shuffle_button, false, false);            
+            tooltip_button.valign = Gtk.Align.CENTER;
+            tooltip_button.tooltip_text = action_tooltip_text;
+            tooltip_button.clicked.connect (() => { action_activated_sig (); });
+            _header.pack_start (tooltip_button, false, false);            
         }
 
         pack_start (_header, false, false);
@@ -142,11 +153,10 @@ public class Tuner.SourceListBox : Gtk.Box {
         });
 
         map.connect (() => {
-            source_list.selected = _list_item;
+            source_list.selected = item;
         });
 
-        _category = category;
-        category.add (_list_item);  
+        category.add (item);  
     } // ContentBox
 
        
@@ -156,7 +166,7 @@ public class Tuner.SourceListBox : Gtk.Box {
      * This method is called automatically by the Vala compiler and sets up
      * the initial style context for the widget.
      */
-     construct {
+    construct {
         get_style_context ().add_class ("color-dark");
     }
 
@@ -181,6 +191,24 @@ public class Tuner.SourceListBox : Gtk.Box {
         _substack.set_visible_child_full ("nothing-found", Gtk.StackTransitionType.NONE);
     }
     
+    public void list(ContentList content)
+    {
+        //  try {
+        //      _data.next_page();
+        //  } catch (SourceError e)
+        //  {
+        //      warning(@"List error: $(e.message)");
+        //  }
+        this.content = content;
+        show_all();
+    }
+
+    public void delist()
+    {
+        _stack.remove(this);
+        _category.remove (item);
+        tooltip_button.sensitive = false;
+    }
 
     /**
      * @property content

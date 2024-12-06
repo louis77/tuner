@@ -116,6 +116,8 @@ public class Tuner.HttpClient : Object {
             return true;
         });
 
+
+        warning(@"GET - URI: $uri");
         try {
             var inputStream = getSession().send(msg);
             status_code = msg.status_code;

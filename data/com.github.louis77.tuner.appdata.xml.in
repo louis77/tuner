@@ -68,15 +68,25 @@
   </provides>
 
   <releases>
-    <release version="1.5.6" date="2024-12-08">
+    <release version="2.0.0" date="2025-01-11">
       <description>
-        <p>Maintanance release:</p>
+        <p>New Version!</p>
         <ul>
-          <li>Removed shadow from.svg images per Flathub quality directives</li>
-          <li>Updated description and screenshots per Flathub quality directives</li>
+          <li>Saved Searches - new feature</li>
+          <li>Explore Genres - new feature</li>
+          <li>Play Random Station - new feature</li>
+          <li>New Default Genres added</li>
+          <li>Offline behavior finessed</li>
+          <li>Updated look and feel</li>
+          <li>Faster responsiveness and image loading</li>
+          <li>Refactored out data provider linkage, added better support for Radio Browser</li>
+          <li>Refactored for separation of concerns, OO, maintainability</li>
+          <li>Updated icons, description and screenshots per Flathub quality directives</li>
         </ul>
       </description>
-    </release>     <release version="1.5.5" date="2024-11-08">
+    </release>     
+    <release version="1.5.5" date="2024-11-08">
+      <url type="details">https://github.com/louis77/tuner/releases/tag/v1.5.5</url>
       <description>
         <p>Maintanance release:</p>
         <ul>

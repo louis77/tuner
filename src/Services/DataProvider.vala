@@ -25,7 +25,7 @@ using Gee;
  * - Tag and other metadata retrieval
  * - API Server discovery and connection handling from DNS and from round-robin API server
  */
-namespace Tuner.Provider {
+namespace Tuner.DataProvider {
 
 
     /**
@@ -154,16 +154,6 @@ namespace Tuner.Provider {
         public uint stationcount { get; set; }
     }
 
-    /**
-     * @brief String comparison utility function
-     * 
-     * @param a First string to compare
-     * @param b Second string to compare
-     * @return true if strings are equal, false otherwise
-     */
-    //  public bool EqualCompareString(string a, string b) {
-    //      return a == b;
-    //  }
 
     /**
      * @class Client
@@ -200,6 +190,8 @@ namespace Tuner.Provider {
             NOT_AVAILABLE,
             UNKNOW_ERROR
         }
+
+        public abstract string name { get; protected set; }
 
         public abstract Status status { get; protected set; }
 

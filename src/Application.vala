@@ -124,10 +124,10 @@ namespace Tuner {
         public PlayerController player { get; construct; }  
 
         /** @brief Player controller */
-        public StarredController starred { get; construct; }
+        public DirectoryController directory { get; construct; }
         
-        /** @brief API Provider */
-        public Provider.API provider { get; construct; }
+        /** @brief API DataProvider */
+        public DataProvider.API provider { get; construct; }
         
         /** @brief Cache directory path */
         public string? cache_dir { get; construct; }
@@ -231,10 +231,11 @@ namespace Tuner {
             /* 
                 Init Tuner assets 
             */
-            provider = new Provider.RadioBrowser(null);
-            starred = new StarredController(_starred_file);
+            provider = new DataProvider.RadioBrowser(null);
             settings = new Settings ();
             player = new PlayerController ();
+            var stars = new StarStore(_starred_file);
+            directory = new DirectoryController(provider, stars);
 
             add_action_entries(ACTION_ENTRIES, this);
         } // construct
@@ -269,7 +270,7 @@ namespace Tuner {
         */
         protected override void activate() {
             if (window == null) {
-                window = new Window (this, player, settings, starred);
+                window = new Window (this, player, settings, directory);
                 add_window (window);
                 DBus.initialize ();
             } else {
