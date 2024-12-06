@@ -37,6 +37,10 @@ public class Tuner.Display : Gtk.Paned {
 
     public signal void refresh_starred_stations_sig ();
 
+    public signal void searched_for_sig(string text);
+
+    public signal void search_focused_sig();
+
 
     public Gtk.Stack stack { get; construct; }
     public SourceList source_list { get; construct; }
@@ -106,6 +110,35 @@ public class Tuner.Display : Gtk.Paned {
         }
     } // update_state
 
+        /**
+     * @brief Loads search stations based on the provided text and updates the content box.
+     *
+     * Async since 1.5.5 so that UI is responsive during long searches
+     * @param searchText The text to search for stations.
+     * @param search_box The ContentBox to update with the search results.
+     */
+     private async void load_station_search_results(string searchText, SourceListBox search_box) {
+
+        debug(@"Searching for: $(searchText)");       
+        var station_set = _directory.load_search_stations(searchText, 100);
+        debug(@"Search done");
+
+        try {
+            var stations = station_set.next_page();
+            debug(@"Search Next done");
+            if (stations == null || stations.size == 0) {
+                search_box.show_nothing_found();
+            } else {
+                debug(@"Search found $(stations.size) stations");
+                var _slist = new StationList.with_stations(stations);
+                hookup(_slist);
+                search_box.content = _slist;
+                search_box.parameter = searchText;
+            }
+        } catch (SourceError e) {
+            search_box.show_alert();
+        }
+    } // load_search_stations
 
 
     /* --------------------------------------------------------
@@ -324,8 +357,9 @@ public class Tuner.Display : Gtk.Paned {
         // Add saved search from star press
         search_results.action_activated_sig.connect (() => {
             if ( app().is_offline ) return;         
-            var  ss = add_saved_search( search_results.parameter, _directory.add_saved_search (search_results.parameter));
-            ss.list (search_results.content);
+            //var  ss = 
+            add_saved_search( search_results.parameter, _directory.add_saved_search (search_results.parameter),search_results.content);
+            //ss.list (search_results.content);
             search_results.tooltip_button.sensitive = false;
         });
 
@@ -384,6 +418,33 @@ public class Tuner.Display : Gtk.Paned {
             starred.content = _slist;
         });
 
+
+        search_focused_sig.connect (() => 
+        // Show searched stack when cursor hits search text area
+        {
+            stack.visible_child_name = "searched";
+        });
+
+
+        searched_for_sig.connect ( (text) => 
+        // process the searched text, stripping it, and sensitizing the save 
+        // search star depending on if the search is already saved
+        {
+            var search = text.strip ();
+            if ( search.length > 0 ) {
+                load_station_search_results.begin(search, search_results);
+                if ( stack.get_child_by_name (@">$search") == null )  // Search names are prefixed with >
+                {
+                    search_results.tooltip_button.sensitive = true;
+                    return;
+                }
+            }
+            else
+            {
+                search_results.show_nothing_found ();
+            }
+            search_results.tooltip_button.sensitive = false;
+        });
     } // initialize
 
 
@@ -430,7 +491,7 @@ public class Tuner.Display : Gtk.Paned {
     } // hookup
 
 
-    private SourceListBox add_saved_search(string search, StationSet station_set)
+    private SourceListBox add_saved_search(string search, StationSet station_set, ContentList? content = null)//StationSet station_set)
     {
         warning(@"add saved: $(search)");
 
@@ -446,6 +507,13 @@ public class Tuner.Display : Gtk.Paned {
             , "Remove this saved search"
             , "non-starred-symbolic"
             );
+
+            saved_search.show_all();
+            if ( content != null ) { 
+                saved_search.content = content; 
+            }
+
+            //saved_search.content.show();
 
         saved_search.action_activated_sig.connect (() => {
             if ( app().is_offline ) return;

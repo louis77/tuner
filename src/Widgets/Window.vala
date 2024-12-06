@@ -131,7 +131,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         change_action_state (ACTION_ENABLE_AUTOPLAY, settings.auto_play);
 
 
-
         /*
             Display
         */
@@ -141,7 +140,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         add (_display);
 
         /*
-            Headerbar
+            Headerbar hookups
         */
         _headerbar = new HeaderBar ();
 
@@ -149,6 +148,26 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             player_ctrl.volume = value;
         });
 
+        _headerbar.star_clicked_sig.connect ( (starred) => {
+            player_ctrl.station.toggle_starred ();
+        });
+
+        _headerbar.search_focused_sig.connect (() => 
+        // Show searched stack when cursor hits search text area
+        {
+            _display.search_focused_sig( );
+        });
+
+        _headerbar.searched_for_sig.connect ( (text) => 
+        // process the searched text, stripping it, and sensitizing the save 
+        // search star depending on if the search is already saved
+        {
+            _display.searched_for_sig( text);
+        });
+
+        /*
+            Player hookups
+         */
         player_ctrl.state_changed.connect (handleplayer_state_changed);
         player_ctrl.station_changed.connect (_headerbar.update_from_station);
         player_ctrl.title_changed.connect ((title) => {
@@ -156,9 +175,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
         player_ctrl.volume_changed.connect ((volume) => {
             _headerbar.volume_button.value = volume;
-        });
-        _headerbar.star_clicked_sig.connect ( (starred) => {
-            player_ctrl.station.toggle_starred ();
         });
 
         set_titlebar (_headerbar);
