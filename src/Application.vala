@@ -50,11 +50,11 @@ namespace Tuner {
     * @param interval the time to nap
     * @param priority priority of chacking nap is over
     */
-    public static async void nap (uint interval, int priority = GLib.Priority.LOW) {
+    public static async void nap (uint interval) {
         GLib.Timeout.add (interval, () => {
             nap.callback ();
-            return false;
-        }, priority);
+            return GLib.Source.REMOVE;
+        }, GLib.Priority.LOW);
         yield;
     } // nap
 

@@ -134,7 +134,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         /*
             Display
         */
-        _display = new Display(directory);   
+        //_directory.load ();
+        _display = new Display(directory);  
         _display.selection_changed_sig.connect (handle_station_click);
        // _display.favourites_changed_sig.connect (handle_starred_stations_changed);            
         add (_display);
@@ -144,9 +145,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         */
         _headerbar = new HeaderBar ();
 
-        _headerbar.volume_button.value_changed.connect ((value) => {
-            player_ctrl.volume = value;
-        });
+        //  _headerbar.volume_button.value_changed.connect ((value) => {
+        //      player_ctrl.volume = value;
+        //  });
 
         _headerbar.star_clicked_sig.connect ( (starred) => {
             player_ctrl.station.toggle_starred ();
@@ -168,11 +169,14 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         /*
             Player hookups
          */
-        player_ctrl.state_changed.connect (handleplayer_state_changed);
+        player_ctrl.state_changed.connect ((state) =>{_headerbar.ps(state);});
         player_ctrl.station_changed.connect (_headerbar.update_from_station);
-        player_ctrl.title_changed.connect ((title) => {
-            _headerbar.subtitle = title;
+      //  player_ctrl.title_changed.connect ((title) => {metadata_changed
+
+        player_ctrl.metadata_changed.connect ((metadata) => {
+            _headerbar.subtitle = metadata.title;
         });
+
         player_ctrl.volume_changed.connect ((volume) => {
             _headerbar.volume_button.value = volume;
         });
@@ -189,20 +193,21 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             return before_destroy ();
         });
 
-        // Auto-play
-        if (_settings.auto_play) {
-            debug (@"Auto-play enabled");
-            var source = _directory.load_station_uuid (_settings.last_played_station);
+        //  // Auto-play
+        //  if (_settings.auto_play) {
+        //      debug (@"Auto-play enabled");
+        //      _directory.load ();
+        //      var source = _directory.load_station_uuid (_settings.last_played_station);
 
-            try {
-                foreach (var station in source.next_page ()) { 
-                    handle_station_click(station);  
-                    break;
-                }
-            } catch (SourceError e) {
-                warning ("Error while trying to autoplay, aborting...");
-            }
-        }
+        //      try {
+        //          foreach (var station in source.next_page ()) { 
+        //              handle_station_click(station);  
+        //              break;
+        //          }
+        //      } catch (SourceError e) {
+        //          warning ("Error while trying to autoplay, aborting...");
+        //      }
+        //  }
 
         /*
             Online checks & behavior
@@ -331,46 +336,47 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @brief Handles player state changes.
      * @param state The new player state.
      */
-    public void handleplayer_state_changed (Gst.PlayerState state) {
-        switch (state) {
-            case Gst.PlayerState.BUFFERING:
-                debug ("player state changed to Buffering");
-                Gdk.threads_add_idle (() => {
-                    _headerbar.set_playstate (HeaderBar.PlayState.PAUSE_ACTIVE);
-                    return false;
-                });
-                break;;
-            case Gst.PlayerState.PAUSED:
-                debug ("player state changed to Paused");
-                Gdk.threads_add_idle (() => {
-                    if (player_ctrl.can_play()) {
-                        _headerbar.set_playstate (HeaderBar.PlayState.PLAY_ACTIVE);
-                    } else {
-                        _headerbar.set_playstate (HeaderBar.PlayState.PLAY_INACTIVE);
-                    }
-                    return false;
-                });
-                break;;
-            case Gst.PlayerState.PLAYING:
-                debug ("player state changed to Playing");
-                Gdk.threads_add_idle (() => {
-                    _headerbar.set_playstate (HeaderBar.PlayState.PAUSE_ACTIVE);
-                    return false;
-                });
-                break;;
-            case Gst.PlayerState.STOPPED:
-                debug ("player state changed to Stopped");
-                Gdk.threads_add_idle (() => {
-                    if (player_ctrl.can_play()) {
-                        _headerbar.set_playstate (HeaderBar.PlayState.PLAY_ACTIVE);
-                    } else {
-                        _headerbar.set_playstate (HeaderBar.PlayState.PLAY_INACTIVE);
-                    }
-                    return false;
-                });
-                break;
-        }
-    } // handleplayer_state_changed
+    //  public void handleplayer_state_changed (Gst.PlayerState state) {
+    //      _headerbar.ps(state);
+    //      //  switch (state) {
+    //      //      case Gst.PlayerState.BUFFERING:
+    //      //          debug ("player state changed to Buffering");
+    //      //          Gdk.threads_add_idle (() => {
+    //      //              _headerbar.set_playstate (HeaderBar.PlayState.PAUSE_ACTIVE);
+    //      //              return false;
+    //      //          });
+    //      //          break;;
+    //      //      case Gst.PlayerState.PAUSED:
+    //      //          debug ("player state changed to Paused");
+    //      //          Gdk.threads_add_idle (() => {
+    //      //              if (player_ctrl.can_play()) {
+    //      //                  _headerbar.set_playstate (HeaderBar.PlayState.PLAY_ACTIVE);
+    //      //              } else {
+    //      //                  _headerbar.set_playstate (HeaderBar.PlayState.PLAY_INACTIVE);
+    //      //              }
+    //      //              return false;
+    //      //          });
+    //      //          break;;
+    //      //      case Gst.PlayerState.PLAYING:
+    //      //          debug ("player state changed to Playing");
+    //      //          Gdk.threads_add_idle (() => {
+    //      //              _headerbar.set_playstate (HeaderBar.PlayState.PAUSE_ACTIVE);
+    //      //              return false;
+    //      //          });
+    //      //          break;;
+    //      //      case Gst.PlayerState.STOPPED:
+    //      //          debug ("player state changed to Stopped");
+    //      //          Gdk.threads_add_idle (() => {
+    //      //              if (player_ctrl.can_play()) {
+    //      //                  _headerbar.set_playstate (HeaderBar.PlayState.PLAY_ACTIVE);
+    //      //              } else {
+    //      //                  _headerbar.set_playstate (HeaderBar.PlayState.PLAY_INACTIVE);
+    //      //              }
+    //      //              return false;
+    //      //          });
+    //      //          break;
+    //      //  }
+    //  } // handleplayer_state_changed
 
 
     // ----------------------------------------------------------------------

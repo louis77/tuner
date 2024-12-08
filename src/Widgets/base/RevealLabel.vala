@@ -17,12 +17,12 @@ public class Tuner.RevealLabel : Gtk.Revealer {
     /**
      * @brief Default duration for fade-in animation in milliseconds.
      */
-    private const uint DEFAULT_FADEIN_DURATION = 1000u;
+    private const uint DEFAULT_FADE_DURATION = 1200u;
 
     /**
      * @brief Default duration for fade-out animation in milliseconds.
      */
-    private const uint DEFAULT_FADEOUT_DURATION = 500u;
+   // private const uint DEFAULT_FADEOUT_DURATION = 850u;
     
     /**
      * @property label_child
@@ -45,17 +45,17 @@ public class Tuner.RevealLabel : Gtk.Revealer {
             if (label_child.label == value) return;
 
             GLib.Idle.add (() => {
-                transition_duration = DEFAULT_FADEOUT_DURATION; // milliseconds
                 reveal_child = false;
                 return GLib.Source.REMOVE;
             });
 
-            GLib.Timeout.add (1000u, () => {
-                transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
-                transition_duration = DEFAULT_FADEIN_DURATION; // milliseconds
+            GLib.Timeout.add (DEFAULT_FADE_DURATION, () => {
                 label_child.label = value;
+                return GLib.Source.REMOVE;
+            });            
+            
+            GLib.Timeout.add (3*DEFAULT_FADE_DURATION, () => {
                 reveal_child = true;
-
                 return GLib.Source.REMOVE;
             });
         }
@@ -65,9 +65,11 @@ public class Tuner.RevealLabel : Gtk.Revealer {
      * @brief Initializes the RevealLabel with default properties.
      */
     construct {
-        label_child = new Gtk.Label ("test");
+        label_child = new Gtk.Label ("");
         label_child.ellipsize = Pango.EllipsizeMode.MIDDLE;
         child = label_child;
+        transition_type = Gtk.RevealerTransitionType.CROSSFADE;
+        transition_duration = DEFAULT_FADE_DURATION; 
     }
 
 

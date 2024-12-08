@@ -1,5 +1,15 @@
 
-
+/**
+ * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * @file PlayButton.vala
+ * @author technosf
+ * @date 2024-12-01
+ * @since 2.0.0
+ * @brief HTTP client implementation using Soup library
+ */
 
 //using Tuner.PlayerController;
 
@@ -28,9 +38,9 @@ public class Tuner.PlayButton : Gtk.Button {
     {
         Object();
 
-        set_reverse_symbol(app().player.current_state);
+       // set_reverse_symbol(app().player.current_state);
         app().player.state_changed.connect ((state) => {
-            set_reverse_symbol (state);
+          //  set_reverse_symbol (state);
         });
     }
 

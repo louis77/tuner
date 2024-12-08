@@ -485,7 +485,6 @@ public class Tuner.Display : Gtk.Paned {
 
         slist.favourites_changed_sig.connect(() =>
         {
-            //favourites_changed_sig();
             refresh_starred_stations_sig();
         });
     } // hookup
@@ -493,8 +492,6 @@ public class Tuner.Display : Gtk.Paned {
 
     private SourceListBox add_saved_search(string search, StationSet station_set, ContentList? content = null)//StationSet station_set)
     {
-        warning(@"add saved: $(search)");
-
         var saved_search = create_category_specific 
             ( stack
             , source_list

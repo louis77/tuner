@@ -106,6 +106,7 @@ namespace Tuner.DataProvider {
 
         private Uri? build_uri(string path, string query = "")
         {          
+            warning(@"http://$_current_server$path?$query");
             try {
                 if (query == "") 
                 { 
@@ -356,22 +357,20 @@ namespace Tuner.DataProvider {
                     Json.Object json_object = rootnode.get_object();
                     _available_tags = (int)json_object.get_int_member("tags");
 
-                    Json.Generator generator = new Json.Generator();
+                    //  Json.Generator generator = new Json.Generator();
 
-                    // Set the root node for the generator
-                    generator.set_root(rootnode);
+                    //  // Set the root node for the generator
+                    //  generator.set_root(rootnode);
 
-                    // Get the string representation of the root node
-                    size_t size;
-                    string root_as_string = generator.to_data(out size);
-                    warning(@"stats: $(root_as_string)");
-                    warning(@"stats: $(json_object.get_int_member("tags"))");
+                    //  // Get the string representation of the root node
+                    //  size_t size;
+                    //  string root_as_string = generator.to_data(out size);
 
                 } catch (Error e) {
                     warning(@"Could not get server stats: $(e.message)");
                 }
             }
-            warning(@"response: $(status_code) - Tags: $(_available_tags)");
+            debug(@"response: $(status_code) - Tags: $(_available_tags)");
         } // stats
 
             
@@ -383,10 +382,14 @@ namespace Tuner.DataProvider {
          * @throw DataError if unable to retrieve or parse station data
          */
         private Set<Model.Station> station_query(string path, string query) throws DataError {
+
+            
+            warning(@"station_query - $(path) $(query)");
+
             uint status_code;
             var uri = build_uri(path, query);  
-            
-            warning(@"Requesting url: $(uri.to_string())");          
+            warning(@"station_query - $(uri.to_string())");
+                
             var stream =  HttpClient.GET(uri,  out status_code);                
 
             if ( status_code == 200 && stream != null)

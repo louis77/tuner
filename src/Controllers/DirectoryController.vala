@@ -19,16 +19,6 @@ public errordomain SourceError {
     UNAVAILABLE
 }
 
-/**
- * @brief Delegate type for fetching radio stations.
- *
- * @param offset The starting index for fetching stations.
- * @param limit The maximum number of stations to fetch.
- * @return An ArrayList of RadioBrowser.Station objects.
- * @throws SourceError If the source is unavailable.
- */
-//public delegate ArrayList<Model.Station> Tuner.FetchType(uint offset, uint limit) throws SourceError;
-
 
 /**
  * @brief Controller class for managing radio station directories.
@@ -37,7 +27,6 @@ public class Tuner.DirectoryController : Object {
 
     private const uint DIRECTORY_LIMIT = 41;
 
-    //private RadioBrowser.Client? _provider { get; set; }
     private DataProvider.API _provider;
     private StarStore _star_store;
     private bool _loaded = false;
@@ -53,7 +42,6 @@ public class Tuner.DirectoryController : Object {
      */
     public DirectoryController (DataProvider.API provider, StarStore star_store) {  
         Object();
-
         _provider = provider;
         _star_store = star_store;
     } // DirectoryController
@@ -65,9 +53,6 @@ public class Tuner.DirectoryController : Object {
      */
     public void load()
     {
-
-        warning(@"DC init: $(_provider.name)");
-
         if (_loaded || app().is_offline ) return;
 
         _provider.initialize();
@@ -87,7 +72,7 @@ public class Tuner.DirectoryController : Object {
         try {
             return _provider.by_uuids(uuids);
         } catch (Tuner.DataProvider.DataError e) {
-            critical (@"RadioBrowser unavailable");
+            critical (@"$(_provider.name) unavailable");
         }
         return new HashSet<Model.Station>();
     } // get_stations_by_uuid
@@ -100,6 +85,7 @@ public class Tuner.DirectoryController : Object {
      * @return A StationSet object for the requested station.
      */
     public StationSet load_station_uuid (string uuid) {
+        warning(@"LBU UUID: $uuid ");
         var params = DataProvider.SearchParams() {
             uuids = new HashSet<string>()
         };

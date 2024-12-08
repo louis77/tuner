@@ -261,7 +261,7 @@ public class Tuner.StarStore : Object {
             var s = new Station.basic(elem); // Creates a basic station without adding it to the main station directory
             _starred_station_map.set (s.stationuuid, s);
 
-            warning(@"Starred station: $(s.stationuuid)");
+            debug(@"Starred station: $(s.stationuuid)");
             if (!s.starred)  s.toggle_starred ();
 
             // Connect the star button

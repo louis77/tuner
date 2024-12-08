@@ -138,10 +138,14 @@ namespace Tuner.DBus {
                 }
             });
 
-			app().player.title_changed.connect ((title) => {
-					_current_title = title;
-					trigger_metadata_update ();
-			});
+			app().player.metadata_changed.connect ((metadata) => {
+                _current_title = metadata.title;
+                trigger_metadata_update ();
+        });
+        //  app().player.title_changed.connect ((title) => {
+        //          _current_title = title;
+        //          trigger_metadata_update ();
+        //  });
 
 			app().player.station_changed.connect ((station) => {
 					_current_title = station.name;

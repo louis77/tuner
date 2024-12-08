@@ -1,9 +1,9 @@
-/*
- * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
- */
-
 /**
+ * SPDX-FileCopyrightText: Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
+ * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
  * @file HttpClient.vala
  * @author technosf
  * @date 2024-10-01
@@ -103,6 +103,8 @@ public class Tuner.HttpClient : Object {
      */
     public static InputStream? GET(Uri uri, out uint status_code) 
     {
+
+        warning(@"Get: $(uri.to_string()) ");
         status_code = 0;
         
         if ( app().is_offline) return null;
@@ -116,16 +118,12 @@ public class Tuner.HttpClient : Object {
             return true;
         });
 
-
-        warning(@"GET - URI: $uri");
         try {
             var inputStream = getSession().send(msg);
             status_code = msg.status_code;
             return inputStream;
         } catch (Error e) {
-            warning("GET - Error accessing URL: %s (%s)",
-            uri.to_string(),
-                e.message);
+            warning(@"GET - Error accessing URL: $(uri.to_string()) ($(e.message))");
         }
 
         return null;
