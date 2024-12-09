@@ -26,7 +26,7 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
     private uint _label_cycle_id = 0;
     private int punt;
     private uint16 display_seconds = 1000;   // Mix up the cycle phase start point
-    private uint16[] cycle_phases = {11,37,43,47};
+    private uint16[] cycle_phases = {11,37,43,47}; // Ttitle, plus three subtitles
 
     private Gee.Map<uint, string> sublabels = new Gee.HashMap<uint, string>();
 

@@ -10,23 +10,6 @@
  * @namespace Tuner
  * @brief Main namespace for the Tuner application
  */
-
-/**
- * @class Application
- * @brief Main application class implementing core functionality
- * @ingroup Tuner
- * 
- * The Application class serves as the primary entry point and controller for the Tuner
- * application. It manages:
- * - Window creation and presentation
- * - Settings management
- * - Player control
- * - Directory structure
- * - DBus initialization
- * 
- * @note This class follows the singleton pattern, accessible via Application.instance
- */
-
 namespace Tuner {
 
 
@@ -80,10 +63,21 @@ namespace Tuner {
     } // fade
 
 
-    /*
-        Application
+    /**
+    * @class Application
+    * @brief Main application class implementing core functionality
+    * @ingroup Tuner
+    * 
+    * The Application class serves as the primary entry point and controller for the Tuner
+    * application. It manages:
+    * - Window creation and presentation
+    * - Settings management
+    * - Player control
+    * - Directory structure
+    * - DBus initialization
+    * 
+    * @note This class follows the singleton pattern, accessible via Application.instance
     */
-
     public class Application : Gtk.Application {
 
 
@@ -157,7 +151,7 @@ namespace Tuner {
 
 
         /** @brief Main application window */
-        public Window window;
+        public Window window { get; private set; }
 
 
         /** @brief Action entries for the application */
@@ -248,15 +242,9 @@ namespace Tuner {
         */
         public static Application instance {
             get {
-                //Tuner._instance = new Application ();
-                //if (_instance == null) {
                     if (Tuner._instance == null) {
-                    //  _instance = new Application ();
-                    //_instance = new Application ();
                     Tuner._instance = new Application ();
-                   // return Tuner._instance;
                 }
-                //return _instance;
                 return Tuner._instance;
             }
         } // instance
@@ -273,6 +261,7 @@ namespace Tuner {
                 window = new Window (this, player, settings, directory);
                 add_window (window);
                 DBus.initialize ();
+                settings.configure();
             } else {
                 window.present ();
             }

@@ -45,15 +45,15 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
      * @enum PlayState
      * @brief Enumeration of possible play states for the play button.
      */
-    public enum PlayState {
-        PAUSE_ACTIVE,
-        PAUSE_INACTIVE,
-        PLAY_ACTIVE,
-        PLAY_INACTIVE
-    }
+    //  public enum PlayState {
+    //      PAUSE_ACTIVE,
+    //      PAUSE_INACTIVE,
+    //      PLAY_ACTIVE,
+    //      PLAY_INACTIVE
+    //  }
 
     // Public properties
-    public Gtk.VolumeButton volume_button = new Gtk.VolumeButton();
+    private Gtk.VolumeButton _volume_button = new Gtk.VolumeButton();
 
     // Signals
     public signal void star_clicked_sig (bool starred);
@@ -75,8 +75,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         "non-starred",
         Gtk.IconSize.LARGE_TOOLBAR
     );
-    private Gtk.Button _play_button = new Gtk.Button ();
-    private PlayButton _play_button1 = new PlayButton ();
+    private PlayButton _play_button = new PlayButton ();
     private Gtk.MenuButton _prefs_button = new Gtk.MenuButton ();
     private Gtk.SearchEntry _searchentry = new Gtk.SearchEntry ();
 
@@ -125,7 +124,14 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         _tuner.set_margin_end(5);   // 20px padding on the right
 
         // Volume
-        volume_button.set_valign(Gtk.Align.CENTER);
+        _volume_button.set_valign(Gtk.Align.CENTER);
+        _volume_button.value_changed.connect ((value) => {
+            app().player.volume = value;
+        });
+        app().player.volume_changed.connect((value) => {
+            _volume_button.value =  value;
+        });
+
 
         // Star button
         _star_button.valign = Gtk.Align.CENTER;
@@ -140,9 +146,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         // Create and configure play button
         //
         _play_button.valign = Gtk.Align.CENTER;
-        _play_button.action_name = Window.ACTION_PREFIX + Window.ACTION_PAUSE;
-        _play_button1.valign = Gtk.Align.CENTER;
-       // _play_button1.action_name = Window.ACTION_PREFIX + Window.ACTION_PAUSE;
+        _play_button.action_name = Window.ACTION_PREFIX + Window.ACTION_PAUSE; // Toggles player state
 
        
         /*
@@ -177,10 +181,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
        // pack LHS
         pack_start (_tuner);
-        pack_start (volume_button);
+        pack_start (_volume_button);
         pack_start (_star_button);
         pack_start (_play_button);
-        pack_start (_play_button1);
 
         custom_title = _display; // Station display
 
@@ -189,8 +192,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         pack_end (_searchentry);
 
         show_close_button = true;
-
-        set_playstate (PlayState.PAUSE_INACTIVE);
 
         /*
             Tuner icon and online/offline behavior    
@@ -250,98 +251,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     } // update_from_station
     
 
-    public void ps(Gst.PlayerState state)
-    {
-        switch (state) {
-            case Gst.PlayerState.BUFFERING:
-                debug ("player state changed to Buffering");
-                Gdk.threads_add_idle (() => {
-                    set_playstate (HeaderBar.PlayState.PAUSE_ACTIVE);
-                    return false;
-                });
-                break;;
-            case Gst.PlayerState.PAUSED:
-                debug ("player state changed to Paused");
-                Gdk.threads_add_idle (() => {
-                    if ( _station != null ) {
-                        set_playstate (HeaderBar.PlayState.PLAY_ACTIVE);
-                    } else {
-                        set_playstate (HeaderBar.PlayState.PLAY_INACTIVE);
-                    }
-                    return false;
-                });
-                break;;
-            case Gst.PlayerState.PLAYING:
-                debug ("player state changed to Playing");
-                Gdk.threads_add_idle (() => {
-                    set_playstate (HeaderBar.PlayState.PAUSE_ACTIVE);
-                    return false;
-                });
-                break;;
-            case Gst.PlayerState.STOPPED:
-                debug ("player state changed to Stopped");
-                Gdk.threads_add_idle (() => {
-                    if (_station != null) {
-                        set_playstate (HeaderBar.PlayState.PLAY_ACTIVE);
-                    } else {
-                        set_playstate (HeaderBar.PlayState.PLAY_INACTIVE);
-                    }
-                    return false;
-                });
-                break;
-        }
-    }
 
     /**
-     * @brief Set the play state of the header bar.
-     *
-     * This method updates the play button icon and sensitivity based on the new play state.
-     *
-     * @param state The new play state to set.
-     */
-    public void set_playstate (PlayState state) {
-        switch (state) {
-            case PlayState.PLAY_ACTIVE:
-                _play_button.image = new Gtk.Image.from_icon_name (
-                    "media-playback-start-symbolic",
-                    Gtk.IconSize.LARGE_TOOLBAR
-                );
-                _play_button.sensitive = true;
-                _star_button.sensitive = true;
-                break;
-
-            case PlayState.PLAY_INACTIVE:
-                _play_button.image = new Gtk.Image.from_icon_name (
-                    "media-playback-pause-symbolic",
-                    Gtk.IconSize.LARGE_TOOLBAR
-                );
-                _play_button.sensitive = false;
-                _star_button.sensitive = false;
-                break;
-
-            case PlayState.PAUSE_ACTIVE:
-                _play_button.image = new Gtk.Image.from_icon_name (
-                    "media-playback-stop-symbolic",
-                    Gtk.IconSize.LARGE_TOOLBAR
-                );
-                _play_button.sensitive = true;
-                _star_button.sensitive = true;
-                break;
-
-            case PlayState.PAUSE_INACTIVE:
-                _play_button.image = new Gtk.Image.from_icon_name (
-                    "media-playback-stop-symbolic",
-                    Gtk.IconSize.LARGE_TOOLBAR
-                );
-                _play_button.sensitive = false;
-                _star_button.sensitive = false;
-                break;
-        }
-    } // set_playstate
-
-
-    /**
-     * @brief Override of the realize method from Gtk.Widget
+     * @brief Override of the realize method from Gtk.Widget for an initial animation
      * 
      * Called when the widget is being realized (created and prepared for display).
      * This happens before the widget is actually shown on screen.
@@ -364,8 +276,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         Private 
     */
 
-
     /**
+     * @brief Custom Display for the HeadeBar based on Revealer
+     * 
+     * This is the Display for the Player.
      */
     private class Display : Gtk.Revealer
     {
@@ -396,6 +310,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             reveal_child = false; // Make it invisible initially
 
             app().player.metadata_changed.connect(handle_metadata_changed);
+    
         }
 
         /**
@@ -426,7 +341,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         public void handle_metadata_changed ( PlayerController.Metadata metadata )
         {
             title_label.label = metadata.title;
-            // title_label.add_sublabel(int position, string sublabel) = metadata.title;
             title_label.add_sublabel(1, @"$(metadata.genre)  $(metadata.homepage)");
             title_label.add_sublabel(2,@"$(metadata.audio_codec)  $(metadata.bitrate/1000)K  $(metadata.channel_mode)");
             title_label.add_sublabel( 3, @"$(metadata.organization)  $(metadata.location)");
@@ -445,8 +359,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             _tuner_on.opacity = 0.0;
             _star_button.sensitive = false;
             _play_button.sensitive = false;
-            _play_button1.sensitive = false;
-            volume_button.sensitive = false;
+            _volume_button.sensitive = false;
         }
         else
         {
@@ -454,8 +367,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             _tuner_on.opacity = 1.0;
             _star_button.sensitive = true;
             _play_button.sensitive = true;
-            _play_button1.sensitive = true;
-            volume_button.sensitive = true;
+            _volume_button.sensitive = true;
         }
     } // check_online_status
 

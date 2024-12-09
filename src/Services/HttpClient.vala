@@ -104,7 +104,7 @@ public class Tuner.HttpClient : Object {
     public static InputStream? GET(Uri uri, out uint status_code) 
     {
 
-        warning(@"Get: $(uri.to_string()) ");
+        debug(@"Get: $(uri.to_string()) ");
         status_code = 0;
         
         if ( app().is_offline) return null;

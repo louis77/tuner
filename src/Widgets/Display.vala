@@ -101,8 +101,7 @@ public class Tuner.Display : Gtk.Paned {
             if (first_activation)
             // One time set up - do post initialization
             {
-                _library_category.add (_saved_searches_category);   // Added as last item of library category
-                _saved_searches_category.icon = new ThemedIcon ("library-music");
+                //  TBD
                 first_activation = false;
             }
             active = true;
@@ -110,7 +109,8 @@ public class Tuner.Display : Gtk.Paned {
         }
     } // update_state
 
-        /**
+
+    /**
      * @brief Loads search stations based on the provided text and updates the content box.
      *
      * Async since 1.5.5 so that UI is responsive during long searches
@@ -201,7 +201,6 @@ public class Tuner.Display : Gtk.Paned {
         source_list.root.add (_talk_category);
 
         source_list.ellipsize_mode = Pango.EllipsizeMode.NONE;
-        source_list.selected = source_list.get_first_child (_selections_category);
         source_list.item_selected.connect  ((item) => {
             var selected_item = item.get_data<string> ("stack_child");
             stack.visible_child_name = selected_item;
@@ -298,7 +297,7 @@ public class Tuner.Display : Gtk.Paned {
 
         // ---------------------------------------------------------------------------
 
-        rando(_selections_category);
+        jukebox(_selections_category);
 
         // ---------------------------------------------------------------------------
         // Country-specific stations list
@@ -356,15 +355,27 @@ public class Tuner.Display : Gtk.Paned {
 
         // Add saved search from star press
         search_results.action_activated_sig.connect (() => {
-            if ( app().is_offline ) return;         
-            //var  ss = 
-            add_saved_search( search_results.parameter, _directory.add_saved_search (search_results.parameter),search_results.content);
-            //ss.list (search_results.content);
-            search_results.tooltip_button.sensitive = false;
+            if ( app().is_offline ) return;                 
+            search_results.tooltip_button.sensitive = false;    
+            var new_saved_search  = add_saved_search( search_results.parameter, _directory.add_saved_search (search_results.parameter));
+            //new_saved_search.list(search_results.content);
+            try {
+                var slist = new StationList.with_stations (new_saved_search.next_page ());
+                hookup(slist);
+                new_saved_search.content = slist;
+            } catch (SourceError e) {
+                new_saved_search.show_alert ();
+            }
+            search_results.selection_received.connect(() =>
+            {
+                warning(@"Selected");
+            });
+            source_list.selected = source_list.get_last_child (_saved_searches_category);
         });
 
         // ---------------------------------------------------------------------------
         // Saved Searches
+
 
         // Add saved searches to category from Directory
         var saved_searches = _directory.load_saved_searches();
@@ -372,6 +383,8 @@ public class Tuner.Display : Gtk.Paned {
         {
            add_saved_search( search_text, saved_searches.get (search_text));
         }
+        _saved_searches_category.icon = new ThemedIcon ("library-music");
+        _library_category.add (_saved_searches_category);   // Added as last item of library category
 
         // ---------------------------------------------------------------------------
 
@@ -445,6 +458,9 @@ public class Tuner.Display : Gtk.Paned {
             }
             search_results.tooltip_button.sensitive = false;
         });
+
+        source_list.selected = source_list.get_first_child (_selections_category);
+
     } // initialize
 
 
@@ -457,9 +473,11 @@ public class Tuner.Display : Gtk.Paned {
        -------------------------------------------------
     */
 
-    private void rando(SourceList.ExpandableItem category)
+    /*
+     */
+    private void jukebox(SourceList.ExpandableItem category)
     {
-        SourceList.Item item = new SourceList.Item("Random");
+        SourceList.Item item = new SourceList.Item("Jukebox");
         item.icon = new ThemedIcon("audio-speakers");
         var station = _directory.load_random_stations(1);
         item.activated.connect(() =>
@@ -490,7 +508,7 @@ public class Tuner.Display : Gtk.Paned {
     } // hookup
 
 
-    private SourceListBox add_saved_search(string search, StationSet station_set, ContentList? content = null)//StationSet station_set)
+    private SourceListBox add_saved_search(string search, StationSet station_set, StationList? content = null)//StationSet station_set)
     {
         var saved_search = create_category_specific 
             ( stack
@@ -505,12 +523,12 @@ public class Tuner.Display : Gtk.Paned {
             , "non-starred-symbolic"
             );
 
-            saved_search.show_all();
-            if ( content != null ) { 
-                saved_search.content = content; 
-            }
+        //saved_search.show_all();
+        if ( content != null ) { 
+            saved_search.content = content; 
+        }
 
-            //saved_search.content.show();
+        //saved_search.content.show();
 
         saved_search.action_activated_sig.connect (() => {
             if ( app().is_offline ) return;

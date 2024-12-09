@@ -157,7 +157,7 @@ public class Tuner.SourceListBox : Gtk.Box {
         });
 
         category.add (item);  
-    } // ContentBox
+    } // SourceListBox
 
        
     /**
@@ -176,6 +176,7 @@ public class Tuner.SourceListBox : Gtk.Box {
         return _data.next_page();
     }
 
+
     /**
      * @brief Displays the alert view in the content area.
      */
@@ -191,6 +192,7 @@ public class Tuner.SourceListBox : Gtk.Box {
         _substack.set_visible_child_full ("nothing-found", Gtk.StackTransitionType.NONE);
     }
     
+
     public void list(ContentList content)
     {
         //  try {
@@ -202,6 +204,7 @@ public class Tuner.SourceListBox : Gtk.Box {
         this.content = content;
         show_all();
     }
+
 
     public void delist()
     {
@@ -224,7 +227,7 @@ public class Tuner.SourceListBox : Gtk.Box {
 
             _substack.set_visible_child_full ("content", Gtk.StackTransitionType.NONE);
             _content_list = value;
-            _content.add (_content_list);
+            _content.add (_content_list);  // FIXME Needs to be Slist
             _content.show_all ();
             item_count = _content_list.item_count;
         }
@@ -232,7 +235,7 @@ public class Tuner.SourceListBox : Gtk.Box {
         get {
             return _content_list; 
         }
-    } // SourceListBox
+    } // content
 
     // -----------------------------------------------
 
@@ -294,4 +297,4 @@ public class Tuner.SourceListBox : Gtk.Box {
 
             return slb;
         } // create
-}
+} // SourceListBox

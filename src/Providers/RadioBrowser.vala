@@ -106,7 +106,7 @@ namespace Tuner.DataProvider {
 
         private Uri? build_uri(string path, string query = "")
         {          
-            warning(@"http://$_current_server$path?$query");
+            debug(@"http://$_current_server$path?$query");
             try {
                 if (query == "") 
                 { 
@@ -384,11 +384,11 @@ namespace Tuner.DataProvider {
         private Set<Model.Station> station_query(string path, string query) throws DataError {
 
             
-            warning(@"station_query - $(path) $(query)");
+            debug(@"station_query - $(path) $(query)");
 
             uint status_code;
             var uri = build_uri(path, query);  
-            warning(@"station_query - $(uri.to_string())");
+            debug(@"station_query - $(uri.to_string())");
                 
             var stream =  HttpClient.GET(uri,  out status_code);                
 
@@ -507,7 +507,7 @@ namespace Tuner.DataProvider {
                     
                     var stream = HttpClient.GET(build_uri(@"$(RBI_ALL_API)/$(RBI_SERVERS)"), out status_code);
 
-                    warning(@"response from $(RBI_ALL_API)/$(RBI_SERVERS): $(status_code)");
+                    debug(@"response from $(RBI_ALL_API)/$(RBI_SERVERS): $(status_code)");
 
                     if (status_code == 200) {
                         Json.Node root_node;

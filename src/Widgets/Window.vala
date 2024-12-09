@@ -50,6 +50,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public DirectoryController directory { get; construct; }
 
     public bool active { get; private set; } // Window is active
+    public int width { get; private set; }
+    public int height { get; private set; }
 
 
     /* Private */   
@@ -136,18 +138,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         */
         //_directory.load ();
         _display = new Display(directory);  
-        _display.selection_changed_sig.connect (handle_station_click);
-       // _display.favourites_changed_sig.connect (handle_starred_stations_changed);            
+        _display.selection_changed_sig.connect (handle_station_click);        
         add (_display);
 
         /*
             Headerbar hookups
         */
         _headerbar = new HeaderBar ();
-
-        //  _headerbar.volume_button.value_changed.connect ((value) => {
-        //      player_ctrl.volume = value;
-        //  });
 
         _headerbar.star_clicked_sig.connect ( (starred) => {
             player_ctrl.station.toggle_starred ();
@@ -169,17 +166,15 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         /*
             Player hookups
          */
-        player_ctrl.state_changed.connect ((state) =>{_headerbar.ps(state);});
         player_ctrl.station_changed.connect (_headerbar.update_from_station);
-      //  player_ctrl.title_changed.connect ((title) => {metadata_changed
 
-        player_ctrl.metadata_changed.connect ((metadata) => {
-            _headerbar.subtitle = metadata.title;
-        });
+        //  player_ctrl.metadata_changed.connect ((metadata) => {
+        //      _headerbar.subtitle = metadata.title;
+        //  });
 
-        player_ctrl.volume_changed.connect ((volume) => {
-            _headerbar.volume_button.value = volume;
-        });
+        //  player_ctrl.volume_changed.connect ((volume) => {
+        //      _headerbar.volume_button.value = volume;
+        //  });
 
         set_titlebar (_headerbar);
 
@@ -187,7 +182,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         /*
             Setup
         */
-		size_allocate.connect(on_window_resize);
+		//size_allocate.connect(on_window_resize);
 
         delete_event.connect (e => {
             return before_destroy ();
@@ -236,11 +231,11 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @param self The widget being resized.
      * @param allocation The new allocation for the widget.
      */
-    private void on_window_resize (Gtk.Widget self, Gtk.Allocation allocation) {
-		int width = allocation.width;
-		int height = allocation.height;
-		debug (@"Window resized: w$(width) h$(height)");
-	} // on_window_resize
+    //  private void on_window_resize (Gtk.Widget self, Gtk.Allocation allocation) {
+	//  	width = allocation.width;
+	//  	height = allocation.height;
+    //     // warning(@"Resize: $(width)x$height");
+	//  } // on_window_resize
 
 
     // ----------------------------------------------------------------------
@@ -332,51 +327,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     } // handle_favourites_changed
 
 
-    /**
-     * @brief Handles player state changes.
-     * @param state The new player state.
-     */
-    //  public void handleplayer_state_changed (Gst.PlayerState state) {
-    //      _headerbar.ps(state);
-    //      //  switch (state) {
-    //      //      case Gst.PlayerState.BUFFERING:
-    //      //          debug ("player state changed to Buffering");
-    //      //          Gdk.threads_add_idle (() => {
-    //      //              _headerbar.set_playstate (HeaderBar.PlayState.PAUSE_ACTIVE);
-    //      //              return false;
-    //      //          });
-    //      //          break;;
-    //      //      case Gst.PlayerState.PAUSED:
-    //      //          debug ("player state changed to Paused");
-    //      //          Gdk.threads_add_idle (() => {
-    //      //              if (player_ctrl.can_play()) {
-    //      //                  _headerbar.set_playstate (HeaderBar.PlayState.PLAY_ACTIVE);
-    //      //              } else {
-    //      //                  _headerbar.set_playstate (HeaderBar.PlayState.PLAY_INACTIVE);
-    //      //              }
-    //      //              return false;
-    //      //          });
-    //      //          break;;
-    //      //      case Gst.PlayerState.PLAYING:
-    //      //          debug ("player state changed to Playing");
-    //      //          Gdk.threads_add_idle (() => {
-    //      //              _headerbar.set_playstate (HeaderBar.PlayState.PAUSE_ACTIVE);
-    //      //              return false;
-    //      //          });
-    //      //          break;;
-    //      //      case Gst.PlayerState.STOPPED:
-    //      //          debug ("player state changed to Stopped");
-    //      //          Gdk.threads_add_idle (() => {
-    //      //              if (player_ctrl.can_play()) {
-    //      //                  _headerbar.set_playstate (HeaderBar.PlayState.PLAY_ACTIVE);
-    //      //              } else {
-    //      //                  _headerbar.set_playstate (HeaderBar.PlayState.PLAY_INACTIVE);
-    //      //              }
-    //      //              return false;
-    //      //          });
-    //      //          break;
-    //      //  }
-    //  } // handleplayer_state_changed
 
 
     // ----------------------------------------------------------------------
@@ -391,6 +341,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      */
     public bool before_destroy () {
 
+        get_size (out _width, out _height); // Echo ending dimensions so Settings can pick them up
         _settings.save ();
 
         if (player_ctrl.current_state == Gst.PlayerState.PLAYING) {

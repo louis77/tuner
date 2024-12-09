@@ -17,12 +17,12 @@
  */
 public class Tuner.PlayerController : Object 
 {
-    public enum Is {
-        PLAYING,
-        BUFFERING,
-        STOPPED,
-        PAUSED
-    }
+    //  public enum Is {
+    //      PLAYING,
+    //      BUFFERING,
+    //      STOPPED,
+    //      PAUSED
+    //  }
 
     public struct Metadata
     {
@@ -61,6 +61,90 @@ public class Tuner.PlayerController : Object
             m.application_name = "";
             m.encoder = "";
             return m;
+        }
+
+        public void update(Gst.TagList list, string tag)
+        {
+            switch(tag)
+            {
+                case "title" :                   
+                    list.get_string(tag, out title);
+                    break;
+
+                case "bitrate" :
+                    list.get_uint ( tag, out  bitrate);
+                    break;
+
+                case "nominal-bitrate" :
+                    list.get_uint ( tag, out  nominal_bitrate);
+                    break;
+
+                case "minimum-bitrate" :
+                    list.get_uint ( tag, out  minimum_bitrate);
+                    break;
+
+                case "maximum-bitrate" :
+                    list.get_uint ( tag, out  maximum_bitrate);
+                    break;
+        
+                case "audio-codec" :   
+                    list.get_string(tag, out audio_codec);
+                    break;
+
+                case "channel-mode" :   
+                    list.get_string(tag, out channel_mode);
+                    break;
+
+                case "genre" :   
+                    list.get_string(tag, out genre);
+                    break;
+
+                case "homepage" :   
+                    list.get_string(tag, out homepage);
+                    break;
+
+                case "organization" :   
+                    list.get_string(tag, out organization);
+                    break;
+
+                case "location" :   
+                    list.get_string(tag, out location);
+                    break;
+    
+                case "private-data" :   
+                    list.get_string(tag, out private_data);
+                    break;
+    
+                case "container-format" :   
+                    list.get_string(tag, out container_format);
+                    break;
+
+                case "application-name" :   
+                    list.get_string(tag, out application_name);
+                    break;
+
+                case "encoder" :   
+                    list.get_string(tag, out encoder);
+                        break;
+    
+                case "datetime" :   
+                    list.get_date_time (tag, out datetime);    
+                    break;                
+        
+                case "has-crc" :   
+                    list.get_boolean (tag, out has_crc);
+                    break;
+
+                case "track-number" :
+                    uint numbers = 0;
+                    list.get_uint ( tag, out numbers); 
+                    track_number = (numbers > 0 ? numbers.to_string () : "");
+                    break;
+
+                default :
+                    warning(@">>Metadata Unknown: >$tag<<<");
+                    break;
+            }
         }
 
         /**
@@ -106,7 +190,7 @@ public class Tuner.PlayerController : Object
 
         player.state_changed.connect ((state) => 
         {
-            warning (@"player.state_changed: $state");
+            debug (@"player.state_changed: $state");
             // Don't forward flickering between playing and buffering
             if (!(current_state == Gst.PlayerState.PLAYING && state == Gst.PlayerState.BUFFERING) && !(state == current_state)) 
             {
@@ -123,6 +207,7 @@ public class Tuner.PlayerController : Object
         player.volume_changed.connect ((obj) => 
         {
             volume_changed(obj.volume);
+            app().settings.volume =  obj.volume;
         });
     }
 
@@ -212,110 +297,13 @@ public class Tuner.PlayerController : Object
 
             if ( tags == null ) break;
 
-            uint numbers = 0;
             var metadata_digest = _metadata.digest ();
 
             tags.foreach ((list, tag) => 
             {
-                switch(tag)
-                {
-                    case "title" :                   
-                        list.get_string(tag, out _metadata.title);
-                        break;
-
-                    case "bitrate" :
-                        list.get_uint ( tag, out  _metadata.bitrate);
-                        break;
-
-                    case "nominal-bitrate" :
-                        list.get_uint ( tag, out  _metadata.nominal_bitrate);
-                        break;
-
-                    case "minimum-bitrate" :
-                        list.get_uint ( tag, out  _metadata.minimum_bitrate);
-                        break;
-
-                    case "maximum-bitrate" :
-                        list.get_uint ( tag, out  _metadata.maximum_bitrate);
-                        break;
-            
-                    case "audio-codec" :   
-                        list.get_string(tag, out _metadata.audio_codec);
-                        break;
-
-                    case "channel-mode" :   
-                        list.get_string(tag, out _metadata.channel_mode);
-                        break;
-
-                    case "genre" :   
-                        list.get_string(tag, out _metadata.genre);
-                        break;
-
-                    case "homepage" :   
-                        list.get_string(tag, out _metadata.homepage);
-                        break;
-
-                    case "organization" :   
-                        list.get_string(tag, out _metadata.organization);
-                        break;
-
-                    case "location" :   
-                        list.get_string(tag, out _metadata.location);
-                        break;
-        
-                    case "private-data" :   
-                        list.get_string(tag, out _metadata.private_data);
-                        break;
-        
-                    case "container-format" :   
-                        list.get_string(tag, out _metadata.container_format);
-                        break;
-    
-                    case "application-name" :   
-                        list.get_string(tag, out _metadata.application_name);
-                        break;
-
-                    case "encoder" :   
-                        list.get_string(tag, out _metadata.encoder);
-                            break;
-        
-                    case "datetime" :   
-                        list.get_date_time (tag, out _metadata.datetime);    
-                        break;                
-            
-                    case "has-crc" :   
-                        list.get_boolean (tag, out _metadata.has_crc);
-                        break;
-
-                    case "track-number" :
-                        list.get_uint ( tag, out numbers); 
-                        _metadata.track_number = (numbers > 0 ? numbers.to_string () : "");
-                        break;
-   
-                    default :
-                        warning(@">>Unknown Metadata: >$tag<");
-                        break;
-                }
+                _metadata.update ( list,  tag);
             });
             if ( metadata_digest != _metadata.digest () ) metadata_changed (_metadata);
         }
     }
-
-    //  private static Is playstate (Gst.PlayerState state) {
-    //      warning(@"playstate ...");
-    //      warning(@"playstate State:$(state)");
-    //      switch (state) {
-    //          case  Gst.PlayerState.PLAYING:
-    //              return Is.PLAYING;
-    //          case  Gst.PlayerState.BUFFERING:
-    //              return Is.BUFFERING;
-    //          case Gst.PlayerState.STOPPED:
-    //              return Is.STOPPED;
-    //          case Gst.PlayerState.PAUSED:
-    //              return Is.STOPPED;
-    //          default:
-    //          warning(@"Problemo ...");
-    //              assert_not_reached();
-    //      }
-    //  }
 }

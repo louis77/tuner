@@ -8,10 +8,8 @@
  * @author technosf
  * @date 2024-12-01
  * @since 2.0.0
- * @brief HTTP client implementation using Soup library
+ * @brief Player 'PLAY' button
  */
-
-//using Tuner.PlayerController;
 
 public class Tuner.PlayButton : Gtk.Button {
 
@@ -31,42 +29,59 @@ public class Tuner.PlayButton : Gtk.Button {
         "media-playback-stop-symbolic",
         Gtk.IconSize.LARGE_TOOLBAR
     );
+    
 
     /* Public */
 
     public PlayButton()
     {
         Object();
+        
+        image = PLAY;
+        sensitive = true;
 
-       // set_reverse_symbol(app().player.current_state);
         app().player.state_changed.connect ((state) => {
-          //  set_reverse_symbol (state);
+            set_reverse_symbol (state.get_name ());
         });
     }
 
+
     /**
-    * @brief Set the play state of the header bar.
+    * @brief Set the play button symbol and sensitivity
     *
-    * This method updates the play button icon and sensitivity based on the new play state.
+    * This method is instigated from a Gst.Player state change signal.
+    * Performing any UI actions directly while handling the signal 
+    * causes a segmentation fault. To get around this, threads_add_idle
+    * is used.
     *
-    * @param state The new play state to set.
+    * @param state The new play state string.
     */
-    private  void set_reverse_symbol (Gst.PlayerState state) {
+    private void set_reverse_symbol (string state) 
+    {
         switch (state) {
-            case Gst.PlayerState.PLAYING:
-                image = STOP;
-                sensitive = true;
+            case "playing":
+                Gdk.threads_add_idle (() => {
+                    image = STOP;
+                    sensitive = true;
+                    return false;
+                });
                 break;
 
-            case Gst.PlayerState.BUFFERING:
-                sensitive = false;
-                image = BUFFERING;
+            case "buffering":            
+                Gdk.threads_add_idle (() => {
+                    sensitive = false;
+                    image = BUFFERING;
+                    return false;
+                });
                 break;
 
-            default :       //PlayerController.State.STOPPED:
-                image = PLAY;
-                sensitive = true;
+            default :       //  STOPPED:
+                Gdk.threads_add_idle (() => {
+                    image = PLAY;
+                    sensitive = true;
+                    return false;
+                });
                 break;
         }
-    } // set_playstate
+    } // set_reverse_symbol
 } //  PlayButton
