@@ -123,22 +123,22 @@ namespace Tuner.DBus {
 
         public MediaPlayerPlayer (DBusConnection conn) {
             Object (conn: conn);
-            app().player.state_changed.connect ((state) => {
+            app().player.state_changed_sig.connect ((state) => {
                 switch (state) {
-                case Gst.PlayerState.PLAYING:
-                case Gst.PlayerState.BUFFERING:
+                case PlayerController.Is.PLAYING:
+                case PlayerController.Is.BUFFERING:
                     playback_status = "Playing";
                     break;
-                case Gst.PlayerState.STOPPED:
-                    playback_status = "Stopped";
-                    break;
-                case Gst.PlayerState.PAUSED:
+                case PlayerController.Is.PAUSED:
                     playback_status = "Paused";
+                    break;
+                default :
+                    playback_status = "Stopped";
                     break;
                 }
             });
 
-			app().player.metadata_changed.connect ((metadata) => {
+			app().player.metadata_changed_sig.connect ((metadata) => {
                 _current_title = metadata.title;
                 trigger_metadata_update ();
         });
@@ -147,7 +147,7 @@ namespace Tuner.DBus {
         //          trigger_metadata_update ();
         //  });
 
-			app().player.station_changed.connect ((station) => {
+			app().player.station_changed_sig.connect ((station) => {
 					_current_title = station.name;
 					_current_artist = station.name;
 					_current_art_url = station.favicon;
@@ -175,7 +175,7 @@ namespace Tuner.DBus {
 
         public void stop() throws DBusError, IOError {
             //  debug ("DBus stop() requested");
-            app().player.player.stop();
+            app().player.stop();
         }
 
         public void play() throws DBusError, IOError {

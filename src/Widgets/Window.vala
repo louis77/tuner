@@ -166,7 +166,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         /*
             Player hookups
          */
-        player_ctrl.station_changed.connect (_headerbar.update_from_station);
+        player_ctrl.station_changed_sig.connect (_headerbar.update_from_station);
 
         //  player_ctrl.metadata_changed.connect ((metadata) => {
         //      _headerbar.subtitle = metadata.title;
@@ -344,7 +344,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         get_size (out _width, out _height); // Echo ending dimensions so Settings can pick them up
         _settings.save ();
 
-        if (player_ctrl.current_state == Gst.PlayerState.PLAYING) {
+        if (player_ctrl.player_state == PlayerController.Is.PLAYING) {
             hide_on_delete();
             var notification = new GLib.Notification(NOTIFICATION_PLAYING_BACKGROUND);
             notification.set_body(NOTIFICATION_CLICK_RESUME);

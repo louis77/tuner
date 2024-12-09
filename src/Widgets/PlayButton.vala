@@ -11,6 +11,7 @@
  * @brief Player 'PLAY' button
  */
 
+
 public class Tuner.PlayButton : Gtk.Button {
 
     /* Constants    */
@@ -30,8 +31,14 @@ public class Tuner.PlayButton : Gtk.Button {
         Gtk.IconSize.LARGE_TOOLBAR
     );
     
+    private  Gtk.Image ERROR = new Gtk.Image.from_icon_name (
+        "dialog-error-symbolic",
+        Gtk.IconSize.LARGE_TOOLBAR
+    );
+    
 
     /* Public */
+
 
     public PlayButton()
     {
@@ -40,8 +47,8 @@ public class Tuner.PlayButton : Gtk.Button {
         image = PLAY;
         sensitive = true;
 
-        app().player.state_changed.connect ((state) => {
-            set_reverse_symbol (state.get_name ());
+        app().player.state_changed_sig.connect ((state) => {
+            set_inverse_symbol (state);
         });
     }
 
@@ -56,31 +63,27 @@ public class Tuner.PlayButton : Gtk.Button {
     *
     * @param state The new play state string.
     */
-    private void set_reverse_symbol (string state) 
+    private void set_inverse_symbol (PlayerController.Is state) 
     {
         switch (state) {
-            case "playing":
-                Gdk.threads_add_idle (() => {
-                    image = STOP;
-                    sensitive = true;
-                    return false;
-                });
+            case PlayerController.Is.PLAYING :
+                image = STOP;
+                sensitive = true;
                 break;
 
-            case "buffering":            
-                Gdk.threads_add_idle (() => {
-                    sensitive = false;
-                    image = BUFFERING;
-                    return false;
-                });
+            case PlayerController.Is.BUFFERING :       
+                image = BUFFERING;
+                sensitive = false;
+                break;
+
+            case PlayerController.Is.STOPPED_ERROR :    
+                image = ERROR;
+                sensitive = true;
                 break;
 
             default :       //  STOPPED:
-                Gdk.threads_add_idle (() => {
-                    image = PLAY;
-                    sensitive = true;
-                    return false;
-                });
+                image = PLAY ;
+                sensitive = true;
                 break;
         }
     } // set_reverse_symbol

@@ -232,6 +232,17 @@ namespace Tuner {
             directory = new DirectoryController(provider, stars);
 
             add_action_entries(ACTION_ENTRIES, this);
+
+            /*
+                Hook up voting
+            */
+            player.tape_counter_sig.connect((station) =>
+            {     
+                warning("<><> Voting");   
+                if ( settings.do_not_track ) return;
+                if ( station.starred ) provider.vote(station.stationuuid);
+                provider.click(station.stationuuid);
+            });
         } // construct
 
 

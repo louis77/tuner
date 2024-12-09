@@ -270,7 +270,7 @@ public class Tuner.DirectoryController : Object {
     public void count_station_click (Model.Station station) {
             if (!app().settings.do_not_track) {
             debug (@"Send listening event for station $(station.stationuuid)");
-            _provider.track (station.stationuuid);
+            _provider.click (station.stationuuid);
         } else {
             debug ("do-not-track enabled, will not send listening event");
         }

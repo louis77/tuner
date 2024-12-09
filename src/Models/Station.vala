@@ -35,15 +35,15 @@ public class Tuner.Model.Station : Object {
     // ----------------------------------------------------------
 
     /** @property {string} changeuuid - Unique identifier for the change. */
-    public string	changeuuid	{ get; private set; }
+    public string 	changeuuid	{ get; private set; }
     /** @property {string} stationuuid - Unique identifier for the station. */
-    public string stationuuid	{ get; private set; }
+    public string   stationuuid	{ get; private set; }
     /** @property {string} name - Name of the station. */
     public string	name	{ get; private set; }
     /** @property {string} url - URL of the station stream. */
     public string	url	{ get; private set; }
-    /** @property {string} url_resolved - Resolved URL of the station stream. */
-    public string	url_resolved	{ get; private set; }
+    /** @property {string} url_resolved - Resolved URL of the station stream. Camel case so goobject serialize is OK*/
+    public string	urlResolved	{ get; private set; }
     /** @property {string} homepage - Homepage of the station. */
     public string	homepage	{ get; private set; }
     /** @property {string} favicon - Favicon URL of the station. */
@@ -62,57 +62,63 @@ public class Tuner.Model.Station : Object {
     public string	language	{ get; private set ; }
     /** @property {string} languagecodes - Language codes associated with the station. */
     public string	languagecodes	{ get; private set ; }
-    /** @property {int} votes - Number of votes for the station. */
-    public int	votes { get; private set; }
-    /** @property {string} lastchangetime - Last change time of the station. */
-    public string	lastchangetime	{ get; private set ; }
-    /** @property {string} lastchangetime_iso8601 - Last change time in ISO 8601 format. */
-    public string	lastchangetime_iso8601	{ get; private set ; }
     /** @property {string} codec - Audio codec used by the station. */
     public string	codec	{ get; private set ; }
     /** @property {int} bitrate - Bitrate of the station stream. */
     public int	bitrate { get; private set ; }
     /** @property {int} hls - HLS status of the station. */
     public int	hls { get; private set ; }
+
+
+    // ----------------------------------------------------------
+    // Non-Properties
+    // ----------------------------------------------------------
+
+    /** @property {int} votes - Number of votes for the station. */
+    public int	votes;
+    /** @property {string} lastchangetime - Last change time of the station. */
+    public string	lastchangetime;
+    /** @property {string} lastchangetime_iso8601 - Last change time in ISO 8601 format. */
+    public string	lastchangetime_iso8601;
     /** @property {int} lastcheckok - Status of the last check (0 or 1). */
-    public int    lastcheckok { get; private set ; }
+    public int    lastcheckok;
     /** @property {string} lastchecktime - Last check time of the station. */
-    public string	lastchecktime	{ get; private set ; }
+    public string	lastchecktime;
     /** @property {string} lastchecktime_iso8601 - Last check time in ISO 8601 format. */
-    public string	lastchecktime_iso8601	{ get; private set ; }
+    public string	lastchecktime_iso8601;
     /** @property {string} lastcheckoktime - Last successful check time. */
-    public string	lastcheckoktime	{ get; private set ; }
+    public string	lastcheckoktime	;
     /** @property {string} lastcheckoktime_iso8601 - Last successful check time in ISO 8601 format. */
-    public string	lastcheckoktime_iso8601	{ get; private set ; }
+    public string	lastcheckoktime_iso8601;
     /** @property {string} lastlocalchecktime - Last local check time. */
-    public string	lastlocalchecktime	{ get; private set ; }
+    public string	lastlocalchecktime;
     /** @property {string} lastlocalchecktime_iso8601 - Last local check time in ISO 8601 format. */
-    public string	lastlocalchecktime_iso8601	{ get; private set ; }
+    public string	lastlocalchecktime_iso8601;
     /** @property {string} clicktimestamp - Timestamp of the last click. */
-    public string	clicktimestamp	{ get; private set ; }
+    public string	clicktimestamp;
     /** @property {string} clicktimestamp_iso8601 - Last click timestamp in ISO 8601 format. */
-    public string	clicktimestamp_iso8601 { get; private set ; }
+    public string	clicktimestamp_iso8601;
     /** @property {int} clickcount - Number of clicks on the station. */
-    public int	clickcount { get; private set ; }
+    public int	clickcount;
     /** @property {int} clicktrend - Trend of clicks on the station. */
-    public int	clicktrend { get; private set ; }
+    public int	clicktrend;
     /** @property {int} ssl_error - SSL error status. */
-    public int    ssl_error { get; private set ; }
+    public int    ssl_error;
     /** @property {string} geo_lat - Latitude of the station's location. */
-    public string	geo_lat { get; private set ; }
+    public string	geo_lat;
     /** @property {string} geo_long - Longitude of the station's location. */
-    public string	geo_long { get; private set ; }
+    public string	geo_long;
     /** @property {bool} has_extended_info - Indicates if extended info is available. */
-    public bool	    has_extended_info { get; private set ; }
+    public bool	    has_extended_info;
     
     /** @property {bool} starred - Indicates if the station is starred. Only set by Favorites*/
     public bool starred { get; private set; }
     
     /** @property {int} favicon_loaded - Indicates the number of times the favicon has been loaded from cache or internet.*/
-    public int favicon_loaded { get; private set; }
+    public int favicon_loaded; // { get; private set; }
 
    /** @property {bool} is_up_to_date - Indicates the station is up-to-date after a test */
-   public bool is_up_to_date { get; private set; }
+   public bool is_up_to_date;
 
 
 
@@ -201,7 +207,7 @@ public class Tuner.Model.Station : Object {
             stationuuid = json_object.get_string_member("stationuuid").strip();
             name = json_object.get_string_member("name").strip();
             url = json_object.get_string_member("url").strip();
-            url_resolved = json_object.get_string_member("url_resolved").strip();
+            urlResolved = json_object.get_string_member("url_resolved").strip();
             homepage = json_object.get_string_member("homepage").strip();
             favicon = json_object.get_string_member("favicon").strip();
             tags = json_object.get_string_member("tags").strip();
@@ -234,6 +240,12 @@ public class Tuner.Model.Station : Object {
             geo_long = json_object.get_string_member("geo_long").strip();
             has_extended_info = json_object.get_boolean_member("has_extended_info");   
             
+            var go_serial_fudge = json_object.get_string_member("urlResolved").strip();  // Serialization camelcase fudge
+            if ( go_serial_fudge != null && go_serial_fudge != "" ) 
+            {
+                urlResolved = go_serial_fudge;
+            }
+         
             // Process favorites
             if (json_object.has_member("starred") )
             {

@@ -11,9 +11,9 @@ public class Tuner.PreferencesPopover : Gtk.Popover {
         about_menuitem.action_name = Window.ACTION_PREFIX + Window.ACTION_ABOUT;
 
         var disable_tracking_item = new Gtk.ModelButton ();
-        disable_tracking_item.text = _("Do not track");
+        disable_tracking_item.text = _("Do not participate in Station voting");
         disable_tracking_item.action_name = Window.ACTION_PREFIX + Window.ACTION_DISABLE_TRACKING;
-        disable_tracking_item.tooltip_text = _("If enabled, we will not send usage info to radio-browser.org");
+        disable_tracking_item.tooltip_text = "If checked, your starred and streamed stations will not be fed back to the Station index popularity vote, and will not be used to calculate popular and trending stations";
 
         var theme_combo = new Gtk.ComboBoxText ();
         theme_combo.append("system", _("Use System"));  
@@ -32,7 +32,7 @@ public class Tuner.PreferencesPopover : Gtk.Popover {
         theme_box.pack_end (new Gtk.Label(_("Theme")), false, false, 12);
 
         var autoplay_item = new Gtk.ModelButton ();
-        autoplay_item.text = _("Auto-play last station");
+        autoplay_item.text = _("Auto-play last station on startup");
         autoplay_item.action_name = Window.ACTION_PREFIX + Window.ACTION_ENABLE_AUTOPLAY;
         autoplay_item.tooltip_text = _("If enabled, when Tuner starts it will automatically start to play the last played station");
 

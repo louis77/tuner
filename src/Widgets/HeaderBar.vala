@@ -41,16 +41,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
     /* Public */
 
-    /**
-     * @enum PlayState
-     * @brief Enumeration of possible play states for the play button.
-     */
-    //  public enum PlayState {
-    //      PAUSE_ACTIVE,
-    //      PAUSE_INACTIVE,
-    //      PLAY_ACTIVE,
-    //      PLAY_INACTIVE
-    //  }
 
     // Public properties
     private Gtk.VolumeButton _volume_button = new Gtk.VolumeButton();
@@ -128,7 +118,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         _volume_button.value_changed.connect ((value) => {
             app().player.volume = value;
         });
-        app().player.volume_changed.connect((value) => {
+        app().player.volume_changed_sig.connect((value) => {
             _volume_button.value =  value;
         });
 
@@ -309,7 +299,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             add(station_info);
             reveal_child = false; // Make it invisible initially
 
-            app().player.metadata_changed.connect(handle_metadata_changed);
+            app().player.metadata_changed_sig.connect(handle_metadata_changed);
     
         }
 

@@ -204,14 +204,15 @@ namespace Tuner.DataProvider {
         public abstract bool initialize();
 
         /**
-         * @brief Track a station listen event
+         * @brief Register a station listen event
          *
          * @param stationuuid UUID of the station being listened to
          */
-        public abstract void track(string stationuuid);
+        public abstract void click(string stationuuid);
 
         /**
          * @brief Vote for a station
+         *
          * @param stationuuid UUID of the station being voted for
          */
          public abstract void vote(string stationuuid) ;

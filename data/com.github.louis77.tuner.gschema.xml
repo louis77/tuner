@@ -24,8 +24,8 @@
         </key>
         <key name="do-not-track" type="b">
             <default>false</default>
-            <summary>Do not track</summary>
-            <description>If enabled, do not send usage information to radio-browser.org</description>
+            <summary>Do not participate in Station voting</summary>
+            <description>If enabled, do not send voting and popularity information to metadata provider</description>
         </key>
         <key name="excluded-countries" type="as">
             <default>[]</default>

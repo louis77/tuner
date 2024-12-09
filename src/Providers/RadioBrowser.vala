@@ -165,7 +165,7 @@ namespace Tuner.DataProvider {
          *
          * @param stationuuid UUID of the station being listened to
          */
-        public void track(string stationuuid) {
+        public void click(string stationuuid) {
             debug(@"sending listening event for station $(stationuuid)");
             uint status_code;
             HttpClient.GET(build_uri(RBI_STATION, stationuuid), out status_code);

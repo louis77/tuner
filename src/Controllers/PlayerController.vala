@@ -17,12 +17,13 @@
  */
 public class Tuner.PlayerController : Object 
 {
-    //  public enum Is {
-    //      PLAYING,
-    //      BUFFERING,
-    //      STOPPED,
-    //      PAUSED
-    //  }
+    public enum Is {
+        BUFFERING,
+        PAUSED,
+        PLAYING,
+        STOPPED,        
+        STOPPED_ERROR
+    }
 
     public struct Metadata
     {
@@ -158,71 +159,142 @@ public class Tuner.PlayerController : Object
 
 
     /** Signal emitted when the station changes. */
-    public signal void station_changed (Model.Station station);
+    public signal void station_changed_sig (Model.Station station);
 
     /** Signal emitted when the player state changes. */
-    public signal void state_changed (Gst.PlayerState state);
+    public signal void state_changed_sig (Is state);
 
     /** Signal emitted when the title changes. */
-   // public signal void title_changed (string title);
-
-    /** Signal emitted when the title changes. */
-    public signal void metadata_changed (Metadata metadata);
+    public signal void metadata_changed_sig (Metadata metadata);
 
     /** Signal emitted when the volume changes. */
-    public signal void volume_changed (double volume);
+    public signal void volume_changed_sig (double volume);
 
-   // public Is playing { get; private set;}
+    /** Signal emitted every ten minutes that a station has been playing continuously. */
+    public signal void tape_counter_sig (Model.Station station);
+
+    // public Is playing { get; private set;}
+
+    public bool play_error{ get; private set; }
+   // public Is _player_state;
+
+    private const uint TEN_MINUTES_IN_SECONDS = 600;
+
+    private uint _tape_counter_id = 0;
     
-    private Model.Station? _station;
-    private Gst.PlayerState _player_state;
-    public Gst.Player player;
+    private Gst.Player _player;
+    private Model.Station _station;  // TODO Should be nullable??
     private Metadata _metadata = Metadata.clear ();
+    private Is _player_state;
+    private string _player_state_name;
+   // private string _playing_url;
 
     construct 
     {
-        player = new Gst.Player (null, null);
+        _player = new Gst.Player (null, null);
 
-        player.error.connect ((error) => 
+        _player.error.connect ((error) => 
         {
-            warning (@"player.error: $(error.message)");
+            play_error = true;
+            warning (@"player error on url $(_player.uri): $(error.message)");
         });
 
-        player.state_changed.connect ((state) => 
-        {
-            debug (@"player.state_changed: $state");
-            // Don't forward flickering between playing and buffering
-            if (!(current_state == Gst.PlayerState.PLAYING && state == Gst.PlayerState.BUFFERING) && !(state == current_state)) 
-            {
-                state_changed (state);
-                current_state = state;
-            }
-        });
-
-        player.media_info_updated.connect ((obj) => 
+        _player.media_info_updated.connect ((obj) => 
         {
             process_media_info_update (obj);
         });
 
-        player.volume_changed.connect ((obj) => 
+        _player.volume_changed.connect ((obj) => 
         {
-            volume_changed(obj.volume);
+            volume_changed_sig(obj.volume);
             app().settings.volume =  obj.volume;
         });
+
+        _player.state_changed.connect ((state) => 
+        {
+            debug (@"player.state_changed: $state");
+            // Don't forward flickering between playing and buffering
+            if (    !(state == Gst.PlayerState.PLAYING && state == Gst.PlayerState.BUFFERING) 
+                && (_player_state_name != state.get_name ())) 
+            {
+                _player_state_name = state.get_name ();
+                set_play_state (state.get_name ());
+            }
+        });
     }
+
+    /*
+     */
+    private void set_play_state (string state) 
+    {
+        switch (state) {
+            case "playing":
+                Gdk.threads_add_idle (() => {
+                    player_state = Is.PLAYING;
+                    return false;
+                });
+                break;
+
+            case "buffering":            
+                Gdk.threads_add_idle (() => {
+                    player_state = Is.BUFFERING;
+                    return false;
+                });
+                break;
+
+            default :       //  STOPPED:
+                if ( play_error )
+                {
+                    Gdk.threads_add_idle (() => {
+                        player_state = Is.STOPPED_ERROR;
+                        return false;
+                    });
+                }
+                else
+                {
+                    Gdk.threads_add_idle (() => {
+                        player_state = Is.STOPPED;
+                        return false;
+                    });
+                }
+                break;
+        }
+    } // set_reverse_symbol
 
     /** 
      * @return The current state of the player.
      */
-    public Gst.PlayerState current_state { 
+     public Is player_state { 
         get {
             return _player_state;
         }
 
         set {
             _player_state = value;
+            state_changed_sig( value);
+
+            warning (@"Is player_state $_player_state");
+            if ( value == Is.STOPPED || value == Is.STOPPED_ERROR )
+            {
+                if ( _tape_counter_id > 0 ) 
+                {
+                    Source.remove(_tape_counter_id);
+                    _tape_counter_id = 0;
+                }
+            } 
+            else if ( value == Is.PLAYING )
+            {
+                _tape_counter_id = Timeout.add_seconds_full(Priority.LOW, TEN_MINUTES_IN_SECONDS, () => 
+                {
+                    warning (@"Is player_state emitting");
+                    tape_counter_sig(_station);
+                    return Source.CONTINUE;
+                });
+            }
+
         }
     }
+
 
     /** 
      * @return The current station being played.
@@ -246,18 +318,21 @@ public class Tuner.PlayerController : Object
      * @return The current volume of the player.
      */
     public double volume {
-        get { return player.volume; }
-        set { player.volume = value; }
+        get { return _player.volume; }
+        set { _player.volume = value; }
     }
 
     /**
      * Plays the specified station.
+     *
      * @param station The station to play.
      */
-    public void play_station (Model.Station station) {
-        player.uri = station.url;
-        player.play ();
-        station_changed (station);
+    public void play_station (Model.Station station) 
+    {
+        _player.uri = ( station.urlResolved != null && station.urlResolved != "" ) ? station.urlResolved : station.url;
+        play_error = false;
+        _player.play ();
+        station_changed_sig (station);
     }
 
     /**
@@ -271,16 +346,20 @@ public class Tuner.PlayerController : Object
     /**
      * Toggles play/pause state of the player.
      */
-    public void play_pause () {
+     public void play_pause () {
         switch (_player_state) {
-            case Gst.PlayerState.PLAYING:
-            case Gst.PlayerState.BUFFERING:
-                player.stop ();
+            case Is.PLAYING:
+            case Is.BUFFERING:
+                _player.stop ();
                 break;
             default:
-                player.play ();
+                _player.play ();
                 break;
         }
+    }
+
+    public void stop () {
+        _player.stop ();
     }
 
     /**
@@ -303,7 +382,7 @@ public class Tuner.PlayerController : Object
             {
                 _metadata.update ( list,  tag);
             });
-            if ( metadata_digest != _metadata.digest () ) metadata_changed (_metadata);
+            if ( metadata_digest != _metadata.digest () ) metadata_changed_sig (_metadata);
         }
     }
 }
