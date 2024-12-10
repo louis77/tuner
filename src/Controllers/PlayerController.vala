@@ -183,7 +183,7 @@ public class Tuner.PlayerController : Object
     private uint _tape_counter_id = 0;
     
     private Gst.Player _player;
-    private Model.Station _station;  // TODO Should be nullable??
+    private Model.Station _station; 
     private Metadata _metadata = Metadata.clear ();
     private Is _player_state;
     private string _player_state_name;

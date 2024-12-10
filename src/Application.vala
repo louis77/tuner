@@ -18,6 +18,70 @@ namespace Tuner {
     */
     private static Application _instance;
 
+    private static Gtk.Settings GTK_SETTINGS;
+    private static bool GTK_ORIGINAL_PREFER_DARK_THEME;
+    private static bool GTK_DEFAULT_THEME_IS_DARK;
+    private static string GTK_ORIGINAL_THEME;
+    private static string GTK_ALTERNATIVE_THEME;
+
+
+    public enum THEME
+    {
+        SYSTEM,
+        LIGHT,
+        DARK;
+
+        public unowned string get_name ()
+        {
+            switch (this) {
+                case SYSTEM:
+                    return "system";
+
+                case LIGHT:
+                    return "light";
+
+                case DARK:
+                    return "dark";
+
+                default:
+                    assert_not_reached();
+            }
+        }
+    }
+
+
+    public void apply_theme(string requested_theme)
+    {
+        warning(@"Apply request: $requested_theme");
+
+        if ( requested_theme == THEME.LIGHT.get_name() )
+        {
+            warning(@"Applying theme: light");
+            if ( GTK_DEFAULT_THEME_IS_DARK ) GTK_SETTINGS.gtk_theme_name = GTK_ALTERNATIVE_THEME;
+            GTK_SETTINGS.gtk_application_prefer_dark_theme = false;
+            return;
+        }
+
+        if ( requested_theme == THEME.DARK.get_name() )
+        {
+            warning(@"Applying theme dark");
+            GTK_SETTINGS.gtk_theme_name = GTK_ORIGINAL_THEME;
+            GTK_SETTINGS.gtk_application_prefer_dark_theme = true;
+            return;
+        }
+
+        if ( requested_theme == THEME.SYSTEM.get_name() )
+        {
+            warning(@"Applying theme system");
+            GTK_SETTINGS.gtk_theme_name = GTK_ORIGINAL_THEME;
+            GTK_SETTINGS.gtk_application_prefer_dark_theme = GTK_ORIGINAL_PREFER_DARK_THEME;
+            return;
+        }
+        assert_not_reached();
+    }
+
+
+
     /**
     * @brief Getter for the singleton instance
     *
@@ -63,6 +127,7 @@ namespace Tuner {
     } // fade
 
 
+
     /**
     * @class Application
     * @brief Main application class implementing core functionality
@@ -79,7 +144,6 @@ namespace Tuner {
     * @note This class follows the singleton pattern, accessible via Application.instance
     */
     public class Application : Gtk.Application {
-
 
         /** @brief Application version */
         public const string APP_VERSION = VERSION;
@@ -170,10 +234,6 @@ namespace Tuner {
             );
         }
 
-        //  static construct {
-
-        //      Tuner._instance = new Application ();
-        //  }
 
         /**
         * @brief Construct block for initializing the application
@@ -225,8 +285,8 @@ namespace Tuner {
             /* 
                 Init Tuner assets 
             */
-            provider = new DataProvider.RadioBrowser(null);
             settings = new Settings ();
+            provider = new DataProvider.RadioBrowser(null);
             player = new PlayerController ();
             var stars = new StarStore(_starred_file);
             directory = new DirectoryController(provider, stars);
@@ -238,11 +298,11 @@ namespace Tuner {
             */
             player.tape_counter_sig.connect((station) =>
             {     
-                warning("<><> Voting");   
                 if ( settings.do_not_track ) return;
                 if ( station.starred ) provider.vote(station.stationuuid);
                 provider.click(station.stationuuid);
             });
+
         } // construct
 
 
@@ -272,6 +332,7 @@ namespace Tuner {
                 window = new Window (this, player, settings, directory);
                 add_window (window);
                 DBus.initialize ();
+                apply_theme( settings.theme_mode);
                 settings.configure();
             } else {
                 window.present ();

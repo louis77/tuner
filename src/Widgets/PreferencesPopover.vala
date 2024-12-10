@@ -16,15 +16,15 @@ public class Tuner.PreferencesPopover : Gtk.Popover {
         disable_tracking_item.tooltip_text = "If checked, your starred and streamed stations will not be fed back to the Station index popularity vote, and will not be used to calculate popular and trending stations";
 
         var theme_combo = new Gtk.ComboBoxText ();
-        theme_combo.append("system", _("Use System"));  
-        theme_combo.append("light", _("Light mode"));
-        theme_combo.append("dark", _("Dark mode"));
+        theme_combo.append(THEME.SYSTEM.get_name (), _("Use System"));  
+        theme_combo.append(THEME.LIGHT.get_name (), _("Light mode"));
+        theme_combo.append(THEME.DARK.get_name (), _("Dark mode"));
         theme_combo.halign = Gtk.Align.CENTER;
-        //theme_combo.active_id = Application.instance.settings.get_string("theme-mode");   // FIXME
+        theme_combo.active_id = app().settings.theme_mode;   // Initial state from settings
 
         theme_combo.changed.connect ((elem) => {
-            warning(@"Theme changed: $(elem.active_id)");
-           // Application.instance.settings.set_string("theme-mode", elem.active_id); // FIXME
+            apply_theme(elem.active_id);
+            app().settings.theme_mode = elem.active_id;
         });
 
         var theme_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);

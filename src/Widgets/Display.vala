@@ -324,8 +324,8 @@ public class Tuner.Display : Gtk.Paned {
                 , _library_category
                 , "starred"
                 , "starred"
-                , "Starred by You"
-                , "Starred by You"
+                , _("Starred by You")
+                , _("Starred by You")
                 ,_directory.get_starred() 
             );
 
@@ -345,10 +345,10 @@ public class Tuner.Display : Gtk.Paned {
         , _library_category
         , "searched"
         , "folder-saved-search"
-        , "Recent Search"
-        , "Search Results" 
+        , _("Recent Search")
+        , _("Search Results")
         , null
-        , "Save this search"
+        , _("Save this search")
         , "starred-symbolic");
 
         search_results.tooltip_button.sensitive = false;
@@ -477,7 +477,7 @@ public class Tuner.Display : Gtk.Paned {
      */
     private void jukebox(SourceList.ExpandableItem category)
     {
-        SourceList.Item item = new SourceList.Item("Jukebox");
+        SourceList.Item item = new SourceList.Item(_("Jukebox"));
         item.icon = new ThemedIcon("audio-speakers");
         var station = _directory.load_random_stations(1);
         item.activated.connect(() =>
@@ -487,7 +487,7 @@ public class Tuner.Display : Gtk.Paned {
             } 
             catch (SourceError e)
             {
-                warning(@"Could not get random station: $(e.message)");
+                warning(_(@"Could not get random station: $(e.message)"));
             }
         });
         category.add(item);
@@ -517,9 +517,9 @@ public class Tuner.Display : Gtk.Paned {
             , @">$search"
             , "playlist-symbolic"
             , search
-            , @"Saved Search :  $search"
+            , _(@"Saved Search :  $search")
             , station_set
-            , "Remove this saved search"
+            , _("Remove this saved search")
             , "non-starred-symbolic"
             );
 

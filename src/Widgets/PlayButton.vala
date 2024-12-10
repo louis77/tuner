@@ -50,6 +50,13 @@ public class Tuner.PlayButton : Gtk.Button {
         app().player.state_changed_sig.connect ((state) => {
             set_inverse_symbol (state);
         });
+
+        clicked.connect (() =>
+        {
+            warning("Clicked");
+           // theme();
+            warning("Clicked-End");
+        });
     }
 
 

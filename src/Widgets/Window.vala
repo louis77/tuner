@@ -57,8 +57,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     /* Private */   
 
     private const string CSS = "com/github/louis77/tuner/Application.css";
-    private const string NOTIFICATION_PLAYING_BACKGROUND = "Playing in background";
-    private const string NOTIFICATION_CLICK_RESUME = "Click here to resume window. To quit Tuner, pause playback and close the window.";
+    private const string NOTIFICATION_PLAYING_BACKGROUND = _("Playing in background");
+    private const string NOTIFICATION_CLICK_RESUME = _("Click here to resume window. To quit Tuner, pause playback and close the window.");
     private const string NOTIFICATION_APP_RESUME_WINDOW = "app.resume-window";
     private const string NOTIFICATION_APP_PLAYING_CONTINUE = "continue-playing";
 
@@ -124,6 +124,22 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     */
     construct { 
 
+        /*
+            Theme setup
+            Has to be done from Window
+        */
+        GTK_SETTINGS = Gtk.Settings.get_default();
+        GTK_ORIGINAL_THEME = GTK_SETTINGS.gtk_theme_name;
+        GTK_ORIGINAL_PREFER_DARK_THEME = GTK_SETTINGS.gtk_application_prefer_dark_theme;
+        GTK_ALTERNATIVE_THEME = GTK_ORIGINAL_THEME;
+        if ( GTK_ALTERNATIVE_THEME.has_suffix("-dark")) 
+        {
+            warning(@"Dark system");
+            GTK_DEFAULT_THEME_IS_DARK = true;
+            GTK_ALTERNATIVE_THEME = GTK_ALTERNATIVE_THEME.slice(0,-5);
+        }
+
+
         set_icon_name(Application.APP_ID);
         add_action_entries (ACTION_ENTRIES, this);
         set_title (WINDOW_NAME);
@@ -167,14 +183,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             Player hookups
          */
         player_ctrl.station_changed_sig.connect (_headerbar.update_from_station);
-
-        //  player_ctrl.metadata_changed.connect ((metadata) => {
-        //      _headerbar.subtitle = metadata.title;
-        //  });
-
-        //  player_ctrl.volume_changed.connect ((volume) => {
-        //      _headerbar.volume_button.value = volume;
-        //  });
 
         set_titlebar (_headerbar);
 
@@ -226,18 +234,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         ----------------------------------------------------------
     */
 
-    /**
-     * @brief Handles window resizing.
-     * @param self The widget being resized.
-     * @param allocation The new allocation for the widget.
-     */
-    //  private void on_window_resize (Gtk.Widget self, Gtk.Allocation allocation) {
-	//  	width = allocation.width;
-	//  	height = allocation.height;
-    //     // warning(@"Resize: $(width)x$height");
-	//  } // on_window_resize
-
-
     // ----------------------------------------------------------------------
     //
     // Actions
@@ -266,7 +262,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @brief Toggles playback state.
      */
     public void on_toggle_playback() {
-        info ("Stop Playback requested");
+        info (_("Stop Playback requested"));
         player_ctrl.play_pause ();
     } // on_toggle_playback
 
