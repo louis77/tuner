@@ -287,6 +287,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             station_label.ellipsize = Pango.EllipsizeMode.MIDDLE;
 
             title_label = new CyclingRevealLabel ();
+            title_label.transition_type = Gtk.RevealerTransitionType.CROSSFADE;
+          //  title_label.transition_duration = REVEAL_DELAY;
            
             var station_info = new Gtk.Grid ();
             station_info.width_request = 200;
@@ -300,7 +302,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             reveal_child = false; // Make it invisible initially
 
             app().player.metadata_changed_sig.connect(handle_metadata_changed);
-    
+
+            //  station_info.size_allocate.connect((allocation) => {
+            //      warning(@"== Grid $(allocation.width)");
+            //  });
         }
 
         /**

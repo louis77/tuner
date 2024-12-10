@@ -71,8 +71,5 @@ public class Tuner.RevealLabel : Gtk.Revealer {
         transition_type = Gtk.RevealerTransitionType.CROSSFADE;
         transition_duration = DEFAULT_FADE_DURATION; 
     }
-
-
-
 }
 
