@@ -53,14 +53,47 @@ public class Tuner.StarStore : Object {
     // Under dev
     // ----------------------------------------------------------
 
-    public string export_m3u8()
+    public void export_m3u8()
     {
         StringBuilder playlist = new StringBuilder(M3U8);
         foreach ( var station in _starred_station_map.values)
         {
-            playlist.append (@"#EXTINF:-1,$(station.name) - logo=\"$(station.favicon)\"\n$(station.url)\n");
+            var url = ( station.urlResolved == null || station.urlResolved == "") ? station.url : station.urlResolved;
+            playlist.append (@"#EXTINF:-1,$(station.name) - logo=\"$(station.favicon)\",uuid=\"$(station.stationuuid)\"\n$(url)\n#EXTIMG:$(station.favicon)\n");
         }
-        return playlist.str;
+
+        try {
+            string temp_file;
+            GLib.FileUtils.open_tmp ("XXXXXX.starred.m3u8", out temp_file);
+            GLib.FileUtils.set_contents(temp_file, playlist.str);
+    
+        // Create the file chooser dialog for saving
+        var dialog = new Gtk.FileChooserDialog(
+            "Save File",
+            null,
+            Gtk.FileChooserAction.SAVE
+        );
+
+        // Add buttons to the dialog
+        dialog.add_button("_Cancel", Gtk.ResponseType.CANCEL);
+        dialog.add_button("_Save", Gtk.ResponseType.ACCEPT);
+    
+            // Suggest a default filename
+            dialog.set_current_name("tuner-starred.m3u8");
+    
+            if (dialog.run() == Gtk.ResponseType.ACCEPT) {
+                string save_path = dialog.get_filename();
+                // Copy the temp file to the chosen location
+                var source_file = GLib.File.new_for_path(temp_file);
+                var dest_file = GLib.File.new_for_path(save_path);
+                source_file.copy(dest_file, GLib.FileCopyFlags.OVERWRITE);  // Overwrite
+            }
+    
+            dialog.destroy();
+    
+        } catch (GLib.Error e) {
+            warning("Error: $(e.message)");
+        }
     } // export_m3u8
 
 
