@@ -72,7 +72,7 @@ public class Tuner.StationList : ContentList {
             }
             item_count = value.size;
         }
-    }
+    } // stations
 
     /**
      * @brief Constructs a new StationList instance.
@@ -90,7 +90,7 @@ public class Tuner.StationList : ContentList {
             valign: Gtk.Align.START,
             selection_mode: Gtk.SelectionMode.NONE
         );
-    }
+    } // StationList
 
     /**
      * @brief Constructs a new StationList instance with a predefined list of stations.
@@ -100,7 +100,7 @@ public class Tuner.StationList : ContentList {
     public StationList.with_stations (Gee.Collection<Model.Station> stations) {
         this ();
         this.stations = stations;
-    }
+    } // StationList.with_stations
 
     /**
      * @brief Clears all stations from the list.
@@ -112,7 +112,7 @@ public class Tuner.StationList : ContentList {
         foreach (var c in childs) {
             c.destroy();
         }
-    }
+    } // clear
 
     /**
      * @property item_count

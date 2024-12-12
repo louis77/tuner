@@ -42,7 +42,7 @@ public class Tuner.StationButton : Tuner.DisplayButton {
             favicon_image: new Gtk.Image.from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG),
             station: station
         );
-    }
+    } // StationButton
 
     /**
      * @brief Additional initialization for the StationBox.
@@ -88,7 +88,7 @@ public class Tuner.StationButton : Tuner.DisplayButton {
         {
             station.update_favicon_image.begin (_favicon_image);
         }
-    }
+    } // construct
 
 
     /**
@@ -101,7 +101,7 @@ public class Tuner.StationButton : Tuner.DisplayButton {
         if (!starred) return title;
         if ( !is_up_to_date ) return Application.EXCLAIM_CHAR + title;
         return Application.STAR_CHAR + title;
-    }
+    } // make_title
 
 
     /**
@@ -118,7 +118,7 @@ public class Tuner.StationButton : Tuner.DisplayButton {
         }
 
         return tag;
-    }
+    } // make_tag
 
 
     /**
@@ -131,5 +131,5 @@ public class Tuner.StationButton : Tuner.DisplayButton {
             return _(location);
         else
             return location;
-    }
-}
+    } // make_description
+} 

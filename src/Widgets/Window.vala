@@ -43,6 +43,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public const string ACTION_ABOUT = "action_about";
     public const string ACTION_DISABLE_TRACKING = "action_disable_tracking";
     public const string ACTION_ENABLE_AUTOPLAY = "action_enable_autoplay";
+    public const string ACTION_STREAM_INFO = "action_stream_info";
+    public const string ACTION_STREAM_INFO_FAST = "action_stream_info_fast";
 
 
     public Settings settings { get; construct; }
@@ -72,7 +74,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         { ACTION_QUIT , on_action_quit },
         { ACTION_ABOUT, on_action_about },
         { ACTION_DISABLE_TRACKING, on_action_disable_tracking, null, "false" },
-        { ACTION_ENABLE_AUTOPLAY, on_action_enable_autoplay, null, "false" }
+        { ACTION_ENABLE_AUTOPLAY, on_action_enable_autoplay, null, "false" },
+        { ACTION_STREAM_INFO, on_action_stream_info, null, "true" },
+        { ACTION_STREAM_INFO_FAST, on_action_stream_info_fast, null, "false" },
     };
 
     /*
@@ -291,6 +295,21 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     } // on_action_enable_autoplay
 
 
+    public void on_action_stream_info (SimpleAction action, Variant? parameter) {
+        settings.stream_info = !settings.stream_info;
+        action.set_state (settings.stream_info);
+        warning (@"on_action_stream_info: $(settings.stream_info)");
+    } // on_action_enable_stream_info
+
+
+    public void on_action_stream_info_fast (SimpleAction action, Variant? parameter) {
+        settings.stream_info_fast = !settings.stream_info_fast;
+        action.set_state (settings.stream_info_fast);
+        warning (@"on_action_enable_info_fast: $(settings.stream_info_fast)");
+    } // on_action_stream_info_fast
+
+
+
     // ----------------------------------------------------------------------
     //
     // Handlers
@@ -371,4 +390,4 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         _display.update_state (active);
     } // check_online_status
-}
+} // Window

@@ -192,7 +192,4 @@ public class Tuner.ContentBox : Gtk.Box {
             return _content_list; 
         }
     }
-
-
-
 }

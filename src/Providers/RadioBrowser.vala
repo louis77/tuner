@@ -104,6 +104,13 @@ namespace Tuner.DataProvider {
         } // RadioBrowser
         
 
+        /**
+         * @brief Builds a Glib Uri from path and query
+         *
+         * Uses Glib Uri Parse with encoding to correctly check and encode the query
+         *
+         * @return the Uri if successful
+         */
         private Uri? build_uri(string path, string query = "")
         {          
             debug(@"http://$_current_server$path?$query");
@@ -123,9 +130,11 @@ namespace Tuner.DataProvider {
             return null;
         } // build_uri
 
+
         /**
-        *
-        *
+         * @brief Initialize the DataProvider implementation
+         *
+         * @return true if initialization successful
         */
         public bool initialize()
         {
@@ -160,6 +169,7 @@ namespace Tuner.DataProvider {
             return true;
         } // initialize
 
+
         /**
          * @brief Track a station listen event
          *
@@ -171,6 +181,7 @@ namespace Tuner.DataProvider {
             HttpClient.GET(build_uri(RBI_STATION, stationuuid), out status_code);
             debug(@"response: $(status_code)");
         } // track
+
 
         /**
          * @brief Vote for a station
@@ -185,7 +196,6 @@ namespace Tuner.DataProvider {
             //  HttpClient.GETasync(@"$(_current_server)/$(RBI_VOTE)/$(stationuuid)", out status_code);
             debug(@"response: $(status_code)");
         } // vote
-
 
 
         /**
@@ -238,6 +248,14 @@ namespace Tuner.DataProvider {
             return result;
         } // by_uuid
 
+
+        /**
+         * @brief Get a station or stations by UUIDs
+         *
+         * @param a collection of uuids of the stations to retrieve
+         * @return Station object if found, null otherwise
+         * @throw DataError if unable to retrieve or parse station data
+         */
         public Set<Model.Station> by_uuids(Collection<string> uuids) throws DataError {
             StringBuilder sb = new StringBuilder();
             foreach ( var uuid in uuids) { sb.append(uuid).append(","); }
@@ -291,50 +309,63 @@ namespace Tuner.DataProvider {
         /*  ---------------------------------------------------------------
             Private
             ---------------------------------------------------------------*/
+        /**
+         * @brief Get all available tags
+         *
+         * @return ArrayList of Tag objects
+         * @throw DataError if unable to retrieve or parse tag data
+         */
+        private void choose_server()
+        {
+            var random_server = Random.int_range(0, _servers.size);
 
-            private void choose_server()
+            for (int a = 0; a < _servers.size; a++)
+            /* Randomly start checking servers, break on first good one */
             {
-                var random_server = Random.int_range(0, _servers.size);
-    
-                for (int a = 0; a < _servers.size; a++)
-                /* Randomly start checking servers, break on first good one */
+                uint status = 0;
+                var server =  (random_server + a) %_servers.size;
+                _current_server = _servers[server];
+                try {
+                    var uri = Uri.parse(@"http://$_current_server/json/stats",UriFlags.NONE);  
+                    //status = HttpClient.HEAD(uri);  // RB doesn't support HEAD
+                    HttpClient.GET(uri,out status);
+                } catch (UriError e)
                 {
-                    uint status = 0;
-                    var server =  (random_server + a) %_servers.size;
-                    _current_server = _servers[server];
-                    try {
-                        var uri = Uri.parse(@"http://$_current_server/json/stats",UriFlags.NONE);  
-                        //status = HttpClient.HEAD(uri);  // RB doesn't support HEAD
-                        HttpClient.GET(uri,out status);
-                    } catch (UriError e)
-                    {
-                        debug(@"Server - bad Uri from $_current_server");
-                    }
-                    if ( status == 200 ) break;   // Check the server
+                    debug(@"Server - bad Uri from $_current_server");
                 }
-                debug(@"RadioBrowser Client - Chosen radio-browser.info server: $_current_server");
-            } // choose_server
+                if ( status == 200 ) break;   // Check the server
+            }
+            debug(@"RadioBrowser Client - Chosen radio-browser.info server: $_current_server");
+        } // choose_server
     
-            private void degrade(bool degraded = true )
+
+        /**
+         * @brief Manages tracking server degradation and new server selection
+         *
+         * Tracks degraded server responses and at a certain level will choose 
+         * a new server if possible 
+         */
+        private void degrade(bool degraded = true )
+        {
+            if ( !degraded ) 
+            // Track nominal result
             {
-                if ( !degraded ) 
-                // Track nominal result
+                _degrade =+ ((_degrade > DEGRADE_CAPITAL) ? 0 : 1);
+            }
+            else
+            // Degraded result
+            {
+                warning(@"RadioBrowser degrading server: $_current_server");
+                _degrade =- DEGRADE_COST;
+                if ( _degrade < 0 ) 
+                // This server degraded to zero
                 {
-                    _degrade =+ ((_degrade > DEGRADE_CAPITAL) ? 0 : 1);
+                    choose_server();
+                    _degrade = DEGRADE_CAPITAL;
                 }
-                else
-                // Degraded result
-                {
-                    warning(@"RadioBrowser degrading server: $_current_server");
-                    _degrade =- DEGRADE_COST;
-                    if ( _degrade < 0 ) 
-                    // This server degraded to zero
-                    {
-                        choose_server();
-                        _degrade = DEGRADE_CAPITAL;
-                    }
-                }
-            } // degrade
+            }
+        } // degrade
+
     
         /**
          * @brief Retrieve server stats
@@ -347,7 +378,6 @@ namespace Tuner.DataProvider {
 
             var stream = HttpClient.GET(build_uri(RBI_STATS), out status_code);
 
-
             if ( status_code != 0 && stream != null)
             {
                 try {
@@ -356,15 +386,6 @@ namespace Tuner.DataProvider {
                     rootnode = parser.get_root();
                     Json.Object json_object = rootnode.get_object();
                     _available_tags = (int)json_object.get_int_member("tags");
-
-                    //  Json.Generator generator = new Json.Generator();
-
-                    //  // Set the root node for the generator
-                    //  generator.set_root(rootnode);
-
-                    //  // Get the string representation of the root node
-                    //  size_t size;
-                    //  string root_as_string = generator.to_data(out size);
 
                 } catch (Error e) {
                     warning(@"Could not get server stats: $(e.message)");

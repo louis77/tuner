@@ -4,8 +4,11 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
- * @file RadioBrowser.vala
- *
+ * @file DataProvider.vala
+ * 
+ * @author technosf
+ * @date 2024-12-01
+ * @since 2.0.0
  * @brief Interface to radio-browser.info API and servers
  * 
  */
@@ -13,20 +16,12 @@
 using Gee;
 
 /**
- * @namespace Tuner.RadioBrowser
+ * @namespace Tuner.DataProvider
  *
- * @brief Interface to radio-browser.info API and servers
+ * @brief API for radio station information provider inplementations
  *
- * This namespace provides functionality to interact with the radio-browser.info API.
- * It includes features for:
- * - Retrieving radio station metadata JSON
- * - Executing searches and retrieving radio station metadata JSON
- * - Reporting back user interactions (voting, listen tracking)
- * - Tag and other metadata retrieval
- * - API Server discovery and connection handling from DNS and from round-robin API server
  */
 namespace Tuner.DataProvider {
-
 
     /**
      * @struct SearchParams
@@ -56,7 +51,7 @@ namespace Tuner.DataProvider {
     }
 
     /**
-     * @brief Error domain for RadioBrowser-related errors
+     * @brief Error domain for DataProvider-related errors
      * 
      */
     public errordomain DataError {
@@ -65,7 +60,8 @@ namespace Tuner.DataProvider {
 
         /** @brief Unable to establish connection to API servers */
         NO_CONNECTION
-    }
+    } // DataError
+
 
     /**
      * @enum SortOrder
@@ -135,8 +131,9 @@ namespace Tuner.DataProvider {
                 default:
                     assert_not_reached();
             }
-        }
-    }
+        } // to_string
+    } // SortOrder
+
 
     /**
      * @class Tag
@@ -152,36 +149,27 @@ namespace Tuner.DataProvider {
 
         /** @brief Number of stations using this tag */
         public uint stationcount { get; set; }
-    }
+    } // Tag
 
 
     /**
-     * @class Client
+     * @class API
      *
-     * @brief Main RadioBrowser API client implementation
+     * @brief Main DataProvider API 
      * 
-     * Provides methods to interact with the radio-browser.info API, including:
+     * Defines methods to interact with the DataProvider API, including:
      * - Station search and retrieval
      * - User interaction tracking (votes, listens)
      * - Tag management
      * - Server discovery and connection handling
      *
-     * Example usage:
-     * @code
-     * try {
-     *     var client = new Client();
-     *     var params = SearchParams() {
-     *         text = "jazz",
-     *         order = SortOrder.NAME
-     *     };
-     *     var stations = client.search(params, 10);
-     * } catch (DataError e) {
-     *     error("Failed to search: %s", e.message);
-     * }
-     * @endcode
      */
     public interface API : Object 
     {
+        /**
+         * @brief DataProvider status
+         *
+         */
         public enum Status
         {
             OK,
@@ -189,19 +177,52 @@ namespace Tuner.DataProvider {
             NO_SERVERS_PRESENTED,
             NOT_AVAILABLE,
             UNKNOW_ERROR
-        }
+        } // Status
 
+
+        /**
+         * @brief Clears the last data error 
+         *
+         */
+         public virtual void clear_last_error() { last_data_error = null; }
+
+
+        /**
+         * @brief The last DataError from the DataProvider
+         *
+         */
+         public abstract DataError? last_data_error { get; protected set; }
+
+
+        /**
+         * @brief DataProvider status property
+         *
+         */
+         public abstract Status status { get; protected set; }
+
+
+        /**
+         * @brief DataProvider name property
+         *
+         */
         public abstract string name { get; protected set; }
 
-        public abstract Status status { get; protected set; }
 
-        public abstract DataError? last_data_error { get; protected set; }
+        /**
+         * @brief Number of tags available
+         *
+         * @return the number of available tags
+         */
+        public abstract int available_tags();   
 
-        public abstract int available_tags();   // Number of tags available
 
-        public virtual void clear_last_error() { last_data_error = null; }
-
+        /**
+         * @brief Initialize the DataProvider implementation
+         *
+         * @return true if initialization successful
+         */
         public abstract bool initialize();
+
 
         /**
          * @brief Register a station listen event
@@ -209,6 +230,7 @@ namespace Tuner.DataProvider {
          * @param stationuuid UUID of the station being listened to
          */
         public abstract void click(string stationuuid);
+
 
         /**
          * @brief Vote for a station
@@ -218,7 +240,6 @@ namespace Tuner.DataProvider {
          public abstract void vote(string stationuuid) ;
 
 
-
         /**
          * @brief Get all available tags
          *
@@ -226,7 +247,6 @@ namespace Tuner.DataProvider {
          * @throw DataError if unable to retrieve or parse tag data
          */
          public abstract Set<Tag> get_tags(int offset = 0, int limit = 0) throws DataError;
-         //public abstract Tag> get_tag_by_offset() throws DataError;
 
 
         /**
@@ -250,5 +270,6 @@ namespace Tuner.DataProvider {
          * @throw DataError if unable to retrieve or parse station data
          */
          public abstract Set<Model.Station> search(SearchParams params, uint rowcount, uint offset = 0) throws DataError;
-    }
-}
+
+    } // API
+} // DataProvider

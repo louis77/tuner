@@ -1,6 +1,10 @@
-/*
+/**
+ * SPDX-FileCopyrightText: Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
+ * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
+ *
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
+ *
+ * @file DBusMediaPlayer.vala
  */
 
 namespace Tuner.DBus {
@@ -29,7 +33,8 @@ namespace Tuner.DBus {
         if (owner_id == 0) {
             warning ("Could not initialize MPRIS session.\n");
         }
-    }
+    } // initialize
+
 
     void onBusAcquired (DBusConnection conn) {
         try {
@@ -39,7 +44,8 @@ namespace Tuner.DBus {
             error (@"Could not acquire path $ServerPath: $(e.message)");
         }
         info (@"DBus Server is now listening on $ServerName $ServerPath…\n");
-    }
+    } // onBusAcquired
+
 
     public class MediaPlayer : Object, DBus.IMediaPlayer2 {
         public void raise() throws DBusError, IOError {
@@ -103,7 +109,7 @@ namespace Tuner.DBus {
                 return true;
             }
         }
-    }
+    } // MediaPlayer
 
 
     public class MediaPlayerPlayer : Object, DBus.IMediaPlayer2Player {
@@ -123,7 +129,7 @@ namespace Tuner.DBus {
 
         public MediaPlayerPlayer (DBusConnection conn) {
             Object (conn: conn);
-            app().player.state_changed_sig.connect ((state) => {
+            app().player.state_changed_sig.connect ((station, state) => {
                 switch (state) {
                 case PlayerController.Is.PLAYING:
                 case PlayerController.Is.BUFFERING:
@@ -141,11 +147,8 @@ namespace Tuner.DBus {
 			app().player.metadata_changed_sig.connect ((metadata) => {
                 _current_title = metadata.title;
                 trigger_metadata_update ();
-        });
-        //  app().player.title_changed.connect ((title) => {
-        //          _current_title = title;
-        //          trigger_metadata_update ();
-        //  });
+            });
+            
 
 			app().player.station_changed_sig.connect ((station) => {
 					_current_title = station.name;
@@ -336,5 +339,5 @@ namespace Tuner.DBus {
             array += text;
             return array;
         }
-    }
+    } // MediaPlayerPlayer
 }

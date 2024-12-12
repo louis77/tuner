@@ -78,7 +78,7 @@ public class Tuner.Display : Gtk.Paned {
         Object(
             directory : directory
         );
-    }
+    } // Display
 
 
     /**
@@ -491,7 +491,7 @@ public class Tuner.Display : Gtk.Paned {
             }
         });
         category.add(item);
-    }
+    } // jukebox
 
 
     private void hookup(StationList slist)

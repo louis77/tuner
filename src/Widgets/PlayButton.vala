@@ -11,7 +11,12 @@
  * @brief Player 'PLAY' button
  */
 
-
+ /**
+ * @class PlayButton
+ * @brief A custom widget that shows and controls play state.
+ *
+ * @extends Gtk.Button
+ */
 public class Tuner.PlayButton : Gtk.Button {
 
     /* Constants    */
@@ -39,7 +44,12 @@ public class Tuner.PlayButton : Gtk.Button {
 
     /* Public */
 
-
+    /**
+     * @class PlayButton
+     *
+     * @brief Create the play button and hook it up to the PlayerController
+     *
+     */
     public PlayButton()
     {
         Object();
@@ -47,15 +57,8 @@ public class Tuner.PlayButton : Gtk.Button {
         image = PLAY;
         sensitive = true;
 
-        app().player.state_changed_sig.connect ((state) => {
+        app().player.state_changed_sig.connect ((station, state) => {
             set_inverse_symbol (state);
-        });
-
-        clicked.connect (() =>
-        {
-            warning("Clicked");
-           // theme();
-            warning("Clicked-End");
         });
     }
 

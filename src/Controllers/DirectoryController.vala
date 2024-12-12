@@ -129,7 +129,7 @@ public class Tuner.DirectoryController : Object {
         };
         var source = new StationSet(limit, params, _provider, _star_store);
         return source;
-    }
+    } // load_trending_stations
 
 
     /**
@@ -148,7 +148,7 @@ public class Tuner.DirectoryController : Object {
         };
         var source = new StationSet(limit, params, _provider, _star_store);
         return source;
-    }
+    } // load_popular_stations
 
 
     /**
@@ -168,7 +168,7 @@ public class Tuner.DirectoryController : Object {
         };
         var source = new StationSet(limit, params, _provider, _star_store);
         return source;
-    }
+    } // load_by_country
 
 
     /**
@@ -188,7 +188,7 @@ public class Tuner.DirectoryController : Object {
         };
         var source = new StationSet(limit, params, _provider, _star_store); 
         return source;
-    }
+    } // load_search_stations
 
 
     /**
@@ -198,7 +198,7 @@ public class Tuner.DirectoryController : Object {
      */
     public Collection<Model.Station> get_starred () {
         return _star_store.get_all_stations();
-    }
+    } // get_starred
 
 
     // --------------------------------------------------
@@ -207,12 +207,13 @@ public class Tuner.DirectoryController : Object {
     {
         _star_store.add_saved_search ( search_text);
         return load_search_stations(search_text,DIRECTORY_LIMIT);
-    }
+    } // add_saved_search
+
 
     public void remove_saved_search( string search_text)
     {
         _star_store.remove_saved_search ( search_text);
-    }
+    } // remove_saved_search
 
 
     public Map<string, StationSet> load_saved_searches()
@@ -223,7 +224,7 @@ public class Tuner.DirectoryController : Object {
             searches.set (search, load_search_stations(search,DIRECTORY_LIMIT));
         }
         return searches;
-    }
+    } // load_saved_searches
 
 
     // -------------------------------------------------
@@ -246,7 +247,7 @@ public class Tuner.DirectoryController : Object {
         };
         var source = new StationSet(40, params, _provider, _star_store);
         return source;
-    }
+    } // load_by_tag
 
 
     public StationSet load_by_tag_set (Set<string> utags) {
@@ -259,7 +260,7 @@ public class Tuner.DirectoryController : Object {
         };
         var source = new StationSet(40, params, _provider, _star_store);
         return source;
-    }
+    } // load_by_tag_set
 
 
     /**
@@ -274,7 +275,7 @@ public class Tuner.DirectoryController : Object {
         } else {
             debug ("do-not-track enabled, will not send listening event");
         }
-    }
+    } // count_station_click
 
 
     /**
@@ -303,7 +304,7 @@ public class Tuner.DirectoryController : Object {
             } catch ( Error e) {}
         }
         return result;
-    }
+    } // load_random_genres
 } // DirectoryController
 
 
@@ -336,7 +337,7 @@ public class Tuner.StationSet : Object {
         _params = params;
         _provider = client;
         _star_store = star_store;
-    }
+    } // StationSet
 
 
     /**
@@ -364,7 +365,7 @@ public class Tuner.StationSet : Object {
         } catch (DataProvider.DataError e) {
             throw new SourceError.UNAVAILABLE("Directory Error");
         }
-    }
+    } // next_page
 
     
     /**
@@ -374,7 +375,7 @@ public class Tuner.StationSet : Object {
      */
     public bool has_more () {
         return _more;
-    }
+    } // has_more
     
 
     /**

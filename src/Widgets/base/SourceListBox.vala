@@ -1,6 +1,8 @@
 /*
+ * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family> 
+ * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
+ *
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
  */
 /**
  * @file SourceListBox.vala
@@ -12,8 +14,6 @@
  * types of content within the Tuner application.
  *
  * @namespace Tuner
- * @class ContentBox
- * @extends Gtk.Box
  */
 
 using Gee;
@@ -45,7 +45,8 @@ public class Tuner.SourceListBox : Gtk.Box {
     public void badge (string badge)
     {
         item.badge = badge;
-    }
+    } // badge
+    
 
     /**
      * @signal action_activated_sig
@@ -168,13 +169,13 @@ public class Tuner.SourceListBox : Gtk.Box {
      */
     construct {
         get_style_context ().add_class ("color-dark");
-    }
+    } // construct
 
 
     public Set<Model.Station>? next_page () throws SourceError
     {
         return _data.next_page();
-    }
+    } // next_page
 
 
     /**
@@ -182,7 +183,7 @@ public class Tuner.SourceListBox : Gtk.Box {
      */
     public void show_alert () {
         _substack.set_visible_child_full ("alert", Gtk.StackTransitionType.NONE);
-    }
+    } // show_alert
 
 
     /**
@@ -190,7 +191,7 @@ public class Tuner.SourceListBox : Gtk.Box {
      */
     public void show_nothing_found () {
         _substack.set_visible_child_full ("nothing-found", Gtk.StackTransitionType.NONE);
-    }
+    } // show_nothing_found
     
 
     public void list(ContentList content)
@@ -203,7 +204,7 @@ public class Tuner.SourceListBox : Gtk.Box {
         //  }
         this.content = content;
         show_all();
-    }
+    } // list
 
 
     public void delist()
@@ -211,7 +212,8 @@ public class Tuner.SourceListBox : Gtk.Box {
         _stack.remove(this);
         _category.remove (item);
         tooltip_button.sensitive = false;
-    }
+    } // delist
+
 
     /**
      * @property content
@@ -237,6 +239,7 @@ public class Tuner.SourceListBox : Gtk.Box {
         }
     } // content
 
+
     // -----------------------------------------------
 
     
@@ -245,7 +248,8 @@ public class Tuner.SourceListBox : Gtk.Box {
         var header = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
         header.homogeneous = false;
         return header;
-    }    
+    } // base_header
+
 
     private static Gtk.Box base_content()
     {
@@ -254,7 +258,8 @@ public class Tuner.SourceListBox : Gtk.Box {
         content.valign = Gtk.Align.START;
         content.get_style_context().add_class("welcome");
         return content;
-    }
+    } // base_content
+
 
     private static Gtk.ScrolledWindow content_scroller(Gtk.Box content)
     {
@@ -263,7 +268,7 @@ public class Tuner.SourceListBox : Gtk.Box {
         scroller.add (content);
         scroller.propagate_natural_height = true;        
         return scroller;
-    }
+    } // content_scroller
 
     // --------------------------------------------------
 

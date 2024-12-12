@@ -34,37 +34,51 @@ public class Tuner.StationContextMenu : Gtk.Menu {
      * @brief Initializes the menu items and sets up event handlers.
      */
     construct {
-        var label = new Gtk.MenuItem.with_label (this.station.name);
-        label.sensitive = false;
-        this.append (label);
 
-        var label2 = new Gtk.MenuItem.with_label (this.station.countrycode);
-        label2.sensitive = false;
-        this.append (label2);
+        // Info
+        var name = new Gtk.MenuItem.with_label (this.station.name);
+        name.sensitive = false;
 
-		this.append (new Gtk.SeparatorMenuItem ());
+        var country = new Gtk.MenuItem.with_label (this.station.countrycode);
+        country.sensitive = false;
 
+        var not_up_to_date = new Gtk.MenuItem.with_label (_("Station info updated Online - View changes"));
+        var make_up_to_date = new Gtk.MenuItem.with_label (_("Update Station from Online"));
+
+        var website = new Gtk.MenuItem.with_label (_("Visit Website"));
         if (this.station.homepage != null && this.station.homepage.length > 0) {
-            var website_label = new Gtk.MenuItem.with_label (_("Visit Website"));
-            this.append (website_label);
-            website_label.activate.connect (on_website_handler);
+            website.activate.connect (on_website_handler);
         }
 
-		var label3 = new Gtk.MenuItem.with_label (_("Copy Stream-URL to clipboard"));
-		label3.sensitive = true;
-		this.append (label3);
-		label3.activate.connect (on_streamurl_handler);
+		var stream_url = new Gtk.MenuItem.with_label (_("Copy Stream-URL to clipboard"));
+		stream_url.sensitive = true;
+		stream_url.activate.connect (on_streamurl_handler);
 
-        this.append (new Gtk.SeparatorMenuItem ());
 
-        var m1 = new Gtk.MenuItem ();
-        set_star_context (m1);
-        m1.activate.connect (on_star_handler);
-        this.append (m1);
+        // Star
+        var star = new Gtk.MenuItem ();
+        set_star_context (star);
+        star.activate.connect (on_star_handler);
 
         this.station.notify["starred"].connect ( (sender, property) => {
-            set_star_context (m1);
+            set_star_context (star);
         });
+
+        // Layout
+
+
+        this.append (name);
+        this.append (country);
+        this.append (new Gtk.SeparatorMenuItem ());
+        if ( !station.is_up_to_date )
+        {
+            append (not_up_to_date);
+            append (make_up_to_date);
+            append (new Gtk.SeparatorMenuItem ());
+        }
+        append (website);
+		append (stream_url);
+        append (star);
     }
 
     /**
@@ -83,16 +97,27 @@ public class Tuner.StationContextMenu : Gtk.Menu {
         } catch (Error e) {
             warning (@"Unable to open website: $(e.message)");
         }
-
     }
 
+
+    //  private void on_show_changes_handler()
+    //  {
+        
+    //  }
+
+
+    //  private void on_update_station_handler()
+    //  {
+        
+    //  }
+
 	/**
-	 * @brief Handles copying the stream URL to clipboard.
+	 * @brief Handles copying the stream URL to clipboard. UrlResolved is the stream url, url can be playlists
 	 */
 	private void on_streamurl_handler () {
 		Gdk.Display display = Gdk.Display.get_default ();
 		Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (display, Gdk.SELECTION_CLIPBOARD);
-		clipboard.set_text (this.station.url, -1);
+		clipboard.set_text (( station.urlResolved == null || station.urlResolved == "" ) ? station.url : station.urlResolved, -1);
 	}
 
     /**

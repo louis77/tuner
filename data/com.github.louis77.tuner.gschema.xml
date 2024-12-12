@@ -27,6 +27,16 @@
             <summary>Do not participate in Station voting</summary>
             <description>If enabled, do not send voting and popularity information to metadata provider</description>
         </key>
+        <key name="stream-info" type="b">
+            <default>false</default>
+            <summary>Show stream info when playing</summary>
+            <description>Cycle through the metadata from the playing stream</description>
+        </key>        
+        <key name="stream-info-fast" type="b">
+            <default>false</default>
+            <summary>Faster cycling through stream info</summary>
+            <description>Fast cycle through the metadata from the playing stream if show stream info is enabled</description>
+        </key>        
         <key name="excluded-countries" type="as">
             <default>[]</default>
             <summary>Excluded Countries</summary>

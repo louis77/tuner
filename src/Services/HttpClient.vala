@@ -57,7 +57,8 @@ public class Tuner.HttpClient : Object {
         }
         debug(@"Conns Max: $(_session.get_max_conns()), Conns PH: $(_session.get_max_conns_per_host())");
         return _session;
-    }
+    } // getSession
+
 
     /**
      * @brief Perform a HEAD request to the specified URL
@@ -90,7 +91,7 @@ public class Tuner.HttpClient : Object {
         }
 
          return 0;
-     }
+     } // HEAD
 
 
      /**
@@ -127,7 +128,8 @@ public class Tuner.HttpClient : Object {
         }
 
         return null;
-    }
+    } // GET
+
 
     /**
      * @brief Perform an asynchronous GET request to the specified URL
@@ -169,5 +171,5 @@ public class Tuner.HttpClient : Object {
 
         warning(@"GETasync - GETasync failed for: $(uri.to_string())");
         return null;
-    }
+    } // GETasync
 }

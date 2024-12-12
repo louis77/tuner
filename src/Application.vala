@@ -1,9 +1,12 @@
 /**
+ * SPDX-FileCopyrightText: Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
+ * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
  * @file Application.vala
- * @brief Main application class for the Tuner radio application
- * @copyright Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
- * @copyright Copyright © 2024 technosf <https://github.com/technosf>
- * @license GPL-3.0-or-later
+ *
+ * @brief Main application class and namespace assets for the Tuner radio application
  */
 
 /**
@@ -25,6 +28,10 @@ namespace Tuner {
     private static string GTK_ALTERNATIVE_THEME;
 
 
+    /**
+    * @brief Available themes
+    *
+    */
     public enum THEME
     {
         SYSTEM,
@@ -47,9 +54,14 @@ namespace Tuner {
                     assert_not_reached();
             }
         }
-    }
+    } // THEME
 
 
+    /**
+    * @brief Applys the given theme to the app
+    *
+    * @return The Application instance
+    */
     public void apply_theme(string requested_theme)
     {
         warning(@"Apply request: $requested_theme");
@@ -78,8 +90,7 @@ namespace Tuner {
             return;
         }
         assert_not_reached();
-    }
-
+    } // apply_theme
 
 
     /**
@@ -90,6 +101,7 @@ namespace Tuner {
     public static Application app() {
             return _instance;
     } // app
+
 
     /**
     * @brief Send the calling method for a nap
@@ -127,6 +139,12 @@ namespace Tuner {
     } // fade
 
 
+    /*
+    
+        Application
+
+    */
+
 
     /**
     * @class Application
@@ -163,10 +181,6 @@ namespace Tuner {
         /** @brief File name for starred station sore */
         public const string STARRED = "starred.json";
 
-
-        /** @brief Singleton instance of the Application */
-        //private static Application _instance = null;
-
         /** @brief Connectivity monitoring*/
         private static NetworkMonitor monitor = NetworkMonitor.get_default ();
         private uint _monitor_changed_id = 0;
@@ -183,6 +197,9 @@ namespace Tuner {
 
         /** @brief Player controller */
         public DirectoryController directory { get; construct; }
+
+        /** @brief Player controller */
+        public StarStore  stars { get; construct; }
         
         /** @brief API DataProvider */
         public DataProvider.API provider { get; construct; }
@@ -198,20 +215,21 @@ namespace Tuner {
         /** @brief Are we online */
         public bool is_offline { get; private set; }   
         private bool _is_online = false;
-        public bool is_online { get { return _is_online; } 
-                                private set {
-                                        if ( value ) 
-                                        { 
-                                            _offline_cancel.reset (); 
-                                        }
-                                        else 
-                                        { 
-                                            _offline_cancel.cancel (); 
-                                        }
-                                        _is_online = value;
-                                        is_offline = !value;
-                                    }
-                                }   
+        public bool is_online { 
+            get { return _is_online; } 
+            private set {
+                if ( value ) 
+                { 
+                    _offline_cancel.reset (); 
+                }
+                else 
+                { 
+                    _offline_cancel.cancel (); 
+                }
+                _is_online = value;
+                is_offline = !value;
+            }
+        }   
 
 
         /** @brief Main application window */
@@ -251,15 +269,11 @@ namespace Tuner {
             data_dir = stat_dir(Environment.get_user_data_dir ());
 
 
-            warning(@"Directories $(cache_dir) to $(data_dir) - online: $(monitor.get_network_available ())");
-
             /* 
                 Starred file and migration of favorites
             */
             var _favorites_file =  File.new_build_filename (data_dir, "favorites.json"); // v1 file
             var _starred_file =  File.new_build_filename (data_dir, Application.STARRED);   // v2 file
-
-            warning(@"Migrate $(_favorites_file.get_path ()) to $(_starred_file.get_path ())");
 
             try {
                 _favorites_file.open_readwrite().close ();   // Try to open, if succeeds it exists, if not err - no migration
@@ -288,15 +302,24 @@ namespace Tuner {
             settings = new Settings ();
             provider = new DataProvider.RadioBrowser(null);
             player = new PlayerController ();
-            var stars = new StarStore(_starred_file);
+            stars = new StarStore(_starred_file);
             directory = new DirectoryController(provider, stars);
 
             add_action_entries(ACTION_ENTRIES, this);
 
             /*
-                Hook up voting
+                Hook up voting and counting
             */
+            player.state_changed_sig.connect ((station, state) => 
+            // Do a provider click when starting to play a sation
+            {
+                if ( !settings.do_not_track  && state == PlayerController.Is.PLAYING )
+                    provider.click(station.stationuuid);
+            });
+
             player.tape_counter_sig.connect((station) =>
+            // Every ten minutes of continuous playing tape counter sigs are emitted
+            // Vote and click the station each time as appropriate
             {     
                 if ( settings.do_not_track ) return;
                 if ( station.starred ) provider.vote(station.stationuuid);

@@ -119,7 +119,7 @@ public class Tuner.StarStore : Object {
         if (_starred_station_map.has_key (station.stationuuid)) return;
         _starred_station_map.set (station.stationuuid, station);
         persist ();
-    }
+    } // add_station
 
 
     /**
@@ -130,20 +130,20 @@ public class Tuner.StarStore : Object {
     public void remove_station (Station station) {
         _starred_station_map.unset (station.stationuuid);
         persist ();
-    }
+    } // remove_station
 
 
     public void add_saved_search(string search_text)
     {
         _saved_searches.add (search_text);
         persist();
-    }
+    } // add_saved_search
 
     public void remove_saved_search(string search_text)
     {
         _saved_searches.remove (search_text);
         persist();
-    }
+    } // remove_saved_search
 
 
     /**
@@ -195,7 +195,8 @@ public class Tuner.StarStore : Object {
      */
      public Collection<Station> get_all_stations () {
         return _starred_station_map.values;
-    }
+    } // get_all_stations
+    
 
     /**
      * @brief Retrieves all favorite stations.
@@ -204,7 +205,7 @@ public class Tuner.StarStore : Object {
      */
      public Gee.Set<string> get_all_searches () {
         return _saved_searches;
-    }
+    } // get_all_searches
 
     /**
      * @brief Checks if a station is in the favorites.
@@ -214,7 +215,7 @@ public class Tuner.StarStore : Object {
      */
     public bool contains (Station station) {
         return _starred_station_map.has_key (station.stationuuid);
-    }
+    } // contains
 
 
     // ----------------------------------------------------------

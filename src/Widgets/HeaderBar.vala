@@ -88,7 +88,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
     private Display _display = new Display();
 
-
     /**
      * @brief Construct block for initializing the header bar components.
      *
@@ -128,7 +127,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         _star_button.sensitive = true;
         _star_button.tooltip_text = _("Star this station");
         _star_button.clicked.connect (() => {
-            star_clicked_sig (starred);     // FIXME refresh faves?
+            if ( _station != null ) star_clicked_sig (starred);  
         });
      
        
@@ -191,6 +190,15 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         });      
 
         check_online_status();
+
+        /*
+            Hook up title to metadata as tooltip
+        */
+        custom_title.tooltip_text = "Stream Metadata";
+        custom_title.query_tooltip.connect((x, y, keyboard_tooltip, tooltip) => {
+            tooltip.set_text(_display._metadata);
+            return true; 
+        });
     } // construct
 
 
@@ -205,7 +213,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
      */
     public void handle_station_change () {
         starred = _station.starred;
-    }
+    } // handle_station_change
 
     /**
      * @brief Update the header bar with information from a new station.
@@ -275,8 +283,14 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     {
         public Gtk.Label station_label { get; private set; }
         public CyclingRevealLabel title_label { get; private set; }
+
+        public StationContextMenu menu { get; private set; }
     
         public Gtk.Image favicon_image = new Gtk.Image.from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG);
+
+        private Model.Station _station;
+
+        internal string _metadata = _("Stream Metadata");
 
         /**
          */
@@ -301,17 +315,18 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             add(station_info);
             reveal_child = false; // Make it invisible initially
 
-            app().player.metadata_changed_sig.connect(handle_metadata_changed);
+           app().player.metadata_changed_sig.connect(handle_metadata_changed);
+        } // construct
 
-            //  station_info.size_allocate.connect((allocation) => {
-            //      warning(@"== Grid $(allocation.width)");
-            //  });
-        }
 
         /**
-         */
+        * @brief Handles display transition as station is changed
+        *
+        * Desensitive when off-line
+        */
         public async void station_change( Model.Station station )
         {
+            _station = station;
             transition_duration = REVEAL_DELAY;
             transition_type = Gtk.RevealerTransitionType.CROSSFADE;
 
@@ -331,16 +346,24 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             reveal_child = true;
 
             title_label.cycle();
-        }
+        } // station_change
 
+
+        /**
+        * @brief Processes changes to stream metadata as they come in
+        *
+        * Desensitive when off-line
+        */
         public void handle_metadata_changed ( PlayerController.Metadata metadata )
         {
+            _metadata = metadata.pretty_print;
             title_label.label = metadata.title;
-            title_label.add_sublabel(1, @"$(metadata.genre)  $(metadata.homepage)");
-            title_label.add_sublabel(2,@"$(metadata.audio_codec)  $(metadata.bitrate/1000)K  $(metadata.channel_mode)");
-            title_label.add_sublabel( 3, @"$(metadata.organization)  $(metadata.location)");
-        }
-    }
+            title_label.add_sublabel(1, metadata.genre,metadata.homepage);
+            title_label.add_sublabel(2,metadata.audio_info);
+            title_label.add_sublabel( 3, (metadata.org_loc) );
+        } // handle_metadata_changed
+    } // Display
+    
 
     /**
      * @brief Checks and sets per the online status
