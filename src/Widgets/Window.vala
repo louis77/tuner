@@ -117,6 +117,10 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             directory: directory
         );
 
+        add_widgets();
+        check_online_status();
+        show_all ();
+
         application.set_accels_for_action (ACTION_PREFIX + ACTION_PAUSE, {"<Control>5"});
         application.set_accels_for_action (ACTION_PREFIX + ACTION_QUIT, {"<Control>q"});
         application.set_accels_for_action (ACTION_PREFIX + ACTION_QUIT, {"<Control>w"});
@@ -138,11 +142,10 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         GTK_ALTERNATIVE_THEME = GTK_ORIGINAL_THEME;
         if ( GTK_ALTERNATIVE_THEME.has_suffix("-dark")) 
         {
-            warning(@"Dark system");
+            debug(@"Dark system");
             GTK_DEFAULT_THEME_IS_DARK = true;
             GTK_ALTERNATIVE_THEME = GTK_ALTERNATIVE_THEME.slice(0,-5);
         }
-
 
         set_icon_name(Application.APP_ID);
         add_action_entries (ACTION_ENTRIES, this);
@@ -151,44 +154,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         set_geometry_hints (null, Gdk.Geometry() { min_height = GEOMETRY_MIN_HEIGHT, min_width = GEOMETRY_MIN_WIDTH}, Gdk.WindowHints.MIN_SIZE);
         change_action_state (ACTION_DISABLE_TRACKING, settings.do_not_track);
         change_action_state (ACTION_ENABLE_AUTOPLAY, settings.auto_play);
-
-
-        /*
-            Display
-        */
-        //_directory.load ();
-        _display = new Display(directory);  
-        _display.selection_changed_sig.connect (handle_station_click);        
-        add (_display);
-
-        /*
-            Headerbar hookups
-        */
-        _headerbar = new HeaderBar ();
-
-        _headerbar.star_clicked_sig.connect ( (starred) => {
-            player_ctrl.station.toggle_starred ();
-        });
-
-        _headerbar.search_focused_sig.connect (() => 
-        // Show searched stack when cursor hits search text area
-        {
-            _display.search_focused_sig( );
-        });
-
-        _headerbar.searched_for_sig.connect ( (text) => 
-        // process the searched text, stripping it, and sensitizing the save 
-        // search star depending on if the search is already saved
-        {
-            _display.searched_for_sig( text);
-        });
-
-        /*
-            Player hookups
-         */
-        player_ctrl.station_changed_sig.connect (_headerbar.update_from_station);
-
-        set_titlebar (_headerbar);
 
                
         /*
@@ -224,11 +189,51 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         app().notify["is-online"].connect(() => {
             check_online_status();
         });
-
-        check_online_status();
-
-        show_all ();
     } // construct
+
+
+    /**
+        Add widgets after Window creation
+    */
+    private void add_widgets()
+    {
+        /*
+            Headerbar hookups
+        */
+        _headerbar = new HeaderBar (this);
+
+        _headerbar.star_clicked_sig.connect ( (starred) => {
+            player_ctrl.station.toggle_starred ();
+        });
+
+        _headerbar.search_focused_sig.connect (() => 
+        // Show searched stack when cursor hits search text area
+        {
+            _display.search_focused_sig( );
+        });
+
+        _headerbar.searched_for_sig.connect ( (text) => 
+        // process the searched text, stripping it, and sensitizing the save 
+        // search star depending on if the search is already saved
+        {
+            _display.searched_for_sig( text);
+        });
+
+        /*
+            Player hookups
+         */
+         player_ctrl.station_changed_sig.connect (_headerbar.update_from_station);
+
+         set_titlebar (_headerbar);
+
+        /*
+            Display
+        */
+        //_directory.load ();
+        _display = new Display(directory);  
+        _display.selection_changed_sig.connect (handle_station_click);        
+        add (_display);
+    }
 
 
     /* --------------------------------------------------------

@@ -61,20 +61,13 @@ public class Tuner.Settings : GLib.Settings
         app().window.move(_pos_x, _pos_y);
         app().player.volume = _volume;     
         
-
-        string config_home = Environment.get_variable("XDG_CONFIG_HOME") ?? GLib.Environment.get_user_config_dir();
-        string gtk_settings_path = config_home + "/gtk-3.0/settings.ini";
-    
-        warning(@"GTK Settings file path: $gtk_settings_path");
-
+        //  string config_home = Environment.get_variable("XDG_CONFIG_HOME") ?? GLib.Environment.get_user_config_dir();
+        //  string gtk_settings_path = config_home + "/gtk-3.0/settings.ini";
     }
 
 
     public void save()
     {
-
-        warning(@"Setting Save theme: $theme_mode");
-
         app().window.get_position(out _pos_x, out _pos_y);
         if ( _pos_x !=0 && _pos_y != 0 )
         {

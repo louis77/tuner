@@ -7,6 +7,8 @@
  * @file PlayerController.vala
  */
 
+ using Gst;
+
 /**
  * @class Tuner.PlayerController
  * @brief Manages the playback of radio stations.
@@ -15,7 +17,7 @@
  * from the media stream. It emits signals when the station, state, title,
  * or volume changes.
  */
-public class Tuner.PlayerController : Object 
+public class Tuner.PlayerController : GLib.Object 
 {
     /**
      * @brief the Tuner play state
@@ -51,7 +53,7 @@ public class Tuner.PlayerController : Object
 
     private const uint TEN_MINUTES_IN_SECONDS = 606;  // tape counter timer - 10 mins plus 1%
     
-    private Gst.Player _player;
+    private Player _player;
     private Model.Station _station; 
     private Metadata _metadata;
     private Is _player_state;
@@ -61,7 +63,7 @@ public class Tuner.PlayerController : Object
 
     construct 
     {
-        _player = new Gst.Player (null, null);
+        _player = new Player (null, null);
 
         _player.error.connect ((error) => 
         // There was an error playing the stream
@@ -87,7 +89,7 @@ public class Tuner.PlayerController : Object
         // Play state changed
         {
             // Don't forward flickering between playing and buffering
-            if (    !(state == Gst.PlayerState.PLAYING && state == Gst.PlayerState.BUFFERING) 
+            if (    !(state == PlayerState.PLAYING && state == PlayerState.BUFFERING) 
                 && (_player_state_name != state.get_name ())) 
             {
                 _player_state_name = state.get_name ();
@@ -185,8 +187,8 @@ public class Tuner.PlayerController : Object
         set {
             if ( ( _station == null ) ||  ( _station != value ) )
             {
-                _station = value;
                 _metadata =  new Metadata();
+                _station = value;
             }
             play_station (_station);
         }
@@ -215,6 +217,7 @@ public class Tuner.PlayerController : Object
         play_error = false;
         _player.play ();
         station_changed_sig (station);
+        metadata_changed_sig(_metadata);
     }
 
 
@@ -259,30 +262,30 @@ public class Tuner.PlayerController : Object
      * @brief Stream Metadata transform
      *
      */
-    public class Metadata : Object
+    public class Metadata : GLib.Object
     {
         private static string[,] METADATA_TITLES = 
         // Ordered array of tags and descriptions
         {
             {"title",_("Title")}
+            ,{"artist",_("Artist")}
+            ,{"album",_("Album")}
+            ,{"image",_("Image")}
             ,{"genre",_("Genre")}
             ,{"homepage",_("Homepage")}
+            ,{"organization",_("Organization")}
+            ,{"location",_("Location")}
+            ,{"extended-comment",_("Extended Comment")}
             ,{"bitrate",_("Bitrate")}
             ,{"audio-codec",_("Audio Codec")}
             ,{"channel-mode",_("Channel Mode")}
             ,{"track-number",_("Track Number")}
             ,{"track-count",_("Track Count")}
-            ,{"album",_("Album")}
-            ,{"image",_("Image")}
-            ,{"artist",_("Artist")}
-            ,{"extended-comment",_("Extended Comment")}
-            ,{"organization",_("Organization")}
-            ,{"location",_("Location")}
             ,{"nominal-bitrate",_("Nominal Bitrate")}
-            ,{"minimum-bitrate",_("Minimum Bitrte")}
+            ,{"minimum-bitrate",_("Minimum Bitrate")}
             ,{"maximum-bitrate",_("Maximim Bitrate")}
-            ,{"application-name",_("Application Name")}
             ,{"container-format",("Container Format")}
+            ,{"application-name",_("Application Name")}
             ,{"encoder",_("Encoder")}
             ,{"encoder-version",_("Encoder Version")}
             ,{"datetime",_("Date Time")}
@@ -302,7 +305,6 @@ public class Tuner.PlayerController : Object
             }
         }
 
-
         public string all_tags { get; private set; default = ""; }
         public string title { get; private set; default = ""; }
         public string genre { get; private set; default = ""; }
@@ -310,7 +312,6 @@ public class Tuner.PlayerController : Object
         public string audio_info { get; private set; default = ""; }
         public string org_loc { get; private set; default = ""; }
         public string pretty_print { get; private set; default = ""; }
-
 
         private Gee.Map<string,string> _metadata_values = new Gee.HashMap<string,string>();  // Hope it come out in order
 
@@ -321,9 +322,16 @@ public class Tuner.PlayerController : Object
         * @param media_info The media information stream
         * @return true if the metadata has changed
         */
-        internal bool process_media_info_update (Gst.PlayerMediaInfo media_info) 
+        internal bool process_media_info_update (PlayerMediaInfo media_info) 
         {
             var streamlist = media_info.get_stream_list ().copy ();
+
+            title  = ""; 
+            genre  = ""; 
+            homepage  = ""; 
+            audio_info  = ""; 
+            org_loc  = ""; 
+            pretty_print  = ""; 
 
             foreach (var stream in streamlist) // Hopefully just one metadata stream
             {
@@ -334,82 +342,72 @@ public class Tuner.PlayerController : Object
                 if ( all_tags == tags.to_string ()) return false; // Compare to all tags and if no change return false
 
                 all_tags = tags.to_string ();
-                warning(@"All Tags: $all_tags");
+                debug(@"All Tags: $all_tags");
+            
+                string? s = null;
+                bool b = false;
+                uint u = 0;
 
-                var log_handler1 = GLib.Log.set_handler(
-                    null,
-                    GLib.LogLevelFlags.LEVEL_CRITICAL | GLib.LogLevelFlags.LEVEL_WARNING,
-                        (log_domain, log_level, message) => {
-                            // Ignore the warnings
-                        }
-                    );  // Noisy process in the try
+                tags.foreach ((list, tag) => 
+                {
+                    var index = METADATA_TAGS.index_of (tag);
 
-
-                var log_handler2 = GLib.Log.set_handler(
-                    "GLib-GObject",
-                    GLib.LogLevelFlags.LEVEL_CRITICAL | GLib.LogLevelFlags.LEVEL_WARNING,
-                        (log_domain, log_level, message) => {
-                            // Ignore the warnings
-                        }
-                    );  // Noisy process in the try
-
-                try {
-
-                    tags.foreach ((list, tag) => 
+                    if ( index == -1 ) 
                     {
-                        var index = METADATA_TAGS.index_of (tag);
+                        warning(@"New meta tag: $tag");
+                        return;
+                    }
+                
+                    var type = (list.get_value_index(tag, 0)).type();  
 
-                        if ( index == -1 ) 
-                        {
-                            warning(@"New meta tag: $tag");
-                            return;
-                        }
-
-                        string s;
-                        bool b;
-                        uint u;
-
-                        if ( list.get_string(tag, out s))
-                        {
+                    switch( type )
+                    {
+                        case  GLib.Type.STRING :
+                            list.get_string(tag, out s);
                             _metadata_values.set ( tag,  s);
-                        }
-                        else if ( list.get_uint(tag, out u) && tag != "has-crc" )
-                        // uints pass as bools, and vice versa - so check uints before bools and exclude single know bool
-                        {
+                            break;
+                        case  GLib.Type.UINT :
+                            list.get_uint(tag, out u);
                             _metadata_values.set ( tag,  @"$(u/1000)K");
-                        }
-                        else if (list.get_boolean (tag, out b))
-                        {
+                            break;
+                        case  GLib.Type.BOOLEAN :
+                            list.get_boolean (tag, out b);
                             _metadata_values.set ( tag,  b.to_string ());
-                        } 
-                    });
+                            break;
+                        default :
+                            warning(@"New Tag type: $(type.name())");
+                            break;
+                    }
+                }); // tags.foreach
 
-                    title = _metadata_values.get ("title");
-                    genre = _metadata_values.get ("genre");
-                    homepage =  _metadata_values.get ("homepage");
-                    audio_info =  (_metadata_values.get ("audio_codec")+" "+_metadata_values.get ("bitrate")+" "+_metadata_values.get ("channel_mode")).strip ();
-                    org_loc =  (_metadata_values.get ("organization")+" "+_metadata_values.get ("location")).strip ();
-    
-                } finally {
-                    // Remove custom handlers
-                    GLib.Log.remove_handler(null, log_handler1);
-                    GLib.Log.remove_handler("GLib-GObject", log_handler2);
-                }
+                if ( _metadata_values.has_key ("title" )) _title = _metadata_values.get ("title");
+                if ( _metadata_values.has_key ("genre" )) _genre = _metadata_values.get ("genre");
+                if ( _metadata_values.has_key ("homepage" )) _homepage = _metadata_values.get ("homepage");
 
+                if ( _metadata_values.has_key ("audio_codec" )) _audio_info = _metadata_values.get ("audio_codec ");
+                if ( _metadata_values.has_key ("bitrate" )) _audio_info += _metadata_values.get ("bitrate ");
+                if ( _metadata_values.has_key ("channel_mode" )) _audio_info += _metadata_values.get ("channel_mode");
+                if ( _audio_info != null && _audio_info.length > 0 ) _audio_info = _audio_info.strip ();
+                
+                if ( _metadata_values.has_key ("organization" )) _org_loc = _metadata_values.get ("organization ");
+                if ( _metadata_values.has_key ("location" )) _org_loc += _metadata_values.get ("location");
+                if ( _org_loc != null && _org_loc.length > 0) org_loc = _org_loc.strip ();
 
                 StringBuilder sb = new StringBuilder ();
                 foreach ( var tag in METADATA_TAGS ) 
                 // Pretty print
                 {
-                    if ( !_metadata_values.has_key(tag) ) break;
-     
-                    sb.append ( METADATA_TITLES[METADATA_TAGS.index_of (tag),1])
-                    .append(" : ")
-                    .append( _metadata_values.get (tag) )
-                    .append("\n");
+                    if ( _metadata_values.has_key(tag) ) 
+                    {
+                        sb.append ( METADATA_TITLES[METADATA_TAGS.index_of (tag),1])
+                        .append(" : ")
+                        .append( _metadata_values.get (tag) )
+                        .append("\n");
+                    }
                 }
                 pretty_print = sb.truncate (sb.len-1).str;
             } // foreach
+            
             return true;
         } // process_media_info_update
     } // Metadata

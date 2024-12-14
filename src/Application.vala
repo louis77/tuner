@@ -9,6 +9,8 @@
  * @brief Main application class and namespace assets for the Tuner radio application
  */
 
+ using GLib;
+
 /**
  * @namespace Tuner
  * @brief Main namespace for the Tuner application
@@ -64,11 +66,11 @@ namespace Tuner {
     */
     public void apply_theme(string requested_theme)
     {
-        warning(@"Apply request: $requested_theme");
+        debug(@"Apply request: $requested_theme");
 
         if ( requested_theme == THEME.LIGHT.get_name() )
         {
-            warning(@"Applying theme: light");
+            debug(@"Applying theme: light");
             if ( GTK_DEFAULT_THEME_IS_DARK ) GTK_SETTINGS.gtk_theme_name = GTK_ALTERNATIVE_THEME;
             GTK_SETTINGS.gtk_application_prefer_dark_theme = false;
             return;
@@ -76,7 +78,7 @@ namespace Tuner {
 
         if ( requested_theme == THEME.DARK.get_name() )
         {
-            warning(@"Applying theme dark");
+            debug(@"Applying theme dark");
             GTK_SETTINGS.gtk_theme_name = GTK_ORIGINAL_THEME;
             GTK_SETTINGS.gtk_application_prefer_dark_theme = true;
             return;
@@ -84,7 +86,7 @@ namespace Tuner {
 
         if ( requested_theme == THEME.SYSTEM.get_name() )
         {
-            warning(@"Applying theme system");
+            debug(@"Applying theme system");
             GTK_SETTINGS.gtk_theme_name = GTK_ORIGINAL_THEME;
             GTK_SETTINGS.gtk_application_prefer_dark_theme = GTK_ORIGINAL_PREFER_DARK_THEME;
             return;
@@ -110,10 +112,10 @@ namespace Tuner {
     * @param priority priority of chacking nap is over
     */
     public static async void nap (uint interval) {
-        GLib.Timeout.add (interval, () => {
+        Timeout.add (interval, () => {
             nap.callback ();
-            return GLib.Source.REMOVE;
-        }, GLib.Priority.LOW);
+            return Source.REMOVE;
+        }, Priority.LOW);
         yield;
     } // nap
 
@@ -210,7 +212,7 @@ namespace Tuner {
         /** @brief Data directory path */
         public string? data_dir { get; construct; }
 
-        public GLib.Cancellable offline_cancel { get; construct; }
+        public Cancellable offline_cancel { get; construct; }
 
         /** @brief Are we online */
         public bool is_offline { get; private set; }   
@@ -258,10 +260,10 @@ namespace Tuner {
         */
         construct 
         {
-            GLib.Intl.setlocale (LocaleCategory.ALL, "");
-            GLib.Intl.bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-            GLib.Intl.bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-            GLib.Intl.textdomain (GETTEXT_PACKAGE);
+            Intl.setlocale (LocaleCategory.ALL, "");
+            Intl.bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+            Intl.bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+            Intl.textdomain (GETTEXT_PACKAGE);
             
             // Create required directories and files
 
@@ -289,7 +291,7 @@ namespace Tuner {
                 Create the cancellable.
                 Wrap network monitoring into a bool property 
             */
-            offline_cancel = new GLib.Cancellable();
+            offline_cancel = new Cancellable();
             monitor.network_changed.connect((monitor) => {
                 check_online_status();
             });

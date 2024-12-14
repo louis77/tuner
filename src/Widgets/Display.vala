@@ -632,4 +632,4 @@ public class Tuner.Display : Gtk.Paned {
                 , directory.load_by_tag (genre.down ()));
         }
     } // create_category_genre
-}
+} // Display

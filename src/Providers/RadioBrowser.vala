@@ -15,7 +15,7 @@ using Gee;
 /**
  * @namespace Tuner.RadioBrowser
  *
- * @brief Interface to radio-browser.info API and servers
+ * @brief DataProvider implementation for radio-browser.info API and servers
  *
  * This namespace provides functionality to interact with the radio-browser.info API.
  * It includes features for:
@@ -350,7 +350,7 @@ namespace Tuner.DataProvider {
             if ( !degraded ) 
             // Track nominal result
             {
-                _degrade =+ ((_degrade > DEGRADE_CAPITAL) ? 0 : 1);
+                _degrade += ((_degrade > DEGRADE_CAPITAL) ? 0 : 1);
             }
             else
             // Degraded result

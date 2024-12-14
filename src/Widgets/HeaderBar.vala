@@ -10,17 +10,19 @@
  * 
  */
 
+ using Gtk;
+
  /*
  * @class Tuner.HeaderBar
  *
  * @brief Custom header bar that centrally displays station info and 
  * packs app controls either side. 
  *
- * This class extends Gtk.HeaderBar to create a specialized header bar
+ * This class extends HeaderBar to create a specialized header bar
  * with play/pause controls, volume control, station information display,
  * search functionality, and preferences menu.
  *
- * @extends Gtk.HeaderBar
+ * @extends HeaderBar
  */
 public class Tuner.HeaderBar : Gtk.HeaderBar {
 
@@ -35,15 +37,15 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     // Search delay in milliseconds
     private const uint REVEAL_DELAY = 400u; 
 
-    private static Gtk.Image STAR = new Gtk.Image.from_icon_name ("starred", Gtk.IconSize.LARGE_TOOLBAR);
-    private static Gtk.Image UNSTAR = new Gtk.Image.from_icon_name ("non-starred", Gtk.IconSize.LARGE_TOOLBAR);
+    private static Image STAR = new Image.from_icon_name ("starred", IconSize.LARGE_TOOLBAR);
+    private static Image UNSTAR = new Image.from_icon_name ("non-starred", IconSize.LARGE_TOOLBAR);
 
 
     /* Public */
 
 
     // Public properties
-    private Gtk.VolumeButton _volume_button = new Gtk.VolumeButton();
+    private VolumeButton _volume_button = new VolumeButton();
 
     // Signals
     public signal void star_clicked_sig (bool starred);
@@ -55,25 +57,25 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     */
 
 
-    protected static Gtk.Image FAVICON_IMAGE = new Gtk.Image.from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG);
+    protected static Image FAVICON_IMAGE = new Image.from_icon_name (DEFAULT_ICON_NAME, IconSize.DIALOG);
 
     /* 
         main display assets 
     */
-    private Gtk.Box _tuner = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-    private Gtk.Button _star_button = new Gtk.Button.from_icon_name (
+    private Box _tuner = new Box(Orientation.VERTICAL, 0);
+    private Button _star_button = new Button.from_icon_name (
         "non-starred",
-        Gtk.IconSize.LARGE_TOOLBAR
+        IconSize.LARGE_TOOLBAR
     );
     private PlayButton _play_button = new PlayButton ();
-    private Gtk.MenuButton _prefs_button = new Gtk.MenuButton ();
-    private Gtk.SearchEntry _searchentry = new Gtk.SearchEntry ();
+    private MenuButton _prefs_button = new MenuButton ();
+    private SearchEntry _searchentry = new SearchEntry ();
 
     /* 
         secondary display assets 
     */
-    private Gtk.Overlay _tuner_icon = new Gtk.Overlay();
-    private Gtk.Image _tuner_on = new Gtk.Image.from_icon_name("tuner-on", Gtk.IconSize.DIALOG);
+    private Overlay _tuner_icon = new Overlay();
+    private Image _tuner_on = new Image.from_icon_name("tuner-on", IconSize.DIALOG);
 
     // data and state variables
 
@@ -86,7 +88,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     private uint _delayed_changed_id;
     private string _searchentry_text = "";
 
-    private Display _display = new Display();
+    private PlayerInfo _player_info;
 
     /**
      * @brief Construct block for initializing the header bar components.
@@ -95,25 +97,27 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
      * station info display, play button, preferences button, search entry,
      * star button, and volume button.
      */
-    construct 
+    public HeaderBar(Window window)
     {
+        Object();
+
         /*
             LHS Controls
         */        
 
         // Tuner icon
-        _tuner_icon.add(new Gtk.Image.from_icon_name("tuner-off", Gtk.IconSize.DIALOG));
+        _tuner_icon.add(new Image.from_icon_name("tuner-off", IconSize.DIALOG));
         _tuner_icon.add_overlay(_tuner_on);
-        _tuner_icon.valign = Gtk.Align.START;
+        _tuner_icon.valign = Align.START;
 
         _tuner.add(_tuner_icon);
-        _tuner.set_valign(Gtk.Align.CENTER);
+        _tuner.set_valign(Align.CENTER);
         _tuner.set_margin_bottom(5);   // 20px padding on the right
         _tuner.set_margin_start(5);   // 20px padding on the right
         _tuner.set_margin_end(5);   // 20px padding on the right
 
         // Volume
-        _volume_button.set_valign(Gtk.Align.CENTER);
+        _volume_button.set_valign(Align.CENTER);
         _volume_button.value_changed.connect ((value) => {
             app().player.volume = value;
         });
@@ -123,7 +127,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
 
         // Star button
-        _star_button.valign = Gtk.Align.CENTER;
+        _star_button.valign = Align.CENTER;
         _star_button.sensitive = true;
         _star_button.tooltip_text = _("Star this station");
         _star_button.clicked.connect (() => {
@@ -134,7 +138,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         //
         // Create and configure play button
         //
-        _play_button.valign = Gtk.Align.CENTER;
+        _play_button.valign = Align.CENTER;
         _play_button.action_name = Window.ACTION_PREFIX + Window.ACTION_PAUSE; // Toggles player state
 
        
@@ -143,7 +147,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         */     
 
         // Search entry
-        _searchentry.valign = Gtk.Align.CENTER;
+        _searchentry.valign = Align.CENTER;
         _searchentry.placeholder_text = _("Station name");
 
         _searchentry.changed.connect (() => {
@@ -157,8 +161,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         });
         
         // Preferences button
-        _prefs_button.image = new Gtk.Image.from_icon_name ("open-menu", Gtk.IconSize.LARGE_TOOLBAR);
-        _prefs_button.valign = Gtk.Align.CENTER;
+        _prefs_button.image = new Image.from_icon_name ("open-menu", IconSize.LARGE_TOOLBAR);
+        _prefs_button.valign = Align.CENTER;
         _prefs_button.sensitive = true;
         _prefs_button.tooltip_text = _("Preferences");
         _prefs_button.popover = new Tuner.PreferencesPopover();
@@ -174,7 +178,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         pack_start (_star_button);
         pack_start (_play_button);
 
-        custom_title = _display; // Station display
+        _player_info = new PlayerInfo(window);
+        custom_title = _player_info; // Station display
 
         // pack RHS
         pack_end (_prefs_button);
@@ -194,9 +199,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         /*
             Hook up title to metadata as tooltip
         */
-        custom_title.tooltip_text = "Stream Metadata";
+        custom_title.tooltip_text = _("Stream Metadata");
         custom_title.query_tooltip.connect((x, y, keyboard_tooltip, tooltip) => {
-            tooltip.set_text(_display._metadata);
+            tooltip.set_text(_player_info._metadata);
             return true; 
         });
     } // construct
@@ -235,7 +240,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                     _station.notify.disconnect(handle_station_change);
                 }
         
-                yield _display.station_change(station);
+                _player_info.station_change.begin(station);
 
                 _station = station;
                 _station.notify.connect(handle_station_change);    
@@ -251,7 +256,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
 
     /**
-     * @brief Override of the realize method from Gtk.Widget for an initial animation
+     * @brief Override of the realize method from Widget for an initial animation
      * 
      * Called when the widget is being realized (created and prepared for display).
      * This happens before the widget is actually shown on screen.
@@ -259,12 +264,12 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     public override void realize() {
         base.realize();
         
-        _display.transition_type = Gtk.RevealerTransitionType.SLIDE_UP; // Optional: add animation        
-        _display.set_transition_duration(REVEAL_DELAY*3);
+        _player_info.transition_type = RevealerTransitionType.SLIDE_UP; // Optional: add animation        
+        _player_info.set_transition_duration(REVEAL_DELAY*3);
 
         // Use Timeout to delay the reveal animation
         Timeout.add(REVEAL_DELAY*3, () => {
-            _display.set_reveal_child(true);
+            _player_info.set_reveal_child(true);
             return Source.REMOVE;
         });
     } // realize
@@ -275,44 +280,43 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     */
 
     /**
-     * @brief Custom Display for the HeadeBar based on Revealer
+     * @brief Custom PlayerInfo for the HeadeBar based on Revealer
      * 
-     * This is the Display for the Player.
+     * This is the PlayerInfo for the Player.
      */
-    private class Display : Gtk.Revealer
+    private class PlayerInfo : Revealer
     {
-        public Gtk.Label station_label { get; private set; }
+        public Label station_label { get; private set; }
         public CyclingRevealLabel title_label { get; private set; }
-
-        public StationContextMenu menu { get; private set; }
-    
-        public Gtk.Image favicon_image = new Gtk.Image.from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG);
+        public StationContextMenu menu { get; private set; }    
+        public Image favicon_image = new Image.from_icon_name (DEFAULT_ICON_NAME, IconSize.DIALOG);
 
         private Model.Station _station;
-
         internal string _metadata = _("Stream Metadata");
 
-        /**
-         */
-        construct 
+        public PlayerInfo(Window window)
         {
-            station_label = new Gtk.Label (_("Choose a station"));
+            Object();
+
+            station_label = new Label (_("Choose a station"));
             station_label.get_style_context ().add_class (Granite.STYLE_CLASS_H4_LABEL);
             station_label.ellipsize = Pango.EllipsizeMode.MIDDLE;
 
-            title_label = new CyclingRevealLabel ();
-            title_label.transition_type = Gtk.RevealerTransitionType.CROSSFADE;
-          //  title_label.transition_duration = REVEAL_DELAY;
+            title_label = new CyclingRevealLabel (window,100);
+            title_label.transition_type = RevealerTransitionType.CROSSFADE;
            
-            var station_info = new Gtk.Grid ();
-            station_info.width_request = 200;
-            station_info.column_spacing = 10;
+            var station_grid = new Grid ();
+            //station_grid.width_request = 200;
+            station_grid.column_spacing = 10;
+            station_grid.set_halign(Align.FILL);
+            station_grid.set_valign(Align.CENTER);
+           // station_grid.set_size_request(100, -1);
 
-            station_info.attach (favicon_image, 0, 0, 1, 2);
-            station_info.attach (station_label, 1, 0, 1, 1);
-            station_info.attach (title_label, 1, 1, 1, 1);
+            station_grid.attach (favicon_image, 0, 0, 1, 2);
+            station_grid.attach (station_label, 1, 0, 1, 1);
+            station_grid.attach (title_label, 1, 1, 1, 1);
 
-            add(station_info);
+            add(station_grid);
             reveal_child = false; // Make it invisible initially
 
            app().player.metadata_changed_sig.connect(handle_metadata_changed);
@@ -326,26 +330,27 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         */
         public async void station_change( Model.Station station )
         {
-            _station = station;
             transition_duration = REVEAL_DELAY;
-            transition_type = Gtk.RevealerTransitionType.CROSSFADE;
+            transition_type = RevealerTransitionType.CROSSFADE;
 
             reveal_child = false;
-            title_label.stop();
+            title_label.clear();
 
             // Begin favicon update (non-blocking)
             yield station.update_favicon_image(favicon_image, true, DEFAULT_ICON_NAME);
-            station_label.label = "";
-            title_label.label = "";
+
+            if ( _station != null ) station_label.label = "";
+            _station = station;
+
             hide();   // Waits for reveal to be hiden
 
             station_label.label = station.name;
-            //  // subtitle = "Buffering";
 
             show();              
             reveal_child = true;
 
             title_label.cycle();
+
         } // station_change
 
 
@@ -373,7 +378,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     private void check_online_status()
     {
         if (app().is_offline) {
-            _display.favicon_image.opacity = 0.5;
+            _player_info.favicon_image.opacity = 0.5;
             _tuner_on.opacity = 0.0;
             _star_button.sensitive = false;
             _play_button.sensitive = false;
@@ -381,7 +386,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         }
         else
         {
-            _display.favicon_image.opacity = 1.0;
+            _player_info.favicon_image.opacity = 1.0;
             _tuner_on.opacity = 1.0;
             _star_button.sensitive = true;
             _play_button.sensitive = true;
@@ -407,7 +412,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     } // reset_search_timeout
 
 
-    // Property for starred state
+    /** @property {bool} starred - Station starred. */
     private bool starred {
         get { return _starred; }
         set {
