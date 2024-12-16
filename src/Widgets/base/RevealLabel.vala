@@ -61,39 +61,21 @@ public class Tuner.RevealLabel : Gtk.Revealer {
         // Prevent transition if same title is submitted multiple times
         if ( label_child.label == text) return;
 
-        Idle.add (() => 
-        // Initiate the fade out
-        {
-            reveal_child = false;
-            return Source.REMOVE;
-        });
+        reveal_child = false;
 
         Idle.add (() => 
-        // Initiate the fade out
+        // Initiate the fade out in a different thread, leaving this to refresh the display
         {
-        Timeout.add (3*DEFAULT_FADE_DURATION/2, () => 
-        // Update the text after fade has completed
-        {
-            label_child.label = text;
-            return Source.REMOVE;
-        });            
-        return Source.REMOVE;
-    });            
-        
-        if ( text != "" )
-        {
-            Idle.add (() => 
-            // Initiate the fade out
-            {
             Timeout.add (3*DEFAULT_FADE_DURATION, () => 
-            // Reveal the new text after some hang time
+            // Update the text after fade has completed
             {
-                reveal_child = true;
+                label_child.label = text;
+                if ( text != "" ) reveal_child = true;
+
                 return Source.REMOVE;
-            });
-            return Source.REMOVE;
-        });            
-        }
+            });       
+            return Source.REMOVE;     
+        });
     } // set_text
 
 

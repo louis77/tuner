@@ -387,11 +387,11 @@ public class Tuner.PlayerController : GLib.Object
                 if ( _metadata_values.has_key ("audio_codec" )) _audio_info = _metadata_values.get ("audio_codec ");
                 if ( _metadata_values.has_key ("bitrate" )) _audio_info += _metadata_values.get ("bitrate ");
                 if ( _metadata_values.has_key ("channel_mode" )) _audio_info += _metadata_values.get ("channel_mode");
-                if ( _audio_info != null && _audio_info.length > 0 ) _audio_info = _audio_info.strip ();
+                if ( _audio_info != null && _audio_info.length > 0 ) _audio_info = safestrip(_audio_info);
                 
                 if ( _metadata_values.has_key ("organization" )) _org_loc = _metadata_values.get ("organization ");
                 if ( _metadata_values.has_key ("location" )) _org_loc += _metadata_values.get ("location");
-                if ( _org_loc != null && _org_loc.length > 0) org_loc = _org_loc.strip ();
+                if ( _org_loc != null && _org_loc.length > 0) org_loc = safestrip(_org_loc);
 
                 StringBuilder sb = new StringBuilder ();
                 foreach ( var tag in METADATA_TAGS ) 

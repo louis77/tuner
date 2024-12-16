@@ -45,7 +45,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
 
     // Public properties
-    private VolumeButton _volume_button = new VolumeButton();
 
     // Signals
     public signal void star_clicked_sig (bool starred);
@@ -83,6 +82,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     private Model.Station _station;
     private Mutex _station_update_lock = Mutex();   // Lock out concurrent updates
 
+    private VolumeButton _volume_button = new VolumeButton();
     
     // Search-related variables
     private uint _delayed_changed_id;
@@ -294,9 +294,14 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         private Model.Station _station;
         internal string _metadata = _("Stream Metadata");
 
+        private Cancellable update_station_cancel = new Cancellable();
+
         public PlayerInfo(Window window)
         {
             Object();
+
+            transition_duration = REVEAL_DELAY;
+            transition_type = RevealerTransitionType.CROSSFADE;
 
             station_label = new Label (_("Choose a station"));
             station_label.get_style_context ().add_class (Granite.STYLE_CLASS_H4_LABEL);
@@ -304,13 +309,13 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
             title_label = new CyclingRevealLabel (window,100);
             title_label.transition_type = RevealerTransitionType.CROSSFADE;
-           
+
             var station_grid = new Grid ();
             //station_grid.width_request = 200;
             station_grid.column_spacing = 10;
             station_grid.set_halign(Align.FILL);
             station_grid.set_valign(Align.CENTER);
-           // station_grid.set_size_request(100, -1);
+            // station_grid.set_size_request(100, -1);
 
             station_grid.attach (favicon_image, 0, 0, 1, 2);
             station_grid.attach (station_label, 1, 0, 1, 1);
@@ -319,7 +324,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             add(station_grid);
             reveal_child = false; // Make it invisible initially
 
-           app().player.metadata_changed_sig.connect(handle_metadata_changed);
+            app().player.metadata_changed_sig.connect(handle_metadata_changed);
         } // construct
 
 
@@ -330,27 +335,38 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         */
         public async void station_change( Model.Station station )
         {
-            transition_duration = REVEAL_DELAY;
-            transition_type = RevealerTransitionType.CROSSFADE;
+            update_station_cancel.cancel();
+            update_station_cancel.reset();
 
-            reveal_child = false;
-            title_label.clear();
+            if ( !update_station_cancel.is_cancelled() )
+            {
+                reveal_child = false;
 
-            // Begin favicon update (non-blocking)
-            yield station.update_favicon_image(favicon_image, true, DEFAULT_ICON_NAME);
+                Idle.add (() => 
+                // Initiate the fade out in a different thread, leaving this to refresh the display
+                {
+                    Timeout.add (2*REVEAL_DELAY, () => 
+                    // Update the text after fade has completed
+                    {
+                        station_label.label = "";
+                        favicon_image.clear();
+                        title_label.clear();
 
-            if ( _station != null ) station_label.label = "";
-            _station = station;
-
-            hide();   // Waits for reveal to be hiden
-
-            station_label.label = station.name;
-
-            show();              
-            reveal_child = true;
-
-            title_label.cycle();
-
+                        station.update_favicon_image.begin(favicon_image, true, DEFAULT_ICON_NAME, update_station_cancel, () => 
+                        {
+                            if ( !update_station_cancel.is_cancelled() )
+                            {
+                                _station = station;
+                                station_label.label = station.name;
+                                reveal_child = true;
+                                title_label.cycle();
+                            }
+                        });
+                        return Source.REMOVE;
+                    });     
+                    return Source.REMOVE;
+                });     
+            }
         } // station_change
 
 

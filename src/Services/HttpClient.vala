@@ -31,7 +31,6 @@ public class Tuner.HttpClient : Object {
      */
     private static Soup.Session _session;
 
-    //private GLib.Cancellable offline_cancel = app().offline_cancel;
 
     /**
      * @brief Get the singleton Soup.Session instance
@@ -142,7 +141,7 @@ public class Tuner.HttpClient : Object {
     {
         status_code = 0;
 
-        if ( app().is_offline) return null;
+        if ( app().is_offline ) return null;
 
         var msg = new Soup.Message.from_uri("GET", uri);
 
@@ -167,7 +166,7 @@ public class Tuner.HttpClient : Object {
                 info(@"GETasync - Try $(loop) failed to fetch: $(uri.to_string()) $(e.message)");
             }
             yield nap(200 * loop);   
-        } while( loop++ < 3);
+        } while( loop++ < 3 );
 
         info(@"GETasync - GETasync failed for: $(uri.to_string())");
         return null;

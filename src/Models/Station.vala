@@ -130,7 +130,7 @@ public class Tuner.Model.Station : Object {
     // ----------------------------------------------------------
     
     private Uri _favicon_uri;
-    private Gdk.Pixbuf _favicon_pixbuf;
+    private Gdk.Pixbuf _favicon_pixbuf; // Favicon for this station
     private string _favicon_cache_file;
 
 
@@ -361,7 +361,7 @@ public class Tuner.Model.Station : Object {
 
         InputStream? stream = yield HttpClient.GETasync(_favicon_uri, Priority.LOW, out status_code); // Will automatically try several times
 
-        if ( stream != null && status_code == 200) 
+        if ( stream != null && status_code == 200 ) 
         /*
             Input stream OK
         */
@@ -384,40 +384,49 @@ public class Tuner.Model.Station : Object {
 
 
     /**
-     * @brief Asynchronously sets the given image to the station favicon, f available.
+     * @brief Asynchronously sets the given image to the station favicon, if available.
+     *
+     * Load the known icons first, and if reload, go around after trying the favicon url
      *
      * @param {Image} favicon_image - The favicon image to be updated.
      * @param {bool} reload - Whether to force reload the favicon from source.
      * @return {bool} True if the favicon was available and the image updated.
      */
-    public async bool update_favicon_image( Gtk.Image favicon_image, bool reload = false, string defaulticon = "")
+    public async bool update_favicon_image( Gtk.Image favicon_image, bool reload = false, string defaulticon = "", Cancellable? cancel = null )
     {
-        if (reload && favicon_loaded < 2 ) 
-        /*
-            Reload requested, and favicon has not had reload requested before
-        */
-        { 
-            STATION_FAILING_FAVICON.remove(stationuuid);    // Give possible 2nd chance
-            yield load_favicon_async(true); // Wait for load_favicon_async to complete
-        }
+        bool reloading = false;
 
+        do {           
+            try{
+                if ( _favicon_pixbuf == null || STATION_FAILING_FAVICON.contains(stationuuid)) 
+                {
+                    yield fade(favicon_image, FADE_MS, false);
+                    favicon_image.set_from_icon_name(defaulticon,Gtk.IconSize.DIALOG);
+                    yield fade(favicon_image, FADE_MS, true);
+                }
+                else{
 
-        try{
-            if ( _favicon_pixbuf == null || STATION_FAILING_FAVICON.contains(stationuuid)) 
-            {
-                yield fade(favicon_image, FADE_MS, false);
-                favicon_image.set_from_icon_name(defaulticon,Gtk.IconSize.DIALOG);
-                yield fade(favicon_image, FADE_MS, true);
-                return true;
+                    yield fade(favicon_image, FADE_MS, false);
+                    favicon_image.set_from_pixbuf(_favicon_pixbuf);
+                    yield fade(favicon_image, FADE_MS, true);
+                }
+            } finally {
+                favicon_image.opacity = 1;
+                reloading = false;
             }
-
-            yield fade(favicon_image, FADE_MS, false);
-            favicon_image.set_from_pixbuf(_favicon_pixbuf);
-            yield fade(favicon_image, FADE_MS, true);
-            return true;
-        } finally {
-            favicon_image.opacity = 1;
-        }
+            
+            if ( reload && favicon_loaded < 2 && ( cancel == null || !cancel.is_cancelled())) 
+            /*
+                Reload requested, and favicon has not had reload requested before
+            */
+            { 
+                STATION_FAILING_FAVICON.remove(stationuuid);    // Give possible 2nd chance
+                yield load_favicon_async(true); // Wait for load_favicon_async to complete
+                reloading = true;
+                reload = false;
+            }
+        } while ( reloading );
+        return true;
     } // update_favicon_image
 
 
