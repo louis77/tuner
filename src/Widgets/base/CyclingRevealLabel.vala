@@ -121,9 +121,8 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
 
   
         Idle.add (() => 
-        // Initiate the fade out
+        // Initiate the fade out in another thread
         {
-
             _flourish_id = Timeout.add_full(Priority.DEFAULT, 3, () => 
             {  
                 if ( _current_label_width >=  size ) 
@@ -254,7 +253,6 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
         Idle.add (() => 
         // Initiate the fade out
         {
-
             _label_cycle_id = Timeout.add_seconds_full(Priority.LOW, 1, () => 
             // New label timer
             {

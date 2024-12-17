@@ -253,7 +253,7 @@ public class Tuner.Model.Station : Object {
             }             
 
             /* -----------------------------------------------------------------------
-            Process v1 Attribute, if any, from old Favorites format
+                Process v1 Attribute, if any, from old Favorites format
             ----------------------------------------------------------------------- */
 
             if (json_object.has_member("id") )
@@ -355,8 +355,6 @@ public class Tuner.Model.Station : Object {
 
         if ( _favicon_uri == null ) return; // First load or reload requested and favicon is not failing
 
-        //STATION_FAILING_FAVICON.remove(stationuuid);
-        // If not in cache or force reload, fetch from internet
         uint status_code;
 
         InputStream? stream = yield HttpClient.GETasync(_favicon_uri, Priority.LOW, out status_code); // Will automatically try several times
@@ -392,7 +390,7 @@ public class Tuner.Model.Station : Object {
      * @param {bool} reload - Whether to force reload the favicon from source.
      * @return {bool} True if the favicon was available and the image updated.
      */
-    public async bool update_favicon_image( Gtk.Image favicon_image, bool reload = false, string defaulticon = "", Cancellable? cancel = null )
+    public async bool update_favicon_image( Gtk.Image favicon_image, bool reload = false, string defaulticon = "")
     {
         bool reloading = false;
 
@@ -415,7 +413,7 @@ public class Tuner.Model.Station : Object {
                 reloading = false;
             }
             
-            if ( reload && favicon_loaded < 2 && ( cancel == null || !cancel.is_cancelled())) 
+            if ( reload && favicon_loaded < 2 ) 
             /*
                 Reload requested, and favicon has not had reload requested before
             */
@@ -430,6 +428,8 @@ public class Tuner.Model.Station : Object {
     } // update_favicon_image
 
 
+    /**
+     */
     public bool set_up_to_date_with(Station? p) 
     { 
         if ( p == null || this.stationuuid != p.stationuuid) return false;

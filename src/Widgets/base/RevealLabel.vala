@@ -63,19 +63,14 @@ public class Tuner.RevealLabel : Gtk.Revealer {
 
         reveal_child = false;
 
-        Idle.add (() => 
-        // Initiate the fade out in a different thread, leaving this to refresh the display
+        Timeout.add (3*DEFAULT_FADE_DURATION, () => 
+        // Update the text after fade has completed
         {
-            Timeout.add (3*DEFAULT_FADE_DURATION, () => 
-            // Update the text after fade has completed
-            {
-                label_child.label = text;
-                if ( text != "" ) reveal_child = true;
+            label_child.label = text;
+            if ( text != "" ) reveal_child = true;
 
-                return Source.REMOVE;
-            });       
-            return Source.REMOVE;     
-        });
+            return Source.REMOVE;
+        });       
     } // set_text
 
 

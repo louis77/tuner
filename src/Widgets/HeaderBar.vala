@@ -51,6 +51,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     public signal void searched_for_sig (string text);
     public signal void search_focused_sig ();
 
+
     /*
         Private 
     */
@@ -204,6 +205,12 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             tooltip.set_text(_player_info._metadata);
             return true; 
         });
+
+        _player_info.station_change_completed_sig.connect(() =>
+        // _player_info is going to signal when it has completed and the lock can be released
+        {
+            _station_update_lock.unlock();
+        });
     } // construct
 
 
@@ -220,6 +227,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         starred = _station.starred;
     } // handle_station_change
 
+
+
     /**
      * @brief Update the header bar with information from a new station.
      *
@@ -230,27 +239,27 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
      public async void update_from_station(Model.Station station) 
      {
         if (app().is_offline) return;
-        
+
         if (_station_update_lock.trylock())
         // Lock while changing the station to ensure single threading
         {
-            try {        
-                // Disconnect previous station signals if any
+            Idle.add (() => 
+            // Initiate the fade out on a non-UI thread
+            {
                 if (_station != null) {
                     _station.notify.disconnect(handle_station_change);
                 }
         
-                _player_info.station_change.begin(station);
+                _player_info.station_change.begin(station, () =>
+                {
+                    _station = station;
+                    _station.notify.connect(handle_station_change);    
+                    starred = _station.starred;
+                });
 
-                _station = station;
-                _station.notify.connect(handle_station_change);    
-                starred = _station.starred;
-            }
-            finally 
-            {
-                _station_update_lock.unlock();
-            }
-        }
+                return Source.REMOVE;
+            });  
+        } // if
     } // update_from_station
     
 
@@ -294,7 +303,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         private Model.Station _station;
         internal string _metadata = _("Stream Metadata");
 
-        private Cancellable update_station_cancel = new Cancellable();
+        internal signal void station_change_completed_sig ();
 
         public PlayerInfo(Window window)
         {
@@ -333,40 +342,28 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         *
         * Desensitive when off-line
         */
-        public async void station_change( Model.Station station )
+        internal async void station_change( Model.Station station )
         {
-            update_station_cancel.cancel();
-            update_station_cancel.reset();
+            reveal_child = false;
 
-            if ( !update_station_cancel.is_cancelled() )
+            Timeout.add (2*REVEAL_DELAY, () => 
+            // Update the text after fade has completed
             {
-                reveal_child = false;
-
-                Idle.add (() => 
-                // Initiate the fade out in a different thread, leaving this to refresh the display
+                favicon_image.clear();
+                title_label.clear();
+                station_label.label = "";
+                
+                station.update_favicon_image.begin(favicon_image, true, DEFAULT_ICON_NAME,() => 
                 {
-                    Timeout.add (2*REVEAL_DELAY, () => 
-                    // Update the text after fade has completed
-                    {
-                        station_label.label = "";
-                        favicon_image.clear();
-                        title_label.clear();
-
-                        station.update_favicon_image.begin(favicon_image, true, DEFAULT_ICON_NAME, update_station_cancel, () => 
-                        {
-                            if ( !update_station_cancel.is_cancelled() )
-                            {
-                                _station = station;
-                                station_label.label = station.name;
-                                reveal_child = true;
-                                title_label.cycle();
-                            }
-                        });
-                        return Source.REMOVE;
-                    });     
-                    return Source.REMOVE;
-                });     
-            }
+                    _station = station;
+                    reveal_child = true;
+                    station_label.label = station.name;
+                    title_label.cycle();
+                
+                    station_change_completed_sig();
+                });
+                return Source.REMOVE;
+            });        
         } // station_change
 
 
