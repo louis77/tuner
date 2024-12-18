@@ -12,6 +12,7 @@
 
 using Gee;
 
+
 /**
  * @brief Error domain for source-related errors.
  */
@@ -21,7 +22,7 @@ public errordomain SourceError {
 
 
 /**
- * @brief Controller class for managing radio station directories.
+ * @brief Controller class for managing radio station directories. and lists
  */
 public class Tuner.DirectoryController : Object {
 
@@ -48,7 +49,7 @@ public class Tuner.DirectoryController : Object {
 
         
     /**
-     * @brief Loads 
+     * @brief Initializes the provider and starts the load of Saved Stations 
      *
      */
     public void load()
@@ -68,7 +69,7 @@ public class Tuner.DirectoryController : Object {
      * @return A StationSet object for the requested station.
      * @todo radio-browser should handle multiple UUID on a query, but is broken
      */
-     public Set<Model.Station>? get_stations_by_uuid (Collection<string> uuids) {
+     public Set<Model.Station> get_stations_by_uuid (Collection<string> uuids) {
         try {
             return _provider.by_uuids(uuids);
         } catch (Tuner.DataProvider.DataError e) {
@@ -77,6 +78,23 @@ public class Tuner.DirectoryController : Object {
         return new HashSet<Model.Station>();
     } // get_stations_by_uuid
 
+
+    /**
+     * @brief Get a collection of Station station by its stream URL. // TODO Not working at Provider
+     *
+     * @param uuid The URL of the station to load.
+     * @return A StationSet object for the requested station.
+     * @todo radio-browser should handle URL querys, but is broken
+     */
+    //  public Set<Model.Station> get_station_by_url (string url) {
+    //      try {
+    //          return _provider.by_url(url);
+    //      } catch (Tuner.DataProvider.DataError e) {
+    //          critical (@"$(_provider.name) unavailable");
+    //      }
+    //      return new HashSet<Model.Station>();
+    //  } // get_station_by_url
+
     
     /**
      * @brief Load a station by its UUID.
@@ -84,8 +102,8 @@ public class Tuner.DirectoryController : Object {
      * @param uuid The UUID of the station to load.
      * @return A StationSet object for the requested station.
      */
-    public StationSet load_station_uuid (string uuid) {
-        warning(@"LBU UUID: $uuid ");
+     public StationSet load_station_uuid (string uuid) {
+        debug(@"LBU UUID: $uuid ");
         var params = DataProvider.SearchParams() {
             uuids = new HashSet<string>()
         };
@@ -203,6 +221,11 @@ public class Tuner.DirectoryController : Object {
 
     // --------------------------------------------------
 
+    /**
+     * @brief Adds a saved search term and returns the StatioSet to retrieve the stations found
+     *
+     * @return A StationSet object with stations 
+     */
     public StationSet add_saved_search( string search_text)
     {
         _star_store.add_saved_search ( search_text);
@@ -210,12 +233,21 @@ public class Tuner.DirectoryController : Object {
     } // add_saved_search
 
 
+    /**
+     * @brief Removed the given saved search term
+     *
+     */
     public void remove_saved_search( string search_text)
     {
         _star_store.remove_saved_search ( search_text);
     } // remove_saved_search
 
 
+    /**
+     * @brief Loads stations found from each saved search term
+     *
+     * @return A map of search terms and related StationSet object with stations 
+     */
     public Map<string, StationSet> load_saved_searches()
     {
         Map<string, StationSet> searches = new HashMap<string, StationSet>();
@@ -250,6 +282,11 @@ public class Tuner.DirectoryController : Object {
     } // load_by_tag
 
 
+    /**
+     * @brief Count a click for a station.
+     *
+     * @param station The station that was clicked.
+     */
     public StationSet load_by_tag_set (Set<string> utags) {
         var params = DataProvider.SearchParams() {
             text    = "",
@@ -403,17 +440,4 @@ public class Tuner.StationSet : Object {
         }
         return stations;
     } // convert_stations
-
-
-    public bool has_property(Json.Node node, string property_name) {
-        // Check if the node is of type OBJECT
-        if (node.get_node_type() == Json.NodeType.OBJECT) {
-            Json.Object json_object = node.get_object();
-    
-            // Check if the JSON object has the specified property
-            return json_object.has_member(property_name);
-        }
-    
-        return false; // Not an object, so no properties exist
-    } // has_property
 } // StationSet

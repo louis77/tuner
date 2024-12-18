@@ -50,6 +50,7 @@ namespace Tuner.DataProvider {
         bool reverse;
     }
 
+    
     /**
      * @brief Error domain for DataProvider-related errors
      * 
@@ -250,7 +251,7 @@ namespace Tuner.DataProvider {
 
 
         /**
-         * @brief Get a station or stations by UUID
+         * @brief Get a station or stations by UUID/S
          *
          * @param uuids comma seperated lists of the stations to retrieve
          * @return Station object if found, null otherwise
@@ -259,6 +260,14 @@ namespace Tuner.DataProvider {
          public abstract Set<Model.Station> by_uuid(string uuids) throws DataError;
          public abstract Set<Model.Station> by_uuids(Collection<string> uuids) throws DataError;
 
+        /**
+         * @brief Get a station or stations by Streaming URL  
+         *
+         * @param url streaming url the stations to retrieve
+         * @return Station object if found, null otherwise
+         * @throw DataError if unable to retrieve or parse station data
+         */
+         //public abstract Set<Model.Station> by_url(string url) throws DataError;  // TODO Not working at Provider
 
         /**
          * @brief Search for stations based on given parameters

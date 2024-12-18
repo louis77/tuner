@@ -16,6 +16,7 @@
  */
 
 using Gee;
+using GLib;
 using Tuner.Model;
 
 
@@ -40,6 +41,19 @@ public class Tuner.StarStore : Object {
     private const string FAVORITES_SCHEMA_VERSION = "2.0";
 
     private const string M3U8 = "#EXTM3U\n#EXTENC:UTF-8\n#PLAYLIST:Tuner\n";
+    private const string M3U8_UUID = "STATIONUUID"; 
+    private const string UUID_REGEX = "([a-fA-Z0-9]{8}-[a-fA-Z0-9]{4}-[a-fA-Z0-9]{4}-[a-fA-Z0-9]{4}-[a-fA-Z0-9]{12})";
+    private  Regex uuid_regex;
+
+    construct 
+    {
+        try {
+            uuid_regex = new Regex (UUID_REGEX, 0, 0);
+         } catch ( RegexError e )
+         {
+           critical(@"Could not compile regex: $(e.message)");
+         }
+    }
 
     private File _starred_file; ///< File to persist favorite stations.
 
@@ -47,54 +61,6 @@ public class Tuner.StarStore : Object {
     private Map<string,Station> _starred_station_map = new HashMap<string, Station> (); ///< Collection of starred station UUIDs.
     private Gee.Set<string> _saved_searches = new HashSet<string> (); ///< Collection of saved searchess.
     private bool _loaded = false;
-
-
-    // ----------------------------------------------------------
-    // Under dev
-    // ----------------------------------------------------------
-
-    public void export_m3u8()
-    {
-        StringBuilder playlist = new StringBuilder(M3U8);
-        foreach ( var station in _starred_station_map.values)
-        {
-            var url = ( station.urlResolved == null || station.urlResolved == "") ? station.url : station.urlResolved;
-            playlist.append (@"#EXTINF:-1,$(station.name) - logo=\"$(station.favicon)\",uuid=\"$(station.stationuuid)\"\n$(url)\n#EXTIMG:$(station.favicon)\n");
-        }
-
-        try {
-            string temp_file;
-            GLib.FileUtils.open_tmp ("XXXXXX.starred.m3u8", out temp_file);
-            GLib.FileUtils.set_contents(temp_file, playlist.str);
-    
-        // Create the file chooser dialog for saving
-        var dialog = new Gtk.FileChooserDialog(
-            "Save File",
-            null,
-            Gtk.FileChooserAction.SAVE
-        );
-
-        // Add buttons to the dialog
-        dialog.add_button("_Cancel", Gtk.ResponseType.CANCEL);
-        dialog.add_button("_Save", Gtk.ResponseType.ACCEPT);
-    
-            // Suggest a default filename
-            dialog.set_current_name("tuner-starred.m3u8");
-    
-            if (dialog.run() == Gtk.ResponseType.ACCEPT) {
-                string save_path = dialog.get_filename();
-                // Copy the temp file to the chosen location
-                var source_file = GLib.File.new_for_path(temp_file);
-                var dest_file = GLib.File.new_for_path(save_path);
-                source_file.copy(dest_file, GLib.FileCopyFlags.OVERWRITE);  // Overwrite
-            }
-    
-            dialog.destroy();
-    
-        } catch (GLib.Error e) {
-            warning("Error: $(e.message)");
-        }
-    } // export_m3u8
 
 
     // ----------------------------------------------------------
@@ -111,6 +77,7 @@ public class Tuner.StarStore : Object {
         _starred_file =  starred_file;
     } // StarredStationController
 
+    
     /**
      * @brief Adds a station to the favorites and persists the change.
      * @param station The station to be added.
@@ -133,12 +100,23 @@ public class Tuner.StarStore : Object {
     } // remove_station
 
 
+    /**
+     * @brief Adds a saved search
+     *
+     * @param search_text The search term to save
+     */
     public void add_saved_search(string search_text)
     {
         _saved_searches.add (search_text);
         persist();
     } // add_saved_search
 
+
+    /**
+     * @brief Removes a saved search
+     *
+     * @param search_text The search term to remove
+     */
     public void remove_saved_search(string search_text)
     {
         _saved_searches.remove (search_text);
@@ -206,6 +184,7 @@ public class Tuner.StarStore : Object {
      public Gee.Set<string> get_all_searches () {
         return _saved_searches;
     } // get_all_searches
+    
 
     /**
      * @brief Checks if a station is in the favorites.
@@ -216,11 +195,6 @@ public class Tuner.StarStore : Object {
     public bool contains (Station station) {
         return _starred_station_map.has_key (station.stationuuid);
     } // contains
-
-
-    // ----------------------------------------------------------
-    // Privates
-    // ----------------------------------------------------------
 
 
     /**
@@ -334,6 +308,64 @@ public class Tuner.StarStore : Object {
       
 
     /**
+     * @brief Creates a string of Starred stations in m3u format
+     * @return A string representation of the favorites formated as M3U
+     */
+     public string export_m3u8()
+     {
+         StringBuilder playlist = new StringBuilder(M3U8);
+         foreach ( var station in _starred_station_map.values)
+         {
+             var url = ( station.urlResolved == null || station.urlResolved == "") ? station.url : station.urlResolved;
+             playlist.append (@"#EXTINF:-1,$(station.name) - logo=\"$(station.favicon)\",$M3U8_UUID=\"$(station.stationuuid)\"\n$(url)\n#EXTIMG:$(station.favicon)\n");
+         }
+ 
+         return playlist.str;
+ 
+     } // export_m3u8
+ 
+ 
+     /**
+      * @brief Scans data for Station UUIDs which are checked and added as Starred.
+      * @param data_stream The data to be scanned
+      */
+     public void import_stationuuids( DataInputStream data_stream ) throws GLib.IOError
+     {
+         Gee.List<string> stationuuids = new ArrayList<string>();
+         string content;
+         MatchInfo match_info;
+         while ( (content = data_stream.read_line(null)) != null) 
+         {                    
+             uuid_regex.match (content, 0, out match_info); 
+             while (match_info.matches ()) 
+             {
+                 stationuuids.add (match_info.fetch_all()[0]);
+                 debug   (@"UUID: $(match_info.fetch_all()[0])");
+                
+                 try {
+                     match_info.next ();
+                 } catch ( RegexError e) 
+                 {
+                     warning   (@"Regex error processing line: $content\n Error: $(e.message)");
+                 }
+             } // while
+         } // while
+         
+         foreach ( var station in app().directory.get_stations_by_uuid(stationuuids))
+         {
+             add_station(station);
+         }
+     } // import_stationuuids
+ 
+ 
+
+    // ----------------------------------------------------------
+    // Privates
+    // ----------------------------------------------------------
+
+ 
+ 
+    /**
      * @brief Persists the current state of favorites to the JSON file.
      * 
      * This method serializes the _store and writes it to the favorites file.
@@ -372,4 +404,4 @@ public class Tuner.StarStore : Object {
         }
         return null; // Not an object, so no properties exist
     } // get_member
-}
+} // StarStore

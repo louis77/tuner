@@ -141,11 +141,11 @@ namespace Tuner {
     } // fade
 
 
-    public static string safestrip( string? text )
+    public static unowned string safestrip( string? text )
     {
         if ( text == null ) return "";
         if ( text.length == 0 ) return "";
-        return text.strip();
+        return text._strip();
     } // safestrip
 
 

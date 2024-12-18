@@ -40,6 +40,7 @@ namespace Tuner.DataProvider {
     private const string RBI_SEARCH     = "/json/stations/search";
     private const string RBI_VOTE       = "/json/vote/$stationuuid";
     private const string RBI_UUID       = "/json/stations/byuuid";
+    private const string RBI_URL        = "/json/stations/byurl";
     private const string RBI_TAGS       = "/json/tags";
     
 
@@ -242,9 +243,9 @@ namespace Tuner.DataProvider {
          * @return Station object if found, null otherwise
          * @throw DataError if unable to retrieve or parse station data
          */
-         public Set<Model.Station> by_uuid(string uuids) throws DataError {
-            if ( app().is_offline || uuids.strip().length == 0 ) return new HashSet<Model.Station>();
-            var result = station_query(RBI_UUID,@"uuids=$uuids");
+         public Set<Model.Station> by_uuid(string uuid) throws DataError {
+            if ( app().is_offline || safestrip(uuid).length == 0 ) return new HashSet<Model.Station>();
+            var result = station_query(RBI_UUID,@"uuids=$uuid");
             return result;
         } // by_uuid
 
@@ -262,6 +263,15 @@ namespace Tuner.DataProvider {
             return by_uuid(sb.str);
         } // by_uuid
 
+
+        /**
+            Not implemented
+        */
+        public Set<Model.Station> by_url(string url) throws DataError {
+            if ( app().is_offline || safestrip(url).length == 0 ) return new HashSet<Model.Station>();
+            var result = station_query(RBI_URL,@"$url");
+            return result;
+        } // by_url
 
         /**
          * @brief Search for stations based on given parameters

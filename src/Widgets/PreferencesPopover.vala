@@ -5,10 +5,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * @file PreferencesPopover.vala
+ */
+
+
+ /**
  *
  * @brief Tuner preferences and selections.
  */
-
 public class Tuner.PreferencesPopover : Gtk.Popover {
 
     construct {
@@ -61,10 +64,18 @@ public class Tuner.PreferencesPopover : Gtk.Popover {
 
         // Export starred
         var export_starred = new Gtk.ModelButton ();
-        export_starred.text = _("Export Starred Sations");
+        export_starred.text = _("Export Starred Sations to Playlist");
         export_starred.button_press_event.connect (() =>
         {
-           app().stars.export_m3u8 ();
+           export_m3u8 ();
+        });
+
+        // Import starred
+        var import_starred = new Gtk.ModelButton ();
+        import_starred.text = _("Import Station UUIDs as Starred Sations");
+        import_starred.button_press_event.connect (() =>
+        {
+           import_stationuuids ();
         });
 
         // Layout
@@ -89,14 +100,95 @@ public class Tuner.PreferencesPopover : Gtk.Popover {
         menu_grid.attach (new Gtk.SeparatorMenuItem (), 0, vpos++, 4, 1);
 
         menu_grid.attach (export_starred, 0, vpos++, 4, 1);
+        menu_grid.attach (new Gtk.SeparatorMenuItem (), 0, vpos++, 4, 1);
+        menu_grid.attach (import_starred, 0, vpos++, 4, 1);
 
         menu_grid.attach (new Gtk.SeparatorMenuItem (), 0, vpos++, 4, 1);
         menu_grid.attach (about_menuitem, 0, vpos++, 4, 1);
         menu_grid.show_all ();
 
         this.add (menu_grid);
-    }
+    } // construct
 
 
+    /**
+    * @brief Export Starred Stations as a m3u playlist
+    *
+    *
+    */
+    public void export_m3u8()
+    {
+        try {
+            string temp_file;
+            GLib.FileUtils.open_tmp ("XXXXXX.starred.m3u8", out temp_file);
+            GLib.FileUtils.set_contents(temp_file, app().stars.export_m3u8 ());
+    
+        // Create the file chooser dialog for saving
+        var dialog = new Gtk.FileChooserDialog(
+            "Save File",
+            null,
+            Gtk.FileChooserAction.SAVE
+        );
+
+        // Add buttons to the dialog
+        dialog.add_button("_Cancel", Gtk.ResponseType.CANCEL);
+        dialog.add_button("_Save", Gtk.ResponseType.ACCEPT);
+    
+            // Suggest a default filename
+            dialog.set_current_name("tuner-starred.m3u8");
+    
+            if (dialog.run() == Gtk.ResponseType.ACCEPT) {
+                string save_path = dialog.get_filename();
+                // Copy the temp file to the chosen location
+                var source_file = GLib.File.new_for_path(temp_file);
+                var dest_file = GLib.File.new_for_path(save_path);
+                source_file.copy(dest_file, GLib.FileCopyFlags.OVERWRITE);  // Overwrite
+            }
+    
+            dialog.destroy();
+    
+        } catch (GLib.Error e) {
+            warning("Error: $(e.message)");
+        }
+    } // export_m3u8
+
+
+    /**
+    * @brief Select and read a file for Station UUIDs to be imported as Satrred
+    *
+    *
+    */
+    public void import_stationuuids()
+    {
+        var dialog = new Gtk.FileChooserDialog(
+            "Choose a file",
+            app().window,
+            Gtk.FileChooserAction.OPEN,
+            "_Cancel", Gtk.ResponseType.CANCEL,
+            "_Open", Gtk.ResponseType.ACCEPT
+        );
+        string filepath;
+
+        if (dialog.run() == Gtk.ResponseType.ACCEPT) {
+            filepath = dialog.get_filename();
+            
+            try {
+                var file = File.new_for_path(filepath);
+                FileInputStream stream = file.read();
+        
+                // Read content into a string buffer
+                DataInputStream data_stream = new DataInputStream(stream);
+
+                app().stars.import_stationuuids (data_stream);
+        
+                stream.close();
+            } catch (Error e) {
+                warning(@"Error reading file: $(e.message)");
+            }
+        } // if
+
+        dialog.destroy();
+
+    } // import_stationuuids
 
 }

@@ -307,11 +307,16 @@ public class Tuner.Model.Station : Object {
     } // Station.basic
 
 
+    /**
+     * @brief Toggles the Starred status of the station
+     * @return {bool} True if Station is Starred.
+     */
     public bool toggle_starred()
     {
         starred = !starred;
         return _starred;
-    }
+    } // toggle_starred
+
 
     /**
      * @brief Returns a string representation of the station.
@@ -319,15 +324,15 @@ public class Tuner.Model.Station : Object {
      */
     public string to_string() {
         return @"[$(stationuuid)] $(name)";
-    }
+    } // to_string
 
 
     /**
      * @brief Asynchronously loads the favicon for the station.
      *
      * Loads from cache is not requesting reload and cache exists
-     *
-     *
+     * Otherwise async calls to the website to download the favicon,
+     * then stores it in the cache and replaces the Station favicon
      *
      * @param {bool} reload - Whether to force reload the favicon.
      */
