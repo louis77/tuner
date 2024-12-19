@@ -284,6 +284,18 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     } // realize
 
 
+    public void stream_info(bool show)
+    {
+        _player_info.title_label.show_metadata = show;        
+    } // stream_info
+
+
+    public void stream_info_fast(bool fast)
+    {
+        _player_info.title_label.metadata_fast_cycle = fast;          
+    } // stream_info_fast
+
+
     /* 
         Private 
     */
@@ -380,7 +392,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             title_label.add_sublabel(2,metadata.audio_info);
             title_label.add_sublabel( 3, (metadata.org_loc) );
         } // handle_metadata_changed
-    } // Display
+    } // PlayerInfo
     
 
     /**
@@ -437,4 +449,5 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             }
         }
     } // starred
+
 }

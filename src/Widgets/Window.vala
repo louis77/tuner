@@ -154,6 +154,8 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         set_geometry_hints (null, Gdk.Geometry() { min_height = GEOMETRY_MIN_HEIGHT, min_width = GEOMETRY_MIN_WIDTH}, Gdk.WindowHints.MIN_SIZE);
         change_action_state (ACTION_DISABLE_TRACKING, settings.do_not_track);
         change_action_state (ACTION_ENABLE_AUTOPLAY, settings.auto_play);
+        change_action_state (ACTION_STREAM_INFO, settings.stream_info);
+        change_action_state (ACTION_STREAM_INFO_FAST, settings.stream_info_fast);
 
                
         /*
@@ -165,21 +167,21 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             return before_destroy ();
         });
 
-        //  // Auto-play
-        //  if (_settings.auto_play) {
-        //      debug (@"Auto-play enabled");
-        //      _directory.load ();
-        //      var source = _directory.load_station_uuid (_settings.last_played_station);
+        // Auto-play
+        if (_settings.auto_play) {
+            warning (@"Auto-play enabled");
+            _directory.load ();
+            var source = _directory.load_station_uuid (_settings.last_played_station);
 
-        //      try {
-        //          foreach (var station in source.next_page ()) { 
-        //              handle_station_click(station);  
-        //              break;
-        //          }
-        //      } catch (SourceError e) {
-        //          warning ("Error while trying to autoplay, aborting...");
-        //      }
-        //  }
+            try {
+                foreach (var station in source.next_page ()) { 
+                    handle_station_click(station);  
+                    break;
+                }
+            } catch (SourceError e) {
+                warning ("Error while trying to autoplay, aborting...");
+            }
+        }
 
         /*
             Online checks & behavior
@@ -233,7 +235,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         _display = new Display(directory);  
         _display.selection_changed_sig.connect (handle_station_click);        
         add (_display);
-    }
+    } // add_widgets
 
 
     /* --------------------------------------------------------
@@ -303,14 +305,14 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public void on_action_stream_info (SimpleAction action, Variant? parameter) {
         settings.stream_info = !settings.stream_info;
         action.set_state (settings.stream_info);
-        warning (@"on_action_stream_info: $(settings.stream_info)");
+        _headerbar.stream_info (action.get_state ().get_boolean ());
     } // on_action_enable_stream_info
 
 
     public void on_action_stream_info_fast (SimpleAction action, Variant? parameter) {
         settings.stream_info_fast = !settings.stream_info_fast;
         action.set_state (settings.stream_info_fast);
-        warning (@"on_action_enable_info_fast: $(settings.stream_info_fast)");
+        _headerbar.stream_info_fast (action.get_state ().get_boolean ());
     } // on_action_stream_info_fast
 
 
@@ -375,8 +377,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         return false;
     } // before_destroy
+    
 
-
+    /**
+     * @brief Checks changes in online state and updates the app accordingly
+     * 
+     */
     private void check_online_status()
     {
         if ( active && app().is_offline )

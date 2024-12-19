@@ -12,6 +12,7 @@
     <file alias="internet-radio.svg" compressed="true">icons/16/internet-radio.svg</file>
     <file alias="tuner-on.svg" compressed="true">icons/48/com.github.louis77.tuner.svg</file>
     <file alias="tuner-off.svg" compressed="true">icons/48/com.github.louis77.tuner-symbolic.svg</file>
+    <file alias="jukebox.svg" compressed="true">icons/48/jukebox.svg</file>
     <file alias="background" compressed="true">icons/128/com.github.louis77.tuner.svg</file>
   </gresource>
 </gresources>

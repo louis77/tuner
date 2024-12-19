@@ -62,7 +62,7 @@ public class Tuner.Display : Gtk.Paned {
 
     private bool first_activation = true;  // display has not been activated before
     private bool active = false;  // display is active
-
+    private bool jukebox_mode = false;  // Jukebox mode
     //  private signal void refresh_saved_searches_sig (bool add, string search_text);
 
 
@@ -96,13 +96,13 @@ public class Tuner.Display : Gtk.Paned {
         if ( !active && activate )
         // Move from not active to active
         {
-            initialize();
 
             if (first_activation)
             // One time set up - do post initialization
             {
                 //  TBD
                 first_activation = false;
+                initialize.begin();   // TODO -  Check logic
             }
             active = true;
             show_all();   
@@ -221,7 +221,11 @@ public class Tuner.Display : Gtk.Paned {
         ----------------------------------------------------------
     */
 
-    private void initialize()
+
+    /**
+     * @brief Initializes the main Display object
+     */
+    private async void initialize()
     {
         _directory.load (); // Initialize the DirectoryController
 
@@ -478,12 +482,25 @@ public class Tuner.Display : Gtk.Paned {
     private void jukebox(SourceList.ExpandableItem category)
     {
         SourceList.Item item = new SourceList.Item(_("Jukebox"));
-        item.icon = new ThemedIcon("audio-speakers");
+        //  item.icon = new ThemedIcon("audio-speakers");
+        item.icon = new ThemedIcon("jukebox");
         var station = _directory.load_random_stations(1);
         item.activated.connect(() =>
         {
             try {
                 selection_changed_sig(station.next_page().to_array()[0]);
+                jukebox_mode = true;
+            } 
+            catch (SourceError e)
+            {
+                warning(_(@"Could not get random station: $(e.message)"));
+            }
+        });
+
+        app().player.tape_counter_sig.connect((oldstation) =>
+        {     
+            try {
+                if ( jukebox_mode ) selection_changed_sig(station.next_page().to_array()[0]);
             } 
             catch (SourceError e)
             {
@@ -499,6 +516,7 @@ public class Tuner.Display : Gtk.Paned {
         slist.selection_changed_sig.connect((station) =>
         {
             selection_changed_sig(station);
+            jukebox_mode = false;
         });
 
         slist.favourites_changed_sig.connect(() =>

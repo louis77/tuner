@@ -26,6 +26,29 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
     private const int DISPLAY_WIDTH_OFFSET = 761;  
     private const int BORDER_WIDTH_OFFSET = 7;  
 
+    public bool show_metadata { get; set; }
+
+    public bool metadata_fast_cycle { 
+        get { return _metadata_fast_cycle; } 
+        set {        
+            if ( _metadata_fast_cycle == value ) return;
+            if (value)
+            // slow>fast
+            {
+                _metadata_fast_cycle = true;
+                _cycle_phases = _cycle_phases_slow;
+            }
+            else
+            // fast>slow
+            {
+                _metadata_fast_cycle = false;
+                _cycle_phases = _cycle_phases_fast;
+            } //else
+        } // set
+     } // metadata_fast_cycle 
+
+
+    private bool _metadata_fast_cycle;
     private int _follow_width = 0;  // tracks window width    private int _window_width_previous = 0;  // tracks window width
     private int _max_label_width = 0; // Tracks the maximum width the label can occupy
     private int _min_label_width;    // Minimum label width
@@ -35,11 +58,10 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
     private uint _label_cycle_id = 0;
     private uint _flourish_id = 0;
     private int _min_count_down;
-    private uint16 display_seconds = 1000;   // Mix up the cycle phase start point
-    private uint16[] cycle_phases_fast = {5,11,17,19,23}; // Fast cycle times - primes so everyone gets a chance
-    private uint16[] cycle_phases_slow = {23,37,43,47,53}; // Ttitle, plus four subtitles
-    private uint16[] cycle_phases;  
-    private bool fast_cycle = true;
+    private uint16 _display_seconds = 0;   // Mix up the cycle phase start point
+    private uint16[] _cycle_phases_fast = {5,11,17,19,23}; // Fast cycle times - primes so everyone gets a chance
+    private uint16[] _cycle_phases_slow = {23,37,43,47,53}; // Ttitle, plus four subtitles
+    private uint16[] _cycle_phases;  
 
     private Gee.Map<uint, string> sublabels = new Gee.HashMap<uint, string>();
 
@@ -62,7 +84,7 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
             update_size( false );
         });
 
-        cycle_phases = cycle_phases_fast;
+        _cycle_phases = _cycle_phases_fast;
     }
 
     public new string label {
@@ -144,37 +166,13 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
     } // update_size
 
 
-
-    /**
-     * @brief Toggles between fast and slow cycle times
-     *
-     */
-    public bool toggle_cycle_time()
-    {
-        if ( fast_cycle )
-        // slow>fast
-        {
-            fast_cycle = false;
-            cycle_phases = cycle_phases_fast;
-            return true;
-        }
-        else
-        // fast>slow
-        {
-            fast_cycle = true;
-            cycle_phases = cycle_phases_slow;
-            return false;
-        }
-    } // toggle_cycle_time
-
-
     /**
      * @brief Adds a sublabel at the given position
      *
      */
      public void add_sublabel(int position, string? sublabel1, string? sublabel2 = null)
      {
-         if ( position <= 0 || position >= cycle_phases.length ) return;    // Main label not sublabel, or too deep
+         if ( position <= 0 || position >= _cycle_phases.length ) return;    // Main label not sublabel, or too deep
  
          if ( sublabel1 == null || sublabel1.strip().length == 0 ) 
          {
@@ -227,6 +225,10 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
     } // stop
 
 
+    /**
+     * @brief Clears the cycling of the subtitles
+     *
+     */
     public void clear()
     {
         stop();
@@ -238,13 +240,11 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
     } // clear
 
 
-
-
     /**
      * @brief Cycles the labels
      *
      */
-    public void cycle()
+    public void cycle() 
     { 
         stop();
 
@@ -256,7 +256,7 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
             _label_cycle_id = Timeout.add_seconds_full(Priority.LOW, 1, () => 
             // New label timer
             {
-                display_seconds++;
+                _display_seconds++;
 
                 if ( 0 < _min_count_down-- )
                 {
@@ -272,7 +272,9 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
 
                 foreach ( var position in sublabels.keys)
                 {
-                    if ( ( display_seconds % cycle_phases[position] == 0 ) 
+                    if ( !show_metadata && position != 0 ) break;   // Do not show sublabels
+
+                    if ( ( _display_seconds % _cycle_phases[position] == 0 ) 
                         && position != last_position
                         //  && sublabels.get(position) != "" 
                     ) 
