@@ -270,7 +270,7 @@ public class Tuner.StarStore : Object {
             _starred_station_map.set (s.stationuuid, s);
 
             debug(@"Starred station: $(s.stationuuid)");
-            if (!s.starred)  s.toggle_starred ();
+            s.starred = true;
 
             // Connect the star button
             s.notify["starred"].connect ( (sender, property) => {

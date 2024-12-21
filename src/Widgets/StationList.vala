@@ -24,7 +24,7 @@ public class Tuner.StationList : ContentList {
      *
      * @param station The selected Model.Station.
      */
-    public signal void selection_changed_sig (Model.Station station);
+    public signal void station_clicked_sig (Model.Station station);
 
     /**
      * @signal station_count_changed
@@ -42,11 +42,6 @@ public class Tuner.StationList : ContentList {
      */
     public signal void favourites_changed_sig ();
 
-    /**
-     * @property selected_station
-     * @brief The currently selected station.
-     */
-    public Model.Station selected_station;
     
     /**
      * @brief The list of stations to display.
@@ -65,8 +60,7 @@ public class Tuner.StationList : ContentList {
                 });
                 var box = new StationButton (s);
                 box.clicked.connect (() => {
-                    selection_changed_sig (box.station);
-                    selected_station = box.station;
+                    station_clicked_sig (box.station);    // FIXME remove
                 });
                 add (box);
             }

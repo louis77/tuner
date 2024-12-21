@@ -30,6 +30,9 @@ public class Tuner.Model.Station : Object {
 
     private const int FADE_MS = 400;
 
+    // Signals
+    public signal void station_star_sig(bool starred);  // Station starred state has changed
+
     // ----------------------------------------------------------
     // Properties
     // ----------------------------------------------------------
@@ -111,8 +114,16 @@ public class Tuner.Model.Station : Object {
     /** @property {bool} has_extended_info - Indicates if extended info is available. */
     public bool	    has_extended_info;
     
+    private bool _starred;
     /** @property {bool} starred - Indicates if the station is starred. Only set by Favorites*/
-    public bool starred { get; private set; }
+    public bool starred { 
+        get { return _starred; }
+        set { 
+            if ( _starred == value ) return;
+            _starred = value; 
+            station_star_sig(value);
+        }
+    }
     
     /** @property {int} favicon_loaded - Indicates the number of times the favicon has been loaded from cache or internet.*/
     public int favicon_loaded; // { get; private set; }
@@ -249,7 +260,7 @@ public class Tuner.Model.Station : Object {
             // Process favorites
             if (json_object.has_member("starred") )
             {
-                starred = json_object.get_boolean_member("starred");
+                _starred = json_object.get_boolean_member("starred");
             }             
 
             /* -----------------------------------------------------------------------

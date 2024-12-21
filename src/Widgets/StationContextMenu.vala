@@ -57,12 +57,13 @@ public class Tuner.StationContextMenu : Gtk.Menu {
 
         // Star
         var star = new Gtk.MenuItem ();
-        set_star_context (star);
-        star.activate.connect (on_star_handler);
+        set_context_star (star);
+        star.activate.connect (() =>
+        {
+            station.toggle_starred ();
+            set_context_star (star);
+        }); // Context starred action
 
-        this.station.notify["starred"].connect ( (sender, property) => {
-            set_star_context (star);
-        });
 
         // Layout
 
@@ -81,12 +82,6 @@ public class Tuner.StationContextMenu : Gtk.Menu {
         append (star);
     }
 
-    /**
-     * @brief Handles the star/unstar action.
-     */
-    private void on_star_handler () {
-       station.toggle_starred ();
-    }
 
     /**
      * @brief Handles the action to open the station's website.
@@ -124,7 +119,7 @@ public class Tuner.StationContextMenu : Gtk.Menu {
      * @brief Updates the star menu item's label based on the station's starred status.
      * @param item The menu item to update.
      */
-    private void set_star_context (Gtk.MenuItem item) {
+    private void set_context_star (Gtk.MenuItem item) {
         item.label = station.starred ? Application.UNSTAR_CHAR + _("Unstar this station") : Application.STAR_CHAR + _("Star this station");
     }
 

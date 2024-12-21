@@ -47,7 +47,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     // Public properties
 
     // Signals
-    public signal void star_clicked_sig (bool starred);
     public signal void searched_for_sig (string text);
     public signal void search_focused_sig ();
 
@@ -79,9 +78,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
     // data and state variables
 
-    private bool _starred = false;
     private Model.Station _station;
     private Mutex _station_update_lock = Mutex();   // Lock out concurrent updates
+    private ulong station_handler_id = 0;
 
     private VolumeButton _volume_button = new VolumeButton();
     
@@ -90,6 +89,21 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     private string _searchentry_text = "";
 
     private PlayerInfo _player_info;
+
+    /** @property {bool} starred - Station starred. */
+    private bool _starred = false;
+    private bool starred {
+        get { return _starred; }
+        set {
+            _starred = value;
+            if (!_starred) {
+                _star_button.image = UNSTAR;
+            } else {
+                _star_button.image = STAR;
+            }
+        }
+    } // starred
+
 
     /**
      * @brief Construct block for initializing the header bar components.
@@ -132,7 +146,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         _star_button.sensitive = true;
         _star_button.tooltip_text = _("Star this station");
         _star_button.clicked.connect (() => {
-            if ( _station != null ) star_clicked_sig (starred);  
+            _station.starred = !starred;
+            starred =_station.starred;
         });
      
        
@@ -236,31 +251,43 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
      *
      * @param station The new station to display information for.
      */
-     public async void update_from_station(Model.Station station) 
+    //   public async void update_playing_station(Model.Station station) // FIXME: Man not need async
+     public bool  update_playing_station(Model.Station station) // FIXME: Man not need async
      {
-        if (app().is_offline) return;
+        if (app().is_offline || _station == station ) return false;
 
         if (_station_update_lock.trylock())
-        // Lock while changing the station to ensure single threading
+        // Lock while changing the station to ensure single threading.
+        // Lock is released when the info is updated on emit of info_changed_completed_sig
         {
-            Idle.add (() => 
-            // Initiate the fade out on a non-UI thread
-            {
-                if (_station != null) {
-                    _station.notify.disconnect(handle_station_change);
+            //  Idle.add (() => 
+            //  // Initiate the fade out on a non-UI thread
+            //  {
+
+                if (station_handler_id > 0) 
+                // Disconnect the old station starred handler
+                {
+                    _station.disconnect(station_handler_id);
+                    station_handler_id = 0;
                 }
         
-                _player_info.station_change.begin(station, () =>
+                _player_info.change_station.begin(station, () =>
                 {
                     _station = station;
-                    _station.notify.connect(handle_station_change);    
                     starred = _station.starred;
+                    station_handler_id = _station.station_star_sig.connect((starred) => {
+                        this.starred = starred;
+                    });
                 });
 
-                return Source.REMOVE;
-            });  
+            //      return Source.REMOVE;
+            //  },Priority.HIGH_IDLE);  
+
+            _player_info._metadata = STREAM_METADATA;
+            return true;
         } // if
-    } // update_from_station
+        return false;
+    } // update_playing_station
     
 
 
@@ -435,19 +462,4 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 return Source.REMOVE;
             });
     } // reset_search_timeout
-
-
-    /** @property {bool} starred - Station starred. */
-    private bool starred {
-        get { return _starred; }
-        set {
-            _starred = value;
-            if (!_starred) {
-                _star_button.image = UNSTAR;
-            } else {
-                _star_button.image = STAR;
-            }
-        }
-    } // starred
-
-}
+} // Tuner.HeaderBar
