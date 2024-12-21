@@ -189,8 +189,8 @@ public class Tuner.PlayerController : GLib.Object
             {
                 _metadata =  new Metadata();
                 _station = value;
+                play_station (_station);
             }
-            play_station (_station);
         }
     } // station
 

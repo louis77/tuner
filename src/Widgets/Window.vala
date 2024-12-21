@@ -224,7 +224,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         /*
             Player hookups
          */
-         player_ctrl.station_changed_sig.connect (_headerbar.update_from_station);
+         player_ctrl.station_changed_sig.connect (_headerbar.update_playing_station);
 
          set_titlebar (_headerbar);
 

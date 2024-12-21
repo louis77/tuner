@@ -22,6 +22,12 @@
  */
 public class Tuner.RevealLabel : Gtk.Revealer {
 
+    public signal void reveal_true_called_sig();   // Signals that the reveal call has been initiated
+    public signal void reveal_false_called_sig();   // Signals that the reveal call has been initiated
+
+
+    private Mutex _set_text_lock = Mutex();   // Lock out concurrent updates
+
     /**
      * @brief Default duration for fade-in animation in milliseconds.
      */
@@ -59,18 +65,44 @@ public class Tuner.RevealLabel : Gtk.Revealer {
     public void set_text ( string text ) 
     {
         // Prevent transition if same title is submitted multiple times
-        if ( label_child.label == text) return;
+        if ( label_child.label == text) return;      
+        
+        if ( _set_text_lock.trylock() == false ) return;
+
+        warning(@"set_text: $text - Setup");
 
         reveal_child = false;
 
-        Timeout.add (3*DEFAULT_FADE_DURATION, () => 
-        // Update the text after fade has completed
+        if ( label_child.label == "" ) 
         {
+            warning(@"set_text: $text - Reveal from Clear");
             label_child.label = text;
-            if ( text != "" ) reveal_child = true;
+            reveal_child = true;
+            reveal_true_called_sig();
+            _set_text_lock.unlock ();
+            return;
+        }
 
+        Timeout.add (DEFAULT_FADE_DURATION+100, () => 
+        // Clear the text after fade has completed
+        {
+            warning(@"set_text: $text - Clear");
+            reveal_false_called_sig();
+            label_child.label = "";
             return Source.REMOVE;
-        });       
+        },Priority.HIGH_IDLE
+        );  
+
+        Timeout.add (3*DEFAULT_FADE_DURATION/2, () => 
+        // Update and reveal new text after fade and clear have completed
+        {
+            warning(@"set_text: $text - Reveal");
+            label_child.label = text;
+            reveal_child = true;
+            reveal_true_called_sig();
+            _set_text_lock.unlock ();
+            return Source.REMOVE;
+        }, Priority.DEFAULT_IDLE);       
     } // set_text
 
 

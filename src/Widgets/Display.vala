@@ -247,25 +247,11 @@ public class Tuner.Display : Gtk.Paned {
             , "media-playlist-shuffle-symbolic");
             
         discover.realize.connect (() => {
-            if ( app().is_offline ) return;
-            try {
-                var slist = new StationList.with_stations (discover.next_page ());
-                hookup(slist);
-                discover.content = slist;
-            } catch (SourceError e) {
-                discover.show_alert ();
-            }
+            populate(discover);
         });
         
         discover.action_activated_sig.connect (() => {
-            if ( app().is_offline ) return;
-            try {
-                var slist = new StationList.with_stations (discover.next_page ());
-                hookup(slist);
-                discover.content = slist;
-            } catch (SourceError e) {
-                discover.show_alert ();
-            }
+            populate(discover);
         });
 
 
@@ -363,13 +349,9 @@ public class Tuner.Display : Gtk.Paned {
             search_results.tooltip_button.sensitive = false;    
             var new_saved_search  = add_saved_search( search_results.parameter, _directory.add_saved_search (search_results.parameter));
             //new_saved_search.list(search_results.content);
-            try {
-                var slist = new StationList.with_stations (new_saved_search.next_page ());
-                hookup(slist);
-                new_saved_search.content = slist;
-            } catch (SourceError e) {
-                new_saved_search.show_alert ();
-            }
+
+            populate(new_saved_search);
+
             search_results.selection_received.connect(() =>
             {
                 warning(@"Selected");
@@ -526,6 +508,7 @@ public class Tuner.Display : Gtk.Paned {
     } // hookup
 
 
+    /** */
     private SourceListBox add_saved_search(string search, StationSet station_set, StationList? content = null)//StationSet station_set)
     {
         var saved_search = create_category_specific 
@@ -546,7 +529,8 @@ public class Tuner.Display : Gtk.Paned {
             saved_search.content = content; 
         }
 
-        //saved_search.content.show();
+        //saved_search.show_all();
+        saved_search.content.show();
 
         saved_search.action_activated_sig.connect (() => {
             if ( app().is_offline ) return;
@@ -591,6 +575,8 @@ public class Tuner.Display : Gtk.Paned {
     } // create_category_predefined
 
 
+    /**
+     */
     private SourceListBox create_category_specific 
         ( Gtk.Stack stack
         , Granite.Widgets.SourceList source_list
@@ -618,19 +604,29 @@ public class Tuner.Display : Gtk.Paned {
             );
 
         genre.realize.connect (() => {
-            if ( app().is_offline ) return;
-            try {
-                var slist = new StationList.with_stations (genre.next_page ());
-                hookup(slist);
-                genre.content = slist;
-            } catch (SourceError e) {
-                genre.show_alert ();
-            }
+            populate(genre);
         });        
         return genre;
     } // create_category_specific
 
 
+    /**
+     */
+    private void populate(SourceListBox slb )
+    {
+        if ( app().is_offline ) return;
+        try {
+            var slist = new StationList.with_stations (slb.next_page ());
+            hookup(slist);
+            slb.content = slist;
+        } catch (SourceError e) {
+            slb.show_alert ();
+        }
+    }
+    
+
+    /**
+     */
     private void create_category_genre
         ( Gtk.Stack stack
         , Granite.Widgets.SourceList source_list
