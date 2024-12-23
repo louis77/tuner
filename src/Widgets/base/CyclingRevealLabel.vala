@@ -23,8 +23,10 @@
 public class Tuner.CyclingRevealLabel : RevealLabel {
 
     private const int SUBTITLE_MIN_DISPLAY_SECONDS = 5;
-    private const int DISPLAY_WIDTH_OFFSET = 761;  
-    private const int BORDER_WIDTH_OFFSET = 7;  
+    private const int LABEL_WIDTH_MIN = 100;
+    private const int LABEL_RESIZE_BUFFER = 10;
+    //  private const int DISPLAY_WIDTH_OFFSET = 761;  
+    //  private const int BORDER_WIDTH_OFFSET = 7;  
 
     public bool show_metadata { get; set; }
 
@@ -47,13 +49,15 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
         } // set
      } // metadata_fast_cycle 
 
+    private signal void flourish_complete_sig();
 
     private bool _metadata_fast_cycle;
-    private int _follow_width = 0;  // tracks window width    private int _window_width_previous = 0;  // tracks window width
-    private int _max_label_width = 0; // Tracks the maximum width the label can occupy
+    private int _last_parent_width = 0;  // tracks window width    private int _window_width_previous = 0;  // tracks window width
+    private int _parent_unused_growth = 0; // Tracks the maximum width the label can occupy
     private int _min_label_width;    // Minimum label width
     private int _peak_label_width;    // Peak label width
-    private int _current_label_width;    // Current label width
+    private bool _followed_width_change;    // Followed width
+    //  private int _current_label_width;    // Current label width
 
     private uint _label_cycle_id = 0;
     private uint _flourish_id = 0;
@@ -69,23 +73,65 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
     public CyclingRevealLabel (Widget follow, int min_label_width, string? str = null) 
     {
         Object();
+        
         label_child.set_line_wrap(false);
         label_child.set_justify(Justification.CENTER);
         base.label_child.set_text( str); 
         
         _min_label_width =  min_label_width;
-        _max_label_width = min_label_width;
+        //  _max_label_width = min_label_width;
 
-        follow.size_allocate.connect((widget, allocation) => {
-            if ( _follow_width == allocation.width ) return;
-            _follow_width = allocation.width;         
-            _max_label_width = int.max(_follow_width, _min_label_width);
-            _peak_label_width = int.min(_peak_label_width,_max_label_width-DISPLAY_WIDTH_OFFSET);
-            update_size( false );
+        follow.size_allocate.connect((widget, allocation) => 
+        {
+            if ( _last_parent_width == 0 ) _last_parent_width = allocation.width;
+            var delta = allocation.width - _last_parent_width;
+
+            if ( delta == 0 ) return;
+
+            if ( delta > 0 ) 
+            // Growing parent
+            {
+                _parent_unused_growth += delta;
+            }
+            else
+            // Shrinking parent
+            {
+                //  var shrink_growth = int.min(-delta, _parent_unused_growth);
+                //  warning(@"Shrink: $shrink delta: $delta _parent_unused_growth: $(_parent_unused_growth)");
+
+                if  ( -delta  <= _parent_unused_growth) 
+                // Track the delta back
+                {
+                    debug(@"Shrink delta: $delta _parent_unused_growth: $_parent_unused_growth");
+                    _parent_unused_growth += delta;
+                    return;
+                }
+
+                debug(@"Delta: $delta  Peak old: $_peak_label_width new: $(_peak_label_width + delta + _parent_unused_growth)  follow: $_last_parent_width");
+                _peak_label_width += ((2*delta) + _parent_unused_growth);
+                _peak_label_width = int.max(_peak_label_width, LABEL_WIDTH_MIN);
+                _parent_unused_growth = 0;
+                set_size_request(_peak_label_width, -1);
+                _followed_width_change = true;
+            }
+            _last_parent_width = allocation.width;         
+        });
+
+        size_allocate.connect((allocation) => {
+            if (!_followed_width_change && allocation.width <= ( _peak_label_width + LABEL_RESIZE_BUFFER )) 
+            {
+                _followed_width_change = false;
+                return;
+            }
+            debug(@"Size Alloc:  $(allocation.width) Peak: $(_peak_label_width)");
+            _peak_label_width = int.max(_peak_label_width,allocation.width - LABEL_RESIZE_BUFFER);
+            //  set_size_request(_peak_label_width, -1);
+            set_size_request(9*_peak_label_width/10, -1);
         });
 
         _cycle_phases = _cycle_phases_fast;
-    }
+    } // CyclingRevealLabel
+
 
     public new string label {
         get { return get_text(); }
@@ -97,73 +143,81 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
      * @brief gets/Sets the label
      *
      */
-    public new void set_text( string text )
+    public new bool set_text( string text )
     {    
-        if ( text == base.get_text() ) return;
+        if ( text == base.get_text() ) return true;
+        
 
         // Make the peak width smaller than allocated by the apprent size of the boarder, plus a fudge
-        _peak_label_width = int.max(_peak_label_width,get_allocated_width()-BORDER_WIDTH_OFFSET);
+        //  _peak_label_width = int.max(_peak_label_width,get_allocated_width()-BORDER_WIDTH_OFFSET);
 
-        base.set_text(text);
+        debug(@"CL set text: $(base.get_text()) > $text");
+        if ( base.set_text(text) )
+        {
 
-        // Measure the natural width of the label with the new text
-        int min_width, natural_width;
-        get_preferred_width(out min_width, out natural_width);
+            debug(@"CL set text - Success: $text");
+            // Measure the natural width of the label with the new text
+            //  int min_width, natural_width;
+            //  get_preferred_width(out min_width, out natural_width);
 
-        // Update _max_label_width only if the new text exceeds it
-        if (natural_width > _max_label_width) {
-            _max_label_width = natural_width;
+            //  // Update _max_label_width only if the new text exceeds it
+            //  if (natural_width > _max_label_width) {
+            //      _max_label_width = natural_width;
+            //  }
+
+            //  // Apply the new width constraints
+            //  update_size(  );
+            return true;
         }
-
-        // Apply the new width constraints
-        update_size(  );
+        
+        debug(@"CL set text - Failed: $text");
+        return false;
      } // label
 
 
-     /**
-      */
-     private void update_size(bool flourish = true) 
-     {        
-        if ( _flourish_id > 0 ) 
-        {
-            Source.remove(_flourish_id);
-            _flourish_id = 0;
-        }
+    //   /**
+    //    */
+    //   private void update_size(bool flourish = true) 
+    //   {        
+    //      if ( _flourish_id > 0 ) 
+    //      {
+    //          Source.remove(_flourish_id);
+    //          _flourish_id = 0;
+    //      }
 
-        var size = int.max(int.min(_max_label_width, _peak_label_width),  _min_label_width );
-        if ( size == _current_label_width ) return;
-        if ( !flourish || size == _min_label_width  ) 
-        {
-            set_size_request( size, -1);
-            _current_label_width = size;
-            return;
-        }
+    //      //  var size = int.max(int.min(_max_label_width, _peak_label_width),  _min_label_width );
+    //      //  if ( size == _current_label_width ) return;
+    //      //  if ( !flourish || size == _min_label_width  ) 
+    //      //  {
+    //      //      set_size_request( size, -1);
+    //      //      _current_label_width = size;
+    //      //      return;
+    //      //  }
 
-        // Flourish
+    //      // Flourish
 
   
-        Idle.add (() => 
-        // Initiate the fade out in another thread
-        {
-            _flourish_id = Timeout.add_full(Priority.DEFAULT, 3, () => 
-            {  
-                if ( _current_label_width >=  size ) 
-                {
-                    _flourish_id = 0;
-                    return Source.REMOVE;
-                }
+    //      //  Idle.add (() => 
+    //      //  // Initiate the fade out in another thread
+    //      //  {
+    //      //      _flourish_id = Timeout.add_full(Priority.DEFAULT, 3, () => 
+    //      //      {  
+    //      //          if ( _current_label_width >=  size ) 
+    //      //          {
+    //      //              _flourish_id = 0;
+    //      //              flourish_complete_sig();
+    //      //              return Source.REMOVE;
+    //      //          }
 
-                _current_label_width++;// += 4;
-                set_size_request( _current_label_width, -1);
+    //      //          _current_label_width++;// += 4;
+    //      //          set_size_request( _current_label_width, -1);
             
-                return Source.CONTINUE; // Leave timer to be recalled
-            });
-
-            debug(@"Flourish target: $size  from: $_current_label_width id: $_flourish_id");
-            return Source.REMOVE;
-        });  
-     
-    } // update_size
+    //      //          return Source.CONTINUE; // Leave timer to be recalled
+    //      //      });
+    //      //      debug(@"Flourish target: $size  from: $_current_label_width id: $_flourish_id");
+    //      //      return Source.REMOVE;
+    //      //  });  
+    //  } // update_size
 
 
     /**
@@ -233,10 +287,9 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
     {
         stop();
         base.set_text("");
-        _max_label_width = 0;
         _peak_label_width = 0;
         sublabels.clear();
-        update_size(false);
+        set_size_request(LABEL_WIDTH_MIN, -1);
     } // clear
 
 

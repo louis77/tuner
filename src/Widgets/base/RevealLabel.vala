@@ -27,6 +27,7 @@ public class Tuner.RevealLabel : Gtk.Revealer {
 
 
     private Mutex _set_text_lock = Mutex();   // Lock out concurrent updates
+    private string _next_text;
 
     /**
      * @brief Default duration for fade-in animation in milliseconds.
@@ -62,47 +63,50 @@ public class Tuner.RevealLabel : Gtk.Revealer {
      *
      * Setting this text triggers the reveal animation.
      */
-    public void set_text ( string text ) 
+    public bool set_text ( string text ) 
     {
         // Prevent transition if same title is submitted multiple times
-        if ( label_child.label == text) return;      
+        if ( label_child.label == text) return true;      
         
-        if ( _set_text_lock.trylock() == false ) return;
+        _next_text =  text;
+        //  warning(@"RL set_text - Try Lock: $text");
+        if ( _set_text_lock.trylock() == false ) return false;
 
-        warning(@"set_text: $text - Setup");
+        //  warning(@"RL set_text - Locked Setup: $text");
 
         reveal_child = false;
 
-        if ( label_child.label == "" ) 
+        if ( label_child.label == "" && text != "") 
         {
-            warning(@"set_text: $text - Reveal from Clear");
-            label_child.label = text;
+            //  warning(@"RL set_text - Reveal from Clear & Unlock: $text");
+            label_child.label = _next_text;
             reveal_child = true;
             reveal_true_called_sig();
             _set_text_lock.unlock ();
-            return;
+            return true;
         }
 
         Timeout.add (DEFAULT_FADE_DURATION+100, () => 
         // Clear the text after fade has completed
         {
-            warning(@"set_text: $text - Clear");
             reveal_false_called_sig();
             label_child.label = "";
+            //  warning(@"RL set_text - Clear: $text");
             return Source.REMOVE;
-        },Priority.HIGH_IDLE
-        );  
+        },Priority.HIGH_IDLE);  
 
         Timeout.add (3*DEFAULT_FADE_DURATION/2, () => 
         // Update and reveal new text after fade and clear have completed
         {
-            warning(@"set_text: $text - Reveal");
-            label_child.label = text;
+            label_child.label = _next_text;
             reveal_child = true;
             reveal_true_called_sig();
             _set_text_lock.unlock ();
+            //  warning(@"RL set_text - Reveal & Unlock: $text");
             return Source.REMOVE;
-        }, Priority.DEFAULT_IDLE);       
+        }, Priority.DEFAULT_IDLE);    
+        
+        return true;
     } // set_text
 
 
