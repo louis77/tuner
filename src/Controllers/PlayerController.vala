@@ -213,11 +213,11 @@ public class Tuner.PlayerController : GLib.Object
     public void play_station (Model.Station station) 
     {
         _player.stop ();
+        //station_changed_sig (station);
         _player.uri = ( station.urlResolved != null && station.urlResolved != "" ) ? station.urlResolved : station.url; 
         play_error = false;
         _player.play ();
-        station_changed_sig (station);
-        metadata_changed_sig(_metadata);
+        //  station_changed_sig (station);
     }
 
 

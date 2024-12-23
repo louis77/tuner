@@ -31,7 +31,7 @@ public class Tuner.Display : Gtk.Paned {
     private const int EXPLORE_CATEGORIES = 5;    // How many explore categories to display 
 
 
-    public signal void selection_changed_sig (Model.Station station);
+    public signal void station_clicked_sig (Model.Station station);
 
     public signal void favourites_changed_sig ();
 
@@ -470,7 +470,7 @@ public class Tuner.Display : Gtk.Paned {
         item.activated.connect(() =>
         {
             try {
-                selection_changed_sig(station.next_page().to_array()[0]);
+                station_clicked_sig(station.next_page().to_array()[0]);
                 jukebox_mode = true;
             } 
             catch (SourceError e)
@@ -482,7 +482,7 @@ public class Tuner.Display : Gtk.Paned {
         app().player.tape_counter_sig.connect((oldstation) =>
         {     
             try {
-                if ( jukebox_mode ) selection_changed_sig(station.next_page().to_array()[0]);
+                if ( jukebox_mode ) station_clicked_sig(station.next_page().to_array()[0]);
             } 
             catch (SourceError e)
             {
@@ -495,9 +495,9 @@ public class Tuner.Display : Gtk.Paned {
 
     private void hookup(StationList slist)
     {
-        slist.selection_changed_sig.connect((station) =>
+        slist.station_clicked_sig.connect((station) =>
         {
-            selection_changed_sig(station);
+            station_clicked_sig(station);
             jukebox_mode = false;
         });
 

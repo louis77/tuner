@@ -175,7 +175,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
             try {
                 foreach (var station in source.next_page ()) { 
-                    handle_station_click(station);  
+                    handle_play_station(station);  
                     break;
                 }
             } catch (SourceError e) {
@@ -204,9 +204,9 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         */
         _headerbar = new HeaderBar (this);
 
-        _headerbar.star_clicked_sig.connect ( (starred) => {
-            player_ctrl.station.toggle_starred ();
-        });
+        //  _headerbar.star_clicked_sig.connect ( (starred) => {
+        //      player_ctrl.station.toggle_starred ();
+        //  });
 
         _headerbar.search_focused_sig.connect (() => 
         // Show searched stack when cursor hits search text area
@@ -223,17 +223,16 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
         /*
             Player hookups
-         */
-         player_ctrl.station_changed_sig.connect (_headerbar.update_playing_station);
+         */ 
+         player_ctrl.metadata_changed_sig.connect (_headerbar.handle_metadata_changed);
 
          set_titlebar (_headerbar);
 
         /*
             Display
         */
-        //_directory.load ();
         _display = new Display(directory);  
-        _display.selection_changed_sig.connect (handle_station_click);        
+        _display.station_clicked_sig.connect (handle_play_station);  // Station clicked -> change station      
         add (_display);
     } // add_widgets
 
@@ -325,17 +324,16 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
 
     /**
-     * @brief Handles a station selection.
+     * @brief Handles a station selection and plays the station
      * @param station The selected station.
      */
-     public void handle_station_click (Model.Station station) {
-        if ( app().is_offline ) return;
-        debug (@"handle station click for $(station.name)");
-        _directory.count_station_click (station);
-        player_ctrl.station = station;
+     public void handle_play_station (Model.Station station) 
+     {
+        if ( app().is_offline || !_headerbar.update_playing_station(station) ) return;  // Online and not already changing station
 
-        debug (@"Storing last played station: $(station.stationuuid)");
+        player_ctrl.station = station;
         _settings.last_played_station = station.stationuuid;
+        _directory.count_station_click (station);
 
         set_title (WINDOW_NAME+": "+station.name);
     } // handle_station_click
