@@ -198,6 +198,18 @@ public class Tuner.StarStore : Object {
 
 
     /**
+     */
+    public void update(Station station)
+    {
+        if ( _starred_station_map.has_key (station.stationuuid) )
+        {
+            _starred_station_map.set (station.stationuuid, station.updated ());
+            persist ();
+        }
+    } // update
+
+
+    /**
      * @brief Loads the favorites from the JSON file.
      *
      * Starred staions are defined by the file and do not load from the DataProvider
@@ -291,7 +303,7 @@ public class Tuner.StarStore : Object {
             foreach ( var ps in provider_station)
             {
                 var ss = _starred_station_map.get (ps.stationuuid);
-                if ( ss != null) ss.set_up_to_date_with (ps);
+                if ( ss != null) ss.is_in_index = ss.set_up_to_date_with (ps);
             }
         }
         catch (DataProvider.DataError e) {

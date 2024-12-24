@@ -34,7 +34,8 @@ public class Tuner.StationButton : Tuner.DisplayButton {
      * @brief Constructs a new StationBox instance.
      * @param station The radio station to represent.
      */
-    public StationButton (Model.Station station) {
+    public StationButton (Model.Station station) 
+    {
         Object (
             description: make_description (station.countrycode),
             title: make_title (station.name, station.starred, station.is_up_to_date),
@@ -42,16 +43,6 @@ public class Tuner.StationButton : Tuner.DisplayButton {
             favicon_image: new Gtk.Image.from_icon_name (DEFAULT_ICON_NAME, Gtk.IconSize.DIALOG),
             station: station
         );
-    } // StationButton
-
-    /**
-     * @brief Additional initialization for the StationBox.
-     *
-     * This method is automatically called after construction and sets up
-     * the favicon, style context, and event handling for the StationBox.
-     */
-    construct {
-        debug (@"StationBox construct $(station.name)");
 
         get_style_context().add_class("station-button");
         always_show_image = true;
@@ -66,7 +57,7 @@ public class Tuner.StationButton : Tuner.DisplayButton {
                 // Create menu on demand not on construction
                 // because it is rarely used for all stations
                 if (menu == null) {
-                    menu = new StationContextMenu (this.station);
+                    menu = new StationContextMenu (this);
                     menu.attach_to_widget (this, null);
                     menu.show_all ();
                 }
@@ -88,13 +79,30 @@ public class Tuner.StationButton : Tuner.DisplayButton {
         {
             station.update_favicon_image.begin (_favicon_image);
         }
-    } // construct
+    } // StationButton
+
+
+    /**
+     * @brief Updates the station button with new information.
+     * @param starred Whether the station is starred (favorited).
+     */
+    public void update(bool starred = false)
+    {
+        _station = station.updated();
+        station.update_favicon_image.begin (_favicon_image);
+        _station.starred = starred;
+        description = make_description (station.countrycode);
+        title = make_title (station.name, station.starred, station.is_up_to_date);
+        tag = make_tag (station.codec, station.bitrate);
+        app().stars.update (station);
+    } // update
 
 
     /**
      * @brief Creates a title string for the station.
      * @param title The station's title.
      * @param starred Whether the station is starred (favorited).
+     * @param is_up_to_date Whether the station information is up to date.
      * @return The formatted title string.
      */
     private static string make_title (string title, bool starred,bool is_up_to_date = true) {
@@ -132,4 +140,5 @@ public class Tuner.StationButton : Tuner.DisplayButton {
         else
             return location;
     } // make_description
-} 
+} // class StationButton
+

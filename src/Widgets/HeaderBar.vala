@@ -204,23 +204,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         pack_end (_prefs_button);
         pack_end (_searchentry);
 
-
-        // Test button
-        int x = 0;
-        var _test_button = new PlayButton (); //FIXME: Remove this test button
-        _test_button.clicked.connect (() => {
-            if (x == 0) {
-                _player_info.title_label.set_text("Test Text Label One");
-                x = 1;
-            } else {
-                _player_info.title_label.set_text("Test Text Label Two - Test Text Label Two");
-                x = 0;
-            }
-            _player_info.title_label.cycle();
-        });
-        pack_end (_test_button);
-
-
         show_close_button = true;
 
         /*
@@ -273,9 +256,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         {
             _station_locked = true;
 
-            //  Idle.add (() => 
-            //  // Initiate the fade out on a non-UI thread
-            //  {
+            Idle.add (() => 
+            // Initiate the fade out on a non-UI thread
+            {
 
                 if (station_handler_id > 0) 
                 // Disconnect the old station starred handler
@@ -293,8 +276,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                     });
                 });
 
-            //      return Source.REMOVE;
-            //  },Priority.HIGH_IDLE);  
+                return Source.REMOVE;
+            },Priority.HIGH_IDLE);  
 
             _player_info._metadata = STREAM_METADATA;
             return true;
@@ -405,7 +388,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             add(station_grid);
             reveal_child = false; // Make it invisible initially
 
-           // app().player.metadata_changed_sig.connect(handle_metadata_changed);
         } // construct
 
 

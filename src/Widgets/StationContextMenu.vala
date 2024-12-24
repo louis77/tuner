@@ -18,15 +18,18 @@ public class Tuner.StationContextMenu : Gtk.Menu {
      * @property station
      * @brief The radio station associated with this context menu.
      */
-    public Model.Station station { get; construct; }
+    public StationButton station_button { get; construct; }
+    private Model.Station _station;
 
     /**
      * @brief Constructs a new StationContextMenu.
-     * @param station The radio station for which this menu is created.
+     * @param station_button The radio station for which this menu is created.
      */
-    public StationContextMenu (Model.Station station) {
+    public StationContextMenu (StationButton station_button) 
+    {
+        warning(@"StationContextMenu $(station_button != null)");
         Object (
-            station: station
+            station_button: station_button
         );
     }
 
@@ -35,18 +38,26 @@ public class Tuner.StationContextMenu : Gtk.Menu {
      */
     construct {
 
+        _station = station_button.station;
+
         // Info
-        var name = new Gtk.MenuItem.with_label (this.station.name);
+        var name = new Gtk.MenuItem.with_label (station_button.station.name);
         name.sensitive = false;
 
-        var country = new Gtk.MenuItem.with_label (this.station.countrycode);
+        var country = new Gtk.MenuItem.with_label (station_button.station.countrycode);
         country.sensitive = false;
 
         var not_up_to_date = new Gtk.MenuItem.with_label (_("Station info updated Online - View changes"));
         var make_up_to_date = new Gtk.MenuItem.with_label (_("Update Station from Online"));
+        make_up_to_date.activate.connect (() =>
+        {
+            station_button.update(true);
+            remove(not_up_to_date);
+            remove(make_up_to_date);
+        });
 
         var website = new Gtk.MenuItem.with_label (_("Visit Website"));
-        if (this.station.homepage != null && this.station.homepage.length > 0) {
+        if (_station.homepage != null && _station.homepage.length > 0) {
             website.activate.connect (on_website_handler);
         }
 
@@ -60,7 +71,7 @@ public class Tuner.StationContextMenu : Gtk.Menu {
         set_context_star (star);
         star.activate.connect (() =>
         {
-            station.toggle_starred ();
+            _station.toggle_starred ();
             set_context_star (star);
         }); // Context starred action
 
@@ -68,11 +79,13 @@ public class Tuner.StationContextMenu : Gtk.Menu {
         // Layout
 
 
-        this.append (name);
-        this.append (country);
-        this.append (new Gtk.SeparatorMenuItem ());
-        if ( !station.is_up_to_date )
+        append (name);
+        append (country);
+        append (new Gtk.SeparatorMenuItem ());
+        if ( !_station.is_up_to_date )
         {
+            not_up_to_date.tooltip_text = _station.up_to_date_difference;
+            if ( !_station.is_in_index ) make_up_to_date.sensitive = false;
             append (not_up_to_date);
             append (make_up_to_date);
             append (new Gtk.SeparatorMenuItem ());
@@ -88,23 +101,12 @@ public class Tuner.StationContextMenu : Gtk.Menu {
      */
     private void on_website_handler () {
         try {
-            Gtk.show_uri_on_window (app().window, station.homepage, Gdk.CURRENT_TIME);
+            Gtk.show_uri_on_window (app().window, _station.homepage, Gdk.CURRENT_TIME);
         } catch (Error e) {
             warning (@"Unable to open website: $(e.message)");
         }
     }
 
-
-    //  private void on_show_changes_handler()
-    //  {
-        
-    //  }
-
-
-    //  private void on_update_station_handler()
-    //  {
-        
-    //  }
 
 	/**
 	 * @brief Handles copying the stream URL to clipboard. UrlResolved is the stream url, url can be playlists
@@ -112,7 +114,7 @@ public class Tuner.StationContextMenu : Gtk.Menu {
 	private void on_streamurl_handler () {
 		Gdk.Display display = Gdk.Display.get_default ();
 		Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (display, Gdk.SELECTION_CLIPBOARD);
-		clipboard.set_text (( station.urlResolved == null || station.urlResolved == "" ) ? station.url : station.urlResolved, -1);
+		clipboard.set_text (( _station.urlResolved == null || _station.urlResolved == "" ) ? _station.url : _station.urlResolved, -1);
 	}
 
     /**
@@ -120,7 +122,7 @@ public class Tuner.StationContextMenu : Gtk.Menu {
      * @param item The menu item to update.
      */
     private void set_context_star (Gtk.MenuItem item) {
-        item.label = station.starred ? Application.UNSTAR_CHAR + _("Unstar this station") : Application.STAR_CHAR + _("Star this station");
+        item.label = _station.starred ? Application.UNSTAR_CHAR + _("Unstar this station") : Application.STAR_CHAR + _("Star this station");
     }
 
 }

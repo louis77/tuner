@@ -128,9 +128,9 @@ public class Tuner.Model.Station : Object {
     /** @property {int} favicon_loaded - Indicates the number of times the favicon has been loaded from cache or internet.*/
     public int favicon_loaded; // { get; private set; }
 
-   /** @property {bool} is_up_to_date - Indicates the station is up-to-date after a test */
-   public bool is_up_to_date;
-
+    public bool is_in_index;
+    public bool is_up_to_date;
+   public string up_to_date_difference = _("Station no longer in the index");
 
 
     //  public uint clickcount = 0;
@@ -160,7 +160,9 @@ public class Tuner.Model.Station : Object {
     public static Station make(Json.Node json_node)
     {
         Station station = new Station.basic(json_node);
+        station.is_in_index = true;
         station.is_up_to_date = true; // Assume loaded from the provider as we're adding this to the list
+        station.up_to_date_difference = "";
 
         if ( !STATIONS.has_key(station.stationuuid)) 
         /*
@@ -291,7 +293,8 @@ public class Tuner.Model.Station : Object {
             GLib.Log.remove_handler("Json", log_handler_1);
         }
 
-        is_up_to_date = false; // Basic station creation - assum not up-to-date with provider
+        is_in_index = false; // Basic station creation - assume not in provider index
+        is_up_to_date = false; // Basic station creation - assume not up-to-date with provider
 
         /*
             Favicon setup
@@ -452,11 +455,28 @@ public class Tuner.Model.Station : Object {
         if ( (this.changeuuid == p.changeuuid) 
             && ( this.url == p.url) 
             && (this.bitrate == p.bitrate) 
-            && ( this.codec == p.codec)) { is_up_to_date = true; }
+            && ( this.codec == p.codec)) 
+        { 
+            is_up_to_date = true; 
+            up_to_date_difference = "";
+        }
         else
-            {   
-                is_up_to_date = false;
-            }
+        {   
+            StringBuilder sb = new StringBuilder();
+            if ( this.url != p.url) sb.append(@"Url: $(this.url) > $(p.url)\n");
+            if ( this.bitrate != p.bitrate) sb.append(@"Bitrate: $(this.bitrate) > $(p.bitrate)\n");
+            if ( this.codec != p.codec) sb.append(@"Codec: $(this.codec) > $(p.codec)\n");
+            if (this.changeuuid != p.changeuuid) sb.append("Other minor items have changed");
+            up_to_date_difference = sb.str;
+            is_up_to_date = false;
+        }
         return true;
     }
+
+    /**
+     */
+    public Station updated()
+    {
+        return STATIONS.get(stationuuid);
+    } 
 }
