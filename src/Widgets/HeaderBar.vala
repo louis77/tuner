@@ -219,8 +219,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             Hook up title to metadata as tooltip
         */
         custom_title.tooltip_text = STREAM_METADATA;
-        custom_title.query_tooltip.connect((x, y, keyboard_tooltip, tooltip) => {
-            tooltip.set_text(_player_info._metadata);
+        custom_title.query_tooltip.connect((x, y, keyboard_tooltip, tooltip) => 
+        {
+            tooltip.set_text(_player_info.metadata);
             return true; 
         });
 
@@ -255,6 +256,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         // Lock is released when the info is updated on emit of info_changed_completed_sig
         {
             _station_locked = true;
+            _player_info.metadata = STREAM_METADATA;
 
             Idle.add (() => 
             // Initiate the fade out on a non-UI thread
@@ -279,19 +281,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                 return Source.REMOVE;
             },Priority.HIGH_IDLE);  
 
-            _player_info._metadata = STREAM_METADATA;
             return true;
         } // if
         return false;
     } // update_playing_station
-
-    
-    /**
-     */
-    public void handle_metadata_changed ( PlayerController.Metadata metadata )
-    {
-        _player_info.handle_metadata_changed(metadata);
-    } // handle_metadata_changed
 
 
     /**
@@ -345,9 +338,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         public CyclingRevealLabel title_label { get; private set; }
         public StationContextMenu menu { get; private set; }    
         public Image favicon_image = new Image.from_icon_name (DEFAULT_ICON_NAME, IconSize.DIALOG);
+        public string metadata { get; internal set; }
 
         private Model.Station _station;
-        internal string _metadata = STREAM_METADATA;
         private uint grid_min_width = 0;
 
         internal signal void info_changed_completed_sig ();
@@ -387,6 +380,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
             add(station_grid);
             reveal_child = false; // Make it invisible initially
+
+            metadata = STREAM_METADATA;
+            app().player.metadata_changed_sig.connect (handle_metadata_changed);
 
         } // construct
 
@@ -461,8 +457,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
                     title_label.set_text( metadata.title );
                     return Source.REMOVE;
                 });   
-            }
-
+            } // if
         } // handle_metadata_changed
     } // PlayerInfo
     

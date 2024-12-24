@@ -221,11 +221,6 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             _display.searched_for_sig( text);
         });
 
-        /*
-            Player hookups
-         */ 
-         player_ctrl.metadata_changed_sig.connect (_headerbar.handle_metadata_changed);
-
          set_titlebar (_headerbar);
 
         /*

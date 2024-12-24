@@ -287,8 +287,9 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
     {
         stop();
         base.set_text("");
-        _peak_label_width = 0;
         sublabels.clear();
+        _parent_unused_growth = 0;
+        _peak_label_width = LABEL_WIDTH_MIN;
         set_size_request(LABEL_WIDTH_MIN, -1);
     } // clear
 
