@@ -49,10 +49,10 @@ public class Tuner.SourceListBox : Gtk.Box {
     
 
     /**
-     * @signal action_activated_sig
+     * @signal action_button_activated_sig
      * @brief Emitted when the action button is clicked.
      */
-    public signal void action_activated_sig ();
+    public signal void action_button_activated_sig ();
 
     /**
      * @signal content_changed_sig
@@ -60,7 +60,6 @@ public class Tuner.SourceListBox : Gtk.Box {
      */
     public signal void content_changed_sig (uint count);
 
-    public signal void item_selected_sig (SourceList.Item? item);
 
     // -----------------------------------
     
@@ -138,7 +137,7 @@ public class Tuner.SourceListBox : Gtk.Box {
             );
             tooltip_button.valign = Gtk.Align.CENTER;
             tooltip_button.tooltip_text = action_tooltip_text;
-            tooltip_button.clicked.connect (() => { action_activated_sig (); });
+            tooltip_button.clicked.connect (() => { action_button_activated_sig (); });
             _header.pack_start (tooltip_button, false, false);            
         }
 
@@ -196,12 +195,6 @@ public class Tuner.SourceListBox : Gtk.Box {
 
     public void list(ContentList content)
     {
-        //  try {
-        //      _data.next_page();
-        //  } catch (SourceError e)
-        //  {
-        //      warning(@"List error: $(e.message)");
-        //  }
         this.content = content;
         show_all();
     } // list

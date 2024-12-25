@@ -226,10 +226,10 @@ public class Tuner.DirectoryController : Object {
      *
      * @return A StationSet object with stations 
      */
-    public StationSet add_saved_search( string search_text)
+    public StationSet add_saved_search( string search_term)
     {
-        _star_store.add_saved_search ( search_text);
-        return load_search_stations(search_text,DIRECTORY_LIMIT);
+        _star_store.add_saved_search ( search_term);
+        return load_search_stations(search_term,DIRECTORY_LIMIT);
     } // add_saved_search
 
 

@@ -31,19 +31,50 @@ public class Tuner.Display : Gtk.Paned {
     private const int EXPLORE_CATEGORIES = 5;    // How many explore categories to display 
 
 
+    /**
+     * @brief Signal emitted when a station is clicked.
+     * @param station The clicked station.
+     */
     public signal void station_clicked_sig (Model.Station station);
 
+    /**
+     * @brief Signal emitted when the favourites list changes.
+     */
     public signal void favourites_changed_sig ();
 
+    /**
+     * @brief Signal emitted to refresh starred stations.
+     */
     public signal void refresh_starred_stations_sig ();
 
+    /**
+     * @brief Signal emitted when a search is performed.
+     * @param text The search text.
+     */
     public signal void searched_for_sig(string text);
 
+    /**
+     * @brief Signal emitted when the search is focused.
+     */
     public signal void search_focused_sig();
 
 
+    /**
+     * @property stack
+     * @brief The stack widget for managing different views.
+     */
     public Gtk.Stack stack { get; construct; }
+
+    /**
+     * @property source_list
+     * @brief The source list widget for displaying categories.
+     */
     public SourceList source_list { get; construct; }
+
+    /**
+     * @property directory
+     * @brief The directory controller for managing station data.
+     */
     public DirectoryController directory { get; construct; }
 
     /*
@@ -73,6 +104,10 @@ public class Tuner.Display : Gtk.Paned {
 
        ---------------------------------------------------------- */
 
+    /**
+     * @brief Constructs a new Display instance.
+     * @param directory The directory controller to use.
+     */
     public Display(DirectoryController directory)
     {
         Object(
@@ -201,7 +236,9 @@ public class Tuner.Display : Gtk.Paned {
         source_list.root.add (_talk_category);
 
         source_list.ellipsize_mode = Pango.EllipsizeMode.NONE;
-        source_list.item_selected.connect  ((item) => {
+        source_list.item_selected.connect  ((item) => 
+        // Syncs Item choice to Stack view
+        {
             var selected_item = item.get_data<string> ("stack_child");
             stack.visible_child_name = selected_item;
         });
@@ -250,7 +287,7 @@ public class Tuner.Display : Gtk.Paned {
             populate(discover);
         });
         
-        discover.action_activated_sig.connect (() => {
+        discover.action_button_activated_sig.connect (() => {
             populate(discover);
         });
 
@@ -344,18 +381,12 @@ public class Tuner.Display : Gtk.Paned {
         search_results.tooltip_button.sensitive = false;
 
         // Add saved search from star press
-        search_results.action_activated_sig.connect (() => {
+        search_results.action_button_activated_sig.connect (() => {
             if ( app().is_offline ) return;                 
             search_results.tooltip_button.sensitive = false;    
             var new_saved_search  = add_saved_search( search_results.parameter, _directory.add_saved_search (search_results.parameter));
-            //new_saved_search.list(search_results.content);
-
+            new_saved_search.list(search_results.content);
             populate(new_saved_search);
-
-            search_results.selection_received.connect(() =>
-            {
-                warning(@"Selected");
-            });
             source_list.selected = source_list.get_last_child (_saved_searches_category);
         });
 
@@ -365,9 +396,9 @@ public class Tuner.Display : Gtk.Paned {
 
         // Add saved searches to category from Directory
         var saved_searches = _directory.load_saved_searches();
-        foreach( var search_text in saved_searches.keys)
+        foreach( var search_term in saved_searches.keys)
         {
-           add_saved_search( search_text, saved_searches.get (search_text));
+           add_saved_search( search_term, saved_searches.get (search_term));
         }
         _saved_searches_category.icon = new ThemedIcon ("library-music");
         _library_category.add (_saved_searches_category);   // Added as last item of library category
@@ -432,7 +463,7 @@ public class Tuner.Display : Gtk.Paned {
             var search = text.strip ();
             if ( search.length > 0 ) {
                 load_station_search_results.begin(search, search_results);
-                if ( stack.get_child_by_name (@">$search") == null )  // Search names are prefixed with >
+                if ( stack.get_child_by_name (search) == null )  // Search names are prefixed with >
                 {
                     search_results.tooltip_button.sensitive = true;
                     return;
@@ -459,7 +490,9 @@ public class Tuner.Display : Gtk.Paned {
        -------------------------------------------------
     */
 
-    /*
+    /**
+     * @brief Configures the jukebox mode for a category.
+     * @param category The category to configure.
      */
     private void jukebox(SourceList.ExpandableItem category)
     {
@@ -493,6 +526,10 @@ public class Tuner.Display : Gtk.Paned {
     } // jukebox
 
 
+    /**
+     * @brief Hooks up signals for a StationList.
+     * @param slist The StationList to hook up.
+     */
     private void hookup(StationList slist)
     {
         slist.station_clicked_sig.connect((station) =>
@@ -515,7 +552,7 @@ public class Tuner.Display : Gtk.Paned {
             ( stack
             , source_list
             , _saved_searches_category
-            , @">$search"
+            , search
             , "playlist-symbolic"
             , search
             , _(@"Saved Search :  $search")
@@ -524,15 +561,11 @@ public class Tuner.Display : Gtk.Paned {
             , "non-starred-symbolic"
             );
 
-        //saved_search.show_all();
         if ( content != null ) { 
             saved_search.content = content; 
         }
 
-        //saved_search.show_all();
-        saved_search.content.show();
-
-        saved_search.action_activated_sig.connect (() => {
+        saved_search.action_button_activated_sig.connect (() => {
             if ( app().is_offline ) return;
             _directory.remove_saved_search (search);
             saved_search.delist ();
@@ -542,6 +575,18 @@ public class Tuner.Display : Gtk.Paned {
     } // refresh_saved_searches
     
 
+    /**
+     * @brief Creates a predefined category in the source list.
+     * @param stack The stack widget.
+     * @param source_list The source list widget.
+     * @param category The category to add to.
+     * @param name The name of the category.
+     * @param icon The icon for the category.
+     * @param title The title of the category.
+     * @param subtitle The subtitle of the category.
+     * @param stations The collection of stations for the category.
+     * @return The created SourceListBox for the category.
+     */
     private SourceListBox create_category_predefined
         ( Gtk.Stack stack
         , Granite.Widgets.SourceList source_list
@@ -576,6 +621,18 @@ public class Tuner.Display : Gtk.Paned {
 
 
     /**
+     * @brief Creates a specific category in the source list.
+     * @param stack The stack widget.
+     * @param source_list The source list widget.
+     * @param category The category to add to.
+     * @param name The name of the category.
+     * @param icon The icon for the category.
+     * @param title The title of the category.
+     * @param subtitle The subtitle of the category.
+     * @param station_set The set of stations for the category.
+     * @param action_tooltip_text Optional tooltip text for the action.
+     * @param action_icon_name Optional icon name for the action.
+     * @return The created SourceListBox for the category.
      */
     private SourceListBox create_category_specific 
         ( Gtk.Stack stack
@@ -611,6 +668,8 @@ public class Tuner.Display : Gtk.Paned {
 
 
     /**
+     * @brief Populates a SourceListBox with stations.
+     * @param slb The SourceListBox to populate.
      */
     private void populate(SourceListBox slb )
     {
@@ -626,6 +685,12 @@ public class Tuner.Display : Gtk.Paned {
     
 
     /**
+     * @brief Creates genre-specific categories in the source list.
+     * @param stack The stack widget.
+     * @param source_list The source list widget.
+     * @param category The category to add to.
+     * @param directory The directory controller.
+     * @param genres The array of genres.
      */
     private void create_category_genre
         ( Gtk.Stack stack
