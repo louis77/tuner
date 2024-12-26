@@ -28,10 +28,10 @@ If applicable, add screenshots to help explain your problem.
 
 **Version and Installation Information**
 - Found in version #:
-- New, existing or recently updated Tuner install?
+- New, existing or recently updated Tuner install? Local build?
 
 **If Tuner is Crashing or Hanging**
-Start Tuner from the command line and post the output using the command:
+Start Tuner from the command line and post the output using the command - for flatpak this is:
 ```flatpak run com.github.louis77.tuner``` 
 
 **OS & Desktop (please complete the following information):**
