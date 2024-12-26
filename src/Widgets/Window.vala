@@ -43,6 +43,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public GLib.Settings settings { get; construct; }
     public Gtk.Stack stack { get; set; }
     public PlayerController player { get; construct; }
+    public Model.StationStore store { get; construct; }
 
 
     /* Private */   
@@ -146,7 +147,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
 
         var favorites_file = Path.build_filename (Application.instance.data_dir, "favorites.json");
-        var store = new Model.StationStore (favorites_file);
+        store = new Model.StationStore (favorites_file);
         _directory = new DirectoryController (store);
 
         var primary_box = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);

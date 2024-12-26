@@ -62,6 +62,16 @@
   </provides>
 
   <releases>
+    <release version="1.5.6" date="2024-12-26">
+      <description>
+        <p>Intermediate release prior to new Version:</p>
+        <ul>
+          <li>Starred Stations can be exported to an M3U file from the Preferences menu</li>
+          <li>Export your starred stations prior to upgrading to forthcoming v2 release</li>
+          <li>Starred Stations and other settings need to be reapplied to v2 due to breaking changes</li>
+        </ul>
+      </description>
+    </release>      
     <release version="1.5.5" date="2024-11-08">
       <description>
         <p>Maintanance release:</p>
