@@ -28,7 +28,12 @@ using Granite.Widgets;
  */
 public class Tuner.Display : Gtk.Paned {
 
+    private const string BACKGROUND_TUNER = "/io/github/louis77/tuner/icons/background-tuner";
+    private const string BACKGROUND_JUKEBOX = "/io/github/louis77/tuner/icons/background-jukebox";
     private const int EXPLORE_CATEGORIES = 5;    // How many explore categories to display 
+    private const double BACKGROUND_OPACITY = 0.15;    
+    private const int BACKGROUND_TRANSITION_TIME_MS = 1500;    
+    private const Gtk.RevealerTransitionType BACKGROUND_TRANSITION_TYPE = Gtk.RevealerTransitionType.CROSSFADE;
 
 
     /**
@@ -91,11 +96,13 @@ public class Tuner.Display : Gtk.Paned {
     private SourceList.ExpandableItem _talk_category = new SourceList.ExpandableItem (_("Talk, News, Sport"));
 
 
-    private bool first_activation = true;  // display has not been activated before
-    private bool active = false;  // display is active
-    private bool jukebox_mode = false;  // Jukebox mode
-    //  private signal void refresh_saved_searches_sig (bool add, string search_text);
-
+    private bool _first_activation = true;  // display has not been activated before
+    private bool _active = false;  // display is active
+    private bool _jukebox_mode = false;  // Jukebox mode
+    private Gtk.Revealer _background_tuner = new Gtk.Revealer();  // Background image
+    private Gtk.Revealer _background_jukebox = new Gtk.Revealer();  // Background image
+    private Gtk.Overlay _overlay = new Gtk.Overlay ();
+ 
 
 
     /* --------------------------------------------------------
@@ -121,25 +128,25 @@ public class Tuner.Display : Gtk.Paned {
     */
     public void update_state( bool activate)
     {
-        if ( active && !activate )
+        if ( _active && !activate )
         /* Present Offline look */
         {
-            active = false;
+            _active = false;
             return;
         }
 
-        if ( !active && activate )
+        if ( !_active && activate )
         // Move from not active to active
         {
 
-            if (first_activation)
+            if (_first_activation)
             // One time set up - do post initialization
             {
                 //  TBD
-                first_activation = false;
+                _first_activation = false;
                 initialize.begin();   // TODO -  Check logic
             }
-            active = true;
+            _active = true;
             show_all();   
         }
     } // update_state
@@ -184,18 +191,32 @@ public class Tuner.Display : Gtk.Paned {
 
 
     /* Construct */
-    construct { 
+    construct 
+    { 
+        var tuner = new Gtk.Image.from_resource (BACKGROUND_TUNER);
+        tuner.opacity = BACKGROUND_OPACITY;
+        _background_tuner.transition_duration = BACKGROUND_TRANSITION_TIME_MS;
+        _background_tuner.transition_type = BACKGROUND_TRANSITION_TYPE;   
+        _background_tuner.reveal_child = true; 
+        _background_tuner.child = tuner;
 
-        var granite_settings = Granite.Settings.get_default ();
+        var jukebox = new Gtk.Image.from_resource (BACKGROUND_JUKEBOX);    
+        jukebox.opacity = BACKGROUND_OPACITY;
+        _background_jukebox.transition_duration = BACKGROUND_TRANSITION_TIME_MS;
+        _background_jukebox.transition_type = BACKGROUND_TRANSITION_TYPE;
+        _background_jukebox.reveal_child = false;
+        _background_jukebox.child = jukebox;
 
-        var overlay = new Gtk.Overlay ();   // Use an overlay to allow for background image below the stack
-        var background = new Gtk.Image.from_resource("/com/github/louis77/tuner/icons/background");
-        background.opacity = 0.1;
-        overlay.add (background);
+        var background = new Gtk.Fixed();
+        background.add(_background_tuner);
+        background.add(_background_jukebox);
+        background.halign = Gtk.Align.CENTER;
+        background.valign = Gtk.Align.CENTER;
+        _overlay.add (background);
 
         stack = new Gtk.Stack ();
         stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
-        overlay.add_overlay(stack);
+        _overlay.add_overlay(stack);
 
         // ---------------------------------------------------------------------------
 
@@ -246,7 +267,7 @@ public class Tuner.Display : Gtk.Paned {
         // ---------------------------------------------------------------------------
 
         pack1 (source_list, false, false);
-        pack2 (overlay, true, false);
+        pack2 (_overlay, true, false);
                     
     } // construct
 
@@ -504,7 +525,9 @@ public class Tuner.Display : Gtk.Paned {
         {
             try {
                 station_clicked_sig(station.next_page().to_array()[0]);
-                jukebox_mode = true;
+                _jukebox_mode = true;
+                _background_tuner.reveal_child = false;    
+                _background_jukebox.reveal_child = true; 
             } 
             catch (SourceError e)
             {
@@ -515,7 +538,7 @@ public class Tuner.Display : Gtk.Paned {
         app().player.tape_counter_sig.connect((oldstation) =>
         {     
             try {
-                if ( jukebox_mode ) station_clicked_sig(station.next_page().to_array()[0]);
+                if ( _jukebox_mode ) station_clicked_sig(station.next_page().to_array()[0]);
             } 
             catch (SourceError e)
             {
@@ -535,7 +558,9 @@ public class Tuner.Display : Gtk.Paned {
         slist.station_clicked_sig.connect((station) =>
         {
             station_clicked_sig(station);
-            jukebox_mode = false;
+            _jukebox_mode = false;                     
+            _background_jukebox.reveal_child = false;
+            _background_tuner.reveal_child = true;      
         });
 
         slist.favourites_changed_sig.connect(() =>

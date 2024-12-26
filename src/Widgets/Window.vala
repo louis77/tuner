@@ -58,7 +58,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     /* Private */   
 
-    private const string CSS = "com/github/louis77/tuner/Application.css";
+    private const string CSS = "io/github/louis77/tuner/Application.css";
     private const string NOTIFICATION_PLAYING_BACKGROUND = _("Playing in background");
     private const string NOTIFICATION_CLICK_RESUME = _("Click here to resume window. To quit Tuner, pause playback and close the window.");
     private const string NOTIFICATION_APP_RESUME_WINDOW = "app.resume-window";

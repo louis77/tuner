@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/com/github/louis77/tuner">
+  <gresource prefix="/io/github/louis77/tuner">
     <file alias="Application.css" compressed="true">Application.css</file>
   </gresource>
-  <gresource prefix="/com/github/louis77/tuner/icons">
+  <gresource prefix="/io/github/louis77/tuner/icons">
     <file alias="playlist-queue.svg" compressed="true">icons/16/playlist-queue.svg</file>
     <file alias="playlist-similar.svg" compressed="true">icons/16/playlist-similar.svg</file>
     <file alias="playlist.svg" compressed="true">icons/16/playlist.svg</file>
     <file alias="playlist-symbolic.svg" compressed="true">icons/16/playlist-symbolic.svg</file>
     <file alias="internet-radio-symbolic.svg" compressed="true">icons/16/internet-radio-symbolic.svg</file>
     <file alias="internet-radio.svg" compressed="true">icons/16/internet-radio.svg</file>
-    <file alias="tuner-on.svg" compressed="true">icons/48/com.github.louis77.tuner.svg</file>
-    <file alias="tuner-off.svg" compressed="true">icons/48/com.github.louis77.tuner-symbolic.svg</file>
-    <file alias="jukebox.svg" compressed="true">icons/48/jukebox.svg</file>
-    <file alias="background" compressed="true">icons/128/com.github.louis77.tuner.svg</file>
+    <file alias="tuner-on.svg" compressed="true">icons/48/io.github.louis77.tuner.svg</file>
+    <file alias="tuner-off.svg" compressed="true">icons/48/io.github.louis77.tuner-symbolic.svg</file>
+    <file alias="jukebox.svg" compressed="true">icons/48/io.github.louis77.tuner-jukebox.svg</file>
+    <file alias="background-tuner" compressed="true">icons/128/io.github.louis77.tuner.svg</file>
+    <file alias="background-jukebox" compressed="true">icons/128/io.github.louis77.tuner-jukebox.svg</file>
   </gresource>
 </gresources>
 
