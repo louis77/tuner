@@ -360,7 +360,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             station_label.ellipsize = Pango.EllipsizeMode.MIDDLE;
 
             title_label = new CyclingRevealLabel (window,100);
-            title_label.transition_type = RevealerTransitionType.CROSSFADE;
 
             var station_grid = new Grid ();
             //station_grid.width_request = 200;

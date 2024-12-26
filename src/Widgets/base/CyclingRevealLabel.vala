@@ -317,12 +317,12 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
                     return Source.CONTINUE;  
                 }
 
-                if ( ! child_revealed ) 
-                {
-                    reveal_child = true;
-                    _min_count_down = SUBTITLE_MIN_DISPLAY_SECONDS;
-                    return Source.CONTINUE;    // Still processing reveal
-                }
+                //  if ( ! child_revealed ) 
+                //  {
+                //      reveal_child = true;
+                //      _min_count_down = SUBTITLE_MIN_DISPLAY_SECONDS;
+                //      return Source.CONTINUE;    // Still processing reveal
+                //  }
 
                 foreach ( var position in sublabels.keys)
                 {
