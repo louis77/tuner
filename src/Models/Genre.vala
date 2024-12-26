@@ -27,26 +27,33 @@ namespace Tuner.Model.Genre {
         "Classical",
         "Country",
         "Dance",
+        "Disco",
         "Easy",
         "Folk",
         "Hits",
         "Jazz",
+        "Oldies",
         "Pop",
+        "Rap",
         "Rock",
         "Soul"
         };   
 
     public  const string[] SUBGENRES = {
         "Alternative",
+        "Ambient", 
+        "Club", 
         "Electronic", 
+        "Funk",
+        "HipHop",
         "House",
+        "Indie",
         "Metal",
         "Latino",
-        "Oldies",
         "Punk",
-        "Rap",
         "Reggae",
-        "Salsa"
+        "Salsa",
+        "World Music"
     };     
         
     public  const string[] ERAS = {
@@ -63,10 +70,16 @@ namespace Tuner.Model.Genre {
         
     public  const string[] TALK = 
     {   "AM"
+        ,"Comedy"
+        ,"College Radio"
+        ,"Community Radio"
+        ,"Culture"
+        ,"Educational"
+        ,"Kids"
         ,"Public Radio"
-        , "News"
-        , "Religion"
-        , "Sport"
+        ,"News"
+        ,"Religion"
+        ,"Sport"
         ,"Talk"
     };               
 }
