@@ -15,6 +15,7 @@
     <file alias="jukebox.svg" compressed="true">icons/48/io.github.louis77.tuner-jukebox.svg</file>
     <file alias="background-tuner" compressed="true">icons/128/io.github.louis77.tuner.svg</file>
     <file alias="background-jukebox" compressed="true">icons/128/io.github.louis77.tuner-jukebox.svg</file>
+    <file alias="io.github.louis77.tuner.svg" compressed="true">icons/128/io.github.louis77.tuner.svg</file>
   </gresource>
 </gresources>
 
