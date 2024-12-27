@@ -43,6 +43,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     public const string ACTION_ABOUT = "action_about";
     public const string ACTION_DISABLE_TRACKING = "action_disable_tracking";
     public const string ACTION_ENABLE_AUTOPLAY = "action_enable_autoplay";
+    public const string ACTION_START_ON_STARRED = "action_starred_start";
     public const string ACTION_STREAM_INFO = "action_stream_info";
     public const string ACTION_STREAM_INFO_FAST = "action_stream_info_fast";
 
@@ -75,6 +76,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         { ACTION_ABOUT, on_action_about },
         { ACTION_DISABLE_TRACKING, on_action_disable_tracking, null, "false" },
         { ACTION_ENABLE_AUTOPLAY, on_action_enable_autoplay, null, "false" },
+        { ACTION_START_ON_STARRED, on_action_start_on_starred, null, "false" },
         { ACTION_STREAM_INFO, on_action_stream_info, null, "true" },
         { ACTION_STREAM_INFO_FAST, on_action_stream_info_fast, null, "false" },
     };
@@ -154,6 +156,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         set_geometry_hints (null, Gdk.Geometry() { min_height = GEOMETRY_MIN_HEIGHT, min_width = GEOMETRY_MIN_WIDTH}, Gdk.WindowHints.MIN_SIZE);
         change_action_state (ACTION_DISABLE_TRACKING, settings.do_not_track);
         change_action_state (ACTION_ENABLE_AUTOPLAY, settings.auto_play);
+        change_action_state (ACTION_START_ON_STARRED, settings.start_on_starred);
         change_action_state (ACTION_STREAM_INFO, settings.stream_info);
         change_action_state (ACTION_STREAM_INFO_FAST, settings.stream_info_fast);
 
@@ -193,6 +196,10 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
     } // construct
 
+    public void choose_star()
+    {
+        _display.choose_star();
+    } // choose_star
 
     /**
         Add widgets after Window creation
@@ -227,7 +234,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             Display
         */
         _display = new Display(directory);  
-        _display.station_clicked_sig.connect (handle_play_station);  // Station clicked -> change station      
+        _display.station_clicked_sig.connect (handle_play_station);  // Station clicked -> change station     
         add (_display);
     } // add_widgets
 
@@ -289,9 +296,21 @@ public class Tuner.Window : Gtk.ApplicationWindow {
      * @param action The SimpleAction that triggered this method.
      * @param parameter The parameter passed with the action (unused).
      */
-    public void on_action_enable_autoplay (SimpleAction action, Variant? parameter) {
+     public void on_action_enable_autoplay (SimpleAction action, Variant? parameter) {
         settings.auto_play = !settings.auto_play;
         action.set_state (settings.auto_play);
+        debug (@"on_action_enable_autoplay: $(settings.auto_play)");
+    } // on_action_enable_autoplay
+
+
+    /**
+     * @brief Handles the enable autoplay action.
+     * @param action The SimpleAction that triggered this method.
+     * @param parameter The parameter passed with the action (unused).
+     */
+     public void on_action_start_on_starred (SimpleAction action, Variant? parameter) {
+        settings.start_on_starred = !settings.start_on_starred;
+        action.set_state (settings.start_on_starred);
         debug (@"on_action_enable_autoplay: $(settings.auto_play)");
     } // on_action_enable_autoplay
 

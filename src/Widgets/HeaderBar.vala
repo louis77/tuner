@@ -133,6 +133,12 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         _tuner.set_margin_bottom(5);   // 20px padding on the right
         _tuner.set_margin_start(5);   // 20px padding on the right
         _tuner.set_margin_end(5);   // 20px padding on the right
+        _tuner.tooltip_text = _("Data Provider");       
+        _tuner.query_tooltip.connect((x, y, keyboard_tooltip, tooltip) => 
+        {
+            tooltip.set_text(_(@"Data Provider: $(window.directory.provider())"));
+            return true; 
+        });
 
         // Volume
         _volume_button.set_valign(Align.CENTER);
@@ -203,6 +209,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         // pack RHS
         pack_end (_prefs_button);
         pack_end (_searchentry);
+
+        var test = new PlayButton();
+        test.image = new Image.from_icon_name(app().application_id, IconSize.LARGE_TOOLBAR);
+        pack_end (test);
 
         show_close_button = true;
 
@@ -366,7 +376,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             title_label.metadata_fast_cycle =window.settings.stream_info_fast;
 
             var station_grid = new Grid ();
-            //station_grid.width_request = 200;
             station_grid.column_spacing = 10;
             station_grid.set_halign(Align.FILL);
             station_grid.set_valign(Align.CENTER);
@@ -378,7 +387,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             station_grid.size_allocate.connect((allocate) =>
             {
                 if ( grid_min_width == 0) grid_min_width = allocate.width;
-                //  warning(@"Grid Width: $(allocate.width)");
             });
 
             add(station_grid);

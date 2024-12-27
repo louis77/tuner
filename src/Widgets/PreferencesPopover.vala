@@ -25,6 +25,7 @@ public class Tuner.PreferencesPopover : Gtk.Popover {
         disable_tracking_item.action_name = Window.ACTION_PREFIX + Window.ACTION_DISABLE_TRACKING;
         disable_tracking_item.tooltip_text = _("If checked, your starred and streamed stations will not be fed back to the Station index popularity vote, and will not be used to calculate popular and trending stations");
 
+
         //Theme
         var theme_combo = new Gtk.ComboBoxText ();
         theme_combo.append(THEME.SYSTEM.get_name (), _("Use System"));  
@@ -42,11 +43,19 @@ public class Tuner.PreferencesPopover : Gtk.Popover {
         theme_box.pack_end (theme_combo, true, true, 5);
         theme_box.pack_end (new Gtk.Label(_("Theme")), false, false, 12);
 
+
         // Autoplay
         var autoplay_item = new Gtk.ModelButton ();
         autoplay_item.text = _("Auto-play last station on startup");
         autoplay_item.action_name = Window.ACTION_PREFIX + Window.ACTION_ENABLE_AUTOPLAY;
         autoplay_item.tooltip_text = _("If enabled, when Tuner starts it will automatically start to play the last played station");
+
+
+        // Start on Starred
+        var start_on_starred = new Gtk.ModelButton ();
+        start_on_starred.text = _("Open to Starred Stations");
+        start_on_starred.action_name = Window.ACTION_PREFIX + Window.ACTION_START_ON_STARRED;
+        start_on_starred.tooltip_text = _("If enabled, when Tuner starts it will open to the starred stations view");
 
 
         // Play Display 
@@ -70,6 +79,7 @@ public class Tuner.PreferencesPopover : Gtk.Popover {
            export_m3u8 ();
         });
 
+        
         // Import starred
         var import_starred = new Gtk.ModelButton ();
         import_starred.text = _("Import Station UUIDs as Starred Sations");
@@ -77,6 +87,7 @@ public class Tuner.PreferencesPopover : Gtk.Popover {
         {
            import_stationuuids ();
         });
+
 
         // Layout
         uint8 vpos = 0;
@@ -94,6 +105,7 @@ public class Tuner.PreferencesPopover : Gtk.Popover {
 
         menu_grid.attach (autoplay_item, 0, vpos++, 4, 1);
         menu_grid.attach (disable_tracking_item, 0, vpos++, 4, 1);
+        menu_grid.attach (start_on_starred, 0, vpos++, 4, 1);
         menu_grid.attach (stream_info, 0, vpos++, 4, 1);
         menu_grid.attach (stream_info_fast, 0, vpos++, 4, 1);
 

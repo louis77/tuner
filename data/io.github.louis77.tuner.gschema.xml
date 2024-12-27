@@ -27,8 +27,13 @@
             <summary>Do not participate in Station voting</summary>
             <description>If enabled, do not send voting and popularity information to metadata provider</description>
         </key>
-        <key name="stream-info" type="b">
+        <key name="start-on-starred" type="b">
             <default>false</default>
+            <summary>Open to the Starred Stations view</summary>
+            <description>If enabled, opens to the starred stations view</description>
+        </key>
+        <key name="stream-info" type="b">
+            <default>true</default>
             <summary>Show stream info when playing</summary>
             <description>Cycle through the metadata from the playing stream</description>
         </key>        

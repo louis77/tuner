@@ -14,6 +14,7 @@ public class Tuner.Settings : GLib.Settings
     private const string SETTINGS_LAST_PLAYED_STATION = "last-played-station";
     private const string SETTINGS_POS_X = "pos-x";
     private const string SETTINGS_POS_Y = "pos-y";
+    private const string SETTINGS_START_ON_STARRED = "start-on-starred";
     private const string SETTINGS_STREAM_INFO = "stream-info";
     private const string SETTINGS_STREAM_INFO_FAST = "stream-info-fast";
     private const string SETTINGS_THEME_MODE = "theme-mode";
@@ -24,6 +25,7 @@ public class Tuner.Settings : GLib.Settings
     public bool auto_play { get; set; }
     public bool do_not_track { get; set; }
     public string last_played_station { get; set; }
+    public bool start_on_starred { get; set; }
     public bool stream_info { get; set; }
     public bool stream_info_fast { get; set; }
     public string theme_mode { get; set; }
@@ -48,6 +50,7 @@ public class Tuner.Settings : GLib.Settings
         auto_play = get_boolean(SETTINGS_AUTO_PLAY);
         do_not_track = get_boolean(SETTINGS_DO_NOT_TRACK);
         last_played_station = get_string(SETTINGS_LAST_PLAYED_STATION);
+        start_on_starred = get_boolean(SETTINGS_START_ON_STARRED);
         stream_info = get_boolean(SETTINGS_STREAM_INFO);
         stream_info_fast = get_boolean(SETTINGS_STREAM_INFO_FAST);
         theme_mode = get_string(SETTINGS_THEME_MODE);
@@ -79,6 +82,7 @@ public class Tuner.Settings : GLib.Settings
         set_boolean(SETTINGS_AUTO_PLAY, auto_play);
         set_boolean(SETTINGS_DO_NOT_TRACK, do_not_track);
         set_string(SETTINGS_LAST_PLAYED_STATION, last_played_station);
+        set_boolean(SETTINGS_START_ON_STARRED, start_on_starred);
         set_boolean(SETTINGS_STREAM_INFO, stream_info);
         set_boolean(SETTINGS_STREAM_INFO_FAST, stream_info_fast);
         set_string(SETTINGS_THEME_MODE, theme_mode);

@@ -496,11 +496,15 @@ public class Tuner.Display : Gtk.Paned {
             }
             search_results.tooltip_button.sensitive = false;
         });
-
-        source_list.selected = source_list.get_first_child (_selections_category);
-
     } // initialize
 
+
+    /**
+     */
+    public void choose_star()
+    {
+        source_list.selected = source_list.get_first_child (_library_category);
+    } // choose_star
 
     /* -------------------------------------------------
 

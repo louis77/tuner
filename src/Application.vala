@@ -363,6 +363,7 @@ namespace Tuner {
         protected override void activate() {
             if (window == null) {
                 window = new Window (this, player, settings, directory);
+                if ( settings.start_on_starred ) window.choose_star();  // Start on starred
                 add_window (window);
                 DBus.initialize ();
                 apply_theme( settings.theme_mode);
