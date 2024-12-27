@@ -231,7 +231,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         custom_title.tooltip_text = STREAM_METADATA;
         custom_title.query_tooltip.connect((x, y, keyboard_tooltip, tooltip) => 
         {
-            tooltip.set_text(_player_info.metadata);
+            if ( _station == null ) return false;
+            tooltip.set_text(_(@"Votes: $(_station.votes)\nClicks: $(_station.clickcount)\t Trend: $(_station.clicktrend)\n\n$(_player_info.metadata)"));
             return true; 
         });
 
