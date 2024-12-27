@@ -249,9 +249,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
      */
      public bool  update_playing_station(Model.Station station) 
      {
-        if (app().is_offline || _station == station ) return false;
+        if ( app().is_offline || _station == station ) return false;
 
-        if (_station_update_lock.trylock())
+        if ( _station_update_lock.trylock() )
         // Lock while changing the station to ensure single threading.
         // Lock is released when the info is updated on emit of info_changed_completed_sig
         {
@@ -360,6 +360,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             station_label.ellipsize = Pango.EllipsizeMode.MIDDLE;
 
             title_label = new CyclingRevealLabel (window,100);
+            title_label.halign = Align.CENTER;
+            title_label.valign = Align.CENTER;
+            title_label.show_metadata = window.settings.stream_info;
+            title_label.metadata_fast_cycle =window.settings.stream_info_fast;
 
             var station_grid = new Grid ();
             //station_grid.width_request = 200;
@@ -383,7 +387,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             metadata = STREAM_METADATA;
             app().player.metadata_changed_sig.connect (handle_metadata_changed);
 
-        } // construct
+        } // PlayerInfo
 
 
         /**

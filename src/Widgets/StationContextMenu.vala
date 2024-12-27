@@ -27,7 +27,6 @@ public class Tuner.StationContextMenu : Gtk.Menu {
      */
     public StationContextMenu (StationButton station_button) 
     {
-        warning(@"StationContextMenu $(station_button != null)");
         Object (
             station_button: station_button
         );

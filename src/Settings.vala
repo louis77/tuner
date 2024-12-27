@@ -52,7 +52,7 @@ public class Tuner.Settings : GLib.Settings
         stream_info_fast = get_boolean(SETTINGS_STREAM_INFO_FAST);
         theme_mode = get_string(SETTINGS_THEME_MODE);
         volume = get_double(SETTINGS_VOLUME);
-    }
+    } // Settings
 
     
     public void configure()
@@ -61,9 +61,7 @@ public class Tuner.Settings : GLib.Settings
         app().window.move(_pos_x, _pos_y);
         app().player.volume = _volume;     
         
-        //  string config_home = Environment.get_variable("XDG_CONFIG_HOME") ?? GLib.Environment.get_user_config_dir();
-        //  string gtk_settings_path = config_home + "/gtk-3.0/settings.ini";
-    }
+    } // configure
 
 
     public void save()
@@ -85,5 +83,5 @@ public class Tuner.Settings : GLib.Settings
         set_boolean(SETTINGS_STREAM_INFO_FAST, stream_info_fast);
         set_string(SETTINGS_THEME_MODE, theme_mode);
         set_double(SETTINGS_VOLUME, app().player.volume);
-    }
-}
+    } // save
+} // Tuner.Settings

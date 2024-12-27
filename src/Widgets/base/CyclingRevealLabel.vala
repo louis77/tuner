@@ -22,7 +22,7 @@
  */
 public class Tuner.CyclingRevealLabel : RevealLabel {
 
-    private const int SUBTITLE_MIN_DISPLAY_SECONDS = 5;
+    private const int SUBTITLE_MIN_DISPLAY_SECONDS = 3;
     private const int LABEL_WIDTH_MIN = 100;
     private const int LABEL_RESIZE_BUFFER = 10;
     //  private const int DISPLAY_WIDTH_OFFSET = 761;  
@@ -38,13 +38,13 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
             // slow>fast
             {
                 _metadata_fast_cycle = true;
-                _cycle_phases = _cycle_phases_slow;
+                _cycle_phases = _cycle_phases_fast;
             }
             else
             // fast>slow
             {
                 _metadata_fast_cycle = false;
-                _cycle_phases = _cycle_phases_fast;
+                _cycle_phases = _cycle_phases_slow;
             } //else
         } // set
      } // metadata_fast_cycle 
@@ -57,7 +57,6 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
     private int _min_label_width;    // Minimum label width
     private int _peak_label_width;    // Peak label width
     private bool _followed_width_change;    // Followed width
-    //  private int _current_label_width;    // Current label width
 
     private uint _label_cycle_id = 0;
     private uint _flourish_id = 0;
@@ -74,9 +73,9 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
     {
         Object();
         
-        label_child.set_line_wrap(false);
-        label_child.set_justify(Justification.CENTER);
-        base.label_child.set_text( str); 
+        //  label_child.set_line_wrap(false);
+        //  label_child.set_justify(Justification.CENTER);
+        //  base.label_child.set_text( str); 
         
         _min_label_width =  min_label_width;
         //  _max_label_width = min_label_width;
@@ -117,7 +116,8 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
             _last_parent_width = allocation.width;         
         });
 
-        size_allocate.connect((allocation) => {
+        size_allocate.connect((allocation) => 
+        {
             if (!_followed_width_change && allocation.width <= ( _peak_label_width + LABEL_RESIZE_BUFFER )) 
             {
                 _followed_width_change = false;
@@ -128,8 +128,6 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
             //  set_size_request(_peak_label_width, -1);
             set_size_request(9*_peak_label_width/10, -1);
         });
-
-        _cycle_phases = _cycle_phases_fast;
     } // CyclingRevealLabel
 
 
@@ -146,16 +144,15 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
     public new bool set_text( string text )
     {    
         if ( text == base.get_text() ) return true;
-        
 
         // Make the peak width smaller than allocated by the apprent size of the boarder, plus a fudge
         //  _peak_label_width = int.max(_peak_label_width,get_allocated_width()-BORDER_WIDTH_OFFSET);
 
-        debug(@"CL set text: $(base.get_text()) > $text");
+        //  warning(@"CL set text: $(base.get_text()) > $text");
         if ( base.set_text(text) )
         {
 
-            debug(@"CL set text - Success: $text");
+            warning(@"CL set text - Success: $text");
             // Measure the natural width of the label with the new text
             //  int min_width, natural_width;
             //  get_preferred_width(out min_width, out natural_width);
@@ -170,7 +167,7 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
             return true;
         }
         
-        debug(@"CL set text - Failed: $text");
+        warning(@"CL set text - Failed: $text");
         return false;
      } // label
 
@@ -283,10 +280,10 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
      * @brief Clears the cycling of the subtitles
      *
      */
-    public void clear()
+    public new void clear()
     {
         stop();
-        base.set_text("");
+        //  base.clear();
         sublabels.clear();
         _parent_unused_growth = 0;
         _peak_label_width = LABEL_WIDTH_MIN;
@@ -312,29 +309,26 @@ public class Tuner.CyclingRevealLabel : RevealLabel {
             {
                 _display_seconds++;
 
-                if ( 0 < _min_count_down-- )
+                if ( 0 < _min_count_down )
                 {
+                    _min_count_down--;
                     return Source.CONTINUE;  
                 }
-
-                //  if ( ! child_revealed ) 
-                //  {
-                //      reveal_child = true;
-                //      _min_count_down = SUBTITLE_MIN_DISPLAY_SECONDS;
-                //      return Source.CONTINUE;    // Still processing reveal
-                //  }
 
                 foreach ( var position in sublabels.keys)
                 {
                     if ( !show_metadata && position != 0 ) break;   // Do not show sublabels
 
+
                     if ( ( _display_seconds % _cycle_phases[position] == 0 ) 
                         && position != last_position
-                        //  && sublabels.get(position) != "" 
                     ) 
                     {
+                        warning(@"CL item $position at time $(_cycle_phases[position])");
+
                         set_text(sublabels.get(position));
                         last_position = position;
+                        _min_count_down = SUBTITLE_MIN_DISPLAY_SECONDS;
                     }
                 }
                 return Source.CONTINUE; // Leave timer to be recalled

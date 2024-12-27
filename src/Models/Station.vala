@@ -395,7 +395,7 @@ public class Tuner.Model.Station : Object {
                 debug(@"$(stationuuid) - Failed to process favicon $(_favicon_uri.to_string()) - $(e.message)");
             }
         }
-        warning(@"$(stationuuid) - Failed to load favicon $(_favicon_uri.to_string()) - Status code: $(status_code)");
+        info(@"$(stationuuid) - Failed to load favicon $(_favicon_uri.to_string()) - Status code: $(status_code)");
         STATION_FAILING_FAVICON.add(stationuuid);
     } // load_favicon_async
 
