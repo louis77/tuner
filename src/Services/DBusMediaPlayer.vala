@@ -119,9 +119,10 @@ namespace Tuner.DBus {
 		private string _current_title = "";
 		private string _current_artist = "Tuner";
 		private string? _current_art_url = null;
-        private uint update_metadata_source = 0;
-        private uint send_property_source = 0;
-        private HashTable<string,Variant> changed_properties = null;
+        private uint _update_metadata_source = 0;
+        private uint _send_property_source = 0;
+        private HashTable<string,Variant> _metadata = new HashTable<string,Variant> (str_hash, str_equal);
+        private HashTable<string,Variant> _changed_properties = null;
 
         [DBus (visible = false)]
         public unowned DBusConnection conn { get; construct set; }
@@ -148,10 +149,11 @@ namespace Tuner.DBus {
             });
 
 
-			app().player.metadata_changed_sig.connect ((metadata) => {
-                _current_title = metadata.title;
-                _current_artist = (metadata.artist != null) ? metadata.artist : _station.name;
-                _current_artist = (metadata.artist != null) ? metadata.artist : _station.name;
+			app().player.metadata_changed_sig.connect ((metadata) => 
+            {
+                _current_title = ( metadata.title != null && metadata.title != "" ) ? metadata.title : _station.name;
+                _current_artist = ( metadata.artist != null && metadata.artist != "" ) ? metadata.artist : _station.name;
+                update_metadata ();
                 trigger_metadata_update ();
             });
             
@@ -162,6 +164,7 @@ namespace Tuner.DBus {
                 _current_title = station.name;
                 _current_artist = station.name;
                 _current_art_url = station.favicon;
+                update_metadata ();
                 trigger_metadata_update ();
             });
 
@@ -169,8 +172,19 @@ namespace Tuner.DBus {
             {
                 _shuffle = shuffle;
             });
-
         } // MediaPlayerPlayer
+
+
+        private void update_metadata () {
+            //  debug ("DBus metadata requested");
+            _metadata.set ("xesam:title", _current_title);
+            _metadata.set ("xesam:artist", get_simple_string_array  (_current_artist));
+
+            // this is necessary to remove previous images if the current station has none
+            var art = _current_art_url == null || _current_art_url == "" ? "file:///" : _current_art_url;
+            _metadata.set ("mpris:artUrl", art);
+        } // update_metadata
+
 
         public void next() throws DBusError, IOError {
             app().player.shuffle();
@@ -236,18 +250,7 @@ namespace Tuner.DBus {
 
         public HashTable<string, Variant>? metadata {
             owned get {
-                //  debug ("DBus metadata requested");
-                var table = new HashTable<string, Variant> (str_hash, str_equal);
-                table.insert ("xesam:title", _current_title);
-                table.insert ("xesam:artist", get_simple_string_array  (_current_artist));
-
-				// this is necessary to remove previous images if the current
-				// station has none
-				var art = _current_art_url == null || _current_art_url == "" ? "file:///" : _current_art_url;
-
-				table.insert ("mpris:artUrl", art);
-
-				return table;
+                return _metadata;
             }
         }
         public double volume { owned get; set; }
@@ -286,46 +289,46 @@ namespace Tuner.DBus {
         }
 
         private void trigger_metadata_update () {
-            if (update_metadata_source != 0) {
-                Source.remove (update_metadata_source);
+            if (_update_metadata_source != 0) {
+                Source.remove (_update_metadata_source);
             }
 
-            update_metadata_source = Timeout.add (300, () => {
+            _update_metadata_source = Timeout.add (300, () => {
                 Variant variant = playback_status;
 
                 queue_property_for_notification ("PlaybackStatus", variant);
                 queue_property_for_notification ("Metadata", metadata);
-                update_metadata_source = 0;
+                _update_metadata_source = 0;
                 return false;
             });
         }
 
         private void queue_property_for_notification (string property, Variant val) {
-            if (changed_properties == null) {
-                changed_properties = new HashTable<string, Variant> (str_hash, str_equal);
+            if (_changed_properties == null) {
+                _changed_properties = new HashTable<string, Variant> (str_hash, str_equal);
             }
 
-            changed_properties.insert (property, val);
+            _changed_properties.insert (property, val);
 
-            if (send_property_source == 0) {
-                send_property_source = Idle.add (send_property_change);
+            if (_send_property_source == 0) {
+                _send_property_source = Idle.add (send_property_change);
             }
         }
 
         private bool send_property_change () {
-            if (changed_properties == null) {
+            if (_changed_properties == null) {
                 return false;
             }
 
             var builder = new VariantBuilder (VariantType.ARRAY);
             var invalidated_builder = new VariantBuilder (new VariantType ("as"));
 
-            foreach (string name in changed_properties.get_keys ()) {
-                Variant variant = changed_properties.lookup (name);
+            foreach (string name in _changed_properties.get_keys ()) {
+                Variant variant = _changed_properties.lookup (name);
                 builder.add ("{sv}", name, variant);
             }
 
-            changed_properties = null;
+            _changed_properties = null;
 
             try {
                 conn.emit_signal (null,
@@ -340,7 +343,7 @@ namespace Tuner.DBus {
             } catch (Error e) {
                 debug (@"Could not send MPRIS property change: $(e.message)");
             }
-            send_property_source = 0;
+            _send_property_source = 0;
             return false;
         }
 
