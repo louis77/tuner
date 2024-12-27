@@ -34,7 +34,7 @@ public class Tuner.DirectoryController : Object {
 
     public signal void tags_updated (Set<DataProvider.Tag> tags);
 
-    public string provider_name() { return _provider.name; }
+    public string provider_name() { return _provider.name(); }
 
     /**
      * @brief Constructor for DirectoryController.
@@ -47,6 +47,11 @@ public class Tuner.DirectoryController : Object {
         _star_store = star_store;
     } // DirectoryController
 
+
+    public string provider()
+    {
+        return _provider.name();
+    } // provider
         
     /**
      * @brief Initializes the provider and starts the load of Saved Stations 
@@ -73,7 +78,7 @@ public class Tuner.DirectoryController : Object {
         try {
             return _provider.by_uuids(uuids);
         } catch (Tuner.DataProvider.DataError e) {
-            critical (@"$(_provider.name) unavailable");
+            critical (@"$(_provider.name()) unavailable");
         }
         return new HashSet<Model.Station>();
     } // get_stations_by_uuid

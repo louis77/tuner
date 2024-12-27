@@ -82,8 +82,15 @@ namespace Tuner.DataProvider {
         private int _available_tags = 1000;     // default guess
 
 
-        public string name { get { return "RadioBrowser 2.0"; } 
-                            protected set {} }
+        public string name()
+        {
+            return @"RadioBrowser 2.0\n\nServer: $_current_server"; 
+        } 
+
+
+        //  public string name { get { return @"RadioBrowser 2.0\n$_current_server"; } 
+        //                      protected set {} }
+
 
         public Status status { get; protected set; }
 

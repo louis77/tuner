@@ -206,7 +206,7 @@ namespace Tuner.DataProvider {
          * @brief DataProvider name property
          *
          */
-        public abstract string name { get; protected set; }
+        public abstract string name();
 
 
         /**
