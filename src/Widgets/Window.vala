@@ -215,13 +215,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         //      player_ctrl.station.toggle_starred ();
         //  });
 
-        _headerbar.search_focused_sig.connect (() => 
+        _headerbar.search_has_focus_sig.connect (() => 
         // Show searched stack when cursor hits search text area
         {
             _display.search_focused_sig( );
         });
 
-        _headerbar.searched_for_sig.connect ( (text) => 
+        _headerbar.searching_for_sig.connect ( (text) => 
         // process the searched text, stripping it, and sensitizing the save 
         // search star depending on if the search is already saved
         {

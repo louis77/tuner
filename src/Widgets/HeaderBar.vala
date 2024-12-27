@@ -47,8 +47,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     // Public properties
 
     // Signals
-    public signal void searched_for_sig (string text);
-    public signal void search_focused_sig ();
+    public signal void searching_for_sig (string text);
+    public signal void search_has_focus_sig ();
 
 
     /*
@@ -181,7 +181,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         });
 
         _searchentry.focus_in_event.connect ((e) => {
-            search_focused_sig ();
+            search_has_focus_sig ();
             return true;
         });
         
@@ -208,12 +208,24 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
         // pack RHS
         pack_end (_prefs_button);
+
+
+        
+        var test0 = new PlayButton();
+        test0.image = new Image.from_icon_name("media-skip-forward-symbolic", IconSize.SMALL_TOOLBAR);
+        pack_end (test0);
+          
+        var test1 = new PlayButton();
+        test1.image = new Image.from_icon_name("media-skip-backward-symbolic", IconSize.SMALL_TOOLBAR);
+        pack_end (test1);
+  
+         
+        var test2 = new PlayButton();
+        test2.image = new Image.from_icon_name("edit-copy-symbolic", IconSize.SMALL_TOOLBAR);
+        pack_end (test2);
+
+
         pack_end (_searchentry);
-
-        var test = new PlayButton();
-        test.image = new Image.from_icon_name(app().application_id, IconSize.LARGE_TOOLBAR);
-        pack_end (test);
-
         show_close_button = true;
 
         /*
@@ -232,7 +244,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         custom_title.query_tooltip.connect((x, y, keyboard_tooltip, tooltip) => 
         {
             if ( _station == null ) return false;
-            tooltip.set_text(_(@"Votes: $(_station.votes)\nClicks: $(_station.clickcount)\t Trend: $(_station.clicktrend)\n\n$(_player_info.metadata)"));
+            tooltip.set_text(_(@"Votes: $(_station.votes)\t Clicks: $(_station.clickcount)\t Trend: $(_station.clicktrend)\n\n$(_player_info.metadata)"));
             return true; 
         });
 
@@ -258,7 +270,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
      *
      * @param station The new station to display information for.
      */
-     public bool  update_playing_station(Model.Station station) 
+     public bool update_playing_station(Model.Station station) 
      {
         if ( app().is_offline || _station == station ) return false;
 
@@ -337,6 +349,50 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     /* 
         Private 
     */
+    /**
+     * @brief Checks and sets per the online status
+     *
+     * Desensitive when off-line
+     */
+     private void check_online_status()
+     {
+        if (app().is_offline) 
+        {
+            _player_info.favicon_image.opacity = 0.5;
+            _tuner_on.opacity = 0.0;
+            _star_button.sensitive = false;
+            _play_button.sensitive = false;
+            _volume_button.sensitive = false;
+        }
+        else
+        {
+            _player_info.favicon_image.opacity = 1.0;
+            _tuner_on.opacity = 1.0;
+            _star_button.sensitive = true;
+            _play_button.sensitive = true;
+            _volume_button.sensitive = true;
+        }
+    } // check_online_status
+
+
+    /**
+    * @brief Reset the search timeout.
+    *
+    * This method removes any existing timeout and sets a new one for delayed search.
+    */
+    private void reset_search_timeout()
+    {
+        if(_delayed_changed_id > 0)
+            Source.remove(_delayed_changed_id);
+
+        _delayed_changed_id = Timeout.add(SEARCH_DELAY, () => 
+        {                   
+            _delayed_changed_id = 0; // Reset timeout ID after scheduling               
+            searching_for_sig (_searchentry_text); // Emit the custom signal with the search query
+            return Source.REMOVE;
+        });
+    } // reset_search_timeout
+
 
     /**
      * @brief Custom PlayerInfo for the HeadeBar based on Revealer
@@ -472,46 +528,4 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             } // if
         } // handle_metadata_changed
     } // PlayerInfo
-    
-
-    /**
-     * @brief Checks and sets per the online status
-     *
-     * Desensitive when off-line
-     */
-    private void check_online_status()
-    {
-        if (app().is_offline) {
-            _player_info.favicon_image.opacity = 0.5;
-            _tuner_on.opacity = 0.0;
-            _star_button.sensitive = false;
-            _play_button.sensitive = false;
-            _volume_button.sensitive = false;
-        }
-        else
-        {
-            _player_info.favicon_image.opacity = 1.0;
-            _tuner_on.opacity = 1.0;
-            _star_button.sensitive = true;
-            _play_button.sensitive = true;
-            _volume_button.sensitive = true;
-        }
-    } // check_online_status
-
-
-    /**
-     * @brief Reset the search timeout.
-     *
-     * This method removes any existing timeout and sets a new one for delayed search.
-     */
-     private void reset_search_timeout(){
-        if(_delayed_changed_id > 0)
-            Source.remove(_delayed_changed_id);
-
-            _delayed_changed_id = Timeout.add(SEARCH_DELAY, () => {                   
-                _delayed_changed_id = 0; // Reset timeout ID after scheduling               
-                searched_for_sig (_searchentry_text); // Emit the custom signal with the search query
-                return Source.REMOVE;
-            });
-    } // reset_search_timeout
 } // Tuner.HeaderBar

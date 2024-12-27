@@ -98,7 +98,7 @@ namespace Tuner.DBus {
         // TODO
         public string[] supported_mime_types {
             owned get {
-                return {"audio/mp3"};
+                return {"audio/mp3","audio/aac","audio/x-vorbis+ogg","audio/x-flac","audio/x-wav","audio/x-m4a","audio/mpeg"};
             }
         }
 
@@ -114,6 +114,7 @@ namespace Tuner.DBus {
 
     public class MediaPlayerPlayer : Object, DBus.IMediaPlayer2Player {
         [DBus (visible = false)]
+        private Model.Station _station;
         private string _playback_status = "Stopped";
 		private string _current_title = "";
 		private string _current_artist = "Tuner";
@@ -129,38 +130,50 @@ namespace Tuner.DBus {
 
         public MediaPlayerPlayer (DBusConnection conn) {
             Object (conn: conn);
-            app().player.state_changed_sig.connect ((station, state) => {
-                switch (state) {
-                case PlayerController.Is.PLAYING:
-                case PlayerController.Is.BUFFERING:
-                    playback_status = "Playing";
-                    break;
-                case PlayerController.Is.PAUSED:
-                    playback_status = "Paused";
-                    break;
-                default :
-                    playback_status = "Stopped";
-                    break;
+            app().player.state_changed_sig.connect ((station, state) => 
+            {
+                switch (state) 
+                {
+                    case PlayerController.Is.PLAYING:
+                    case PlayerController.Is.BUFFERING:
+                        playback_status = "Playing";
+                        break;
+                    case PlayerController.Is.PAUSED:
+                        playback_status = "Paused";
+                        break;
+                    default :
+                        playback_status = "Stopped";
+                        break;
                 }
             });
 
+
 			app().player.metadata_changed_sig.connect ((metadata) => {
                 _current_title = metadata.title;
+                _current_artist = (metadata.artist != null) ? metadata.artist : _station.name;
+                _current_artist = (metadata.artist != null) ? metadata.artist : _station.name;
                 trigger_metadata_update ();
             });
             
 
-			app().player.station_changed_sig.connect ((station) => {
-					_current_title = station.name;
-					_current_artist = station.name;
-					_current_art_url = station.favicon;
-					trigger_metadata_update ();
-				});
+			app().player.station_changed_sig.connect ((station) => 
+            {
+                _station = station;
+                _current_title = station.name;
+                _current_artist = station.name;
+                _current_art_url = station.favicon;
+                trigger_metadata_update ();
+            });
 
-        }
+            app().player.shuffle_mode_sig.connect ((shuffle) =>
+            {
+                _shuffle = shuffle;
+            });
+
+        } // MediaPlayerPlayer
 
         public void next() throws DBusError, IOError {
-            // debug ("DBus Next() requested");
+            app().player.shuffle();
         }
 
         public void previous() throws DBusError, IOError {
@@ -219,7 +232,7 @@ namespace Tuner.DBus {
         }
 
         public double rate { get; set; }
-        public bool shuffle { get; set; }
+        public bool shuffle { get; private set; }
 
         public HashTable<string, Variant>? metadata {
             owned get {

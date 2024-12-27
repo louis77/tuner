@@ -48,6 +48,12 @@ public class Tuner.PlayerController : GLib.Object
     /** Signal emitted every ten minutes that a station has been playing continuously. */
     public signal void tape_counter_sig (Model.Station station);
 
+    /** @brief Signal emitted when the shuffle mode changes   */
+    public signal void shuffle_mode_sig(bool shuffle);
+
+    /** @brief Signal emitted when the shuffle is requested   */
+    public signal void shuffle_requested_sig();
+
     /** The error received when playing, if any */
     public bool play_error{ get; private set; }
 
@@ -96,6 +102,7 @@ public class Tuner.PlayerController : GLib.Object
                 set_play_state (state.get_name ());
             }
         });
+
     } // construct
 
 
@@ -255,6 +262,11 @@ public class Tuner.PlayerController : GLib.Object
         _player.stop ();
     } //  stop
 
+
+    public void shuffle ()
+    {
+        shuffle_requested_sig();
+    } // shuffle
   
     /**
      * @class Metadata
@@ -307,6 +319,8 @@ public class Tuner.PlayerController : GLib.Object
 
         public string all_tags { get; private set; default = ""; }
         public string title { get; private set; default = ""; }
+        public string artist { get; private set; default = ""; }
+        public string image { get; private set; default = ""; }
         public string genre { get; private set; default = ""; }
         public string homepage { get; private set; default = ""; }
         public string audio_info { get; private set; default = ""; }
@@ -327,6 +341,8 @@ public class Tuner.PlayerController : GLib.Object
             var streamlist = media_info.get_stream_list ().copy ();
 
             title  = ""; 
+            artist = "";
+            image = "";
             genre  = ""; 
             homepage  = ""; 
             audio_info  = ""; 
@@ -381,6 +397,8 @@ public class Tuner.PlayerController : GLib.Object
                 }); // tags.foreach
 
                 if ( _metadata_values.has_key ("title" )) _title = _metadata_values.get ("title");
+                if ( _metadata_values.has_key ("artist" )) _artist = _metadata_values.get ("artist");
+                if ( _metadata_values.has_key ("image" )) _image = _metadata_values.get ("image");
                 if ( _metadata_values.has_key ("genre" )) _genre = _metadata_values.get ("genre");
                 if ( _metadata_values.has_key ("homepage" )) _homepage = _metadata_values.get ("homepage");
 

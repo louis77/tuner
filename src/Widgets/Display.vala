@@ -61,8 +61,8 @@ public class Tuner.Display : Gtk.Paned {
     /**
      * @brief Signal emitted when the search is focused.
      */
-    public signal void search_focused_sig();
-
+     public signal void search_focused_sig();
+     
 
     /**
      * @property stack
@@ -98,10 +98,11 @@ public class Tuner.Display : Gtk.Paned {
 
     private bool _first_activation = true;  // display has not been activated before
     private bool _active = false;  // display is active
-    private bool _jukebox_mode = false;  // Jukebox mode
+    private bool _shuffle = false;  // Shuffle mode
     private Gtk.Revealer _background_tuner = new Gtk.Revealer();  // Background image
     private Gtk.Revealer _background_jukebox = new Gtk.Revealer();  // Background image
     private Gtk.Overlay _overlay = new Gtk.Overlay ();
+    private StationSet jukebox_station_set;  // Jukebox station set
  
 
 
@@ -120,7 +121,29 @@ public class Tuner.Display : Gtk.Paned {
         Object(
             directory : directory
         );
+
+        jukebox_station_set = _directory.load_random_stations(1);
+        app().player.shuffle_requested_sig.connect(() => 
+        {
+            if ( _shuffle ) jukebox_shuffle.begin();
+        });
+
     } // Display
+
+
+    /**
+     */
+     public async void jukebox_shuffle()
+     {
+         if ( !_shuffle ) return;
+         try {
+             station_clicked_sig(jukebox_station_set.next_page().to_array()[0]);
+         }
+         catch (SourceError e)
+         {
+             warning(_(@"Could not get random station: $(e.message)"));
+         }
+     } // jukebox_shuffle
 
 
     /**
@@ -481,20 +504,24 @@ public class Tuner.Display : Gtk.Paned {
         // process the searched text, stripping it, and sensitizing the save 
         // search star depending on if the search is already saved
         {
-            var search = text.strip ();
-            if ( search.length > 0 ) {
-                load_station_search_results.begin(search, search_results);
-                if ( stack.get_child_by_name (search) == null )  // Search names are prefixed with >
-                {
-                    search_results.tooltip_button.sensitive = true;
-                    return;
-                }
-            }
-            else
+            Idle.add(() =>
             {
-                search_results.show_nothing_found ();
-            }
-            search_results.tooltip_button.sensitive = false;
+                var search = text.strip ();
+                if ( search.length > 0 ) {
+                    load_station_search_results.begin(search, search_results);
+                    if ( stack.get_child_by_name (search) == null )  // Not already saved
+                    {
+                        search_results.tooltip_button.sensitive = true;
+                        return Source.REMOVE;
+                    }
+                }
+                else
+                {
+                    search_results.show_nothing_found ();
+                }
+                search_results.tooltip_button.sensitive = false;
+                return Source.REMOVE;
+            }, Priority.HIGH_IDLE);
         });
     } // initialize
 
@@ -524,30 +551,18 @@ public class Tuner.Display : Gtk.Paned {
         SourceList.Item item = new SourceList.Item(_("Jukebox"));
         //  item.icon = new ThemedIcon("audio-speakers");
         item.icon = new ThemedIcon("jukebox");
-        var station = _directory.load_random_stations(1);
         item.activated.connect(() =>
         {
-            try {
-                station_clicked_sig(station.next_page().to_array()[0]);
-                _jukebox_mode = true;
+                _shuffle = true;
+                jukebox_shuffle.begin();
+                app().player.shuffle_mode_sig(true);
                 _background_tuner.reveal_child = false;    
                 _background_jukebox.reveal_child = true; 
-            } 
-            catch (SourceError e)
-            {
-                warning(_(@"Could not get random station: $(e.message)"));
-            }
         });
 
         app().player.tape_counter_sig.connect((oldstation) =>
         {     
-            try {
-                if ( _jukebox_mode ) station_clicked_sig(station.next_page().to_array()[0]);
-            } 
-            catch (SourceError e)
-            {
-                warning(_(@"Could not get random station: $(e.message)"));
-            }
+            if ( _shuffle ) jukebox_shuffle.begin();
         });
         category.add(item);
     } // jukebox
@@ -562,7 +577,8 @@ public class Tuner.Display : Gtk.Paned {
         slist.station_clicked_sig.connect((station) =>
         {
             station_clicked_sig(station);
-            _jukebox_mode = false;                     
+            _shuffle = false;        
+            app().player.shuffle_mode_sig(false);             
             _background_jukebox.reveal_child = false;
             _background_tuner.reveal_child = true;      
         });
