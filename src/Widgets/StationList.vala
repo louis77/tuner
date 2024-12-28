@@ -60,7 +60,7 @@ public class Tuner.StationList : ContentList {
                 });
                 var box = new StationButton (s);
                 box.clicked.connect (() => {
-                    station_clicked_sig (box.station);    // FIXME remove
+                    station_clicked_sig (box.station); 
                 });
                 add (box);
             }

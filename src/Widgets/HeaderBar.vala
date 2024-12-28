@@ -63,7 +63,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
     /* 
         main display assets 
     */
-    private Box _tuner = new Box(Orientation.VERTICAL, 0);
+    private Fixed _tuner = new Fixed();
     private Button _star_button = new Button.from_icon_name (
         "non-starred",
         IconSize.LARGE_TOOLBAR
@@ -136,6 +136,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         _tuner.tooltip_text = _("Data Provider");       
         _tuner.query_tooltip.connect((x, y, keyboard_tooltip, tooltip) => 
         {
+            if ( app().is_offline ) return false;
             tooltip.set_text(_(@"Data Provider: $(window.directory.provider())"));
             return true; 
         });
@@ -155,6 +156,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
         _star_button.sensitive = true;
         _star_button.tooltip_text = _("Star this station");
         _star_button.clicked.connect (() => {
+            if (_station == null) return;
             _station.starred = !starred;
             starred =_station.starred;
         });
@@ -208,23 +210,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
 
         // pack RHS
         pack_end (_prefs_button);
-
-
-        
-        var test0 = new PlayButton();
-        test0.image = new Image.from_icon_name("media-skip-forward-symbolic", IconSize.SMALL_TOOLBAR);
-        pack_end (test0);
-          
-        var test1 = new PlayButton();
-        test1.image = new Image.from_icon_name("media-skip-backward-symbolic", IconSize.SMALL_TOOLBAR);
-        pack_end (test1);
-  
-         
-        var test2 = new PlayButton();
-        test2.image = new Image.from_icon_name("edit-copy-symbolic", IconSize.SMALL_TOOLBAR);
-        pack_end (test2);
-
-
+        pack_end (_list_button);   
         pack_end (_searchentry);
         show_close_button = true;
 
@@ -362,6 +348,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             _tuner_on.opacity = 0.0;
             _star_button.sensitive = false;
             _play_button.sensitive = false;
+            _play_button.opacity = 0.5;
             _volume_button.sensitive = false;
         }
         else
@@ -370,7 +357,10 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             _tuner_on.opacity = 1.0;
             _star_button.sensitive = true;
             _play_button.sensitive = true;
+            _play_button.opacity = 1.0;
             _volume_button.sensitive = true;
+            _list_button.sensitive = true;
+            _searchentry.sensitive = true;
         }
     } // check_online_status
 
@@ -422,7 +412,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar {
             transition_duration = REVEAL_DELAY;
             transition_type = RevealerTransitionType.CROSSFADE;
 
-            station_label = new Label (_("Choose a station"));
+            station_label = new Label ( "Tuner" );
             station_label.get_style_context ().add_class (Granite.STYLE_CLASS_H4_LABEL);
             station_label.ellipsize = Pango.EllipsizeMode.MIDDLE;
 

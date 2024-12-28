@@ -47,7 +47,8 @@ namespace Tuner.DBus {
     } // onBusAcquired
 
 
-    public class MediaPlayer : Object, DBus.IMediaPlayer2 {
+    public class MediaPlayer : Object, DBus.IMediaPlayer2 
+    {
         public void raise() throws DBusError, IOError {
             debug ("DBus Raise() requested");
             var now = new DateTime.now_local ();
@@ -95,7 +96,6 @@ namespace Tuner.DBus {
             }
         }
 
-        // TODO
         public string[] supported_mime_types {
             owned get {
                 return {"audio/mp3","audio/aac","audio/x-vorbis+ogg","audio/x-flac","audio/x-wav","audio/x-m4a","audio/mpeg"};

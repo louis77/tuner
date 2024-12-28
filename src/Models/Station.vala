@@ -313,7 +313,7 @@ public class Tuner.Model.Station : Object {
             debug(@"$(stationuuid) - constructed - Start parse favicon URL: $(favicon)");
             _favicon_uri = Uri.parse(favicon, NONE);
          } catch (GLib.UriError e) {
-            warning(@"$(stationuuid) - Failed to parse favicon URL: $(e.message)");
+            info(@"$(stationuuid) - Failed to parse favicon URL: $(e.message)");
             STATION_FAILING_FAVICON.add(stationuuid);
         }  
 
@@ -368,7 +368,7 @@ public class Tuner.Model.Station : Object {
                 favicon_loaded++;
                 return;
             } catch (Error e) {
-                warning(@"$(stationuuid) - Failed to load cached favicon: $(e.message)");
+                info(@"$(stationuuid) - Failed to load cached favicon: $(e.message)");
             }
         }
 

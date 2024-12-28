@@ -387,7 +387,7 @@ public class Tuner.StarStore : Object {
         debug ("persisting store");
 
         try {
-            _starred_file.delete ();  // FIXME file names
+            _starred_file.delete ();  
             var stream = _starred_file.create (
                 FileCreateFlags.REPLACE_DESTINATION | FileCreateFlags.PRIVATE
             );

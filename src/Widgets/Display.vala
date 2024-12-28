@@ -26,7 +26,7 @@ using Granite.Widgets;
  *
  * Display should be initialized and re-initialized by its owning class
  */
-public class Tuner.Display : Gtk.Paned {
+public class Tuner.Display : Gtk.Paned, StationListHookup {
 
     private const string BACKGROUND_TUNER = "/io/github/louis77/tuner/icons/background-tuner";
     private const string BACKGROUND_JUKEBOX = "/io/github/louis77/tuner/icons/background-jukebox";
@@ -62,7 +62,7 @@ public class Tuner.Display : Gtk.Paned {
      * @brief Signal emitted when the search is focused.
      */
      public signal void search_focused_sig();
-     
+
 
     /**
      * @property stack
@@ -119,7 +119,9 @@ public class Tuner.Display : Gtk.Paned {
     public Display(DirectoryController directory)
     {
         Object(
-            directory : directory
+            directory : directory,
+            source_list : new SourceList(),
+            stack : new Gtk.Stack ()
         );
 
         jukebox_station_set = _directory.load_random_stations(1);
@@ -128,94 +130,13 @@ public class Tuner.Display : Gtk.Paned {
             if ( _shuffle ) jukebox_shuffle.begin();
         });
 
-    } // Display
+    //  } // Display
 
 
-    /**
-     */
-     public async void jukebox_shuffle()
-     {
-         if ( !_shuffle ) return;
-         try {
-             station_clicked_sig(jukebox_station_set.next_page().to_array()[0]);
-         }
-         catch (SourceError e)
-         {
-             warning(_(@"Could not get random station: $(e.message)"));
-         }
-     } // jukebox_shuffle
 
-
-    /**
-    * Updates the state of the display
-    */
-    public void update_state( bool activate)
-    {
-        if ( _active && !activate )
-        /* Present Offline look */
-        {
-            _active = false;
-            return;
-        }
-
-        if ( !_active && activate )
-        // Move from not active to active
-        {
-
-            if (_first_activation)
-            // One time set up - do post initialization
-            {
-                //  TBD
-                _first_activation = false;
-                initialize.begin();   // TODO -  Check logic
-            }
-            _active = true;
-            show_all();   
-        }
-    } // update_state
-
-
-    /**
-     * @brief Loads search stations based on the provided text and updates the content box.
-     *
-     * Async since 1.5.5 so that UI is responsive during long searches
-     * @param searchText The text to search for stations.
-     * @param search_box The ContentBox to update with the search results.
-     */
-     private async void load_station_search_results(string searchText, SourceListBox search_box) {
-
-        debug(@"Searching for: $(searchText)");       
-        var station_set = _directory.load_search_stations(searchText, 100);
-        debug(@"Search done");
-
-        try {
-            var stations = station_set.next_page();
-            debug(@"Search Next done");
-            if (stations == null || stations.size == 0) {
-                search_box.show_nothing_found();
-            } else {
-                debug(@"Search found $(stations.size) stations");
-                var _slist = new StationList.with_stations(stations);
-                hookup(_slist);
-                search_box.content = _slist;
-                search_box.parameter = searchText;
-            }
-        } catch (SourceError e) {
-            search_box.show_alert();
-        }
-    } // load_search_stations
-
-
-    /* --------------------------------------------------------
-    
-        Private Methods
-
-       ---------------------------------------------------------- */
-
-
-    /* Construct */
-    construct 
-    { 
+    //  /* Construct */
+    //  construct 
+    //  { 
         var tuner = new Gtk.Image.from_resource (BACKGROUND_TUNER);
         tuner.opacity = BACKGROUND_OPACITY;
         _background_tuner.transition_duration = BACKGROUND_TRANSITION_TIME_MS;
@@ -237,7 +158,7 @@ public class Tuner.Display : Gtk.Paned {
         background.valign = Gtk.Align.CENTER;
         _overlay.add (background);
 
-        stack = new Gtk.Stack ();
+        
         stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
         _overlay.add_overlay(stack);
 
@@ -269,7 +190,6 @@ public class Tuner.Display : Gtk.Paned {
         _talk_category.collapsible = true;
         _talk_category.expanded = false;
 
-        source_list = new SourceList();
         
         source_list.root.add (_selections_category);
         source_list.root.add (_library_category);
@@ -283,28 +203,134 @@ public class Tuner.Display : Gtk.Paned {
         source_list.item_selected.connect  ((item) => 
         // Syncs Item choice to Stack view
         {
+            if ( item is StationListItem ) ((StationListItem)item).populate( this );
             var selected_item = item.get_data<string> ("stack_child");
             stack.visible_child_name = selected_item;
         });
 
-        // ---------------------------------------------------------------------------
-
         pack1 (source_list, false, false);
         pack2 (_overlay, true, false);
+        set_position(200);
                     
     } // construct
 
 
     /* --------------------------------------------------------
     
-        Methods
+        Public
 
         ----------------------------------------------------------
     */
 
+    /**
+     * @brief Asynchronously shuffles to a new random station in jukebox mode
+     * 
+     * If shuffle mode is active, selects and plays a new random station
+     * from the jukebox station set.
+     */
+     public async void jukebox_shuffle()
+     {
+         if ( !_shuffle ) return;
+         try {
+             station_clicked_sig(jukebox_station_set.next_page().to_array()[0]);
+         }
+         catch (SourceError e)
+         {
+             warning(_(@"Could not get random station: $(e.message)"));
+         }
+     } // jukebox_shuffle
+
 
     /**
-     * @brief Initializes the main Display object
+    * @brief Updates the display state based on activation status
+    * @param activate Whether to activate (true) or deactivate (false) the display
+    * 
+    * Manages the display's active state and performs first-time initialization
+    * when needed.
+    */
+    public void update_state( bool activate)
+    {        
+        if ( _active && !activate )
+        /* Present Offline look */
+        {
+            _active = false;
+            return;
+        }
+
+        if ( !_active && activate )
+        // Move from not active to active
+        {
+
+            if (_first_activation)
+            // One time set up - do post initialization
+            {
+                //  TBD
+                _first_activation = false;
+                initialize.begin();   // TODO -  Check logic
+            }
+            _active = true;
+            show_all();   
+        }
+    } // update_state
+
+
+    /**
+     * @brief Selects the starred stations view in the source list
+     * 
+     * Changes the current view to show the user's starred stations by selecting
+     * the first child of the library category.
+     */
+     public void choose_starred_stations()
+     {
+         source_list.selected = source_list.get_first_child (_library_category);
+     } // choose_star
+ 
+ 
+
+    /* --------------------------------------------------------
+    
+        Private Methods
+
+       ---------------------------------------------------------- */
+
+    /**
+     * @brief Loads search stations based on the provided text and updates the content box.
+     *
+     * Async since 1.5.5 so that UI is responsive during long searches
+     * @param searchText The text to search for stations.
+     * @param search_box The ContentBox to update with the search results.
+     */
+     private async void load_station_search_results(string searchText, StationListBox search_box) {
+
+        debug(@"Searching for: $(searchText)");       
+        var station_set = _directory.load_search_stations(searchText, 100);
+        debug(@"Search done");
+
+        try {
+            var stations = station_set.next_page();
+            debug(@"Search Next done");
+            if (stations == null || stations.size == 0) {
+                search_box.show_nothing_found();
+            } else {
+                debug(@"Search found $(stations.size) stations");
+                var _slist = new StationList.with_stations(stations);
+                hookup(_slist);
+                search_box.content = _slist;
+                search_box.parameter = searchText;
+            }
+        } catch (SourceError e) {
+            search_box.show_alert();
+        }
+    } // load_search_stations
+
+
+
+
+    /**
+     * @brief Asynchronously initializes the display components
+     * 
+     * Sets up all categories, loads initial station data, and configures
+     * signal handlers for various display components.
      */
     private async void initialize()
     {
@@ -316,23 +342,20 @@ public class Tuner.Display : Gtk.Paned {
             Discover
         */
 
-        var discover = SourceListBox.create ( stack
+        var discover = StationListBox.create ( stack
             , source_list
             ,  _selections_category
             , "discover"
             , "face-smile"
             , "Discover"
             , "Stations to Explore"
+            , false
             ,_directory.load_random_stations(20)
             , "Discover more stations"
             , "media-playlist-shuffle-symbolic");
-            
-        discover.realize.connect (() => {
-            populate(discover);
-        });
         
         discover.action_button_activated_sig.connect (() => {
-            populate(discover);
+            discover.item.populate( this, true );
         });
 
 
@@ -410,7 +433,7 @@ public class Tuner.Display : Gtk.Paned {
         // Search Results Box
         
 
-        var search_results = SourceListBox.create 
+        var search_results = StationListBox.create 
         ( stack
         , source_list
         , _library_category
@@ -418,6 +441,7 @@ public class Tuner.Display : Gtk.Paned {
         , "folder-saved-search"
         , _("Recent Search")
         , _("Search Results")
+        , false
         , null
         , _("Save this search")
         , "starred-symbolic");
@@ -430,7 +454,6 @@ public class Tuner.Display : Gtk.Paned {
             search_results.tooltip_button.sensitive = false;    
             var new_saved_search  = add_saved_search( search_results.parameter, _directory.add_saved_search (search_results.parameter));
             new_saved_search.list(search_results.content);
-            populate(new_saved_search);
             source_list.selected = source_list.get_last_child (_saved_searches_category);
         });
 
@@ -523,15 +546,10 @@ public class Tuner.Display : Gtk.Paned {
                 return Source.REMOVE;
             }, Priority.HIGH_IDLE);
         });
+
+        show();
     } // initialize
 
-
-    /**
-     */
-    public void choose_star()
-    {
-        source_list.selected = source_list.get_first_child (_library_category);
-    } // choose_star
 
     /* -------------------------------------------------
 
@@ -549,7 +567,6 @@ public class Tuner.Display : Gtk.Paned {
     private void jukebox(SourceList.ExpandableItem category)
     {
         SourceList.Item item = new SourceList.Item(_("Jukebox"));
-        //  item.icon = new ThemedIcon("audio-speakers");
         item.icon = new ThemedIcon("jukebox");
         item.activated.connect(() =>
         {
@@ -571,8 +588,10 @@ public class Tuner.Display : Gtk.Paned {
     /**
      * @brief Hooks up signals for a StationList.
      * @param slist The StationList to hook up.
+     * 
+     * Configures signal handlers for station clicks and favorites changes.
      */
-    private void hookup(StationList slist)
+    internal void hookup(StationList slist)
     {
         slist.station_clicked_sig.connect((station) =>
         {
@@ -591,7 +610,7 @@ public class Tuner.Display : Gtk.Paned {
 
 
     /** */
-    private SourceListBox add_saved_search(string search, StationSet station_set, StationList? content = null)//StationSet station_set)
+    private StationListBox add_saved_search(string search, StationSet station_set, StationList? content = null)//StationSet station_set)
     {
         var saved_search = create_category_specific 
             ( stack
@@ -632,7 +651,7 @@ public class Tuner.Display : Gtk.Paned {
      * @param stations The collection of stations for the category.
      * @return The created SourceListBox for the category.
      */
-    private SourceListBox create_category_predefined
+    private StationListBox create_category_predefined
         ( Gtk.Stack stack
         , Granite.Widgets.SourceList source_list
         , Granite.Widgets.SourceList.ExpandableItem category
@@ -643,7 +662,7 @@ public class Tuner.Display : Gtk.Paned {
         , Collection<Model.Station>? stations
         )
     {
-        var genre = SourceListBox.create 
+        var genre = StationListBox.create 
             ( stack
             , source_list
             , category
@@ -651,6 +670,7 @@ public class Tuner.Display : Gtk.Paned {
             , icon
             , title
             , subtitle 
+            , true
             );
 
         if (stations != null)
@@ -679,7 +699,7 @@ public class Tuner.Display : Gtk.Paned {
      * @param action_icon_name Optional icon name for the action.
      * @return The created SourceListBox for the category.
      */
-    private SourceListBox create_category_specific 
+    private StationListBox create_category_specific 
         ( Gtk.Stack stack
         , Granite.Widgets.SourceList source_list
         , Granite.Widgets.SourceList.ExpandableItem category
@@ -692,7 +712,7 @@ public class Tuner.Display : Gtk.Paned {
         , string? action_icon_name = null
         )
     {
-        var genre = SourceListBox.create 
+        var genre = StationListBox.create 
             ( stack
             , source_list
             , category
@@ -700,33 +720,14 @@ public class Tuner.Display : Gtk.Paned {
             , icon
             , title
             , subtitle 
-            , station_set
+            , false
+            ,station_set
             , action_tooltip_text
             , action_icon_name
             );
-
-        genre.realize.connect (() => {
-            populate(genre);
-        });        
+        
         return genre;
     } // create_category_specific
-
-
-    /**
-     * @brief Populates a SourceListBox with stations.
-     * @param slb The SourceListBox to populate.
-     */
-    private void populate(SourceListBox slb )
-    {
-        if ( app().is_offline ) return;
-        try {
-            var slist = new StationList.with_stations (slb.next_page ());
-            hookup(slist);
-            slb.content = slist;
-        } catch (SourceError e) {
-            slb.show_alert ();
-        }
-    }
     
 
     /**

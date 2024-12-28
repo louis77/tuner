@@ -19,7 +19,7 @@ sources = files (
     'Widgets/base/DisplayButton.vala',
     'Widgets/base/RevealLabel.vala',
     'Widgets/base/CyclingRevealLabel.vala',
-    'Widgets/base/SourceListBox.vala',
+    'Widgets/base/StationListBox.vala',
     'Widgets/base/ContentBox.vala',
 
     'Widgets/HeaderBar.vala',
