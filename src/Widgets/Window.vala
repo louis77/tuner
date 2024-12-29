@@ -196,10 +196,14 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         });
     } // construct
 
-    public void choose_star()
+
+    /**
+     */
+    public void choose_starred_stations()
     {
-        _display.choose_star();
+        if ( _active ) _display.choose_starred_stations();
     } // choose_star
+
 
     /**
         Add widgets after Window creation
