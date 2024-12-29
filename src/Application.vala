@@ -155,7 +155,6 @@ namespace Tuner {
 
     */
 
-
     /**
     * @class Application
     * @brief Main application class implementing core functionality
@@ -209,7 +208,7 @@ namespace Tuner {
         public DirectoryController directory { get; construct; }
 
         /** @brief Player controller */
-        public StarStore  stars { get; construct; }
+        public StarStore stars { get; construct; }
         
         /** @brief API DataProvider */
         public DataProvider.API provider { get; construct; }
@@ -324,7 +323,9 @@ namespace Tuner {
             // Do a provider click when starting to play a sation
             {
                 if ( !settings.do_not_track  && state == PlayerController.Is.PLAYING )
-                    provider.click(station.stationuuid);
+                    provider.click(station.stationuuid);                
+                    station.clickcount++;
+                    station.clicktrend++;
             });
 
             player.tape_counter_sig.connect((station) =>
@@ -332,8 +333,14 @@ namespace Tuner {
             // Vote and click the station each time as appropriate
             {     
                 if ( settings.do_not_track ) return;
-                if ( station.starred ) provider.vote(station.stationuuid);
+                if ( station.starred ) 
+                { 
+                    provider.vote(station.stationuuid); 
+                    station.votes++;
+                }
                 provider.click(station.stationuuid);
+                station.clickcount++;
+                station.clicktrend++;
             });
 
         } // construct
@@ -363,7 +370,7 @@ namespace Tuner {
         protected override void activate() {
             if (window == null) {
                 window = new Window (this, player, settings, directory);
-                if ( settings.start_on_starred ) window.choose_star();  // Start on starred
+                if ( settings.start_on_starred ) window.choose_starred_stations();  // Start on starred
                 add_window (window);
                 DBus.initialize ();
                 apply_theme( settings.theme_mode);
@@ -411,7 +418,11 @@ namespace Tuner {
         */
         private void check_online_status()
         {
-            if(_monitor_changed_id > 0) Source.remove(_monitor_changed_id);
+            if(_monitor_changed_id > 0) 
+            {
+                Source.remove(_monitor_changed_id);
+                _monitor_changed_id = 0;
+            }
 
             /*
                 If change to online from offline state
@@ -420,7 +431,7 @@ namespace Tuner {
             */
             if ( is_offline && monitor.get_network_available ()  )
             {
-                _monitor_changed_id = Timeout.add( 2000, () => 
+                _monitor_changed_id = Timeout.add_seconds( 2, () => 
                 {           
                     _monitor_changed_id = 0; // Reset timeout ID after scheduling  
                     is_online = monitor.get_network_available ();
