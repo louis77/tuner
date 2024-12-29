@@ -269,16 +269,17 @@ namespace Tuner.DataProvider {
          */
          //public abstract Set<Model.Station> by_url(string url) throws DataError;  // TODO Not working at Provider
 
-        /**
-         * @brief Search for stations based on given parameters
-         *
-         * @param params Search parameters
-         * @param rowcount Maximum number of results to return
-         * @param offset Offset for pagination
-         * @return ArrayList of Station objects matching the search criteria
-         * @throw DataError if unable to retrieve or parse station data
-         */
-         public abstract Set<Model.Station> search(SearchParams params, uint rowcount, uint offset = 0) throws DataError;
+/**
+ * @brief Search for stations based on given parameters
+ *
+ * @param params Search parameters
+ * @param rowcount Maximum number of results to return
+ * @param offset Offset for pagination
+ * @return ArrayList of Station objects matching the search criteria
+ * @throw DataError if unable to retrieve or parse station data
+ */
+		public abstract Set<Model.Station> search(SearchParams params, uint rowcount, uint offset             = 0) throws DataError;
+		public async abstract Set<Model.Station> search_async(SearchParams params, uint rowcount, uint offset = 0) throws DataError;
 
     } // API
 } // DataProvider

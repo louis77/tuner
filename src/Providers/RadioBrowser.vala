@@ -88,29 +88,28 @@ namespace Tuner.DataProvider {
         } 
 
 
-        //  public string name { get { return @"RadioBrowser 2.0\n$_current_server"; } 
-        //                      protected set {} }
-
-
         public Status status { get; protected set; }
 
         public DataError? last_data_error { get; set; }
 
-        public int available_tags() { return _available_tags; }
+		public int available_tags()
+		{
+			return _available_tags;
+		}
 
 
         /**
-         * @brief Constructor for RadioBrowser Client
-         *
-         * @throw DataError if unable to initialize the client
-         */
-        public RadioBrowser(string? optionalservers ) 
-        {
-            Object( );
-            _optionalservers = optionalservers;
-            status = NOT_AVAILABLE;
-        } // RadioBrowser
-        
+        * @brief Constructor for RadioBrowser Client
+        *
+        * @throw DataError if unable to initialize the client
+        */
+		public RadioBrowser(string? optionalservers )
+		{
+			Object( );
+			_optionalservers = optionalservers;
+			status           = NOT_AVAILABLE;
+		}         // RadioBrowser
+
 
         /**
          * @brief Builds a Glib Uri from path and query
@@ -164,11 +163,12 @@ namespace Tuner.DataProvider {
                 }
             }
 
-            if (_servers.size == 0) {
-                last_data_error = new DataError.NO_CONNECTION("Unable to resolve API servers for radio-browser.info");
-                status = NO_SERVERS_PRESENTED;
-                return false;
-            }
+			if (_servers.size == 0)
+			{
+				last_data_error = new DataError.NO_CONNECTION("Unable to resolve API servers for radio-browser.info");
+				status          = NO_SERVERS_PRESENTED;
+				return false;
+			}
 
             choose_server();
             status = OK;
@@ -220,8 +220,8 @@ namespace Tuner.DataProvider {
                 if (offset > 0) query = @"offset=$offset";
                 if (limit > 0) query = @"$query&limit=$limit";
 
-               var uri = build_uri(RBI_TAGS, query);
-               var stream = HttpClient.GET(uri, out status_code);   
+				var uri    = build_uri(RBI_TAGS, query);
+				var stream = HttpClient.GET(uri, out status_code);
 
                 if ( status_code != 0 && stream != null)
                 {
@@ -280,52 +280,66 @@ namespace Tuner.DataProvider {
             return result;
         } // by_url
 
+
         /**
-         * @brief Search for stations based on given parameters
-         *
-         * @param params Search parameters
-         * @param rowcount Maximum number of results to return
-         * @param offset Offset for pagination
-         * @return ArrayList of Station objects matching the search criteria
-         * @throw DataError if unable to retrieve or parse station data
-         */
-         public Set<Model.Station> search(SearchParams params, uint rowcount, uint offset = 0) throws DataError 
-         {
-            // by uuids
-            if (params.uuids != null) { return by_uuids(params.uuids); }
+        * @brief Search for stations based on given parameters
+        *
+        * @param params Search parameters
+        * @param rowcount Maximum number of results to return
+        * @param offset Offset for pagination
+        * @return ArrayList of Station objects matching the search criteria
+        * @throw DataError if unable to retrieve or parse station data
+        */
+		public Set<Model.Station> search(SearchParams params, uint rowcount, uint offset = 0) throws DataError
+		{
+			// by uuids
+			if (params.uuids != null)
+			{
+				return by_uuids(params.uuids);
+			}
 
             // OR
 
-            // by text or tags
-            var query = @"limit=$rowcount&order=$(params.order)&offset=$offset";
+			// by text or tags
+			var query = get_search_query_params(params,rowcount, offset);
 
-            if (params.text != "") {
-                query += @"&name=$(encode_text(params.text))";  // Encode text for ampersands etc
-            }
-            if (params.countrycode.length > 0) {
-                query += @"&countrycode=$(params.countrycode)";
-            }
-            if (params.order != SortOrder.RANDOM) {
-                // random and reverse doesn't make sense
-                query += @"&reverse=$(params.reverse)";
-            }
-            // Put tags last
-            if (params.tags.size > 0) {
-                string tag_list = params.tags.to_array()[0];
-                if (params.tags.size > 1) {
-                    tag_list = string.joinv(",", params.tags.to_array());
-                }
-                query += @"&tagExact=false&tagList=$(encode_text(tag_list))"; // Encode text for ampersands etc
-            }
+			debug(@"Search: $(query)");
+			return station_query(RBI_SEARCH, query);
+		}         // search
+
+
+        /**
+        * @brief Search for stations based on given parameters
+        *
+        * @param params Search parameters
+        * @param rowcount Maximum number of results to return
+        * @param offset Offset for pagination
+        * @return ArrayList of Station objects matching the search criteria
+        * @throw DataError if unable to retrieve or parse station data
+        */
+		public async Set<Model.Station> search_async(SearchParams params, uint rowcount, uint offset = 0) throws DataError
+		{
+			// by uuids
+			if (params.uuids != null)
+			{
+				return by_uuids(params.uuids);
+			}
+
+			// OR
+
+			// by text or tags
+			var query = get_search_query_params(params, rowcount, offset);
 
             debug(@"Search: $(query)");
-            return  station_query(RBI_SEARCH, query);
+            return  yield station_query_async(RBI_SEARCH, query);
         } // search
+
 
 
         /*  ---------------------------------------------------------------
             Private
             ---------------------------------------------------------------*/
+
         /**
          * @brief Get all available tags
          *
@@ -430,39 +444,132 @@ namespace Tuner.DataProvider {
                 
             var stream =  HttpClient.GET(uri,  out status_code);                
 
-            if ( status_code == 200 && stream != null)
-            {
-                degrade(false);
-                try {
-                    var parser = new Json.Parser.immutable_new ();
-                    parser.load_from_stream(stream, null);
-                    var rootnode = parser.get_root();
-                    var rootarray = rootnode.get_array();
-                    var stations = jarray_to_stations(rootarray);
-                    return stations;
-                } catch (Error e) {
-                    debug(@"JSON error \"$(e.message)\" for uri $(uri)");
-                }
-            }
-            else
-            {
-                warning(@"Response from 'radio-browser.info': $(status_code) for url: $(uri.to_string())");
-                degrade();
-            }
-            return new HashSet<Model.Station>();
-        } // station_query
+			if (status_code == 200 && stream != null)
+			{
+				degrade(false);
+				try
+				{
+					var stations = parse_json_response(stream);
+					return stations;
+				} catch (Error e)
+				{
+					debug(@"JSON error \"$(e.message)\" for uri $(uri)");
+				}
+			}
+			else
+			{
+				warning(@"Response from 'radio-browser.info': $(status_code) for url: $(uri.to_string())");
+				degrade();
+			}
+			return new HashSet<Model.Station>();
+		} // station_query
 
 
         /**
-         * @brief Marshals JSON array data into an array of Station
+        * @brief Get stations by querying the API
+        *
+        * @param query the API query
+        * @return ArrayList of Station objects
+        * @throw DataError if unable to retrieve or parse station data
+        */
+		private async Set<Model.Station> station_query_async(string path, string query) throws DataError
+		{
+			debug(@"station_query - $(path) $(query)");
+
+			uint status_code;
+			var  uri = build_uri(path, query);
+			debug(@"station_query - $(uri.to_string())");
+
+			var stream =  yield HttpClient.GETasync(uri,  Priority.HIGH_IDLE, out status_code);
+
+			if (status_code == 200 && stream != null)
+			{
+				degrade(false);
+				try
+				{
+					var stations = parse_json_response(stream);
+					return stations;
+				} catch (Error e)
+				{
+					debug(@"JSON error \"$(e.message)\" for uri $(uri)");
+				}
+			}
+			else
+			{
+				warning(@"Response from 'radio-browser.info': $(status_code) for url: $(uri.to_string())");
+				degrade();
+			}
+			return new HashSet<Model.Station>();
+		} // station_query_async
+
+
+
+        /**
+         * Generates query parameters string for radio-browser API search requests.
          *
-         * Not knowing what the produce did, allow null data
+         * @param params    SearchParams object containing search criteria
+         * @param rowcount  Maximum number of results to return
+         * @param offset    Starting position in the result set
          *
-         * @param data JSON array containing station data
-         * @return ArrayList of Station objects
+         * @return String containing formatted query parameters
          */
-        private Set<Model.Station> jarray_to_stations(Json.Array data) {
-            var stations = new HashSet<Model.Station>();
+        private string get_search_query_params(SearchParams params, uint rowcount, uint offset)
+        {
+                        // by text or tags
+            var query = @"limit=$rowcount&order=$(params.order)&offset=$offset";
+
+            if (params.text != "") {
+                query += @"&name=$(encode_text(params.text))";  // Encode text for ampersands etc
+            }
+            if (params.countrycode.length > 0) {
+                query += @"&countrycode=$(params.countrycode)";
+            }
+            if (params.order != SortOrder.RANDOM) {
+                // random and reverse doesn't make sense
+                query += @"&reverse=$(params.reverse)";
+            }
+            // Put tags last
+            if (params.tags.size > 0) {
+                string tag_list = params.tags.to_array()[0];
+                if (params.tags.size > 1) {
+                    tag_list = string.joinv(",", params.tags.to_array());
+                }
+                query += @"&tagExact=false&tagList=$(encode_text(tag_list))"; // Encode text for ampersands etc
+            }
+            return query;
+        } // get_search_query_params
+
+
+        /**
+         * Parses JSON response from Radio Browser API into a set of stations.
+         *
+         * @param stream The input stream containing JSON data to be parsed
+         *
+         * @return Set<Model.Station> A set of Station objects parsed from the JSON
+         *
+         * @throws Error If there is an error parsing the JSON or processing the data
+         */
+         private Set<Model.Station> parse_json_response(InputStream stream) throws Error
+         {
+             var parser = new Json.Parser.immutable_new ();
+             parser.load_from_stream(stream, null);
+             var rootnode = parser.get_root();
+             var rootarray = rootnode.get_array();
+             return jarray_to_stations(rootarray);
+         } // parse_json_response
+
+
+        /**
+        * @brief Marshals JSON array data into an array of Station
+        *
+        * Not knowing what the produce did, allow null data
+        *
+        * @param data JSON array containing station data
+        * @return ArrayList of Station objects
+        */
+		private Set<Model.Station> jarray_to_stations(Json.Array data)
+		{
+			var stations = new HashSet<Model.Station>();
 
             if ( data != null )
             {
@@ -474,27 +581,30 @@ namespace Tuner.DataProvider {
             return stations;
         } // jarray_to_stations
 
+
         /**
-         * @brief Converts a JSON node to a Tag object
-         *
-         * @param node JSON node representing a tag
-         * @return Tag object
-         */
-        private Tag jnode_to_tag(Json.Node node) {
-            return Json.gobject_deserialize(typeof(Tag), node) as Tag;
-        } // jnode_to_tag
+        * @brief Converts a JSON node to a Tag object
+        *
+        * @param node JSON node representing a tag
+        * @return Tag object
+        */
+		private Tag jnode_to_tag(Json.Node node)
+		{
+			return Json.gobject_deserialize(typeof(Tag), node) as Tag;
+		} // jnode_to_tag
 
 
         /**
-         * @brief Marshals JSON tag data into an array of Tag
-         *
-         * Not knowing what the produce did, allow null data
-         *
-         * @param data JSON array containing tag data
-         * @return ArrayList of Tag objects
-         */
-        private Set<Tag> jarray_to_tags(Json.Array? data) {
-            var tags = new HashSet<Tag>();
+        * @brief Marshals JSON tag data into an array of Tag
+        *
+        * Not knowing what the produce did, allow null data
+        *
+        * @param data JSON array containing tag data
+        * @return ArrayList of Tag objects
+        */
+		private Set<Tag> jarray_to_tags(Json.Array? data)
+		{
+			var tags = new HashSet<Tag>();
 
             if ( data != null )
             {
@@ -580,7 +690,17 @@ namespace Tuner.DataProvider {
         } // get_srv_api_servers
 
 
-        private static string encode_text(string tag) {
+        /**
+        * Encodes a text string for use in RadioBrowser API requests.
+        *
+        * This method ensures that the text is properly encoded for use in URLs
+        * by converting special characters into their URL-safe equivalents.
+        *
+        * @param tag The text string to be encoded
+        * @return A URL-encoded string representation of the input text
+        */
+		private static string encode_text(string tag)
+		{
 
             string output = tag;
             string[,] x = new string[,]

@@ -20,7 +20,8 @@ using Gee;
  * This class provides static methods for making HTTP requests using the Soup library.
  * It includes a singleton Soup.Session instance for efficient request handling.
  */
-public class Tuner.HttpClient : Object {
+public class Tuner.HttpClient : Object
+{
 
     /**
      * @brief Singleton instance of Soup.Session
@@ -104,10 +105,11 @@ public class Tuner.HttpClient : Object {
     public static InputStream? GET(Uri uri, out uint status_code) 
     {
 
-        debug(@"Get: $(uri.to_string()) ");
-        status_code = 0;
-        
-        if ( app().is_offline) return null;
+		debug(@"Get: $(uri.to_string()) ");
+		status_code = 0;
+
+		if (app().is_offline)
+			return null;
 
         var msg = new Soup.Message.from_uri("GET", uri);
 
@@ -141,7 +143,8 @@ public class Tuner.HttpClient : Object {
     {
         status_code = 0;
 
-        if ( app().is_offline ) return null;
+		if (app().is_offline)
+			return null;
 
         var msg = new Soup.Message.from_uri("GET", uri);
 
@@ -152,21 +155,24 @@ public class Tuner.HttpClient : Object {
             return true;
         });
 
-        uint loop = 1;
-        do 
-        /*
-            Try three times
-        */
-        {
-            try {
-                var inputStream = yield getSession().send_async(msg, priority, app().offline_cancel);
-                status_code = msg.status_code;
-                if ( status_code >= 200 && status_code < 300 ) return inputStream;
-            } catch (Error e) {
-                info(@"GETasync - Try $(loop) failed to fetch: $(uri.to_string()) $(e.message)");
-            }
-            yield nap(200 * loop);   
-        } while( loop++ < 3 );
+		uint loop = 1;
+		do
+		/*
+		    Try three times
+		 */
+		{
+			try
+			{
+				var inputStream = yield getSession().send_async(msg, priority, app().offline_cancel);
+				status_code = msg.status_code;
+				if (status_code >= 200 && status_code < 300)
+					return inputStream;
+			} catch (Error e)
+			{
+				info(@"GETasync - Try $(loop) failed to fetch: $(uri.to_string()) $(e.message)");
+			}
+			yield nap(200 * loop);
+		} while (loop++ < 3);
 
         info(@"GETasync - GETasync failed for: $(uri.to_string())");
         return null;
