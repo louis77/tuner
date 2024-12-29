@@ -251,7 +251,7 @@ namespace Tuner
                 _substack.set_visible_child_full ("content", Gtk.StackTransitionType.NONE);
                 _content_list = value;
                 _content.add (_content_list); 
-                _content.show_all ();
+                //  _content.show_all ();
                 item_count = _content_list.item_count;
             }
 
@@ -403,6 +403,7 @@ namespace Tuner
                 {
                     station_list.hookup(slist);
                     _slb.content = slist;
+                    _slb.content.show_all ();
                 }
             } catch (SourceError e) {
                 _slb.show_alert ();

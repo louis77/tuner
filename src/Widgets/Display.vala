@@ -480,7 +480,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             foreach (var tag in _directory.load_random_genres(EXPLORE_CATEGORIES))
             {
             if ( Model.Genre.in_genre (tag.name)) break;  // Predefined genre, ignore
-                create_category_specific( stack, source_list, _explore_category
+                var rando = create_category_specific( stack, source_list, _explore_category
                     , @"$(explore++)"   // tag names can have charaters that are not suitable for name
                     , "playlist-symbolic"
                     , tag.name

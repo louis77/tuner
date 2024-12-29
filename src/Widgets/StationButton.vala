@@ -15,7 +15,6 @@
  */
 public class Tuner.StationButton : Tuner.DisplayButton {
 
-
     private const string DEFAULT_ICON_NAME = "internet-radio";
 
     /**
@@ -29,6 +28,8 @@ public class Tuner.StationButton : Tuner.DisplayButton {
      * @brief The context menu associated with this StationBox.
      */
     public StationContextMenu menu { get; private set; }
+
+    private ulong favicon_handler_id;
 
     /**
      * @brief Constructs a new StationBox instance.
@@ -72,11 +73,14 @@ public class Tuner.StationButton : Tuner.DisplayButton {
             Set the button image. Connect to the flag that the Station has loaded the favicon
             and when it set, update the image. Check that if its already loaded, load now.
         */        
-        station.notify["favicon-loaded"].connect((s, p) => {
+        favicon_handler_id = station.station_favicon_sig.connect(() => 
+        {
+            station.disconnect(favicon_handler_id);
             station.update_favicon_image.begin (_favicon_image);
         });
         if ( station.favicon_loaded > 0 ) 
         {
+            station.disconnect(favicon_handler_id);
             station.update_favicon_image.begin (_favicon_image);
         }
     } // StationButton

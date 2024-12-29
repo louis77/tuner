@@ -32,6 +32,7 @@ public class Tuner.Model.Station : Object {
 
     // Signals
     public signal void station_star_sig(bool starred);  // Station starred state has changed
+    public signal void station_favicon_sig();  // Station favicon loaded
 
     // ----------------------------------------------------------
     // Properties
@@ -124,16 +125,12 @@ public class Tuner.Model.Station : Object {
             station_star_sig(value);
         }
     }
-    
-    /** @property {int} favicon_loaded - Indicates the number of times the favicon has been loaded from cache or internet.*/
-    public int favicon_loaded; // { get; private set; }
-
-    public bool is_in_index;
-    public bool is_up_to_date;
-   public string up_to_date_difference = _("Station no longer in the index");
 
 
-    //  public uint clickcount = 0;
+    public int favicon_loaded;  // Indicates the number of times the favicon has been loaded from cache or internet
+    public bool is_in_index;    // Indicates if the station is in the provider index
+    public bool is_up_to_date;  // Indicates if the station is up-to-date with the provider index
+    public string up_to_date_difference = _("Station no longer in the index");
 
 
     // ----------------------------------------------------------
@@ -170,7 +167,7 @@ public class Tuner.Model.Station : Object {
         */
         {
             STATIONS.set(station.stationuuid,station);
-           // station.load_favicon_async.begin();
+            station.load_favicon_async.begin();
         }
 
         return STATIONS.get(station.stationuuid);
@@ -366,6 +363,7 @@ public class Tuner.Model.Station : Object {
                 _favicon_pixbuf = pixbuf;              
                 debug(@"$(stationuuid) - Complete - load_favicon_async from cache stored in file://$(_favicon_cache_file)");
                 favicon_loaded++;
+                station_favicon_sig();
                 return;
             } catch (Error e) {
                 info(@"$(stationuuid) - Failed to load cached favicon: $(e.message)");
@@ -389,6 +387,7 @@ public class Tuner.Model.Station : Object {
                 _favicon_pixbuf = pixbuf;
                 debug(@"$(stationuuid) - Complete - load_favicon_async from internet for $(_favicon_uri.to_string())\nStored in file://$(_favicon_cache_file)");
                 favicon_loaded++;
+                station_favicon_sig();
                 return;
 
             } catch (Error e) {
@@ -412,7 +411,6 @@ public class Tuner.Model.Station : Object {
     public async bool update_favicon_image( Gtk.Image favicon_image, bool reload = false, string defaulticon = "")
     {
         bool reloading = false;
-
         do {           
             try{
                 if ( _favicon_pixbuf == null || STATION_FAILING_FAVICON.contains(stationuuid)) 
