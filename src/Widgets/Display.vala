@@ -28,12 +28,12 @@ using Granite.Widgets;
  */
 public class Tuner.Display : Gtk.Paned, StationListHookup {
 
-    private const string BACKGROUND_TUNER = "/io/github/louis77/tuner/icons/background-tuner";
-    private const string BACKGROUND_JUKEBOX = "/io/github/louis77/tuner/icons/background-jukebox";
-    private const int EXPLORE_CATEGORIES = 5;    // How many explore categories to display 
-    private const double BACKGROUND_OPACITY = 0.15;    
-    private const int BACKGROUND_TRANSITION_TIME_MS = 1500;    
-    private const Gtk.RevealerTransitionType BACKGROUND_TRANSITION_TYPE = Gtk.RevealerTransitionType.CROSSFADE;
+	private const string BACKGROUND_TUNER                               = "/io/github/louis77/tuner/icons/background-tuner";
+	private const string BACKGROUND_JUKEBOX                             = "/io/github/louis77/tuner/icons/background-jukebox";
+	private const int EXPLORE_CATEGORIES                                = 5;     // How many explore categories to display
+	private const double BACKGROUND_OPACITY                             = 0.15;
+	private const int BACKGROUND_TRANSITION_TIME_MS                     = 1500;
+	private const Gtk.RevealerTransitionType BACKGROUND_TRANSITION_TYPE = Gtk.RevealerTransitionType.CROSSFADE;
 
 
     /**
@@ -86,24 +86,25 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         Display Assets
     */
 
-    private SourceList.ExpandableItem _selections_category = new SourceList.ExpandableItem (_("Selections"));
-    private SourceList.ExpandableItem _library_category = new SourceList.ExpandableItem (_("Library"));
-    private SourceList.ExpandableItem _saved_searches_category = new SourceList.ExpandableItem (_("Saved Searches"));
-    private SourceList.ExpandableItem _explore_category = new SourceList.ExpandableItem (_("Explore")); 
-    private SourceList.ExpandableItem _genres_category = new SourceList.ExpandableItem (_("Genres"));
-    private SourceList.ExpandableItem _subgenres_category = new SourceList.ExpandableItem (_("Sub Genres"));
-    private SourceList.ExpandableItem _eras_category = new SourceList.ExpandableItem (_("Eras"));
-    private SourceList.ExpandableItem _talk_category = new SourceList.ExpandableItem (_("Talk, News, Sport"));
+	private SourceList.ExpandableItem _selections_category     = new SourceList.ExpandableItem (_("Selections"));
+	private SourceList.ExpandableItem _library_category        = new SourceList.ExpandableItem (_("Library"));
+	private SourceList.ExpandableItem _saved_searches_category = new SourceList.ExpandableItem (_("Saved Searches"));
+	private SourceList.ExpandableItem _explore_category        = new SourceList.ExpandableItem (_("Explore"));
+	private SourceList.ExpandableItem _genres_category         = new SourceList.ExpandableItem (_("Genres"));
+	private SourceList.ExpandableItem _subgenres_category      = new SourceList.ExpandableItem (_("Sub Genres"));
+	private SourceList.ExpandableItem _eras_category           = new SourceList.ExpandableItem (_("Eras"));
+	private SourceList.ExpandableItem _talk_category           = new SourceList.ExpandableItem (_("Talk, News, Sport"));
 
 
-    private bool _first_activation = true;  // display has not been activated before
-    private bool _active = false;  // display is active
-    private bool _shuffle = false;  // Shuffle mode
-    private Gtk.Revealer _background_tuner = new Gtk.Revealer();  // Background image
-    private Gtk.Revealer _background_jukebox = new Gtk.Revealer();  // Background image
-    private Gtk.Overlay _overlay = new Gtk.Overlay ();
-    private StationSet jukebox_station_set;  // Jukebox station set
- 
+	private bool _first_activation           = true;     // display has not been activated before
+	private bool _active                     = false;     // display is active
+	private bool _shuffle                    = false;     // Shuffle mode
+	private Gtk.Revealer _background_tuner   = new Gtk.Revealer();     // Background image
+	private Gtk.Revealer _background_jukebox = new Gtk.Revealer();      // Background image
+	private Gtk.Overlay _overlay             = new Gtk.Overlay ();
+	private StationSet jukebox_station_set;      // Jukebox station set
+	private SearchController _search_controller;      // Search controller
+
 
 
     /* --------------------------------------------------------
@@ -124,43 +125,37 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             stack : new Gtk.Stack ()
         );
 
-        jukebox_station_set = _directory.load_random_stations(1);
-        app().player.shuffle_requested_sig.connect(() => 
-        {
-            if ( _shuffle ) jukebox_shuffle.begin();
-        });
+		jukebox_station_set = _directory.load_random_stations(1);
+		app().player.shuffle_requested_sig.connect(() =>
+		{
+			if (_shuffle)
+				jukebox_shuffle.begin();
+		});
 
-    //  } // Display
+		var tuner = new Gtk.Image.from_resource (BACKGROUND_TUNER);
+		tuner.opacity                         = BACKGROUND_OPACITY;
+		_background_tuner.transition_duration = BACKGROUND_TRANSITION_TIME_MS;
+		_background_tuner.transition_type     = BACKGROUND_TRANSITION_TYPE;
+		_background_tuner.reveal_child        = true;
+		_background_tuner.child               = tuner;
+
+		var jukebox = new Gtk.Image.from_resource (BACKGROUND_JUKEBOX);
+		jukebox.opacity                         = BACKGROUND_OPACITY;
+		_background_jukebox.transition_duration = BACKGROUND_TRANSITION_TIME_MS;
+		_background_jukebox.transition_type     = BACKGROUND_TRANSITION_TYPE;
+		_background_jukebox.reveal_child        = false;
+		_background_jukebox.child               = jukebox;
+
+		var background = new Gtk.Fixed();
+		background.add(_background_tuner);
+		background.add(_background_jukebox);
+		background.halign = Gtk.Align.CENTER;
+		background.valign = Gtk.Align.CENTER;
+		_overlay.add (background);
 
 
-
-    //  /* Construct */
-    //  construct 
-    //  { 
-        var tuner = new Gtk.Image.from_resource (BACKGROUND_TUNER);
-        tuner.opacity = BACKGROUND_OPACITY;
-        _background_tuner.transition_duration = BACKGROUND_TRANSITION_TIME_MS;
-        _background_tuner.transition_type = BACKGROUND_TRANSITION_TYPE;   
-        _background_tuner.reveal_child = true; 
-        _background_tuner.child = tuner;
-
-        var jukebox = new Gtk.Image.from_resource (BACKGROUND_JUKEBOX);    
-        jukebox.opacity = BACKGROUND_OPACITY;
-        _background_jukebox.transition_duration = BACKGROUND_TRANSITION_TIME_MS;
-        _background_jukebox.transition_type = BACKGROUND_TRANSITION_TYPE;
-        _background_jukebox.reveal_child = false;
-        _background_jukebox.child = jukebox;
-
-        var background = new Gtk.Fixed();
-        background.add(_background_tuner);
-        background.add(_background_jukebox);
-        background.halign = Gtk.Align.CENTER;
-        background.valign = Gtk.Align.CENTER;
-        _overlay.add (background);
-
-        
-        stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
-        _overlay.add_overlay(stack);
+		stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
+		_overlay.add_overlay(stack);
 
         // ---------------------------------------------------------------------------
 
@@ -199,20 +194,22 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         source_list.root.add (_eras_category);
         source_list.root.add (_talk_category);
 
-        source_list.ellipsize_mode = Pango.EllipsizeMode.NONE;
-        source_list.item_selected.connect  ((item) => 
-        // Syncs Item choice to Stack view
-        {
-            if ( item is StationListItem ) ((StationListItem)item).populate( this );
-            var selected_item = item.get_data<string> ("stack_child");
-            stack.visible_child_name = selected_item;
-        });
+		source_list.ellipsize_mode = Pango.EllipsizeMode.NONE;
+		source_list.item_selected.connect  ((item) =>
+		// Syncs Item choice to Stack view
+		{
+			//  warning(@"Item selected: $(item.name) - $(item.get_data<string> ("stack_child "))");
+			if (item is StationListItem)
+				((StationListItem)item).populate( this );
+			var selected_item        = item.get_data<string> ("stack_child");
+			stack.visible_child_name = selected_item;
+		});
 
-        pack1 (source_list, false, false);
-        pack2 (_overlay, true, false);
-        set_position(200);
-                    
-    } // construct
+		pack1 (source_list, false, false);
+		pack2 (_overlay, true, false);
+		set_position(200);
+
+	}     // Display
 
 
     /* --------------------------------------------------------
@@ -222,23 +219,24 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         ----------------------------------------------------------
     */
 
-    /**
-     * @brief Asynchronously shuffles to a new random station in jukebox mode
-     * 
-     * If shuffle mode is active, selects and plays a new random station
-     * from the jukebox station set.
-     */
-     public async void jukebox_shuffle()
-     {
-         if ( !_shuffle ) return;
-         try {
-             station_clicked_sig(jukebox_station_set.next_page().to_array()[0]);
-         }
-         catch (SourceError e)
-         {
-             warning(_(@"Could not get random station: $(e.message)"));
-         }
-     } // jukebox_shuffle
+/**
+ * @brief Asynchronously shuffles to a new random station in jukebox mode
+ *
+ * If shuffle mode is active, selects and plays a new random station
+ * from the jukebox station set.
+ */
+	public async void jukebox_shuffle(){
+		if (!_shuffle)
+			return;
+		try
+		{
+			station_clicked_sig(jukebox_station_set.next_page().to_array()[0]);
+		}
+		catch (SourceError e)
+		{
+			warning(_(@"Could not get random station: $(e.message)"));
+		}
+	}      // jukebox_shuffle
 
 
     /**
@@ -293,48 +291,14 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 
        ---------------------------------------------------------- */
 
-    /**
-     * @brief Loads search stations based on the provided text and updates the content box.
-     *
-     * Async since 1.5.5 so that UI is responsive during long searches
-     * @param searchText The text to search for stations.
-     * @param search_box The ContentBox to update with the search results.
-     */
-     private async void load_station_search_results(string searchText, StationListBox search_box) {
-
-        debug(@"Searching for: $(searchText)");       
-        var station_set = _directory.load_search_stations(searchText, 100);
-        debug(@"Search done");
-
-        try {
-            var stations = station_set.next_page();
-            debug(@"Search Next done");
-            if (stations == null || stations.size == 0) {
-                search_box.show_nothing_found();
-            } else {
-                debug(@"Search found $(stations.size) stations");
-                var _slist = new StationList.with_stations(stations);
-                hookup(_slist);
-                search_box.content = _slist;
-                search_box.parameter = searchText;
-            }
-        } catch (SourceError e) {
-            search_box.show_alert();
-        }
-    } // load_search_stations
-
-
-
-
-    /**
-     * @brief Asynchronously initializes the display components
-     * 
-     * Sets up all categories, loads initial station data, and configures
-     * signal handlers for various display components.
-     */
-    private async void initialize()
-    {
-        _directory.load (); // Initialize the DirectoryController
+/**
+ * @brief Asynchronously initializes the display components
+ *
+ * Sets up all categories, loads initial station data, and configures
+ * signal handlers for various display components.
+ */
+	private async void initialize(){
+		_directory.load (); // Initialize the DirectoryController
 
         /* Initialize the directory contents */
 
@@ -359,19 +323,19 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         });
 
 
-        /* ---------------------------------------------------------------------------
-            Trending
-        */
-        create_category_specific
-            ( stack
-                , source_list
-                , _selections_category
-                , "trending"
-                , "playlist-queue"
-                , "Trending"
-                , "Trending in the last 24 hours"
-                ,_directory.load_trending_stations(40) 
-            );
+		/* ---------------------------------------------------------------------------
+		    Trending
+		 */
+		create_category_specific
+		        ( stack,
+		        source_list,
+		        _selections_category,
+		        "trending",
+		        "playlist-queue",
+		        "Trending",
+		        "Trending in the last 24 hours",
+		        _directory.load_trending_stations(40)
+		        );
 
         /* ---------------------------------------------------------------------------
             Popular
@@ -446,16 +410,22 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         , _("Save this search")
         , "starred-symbolic");
 
-        search_results.tooltip_button.sensitive = false;
+		search_results.tooltip_button.sensitive = false;
 
-        // Add saved search from star press
-        search_results.action_button_activated_sig.connect (() => {
-            if ( app().is_offline ) return;                 
-            search_results.tooltip_button.sensitive = false;    
-            var new_saved_search  = add_saved_search( search_results.parameter, _directory.add_saved_search (search_results.parameter));
-            new_saved_search.list(search_results.content);
-            source_list.selected = source_list.get_last_child (_saved_searches_category);
-        });
+		_search_controller = new SearchController(directory,this,search_results );
+
+
+		// Add saved search from star press
+		search_results.action_button_activated_sig.connect (() =>
+		{
+			if (app().is_offline)
+				return;
+			search_results.tooltip_button.sensitive = false;
+			var new_saved_search                    = add_saved_search( search_results.parameter, _directory.add_saved_search (search_results.parameter));
+			new_saved_search.list(search_results.content);
+			source_list.selected = source_list.get_last_child (_saved_searches_category);
+		});
+
 
         // ---------------------------------------------------------------------------
         // Saved Searches
@@ -506,49 +476,33 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         // --------------------------------------------------------------------
 
 
-        refresh_starred_stations_sig.connect ( () => 
-        //
-        {
-            if ( app().is_offline ) return;
-            var _slist = new StationList.with_stations (_directory.get_starred ());
-            hookup(_slist);
-            starred.content = _slist;
-        });
+		refresh_starred_stations_sig.connect (() =>
+		                                      //
+		{
+			if (app().is_offline && _directory.get_starred ().size > 0)
+				return;
+			var _slist = StationList.with_stations (_directory.get_starred ());
+			station_list_hookup(_slist);
+			starred.content = _slist;
+		});
 
 
-        search_focused_sig.connect (() => 
-        // Show searched stack when cursor hits search text area
-        {
-            stack.visible_child_name = "searched";
-        });
+		search_focused_sig.connect (() =>
+		/* Show searched stack when cursor hits search text area */
+		{
+			stack.visible_child_name = "searched";
+		});
 
 
-        searched_for_sig.connect ( (text) => 
-        // process the searched text, stripping it, and sensitizing the save 
-        // search star depending on if the search is already saved
-        {
-            Idle.add(() =>
-            {
-                var search = text.strip ();
-                if ( search.length > 0 ) {
-                    load_station_search_results.begin(search, search_results);
-                    if ( stack.get_child_by_name (search) == null )  // Not already saved
-                    {
-                        search_results.tooltip_button.sensitive = true;
-                        return Source.REMOVE;
-                    }
-                }
-                else
-                {
-                    search_results.show_nothing_found ();
-                }
-                search_results.tooltip_button.sensitive = false;
-                return Source.REMOVE;
-            }, Priority.HIGH_IDLE);
-        });
+		searched_for_sig.connect ((text) =>
+        /* process the searched text, stripping it, and sensitizing the save
+        search star depending on if the search is already saved */
+		{
+			_search_controller.handle_search_for(text);
+		});
 
-        show();
-    } // initialize
+		show();
+	}     // initialize
 
 
     /* -------------------------------------------------
@@ -577,36 +531,36 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
                 _background_jukebox.reveal_child = true; 
         });
 
-        app().player.tape_counter_sig.connect((oldstation) =>
-        {     
-            if ( _shuffle ) jukebox_shuffle.begin();
-        });
-        category.add(item);
-    } // jukebox
+		app().player.tape_counter_sig.connect((oldstation) =>
+		{
+			if (_shuffle)
+				jukebox_shuffle.begin();
+		});
+		category.add(item);
+	}     // jukebox
 
 
-    /**
-     * @brief Hooks up signals for a StationList.
-     * @param slist The StationList to hook up.
-     * 
-     * Configures signal handlers for station clicks and favorites changes.
-     */
-    internal void hookup(StationList slist)
-    {
-        slist.station_clicked_sig.connect((station) =>
-        {
-            station_clicked_sig(station);
-            _shuffle = false;        
-            app().player.shuffle_mode_sig(false);             
-            _background_jukebox.reveal_child = false;
-            _background_tuner.reveal_child = true;      
-        });
+/**
+ * @brief Hooks up signals for a StationList.
+ * @param station_list The StationList to hook up.
+ *
+ * Configures signal handlers for station clicks and favorites changes.
+ */
+	internal void station_list_hookup(StationList station_list){
+		station_list.station_clicked_sig.connect((station) =>
+		{
+			station_clicked_sig(station);
+			_shuffle = false;
+			app().player.shuffle_mode_sig(false);
+			_background_jukebox.reveal_child = false;
+			_background_tuner.reveal_child   = true;
+		});
 
-        slist.favourites_changed_sig.connect(() =>
-        {
-            refresh_starred_stations_sig();
-        });
-    } // hookup
+		station_list.favourites_changed_sig.connect(() =>
+		{
+			refresh_starred_stations_sig();
+		});
+	}     // hookup
 
 
     /** */
@@ -673,88 +627,87 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             , true
             );
 
-        if (stations != null)
-        {    
-            var slist = new StationList.with_stations (stations);
-            hookup(slist);
-            genre.content = slist;
-        }
+		if (stations != null)
+		{
+			var slist = StationList.with_stations (stations);
+			station_list_hookup(slist);
+			genre.content = slist;
+		}
 
         return genre;
     
     } // create_category_predefined
 
 
-    /**
-     * @brief Creates a specific category in the source list.
-     * @param stack The stack widget.
-     * @param source_list The source list widget.
-     * @param category The category to add to.
-     * @param name The name of the category.
-     * @param icon The icon for the category.
-     * @param title The title of the category.
-     * @param subtitle The subtitle of the category.
-     * @param station_set The set of stations for the category.
-     * @param action_tooltip_text Optional tooltip text for the action.
-     * @param action_icon_name Optional icon name for the action.
-     * @return The created SourceListBox for the category.
-     */
-    private StationListBox create_category_specific 
-        ( Gtk.Stack stack
-        , Granite.Widgets.SourceList source_list
-        , Granite.Widgets.SourceList.ExpandableItem category
-        , string name
-        , string icon
-        , string title
-        , string subtitle
-        , StationSet station_set
-        , string? action_tooltip_text = null
-        , string? action_icon_name = null
-        )
-    {
-        var genre = StationListBox.create 
-            ( stack
-            , source_list
-            , category
-            , name
-            , icon
-            , title
-            , subtitle 
-            , false
-            ,station_set
-            , action_tooltip_text
-            , action_icon_name
-            );
-        
-        return genre;
-    } // create_category_specific
-    
+	/**
+	* @brief Creates a specific category in the source list.
+	* @param stack The stack widget.
+	* @param source_list The source list widget.
+	* @param category The category to add to.
+	* @param name The name of the category.
+	* @param icon The icon for the category.
+	* @param title The title of the category.
+	* @param subtitle The subtitle of the category.
+	* @param station_set The set of stations for the category.
+	* @param action_tooltip_text Optional tooltip text for the action.
+	* @param action_icon_name Optional icon name for the action.
+	* @return The created SourceListBox for the category.
+	*/
+	private StationListBox create_category_specific
+	        ( Gtk.Stack stack,
+	        Granite.Widgets.SourceList source_list,
+	        Granite.Widgets.SourceList.ExpandableItem category,
+	        string name,
+	        string icon,
+	        string title,
+	        string subtitle,
+	        StationSet station_set,
+	        string? action_tooltip_text = null,
+	        string? action_icon_name    = null
+	        ){
+		var genre = StationListBox.create
+		                    ( stack,
+		                    source_list,
+		                    category,
+		                    name,
+		                    icon,
+		                    title,
+		                    subtitle,
+		                    false,
+		                    station_set,
+		                    action_tooltip_text,
+		                    action_icon_name
+		                    );
 
-    /**
-     * @brief Creates genre-specific categories in the source list.
-     * @param stack The stack widget.
-     * @param source_list The source list widget.
-     * @param category The category to add to.
-     * @param directory The directory controller.
-     * @param genres The array of genres.
-     */
-    private void create_category_genre
-        ( Gtk.Stack stack
-        , Granite.Widgets.SourceList source_list
-        , Granite.Widgets.SourceList.ExpandableItem category
-        , DirectoryController directory
-        , string[] genres
-        )
-    {
-        foreach (var genre in genres ) {
-            create_category_specific(stack
-                , source_list
-                , category
-                , genre
-                , "playlist-symbolic"
-                , genre
-                , genre
-                , directory.load_by_tag (genre.down ()));
-        }
-    } // create_category_genre
+		return genre;
+	}     // create_category_specific
+
+
+	/**
+	* @brief Creates genre-specific categories in the source list.
+	* @param stack The stack widget.
+	* @param source_list The source list widget.
+	* @param category The category to add to.
+	* @param directory The directory controller.
+	* @param genres The array of genres.
+	*/
+	private void create_category_genre
+	        ( Gtk.Stack stack,
+	        Granite.Widgets.SourceList source_list,
+	        Granite.Widgets.SourceList.ExpandableItem category,
+	        DirectoryController directory,
+	        string[] genres
+	        ){
+		foreach (var genre in genres )
+		{
+			create_category_specific(stack,
+			                         source_list,
+			                         category,
+			                         genre,
+			                         "playlist-symbolic",
+			                         genre,
+			                         genre,
+			                         directory.load_by_tag (genre.down ()));
+		}
+	}     // create_category_genre
 } // Display

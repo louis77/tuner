@@ -55,10 +55,11 @@ public class Tuner.StationContextMenu : Gtk.Menu {
             remove(make_up_to_date);
         });
 
-        var website = new Gtk.MenuItem.with_label (_("Visit Website"));
-        if (_station.homepage != null && _station.homepage.length > 0) {
-            website.activate.connect (on_website_handler);
-        }
+		var website = new Gtk.MenuItem.with_label (_("Visit Website"));
+		if (_station.homepage != null && _station.homepage.length > 0)
+		{
+			website.activate.connect (on_website_handler);
+		}
 
 		var stream_url = new Gtk.MenuItem.with_label (_("Copy Stream-URL to clipboard"));
 		stream_url.sensitive = true;
@@ -78,50 +79,56 @@ public class Tuner.StationContextMenu : Gtk.Menu {
         // Layout
 
 
-        append (name);
-        append (country);
-        append (new Gtk.SeparatorMenuItem ());
-        if ( !_station.is_up_to_date )
-        {
-            not_up_to_date.tooltip_text = _station.up_to_date_difference;
-            if ( !_station.is_in_index ) make_up_to_date.sensitive = false;
-            append (not_up_to_date);
-            append (make_up_to_date);
-            append (new Gtk.SeparatorMenuItem ());
-        }
-        append (website);
+		append (name);
+		append (country);
+		append (new Gtk.SeparatorMenuItem ());
+		if (!_station.is_up_to_date)
+		{
+			not_up_to_date.tooltip_text = _station.up_to_date_difference;
+			if (!_station.is_in_index)
+				make_up_to_date.sensitive = false;
+			append (not_up_to_date);
+			append (make_up_to_date);
+			append (new Gtk.SeparatorMenuItem ());
+		}
+		append (website);
 		append (stream_url);
         append (star);
     }
 
 
-    /**
-     * @brief Handles the action to open the station's website.
-     */
-    private void on_website_handler () {
-        try {
-            Gtk.show_uri_on_window (app().window, _station.homepage, Gdk.CURRENT_TIME);
-        } catch (Error e) {
-            warning (@"Unable to open website: $(e.message)");
-        }
-    }
+/**
+ * @brief Handles the action to open the station's website.
+ */
+	private void on_website_handler ()
+	{
+		try
+		{
+			Gtk.show_uri_on_window (app().window, _station.homepage, Gdk.CURRENT_TIME);
+		} catch (Error e)
+		{
+			warning (@"Unable to open website: $(e.message)");
+		}
+	}
 
 
-	/**
-	 * @brief Handles copying the stream URL to clipboard. UrlResolved is the stream url, url can be playlists
-	 */
-	private void on_streamurl_handler () {
-		Gdk.Display display = Gdk.Display.get_default ();
+/**
+ * @brief Handles copying the stream URL to clipboard. UrlResolved is the stream url, url can be playlists
+ */
+	private void on_streamurl_handler ()
+	{
+		Gdk.Display   display   = Gdk.Display.get_default ();
 		Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (display, Gdk.SELECTION_CLIPBOARD);
 		clipboard.set_text (( _station.urlResolved == null || _station.urlResolved == "" ) ? _station.url : _station.urlResolved, -1);
 	}
 
-    /**
-     * @brief Updates the star menu item's label based on the station's starred status.
-     * @param item The menu item to update.
-     */
-    private void set_context_star (Gtk.MenuItem item) {
-        item.label = _station.starred ? Application.UNSTAR_CHAR + _("Unstar this station") : Application.STAR_CHAR + _("Star this station");
-    }
+/**
+ * @brief Updates the star menu item's label based on the station's starred status.
+ * @param item The menu item to update.
+ */
+	private void set_context_star (Gtk.MenuItem item)
+	{
+		item.label = _station.starred ? Application.UNSTAR_CHAR + _("Unstar this station") : Application.STAR_CHAR + _("Star this station");
+	}
 
 }
