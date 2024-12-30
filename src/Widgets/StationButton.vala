@@ -1,6 +1,8 @@
-/*
+/**
+ * SPDX-FileCopyrightText: Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
+ * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
+ *
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
  */
 
 /**
@@ -11,7 +13,7 @@
  * button for displaying radio station information. It includes the station's
  * title, location, codec, bitrate, and favicon.
  * 
- * @extends Tuner.WelcomeButton
+ * @extends Tuner.DisplayButton
  */
 public class Tuner.StationButton : Tuner.DisplayButton
 {
@@ -49,7 +51,7 @@ public class Tuner.StationButton : Tuner.DisplayButton
         get_style_context().add_class("station-button");
         always_show_image = true;
 
-		station.station_star_sig.connect (() =>
+		station.station_star_changed_sig.connect (() =>
 		{
 			this.title = make_title (this.station.name, this.station.starred);
 		});
@@ -90,7 +92,8 @@ public class Tuner.StationButton : Tuner.DisplayButton
 
 
 	/**
-	* @brief Updates the station button with new information.
+	* @brief Updates the station button with current information from the provider.
+    *
 	* @param starred Whether the station is starred (favorited).
 	*/
 	public void update(bool starred = false)
@@ -101,8 +104,8 @@ public class Tuner.StationButton : Tuner.DisplayButton
 		description      = make_description (station.countrycode);
 		title            = make_title (station.name, station.starred, station.is_up_to_date);
 		tag              = make_tag (station.codec, station.bitrate);
-		app().stars.update (station);
-	}     // update
+		app().stars.update (station); 
+	} // update
 
 
 	/**
@@ -119,7 +122,7 @@ public class Tuner.StationButton : Tuner.DisplayButton
 		if (!is_up_to_date)
 			return Application.EXCLAIM_CHAR + title;
 		return Application.STAR_CHAR + title;
-	}     // make_title
+	} // make_title
 
 
     /**
@@ -150,5 +153,5 @@ public class Tuner.StationButton : Tuner.DisplayButton
 			return _(location);
 		else
 			return location;
-	}     // make_description
+	} // make_description
 } // class StationButton

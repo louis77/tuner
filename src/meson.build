@@ -16,7 +16,7 @@ sources = files (
     'Services/HttpClient.vala',
     'Services/StarStore.vala',
 
-    'Widgets/base/AbstractContentList.vala',
+    'Widgets/base/ListFlowBox.vala',
     'Widgets/base/DisplayButton.vala',
     'Widgets/base/RevealLabel.vala',
     'Widgets/base/CyclingRevealLabel.vala',

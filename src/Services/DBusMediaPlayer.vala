@@ -171,22 +171,11 @@ namespace Tuner.DBus {
 				trigger_metadata_update ();
 			});
 
-
-			//  app().player.station_changed_sig.connect ((station) =>
-			//  {
-			//  	_station         = station;
-			//  	_current_title   = station.name;
-			//  	_current_artist  = station.name;
-			//  	_current_art_url = station.favicon;
-			//  	update_metadata ();
-			//  	trigger_metadata_update ();
-			//  });
-
 			app().player.shuffle_mode_sig.connect ((shuffle) =>
 			{
 				_shuffle = shuffle;
 			});
-		}         // MediaPlayerPlayer
+		} // MediaPlayerPlayer
 
 
 		private void update_metadata ()
@@ -198,7 +187,7 @@ namespace Tuner.DBus {
 			// this is necessary to remove previous images if the current station has none
 			var art = _current_art_url == null || _current_art_url == "" ? "file:///" : _current_art_url;
 			_metadata.set ("mpris:artUrl", art);
-		}         // update_metadata
+		} // update_metadata
 
 
 		public void next() throws DBusError, IOError

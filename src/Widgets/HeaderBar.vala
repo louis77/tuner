@@ -110,7 +110,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 				_star_button.image = STAR;
 			}
 		}
-	}     // starred
+	} // starred
 
 
     /**
@@ -164,9 +164,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 		_star_button.clicked.connect (() => 
 		{
 			if (_station == null)
-				return;
-			_station.starred = !_starred;
-			starred          =_station.starred;
+				return;			
+			starred = _station.toggle_starred();
 		});
 
 
@@ -316,7 +315,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 				{
 					_station            = station;
 					starred             = _station.starred;
-					_station_handler_id = _station.station_star_sig.connect((starred) => 
+					_station_handler_id = _station.station_star_changed_sig.connect((starred) => 
 					{
 						this.starred = starred;
 					});
@@ -349,7 +348,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 			_player_info.set_reveal_child(true);
 			return Source.REMOVE;
 		});
-	}     // realize
+	} // realize
 
 
     /**
@@ -402,7 +401,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 			_list_button.sensitive             = true;
 			_search_entry.sensitive             = true;
 		}
-	}     // check_online_status
+	} // check_online_status
 
 
     /**

@@ -10,7 +10,8 @@
  * This class extends Gtk.Button and is used to represent a display button
  * in the tuner application, showing relevant information about a station.
  */
-public class Tuner.DisplayButton : Gtk.Button {
+public class Tuner.DisplayButton : Gtk.Button 
+{
 
     private const int TITLE_WIDTH =  25;
 

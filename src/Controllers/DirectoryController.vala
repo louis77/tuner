@@ -20,8 +20,13 @@ public errordomain SourceError {
 }
 
 
+
 /**
- * @brief Controller class for managing radio station directories. and lists
+ * Controller class responsible for managing directory-related operations in the Tuner application.
+ *
+ * This class handles various directory management tasks,
+ * such as file system operations, directory navigation, and file monitoring within the
+ * context of the Tuner namespace.
  */
 public class Tuner.DirectoryController : Object
 {
@@ -54,7 +59,7 @@ public class Tuner.DirectoryController : Object
 	public string provider()
 	{
 		return _provider.name();
-	}     // provider
+	} // provider
 
 	/**
 	* @brief Initializes the provider and starts the load of Saved Stations
@@ -124,7 +129,7 @@ public class Tuner.DirectoryController : Object
 		params.uuids.add (uuid);
 		var source = new StationSet(1, params, _provider, _star_store);
 		return source;
-	}     // load_station_uuid
+	} // load_station_uuid
 
 
 	/**
@@ -143,7 +148,7 @@ public class Tuner.DirectoryController : Object
 		};
 		var source = new StationSet(limit, params, _provider, _star_store);
 		return source;
-	}     // load_random_stations
+	} // load_random_stations
 
 
 	/**
@@ -163,7 +168,7 @@ public class Tuner.DirectoryController : Object
 		};
 		var source = new StationSet(limit, params, _provider, _star_store);
 		return source;
-	}     // load_trending_stations
+	} // load_trending_stations
 
 
 	/**
@@ -183,7 +188,7 @@ public class Tuner.DirectoryController : Object
 		};
 		var source = new StationSet(limit, params, _provider, _star_store);
 		return source;
-	}     // load_popular_stations
+	} // load_popular_stations
 
 
 	/**
@@ -204,7 +209,7 @@ public class Tuner.DirectoryController : Object
 		};
 		var source = new StationSet(limit, params, _provider, _star_store);
 		return source;
-	}     // load_by_country
+	} // load_by_country
 
 
 	/**
@@ -225,7 +230,7 @@ public class Tuner.DirectoryController : Object
 		};
 		var source = new StationSet(limit, params, _provider, _star_store);
 		return source;
-	}     // load_search_stations
+	} // load_search_stations
 
 
     /**
@@ -299,7 +304,7 @@ public class Tuner.DirectoryController : Object
 		};
 		var source = new StationSet(40, params, _provider, _star_store);
 		return source;
-	}     // load_by_tag
+	} // load_by_tag
 
 
 	/**
@@ -318,7 +323,7 @@ public class Tuner.DirectoryController : Object
 		};
 		var source = new StationSet(40, params, _provider, _star_store);
 		return source;
-	}     // load_by_tag_set
+	} // load_by_tag_set
 
 
 	/**
@@ -337,7 +342,7 @@ public class Tuner.DirectoryController : Object
 		{
 			debug ("do-not-track enabled, will not send listening event");
 		}
-	}     // count_station_click
+	} // count_station_click
 
 
 /**
@@ -353,7 +358,7 @@ public class Tuner.DirectoryController : Object
 		{
 			warning (@"Load tags failed with error: $(e.message)");
 		}
-	}     // load_tags
+	} // load_tags
 
 
 	public Set<DataProvider.Tag> load_random_genres(int genres)
@@ -372,7 +377,7 @@ public class Tuner.DirectoryController : Object
 			}
 		}
 		return result;
-	}     // load_random_genres
+	} // load_random_genres
 } // DirectoryController
 
 
@@ -439,7 +444,7 @@ public class Tuner.StationSet : Object
 		{
 			throw new SourceError.UNAVAILABLE("Directory Error");
 		}
-	}     // next_page
+	} // next_page
 
 	/**
 	* @brief Fetch the next set of stations.
@@ -471,7 +476,7 @@ public class Tuner.StationSet : Object
 		{
 			throw new SourceError.UNAVAILABLE("Directory Error");
 		}
-	}     // next_page
+	} // next_page
 
 
 	/**
@@ -482,7 +487,7 @@ public class Tuner.StationSet : Object
 	public bool has_more ()
 	{
 		return _more;
-	}     // has_more
+	} // has_more
 
 
 	/**
@@ -497,24 +502,13 @@ public class Tuner.StationSet : Object
 
 		while (raw_stations.next())
 		{
-			// foreach (var station in raw_stations) {
-
 			var station = raw_stations.get ();
-
-			//  station.notify["starred"].connect ((sender, property) => // FIXME remove
-			station.station_star_sig.connect ((starred ) =>
+			station.station_star_changed_sig.connect (() =>
 			{
-				if (starred)
-				{
-					_star_store.add_station (station);
-				}
-				else
-				{
-					_star_store.remove_station (station);
-				}
+				_star_store.update_from_station(station);
 			});
 			stations.add (station);
 		}
 		return stations;
-	}     // convert_stations
+	} // convert_stations
 } // StationSet

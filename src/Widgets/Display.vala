@@ -8,9 +8,11 @@
  *
  * @brief Defines the below-headerbar display of stations in the Tuner application.
  *
- * This file contains the Display class, which implements various
+ * This file contains the Display class, which implements visual elements for
  * features such as a source list, content stack that display and manage Station
  * settings and handles user actions like station selection.
+ *
+ * @since 2.0.0
  *
  * @see Tuner.Application
  * @see Tuner.DirectoryController
@@ -215,7 +217,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 		pack2 (_overlay, true, false);
 		set_position(200);
 
-	}     // Display
+	} // Display
 
 
     /* --------------------------------------------------------
@@ -237,18 +239,6 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 		try
 		{
             var station = jukebox_station_set.next_page().to_array()[0];
-            station.station_star_sig.connect(( starred ) =>
-            {
-                if ( starred )
-                {
-                    app().stars.add_station( station);
-                }
-                else
-                {
-                    app().stars.remove_station( station);
-                }
-                refresh_starred_stations_sig ();
-            });
 			station_clicked_sig(station);
 		}
 		catch (SourceError e)
@@ -508,9 +498,11 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         // --------------------------------------------------------------------
 
 
-		refresh_starred_stations_sig.connect (() =>
-		//
-		{ 
+        app().stars.starred_stations_changed_sig.connect ((station) =>
+        /*
+        * Refresh the starred stations list when a station is starred or unstarred
+         */
+        {
 			if (app().is_offline && _directory.get_starred ().size > 0)
 				return;
 			var _slist = StationList.with_stations (_directory.get_starred ());
@@ -539,7 +531,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         source_list.selected = source_list.get_first_child(_selections_category);
 
 		show();
-	}     // initialize
+	} // initialize
 
 
     /* -------------------------------------------------
@@ -574,7 +566,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 				jukebox_shuffle.begin();
 		});
 		category.add(item);
-	}     // jukebox
+	} // jukebox
 
 
     /**
@@ -583,7 +575,8 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
     *
     * Configures signal handlers for station clicks and favorites changes.
     */
-	internal void station_list_hookup(StationList station_list){
+	internal void station_list_hookup(StationList station_list)
+    {
 		station_list.station_clicked_sig.connect((station) =>
 		{
 			station_clicked_sig(station);
@@ -594,11 +587,6 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
                 _background_jukebox.reveal_child = false;
                 _background_tuner.reveal_child   = true;
             } // if
-		});
-
-		station_list.favourites_changed_sig.connect(() =>
-		{
-			refresh_starred_stations_sig();
 		});
 	}  // station_list_hookup
 
@@ -713,7 +701,8 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 	        StationSet station_set,
 	        string? action_tooltip_text = null,
 	        string? action_icon_name    = null
-	        ){
+	        )
+    {
 		var genre = StationListBox.create
 		                    ( stack,
 		                    source_list,
@@ -729,7 +718,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 		                    );
 
 		return genre;
-	}     // create_category_specific
+	} // create_category_specific
 
 
 	/**
@@ -758,5 +747,5 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 			                         genre,
 			                         directory.load_by_tag (genre.down ()));
 		}
-	}     // create_category_genre
+	} // create_category_genre
 } // Display

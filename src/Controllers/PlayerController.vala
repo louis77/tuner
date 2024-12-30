@@ -75,7 +75,7 @@ public class Tuner.PlayerController : GLib.Object
         // There was an error playing the stream
         {
             play_error = true;
-            warning (@"player error on url $(_player.uri): $(error.message)");
+            info (@"player error on url $(_player.uri): $(error.message)");
         });
 
 		_player.media_info_updated.connect ((obj) =>

@@ -32,7 +32,8 @@ public class Tuner.Model.Station : Object
     private const int FADE_MS = 400;
 
     // Signals
-    public signal void station_star_sig(bool starred);  // Station starred state has changed
+    public signal void station_star_changed_sig( bool starred );  // Station starred state has changed
+
     public signal void station_favicon_sig();  // Station favicon loaded
 
     // ----------------------------------------------------------
@@ -123,7 +124,7 @@ public class Tuner.Model.Station : Object
         set { 
             if ( _starred == value ) return;
             _starred = value; 
-            station_star_sig(value);
+            station_star_changed_sig(_starred );
         }
     }
 
@@ -151,6 +152,7 @@ public class Tuner.Model.Station : Object
 	* @brief Returns a unique, initiated Station instance for a given JSON node.
 	*
 	* If station has already been initiated based on stationuuid, returns the existing Station
+    * Checks with StarStore and sets stations starred status
 	*
 	* @param {Json.Node} json_node - The JSON node containing station data.
 	* @return {Station} The created Station instance.
@@ -161,6 +163,7 @@ public class Tuner.Model.Station : Object
 		station.is_in_index           = true;
 		station.is_up_to_date         = true; // Assume loaded from the provider as we're adding this to the list
 		station.up_to_date_difference = "";
+        station.starred = app().stars.contains(station);
 
         if ( !STATIONS.has_key(station.stationuuid)) 
         /*
@@ -476,7 +479,11 @@ public class Tuner.Model.Station : Object
         return true;
     } // set_up_to_date_with
 
+
     /**
+     * Returns a copy of the current station from the Provider.
+     * 
+     * @return A new {@link Station} instance with the current properties
      */
     public Station updated()
     {

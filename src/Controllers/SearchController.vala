@@ -5,6 +5,8 @@
  *
  * @file SearchController.vala
  *
+ * @since 2.0.0
+ *
  * @brief Defines the below-headerbar display of stations in the Tuner application.
  *
  * This file contains the Display class, which implements various

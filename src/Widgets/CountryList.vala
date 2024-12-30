@@ -10,9 +10,9 @@
  * This class extends AbstractContentList to create a specialized list
  * for displaying countries, potentially for selecting radio stations by country.
  *
- * @extends AbstractContentList
+ * @extends ListFlowBox
  */
-public class Tuner.CountryList : ContentList
+public class Tuner.CountryList : ListFlowBox
 {
 
 /**
@@ -34,22 +34,13 @@ public class Tuner.CountryList : ContentList
 			);
 	}
 
-/**
- * @brief Initializes the CountryList with a sample button.
- */
+	/**
+	* @brief Initializes the CountryList with a sample button.
+	*/
 	construct {
 		var button = new Gtk.Button ();
 		button.label = "a country";
 
 		add (button);
 	}
-
-/**
- * @property item_count
- * @brief The number of items (countries) in the list.
- *
- * This property implements the abstract property from AbstractContentList.
- */
-	public override uint item_count { get; set; }
-
 }

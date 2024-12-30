@@ -46,29 +46,12 @@ namespace Tuner.DataProvider {
 
 
     /**
-     * @class Client
-     *
-     * @brief Main RadioBrowser API client implementation
+     * A data provider implementation for the Radio Browser API.
      * 
-     * Provides methods to interact with the radio-browser.info API, including:
-     * - Station search and retrieval
-     * - User interaction tracking (votes, listens)
-     * - Tag management
-     * - Server discovery and connection handling
-     *
-     * Example usage:
-     * @code
-     * try {
-     *     var client = new Client();
-     *     var params = SearchParams() {
-     *         text = "jazz",
-     *         order = SortOrder.NAME
-     *     };
-     *     var stations = client.search(params, 10);
-     * } catch (DataError e) {
-     *     error("Failed to search: %s", e.message);
-     * }
-     * @endcode
+     * RadioBrowser class implements the DataProvider.API interface to fetch
+     * radio station data from the Radio Browser service.
+     * 
+     * See https://www.radio-browser.info/ for API details.
      */
     public class RadioBrowser : Object, DataProvider.API 
     {

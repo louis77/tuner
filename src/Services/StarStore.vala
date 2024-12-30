@@ -30,7 +30,10 @@ using Tuner.Model;
  *
  * DirectoryController uses StationStore to load the starred stations from RadioBrowser
  */
-public class Tuner.StarStore : Object {
+public class Tuner.StarStore : Object 
+{
+
+    public signal void starred_stations_changed_sig ( Model.Station station ); ///< Emitted when the starred stations change.
 
     private const string FAVORITES_PROPERTY_APP = "app";
     private const string FAVORITES_PROPERTY_FILE = "file";
@@ -75,6 +78,7 @@ public class Tuner.StarStore : Object {
     {
         Object ();
         _starred_file =  starred_file;
+
     } // StarredStationController
 
     
@@ -86,6 +90,7 @@ public class Tuner.StarStore : Object {
         if (_starred_station_map.has_key (station.stationuuid)) return;
         _starred_station_map.set (station.stationuuid, station);
         persist ();
+        starred_stations_changed_sig ( station );
     } // add_station
 
 
@@ -94,9 +99,28 @@ public class Tuner.StarStore : Object {
      *
      * @param station The station to be removed.
      */
-    public void remove_station (Station station) {
+     public void remove_station (Station station) {
         _starred_station_map.unset (station.stationuuid);
         persist ();
+        starred_stations_changed_sig ( station );
+    } // remove_station
+
+
+    /**
+     * @brief Add or removes a station from the favorites and persists the change.
+     *
+     * @param station The station.
+     */
+     public void update_from_station (Station station) 
+     {
+        if ( station.starred ) 
+        { 
+            add_station (station); 
+        }
+        else 
+        { 
+            remove_station (station); 
+        }
     } // remove_station
 
 
@@ -198,6 +222,9 @@ public class Tuner.StarStore : Object {
 
 
     /**
+     * @brief Updates a station in the favorites.
+     *
+     * @param station The station to update.
      */
     public void update(Station station)
     {
@@ -278,23 +305,16 @@ public class Tuner.StarStore : Object {
         */
         jstarred.foreach_element ((a, i, elem) => 
         {           
-            var s = new Station.basic(elem); // Creates a basic station without adding it to the main station directory
-            _starred_station_map.set (s.stationuuid, s);
+            var station = new Station.basic(elem); // Creates a basic station without adding it to the main station directory
+            _starred_station_map.set (station.stationuuid, station);
 
-            debug(@"Starred station: $(s.stationuuid)");
-            s.starred = true;
+            station.starred = true;
 
             // Connect the star button
-            s.notify["starred"].connect ( (sender, property) => {
-                if (app().is_offline) return;
-                    if (s.starred) {
-                        debug (@"Fav add: $(s.stationuuid)");
-                        this.add_station (s);
-                    } else {
-                        debug (@"Fav remove: $(s.stationuuid)");
-                        this.remove_station (s);
-                    }
-                }); // s.notify
+            station.station_star_changed_sig.connect ( (starred) => 
+            {
+                update_from_station ( station );
+            }); 
         });
 
         // Check starred station currency - doing this way means once call to DataProvider for all the stations
@@ -365,7 +385,7 @@ public class Tuner.StarStore : Object {
          
          foreach ( var station in app().directory.get_stations_by_uuid(stationuuids))
          {
-             add_station(station);
+            add_station(station);
          }
      } // import_stationuuids
  
