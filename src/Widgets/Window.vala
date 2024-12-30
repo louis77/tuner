@@ -175,25 +175,6 @@ public class Tuner.Window : Gtk.ApplicationWindow
             return before_destroy ();
         });
 
-        // Auto-play
-        if (_settings.auto_play) 
-        {
-            warning (@"Auto-play enabled");
-            _directory.load ();
-            var source = _directory.load_station_uuid (_settings.last_played_station);
-
-			try
-			{
-				foreach (var station in source.next_page ())
-				{
-					handle_play_station(station);
-					break;
-				}
-			} catch (SourceError e)
-			{
-				warning ("Error while trying to autoplay, aborting...");
-			}
-		}
 
         /*
             Online checks & behavior
@@ -252,6 +233,25 @@ public class Tuner.Window : Gtk.ApplicationWindow
         _display = new Display(directory);  
         _display.station_clicked_sig.connect (handle_play_station);  // Station clicked -> change station     
         add (_display);
+
+        // Auto-play
+        if (_settings.auto_play) 
+        {
+            _directory.load ();
+            var source = _directory.load_station_uuid (_settings.last_played_station);
+
+            try
+            {
+                foreach (var station in source.next_page ())
+                {
+                    handle_play_station(station);
+                    break;
+                }
+            } catch (SourceError e)
+            {
+                warning ("Error while trying to autoplay, aborting...");
+            }
+        }
     } // add_widgets
 
 
@@ -367,7 +367,7 @@ public class Tuner.Window : Gtk.ApplicationWindow
 	*/
 	public void handle_play_station (Model.Station station)
 	{
-		if (app().is_offline || !_headerbar.update_playing_station(station))
+		if ( app().is_offline || !_headerbar.update_playing_station(station) )
 			return;                                                                                          // Online and not already changing station
 
         player_ctrl.station = station;

@@ -371,11 +371,11 @@ namespace Tuner {
         protected override void activate() {
             if (window == null) {
                 window = new Window (this, player, settings, directory);
+                DBus.initialize ();
+                settings.configure();
+                apply_theme( settings.theme_mode);
                 if ( settings.start_on_starred ) window.choose_starred_stations();  // Start on starred
                 add_window (window);
-                DBus.initialize ();
-                apply_theme( settings.theme_mode);
-                settings.configure();
             } else {
                 window.present ();
             }

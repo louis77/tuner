@@ -40,7 +40,7 @@ public class Tuner.PlayerController : GLib.Object
     public signal void state_changed_sig (Model.Station station, Is state);
 
     //  /** Signal emitted when the title changes. */
-    public signal void metadata_changed_sig (Metadata metadata);
+    public signal void metadata_changed_sig (Model.Station station, Metadata metadata);
 
     /** Signal emitted when the volume changes. */
     public signal void volume_changed_sig (double volume);
@@ -82,7 +82,7 @@ public class Tuner.PlayerController : GLib.Object
 		// Stream metadata received
 		{
 			if (_metadata.process_media_info_update (obj))
-				metadata_changed_sig (_metadata);
+				metadata_changed_sig (_station, _metadata);
 		});
 
         _player.volume_changed.connect ((obj) => 
@@ -221,13 +221,14 @@ public class Tuner.PlayerController : GLib.Object
 	public void play_station (Model.Station station)
 	{
 		_player.stop ();
-		_player.uri = (station.urlResolved != null && station.urlResolved != "") ? station.urlResolved : station.url;
+        _station = station;
+        station_changed_sig (_station);
+		_player.uri = (_station.urlResolved != null && _station.urlResolved != "") ? _station.urlResolved : _station.url;
 		play_error  = false;
 		Timeout.add (250, () =>
-		             // Wait a quarter of a second to play the station to help flush metadata
+		// Wait a quarter of a second to play the station to help flush metadata
 		{
 			_player.play ();
-			station_changed_sig (station);
 			return Source.REMOVE;
 		});
 	}     // play_station

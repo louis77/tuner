@@ -159,8 +159,12 @@ namespace Tuner.DBus {
 			});
 
 
-			app().player.metadata_changed_sig.connect ((metadata) =>
-			{
+			app().player.metadata_changed_sig.connect (( station, metadata) =>
+			{				
+				_station         = station;
+				_current_title   = station.name;
+				_current_artist  = station.name;
+				_current_art_url = station.favicon;
 				_current_title  = (metadata.title != null && metadata.title != "") ? metadata.title : _station.name;
 				_current_artist = (metadata.artist != null && metadata.artist != "") ? metadata.artist : _station.name;
 				update_metadata ();
@@ -168,15 +172,15 @@ namespace Tuner.DBus {
 			});
 
 
-			app().player.station_changed_sig.connect ((station) =>
-			{
-				_station         = station;
-				_current_title   = station.name;
-				_current_artist  = station.name;
-				_current_art_url = station.favicon;
-				update_metadata ();
-				trigger_metadata_update ();
-			});
+			//  app().player.station_changed_sig.connect ((station) =>
+			//  {
+			//  	_station         = station;
+			//  	_current_title   = station.name;
+			//  	_current_artist  = station.name;
+			//  	_current_art_url = station.favicon;
+			//  	update_metadata ();
+			//  	trigger_metadata_update ();
+			//  });
 
 			app().player.shuffle_mode_sig.connect ((shuffle) =>
 			{

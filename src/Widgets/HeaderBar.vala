@@ -264,9 +264,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 		});
 
 
-		app().player.metadata_changed_sig.connect ((metadata) =>
+		app().player.metadata_changed_sig.connect ((station, metadata) =>
 		{
-			_list_button.append_station_title_pair(_station, metadata.title);
+			_list_button.append_station_title_pair(station, metadata.title);
 		});
 
 		_list_button.item_station_selected_sig.connect((station) =>
@@ -291,7 +291,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 	*/
 	public bool update_playing_station(Model.Station station)
 	{
-		if (app().is_offline || _station == station)
+		if ( app().is_offline || ( _station != null && _station== station ) )
 			return false;
 
 		if (_station_update_lock.trylock())
@@ -314,8 +314,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 
 				_player_info.change_station.begin(station, () =>
 				{
-
-			warning(@"change_station Starring $(station.name) $(station.starred)");
 					_station            = station;
 					starred             = _station.starred;
 					_station_handler_id = _station.station_star_sig.connect((starred) => 
@@ -539,7 +537,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 		*
 		* Desensitive when off-line
 		*/
-		public void handle_metadata_changed ( PlayerController.Metadata metadata )
+		public void handle_metadata_changed ( Model.Station station, PlayerController.Metadata metadata )
 		{
 			if (_metadata == metadata.pretty_print)
 				return;                                                                  // No change
@@ -554,7 +552,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 
             //  title_label.set_text( metadata.title );
             title_label.add_sublabel(1, metadata.genre,metadata.homepage);
-            title_label.add_sublabel(2,metadata.audio_info);
+            title_label.add_sublabel(2, metadata.audio_info);
             title_label.add_sublabel( 3, (metadata.org_loc) );
             
             if ( !title_label.set_text( metadata.title ) )

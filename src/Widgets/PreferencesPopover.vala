@@ -24,7 +24,7 @@ public class Tuner.PreferencesPopover : Gtk.Popover
 		var disable_tracking_item = new Gtk.ModelButton ();
 		disable_tracking_item.text         = _("Do not participate in Station voting");
 		disable_tracking_item.action_name  = Window.ACTION_PREFIX + Window.ACTION_DISABLE_TRACKING;
-		disable_tracking_item.tooltip_text = _("If checked, your starred and streamed stations will not be fed back to the Station index popularity vote, and will not be used to calculate popular and trending stations");
+		disable_tracking_item.tooltip_text = _("If checked, your starred and streamed stations will not be used to calculate the Station index popularity vote, nor the popular and trending stations");
 
 
 		//Theme
@@ -105,7 +105,6 @@ public class Tuner.PreferencesPopover : Gtk.Popover
 		menu_grid.attach (new Gtk.SeparatorMenuItem (), 0, vpos++, 4, 1);
 
 		menu_grid.attach (autoplay_item, 0, vpos++, 4, 1);
-		menu_grid.attach (disable_tracking_item, 0, vpos++, 4, 1);
 		menu_grid.attach (start_on_starred, 0, vpos++, 4, 1);
 		menu_grid.attach (stream_info, 0, vpos++, 4, 1);
 		menu_grid.attach (stream_info_fast, 0, vpos++, 4, 1);
@@ -113,10 +112,17 @@ public class Tuner.PreferencesPopover : Gtk.Popover
 		menu_grid.attach (new Gtk.SeparatorMenuItem (), 0, vpos++, 4, 1);
 
 		menu_grid.attach (export_starred, 0, vpos++, 4, 1);
+
 		menu_grid.attach (new Gtk.SeparatorMenuItem (), 0, vpos++, 4, 1);
+
 		menu_grid.attach (import_starred, 0, vpos++, 4, 1);
 
 		menu_grid.attach (new Gtk.SeparatorMenuItem (), 0, vpos++, 4, 1);
+
+		menu_grid.attach (disable_tracking_item, 0, vpos++, 4, 1);
+
+		menu_grid.attach (new Gtk.SeparatorMenuItem (), 0, vpos++, 4, 1);
+
 		menu_grid.attach (about_menuitem, 0, vpos++, 4, 1);
 		menu_grid.show_all ();
 
