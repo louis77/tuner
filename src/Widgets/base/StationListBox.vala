@@ -22,9 +22,9 @@ using Granite.Widgets;
  */
 namespace Tuner
 {
-    public interface StationListHookup
+    public interface StationListHookup : Object
     {
-        public abstract void hookup( StationList slist );
+        public abstract void station_list_hookup( StationList station_list );
     } // StationListHookup
 
 
@@ -398,10 +398,10 @@ namespace Tuner
             if ( ( populated && !force ) || app().is_offline ) return;
             populated = true;
             try {
-                var? slist = new StationList.with_stations (_slb.next_page ());
+                var? slist = StationList.with_stations (_slb.next_page ());
                 if ( slist != null ) 
                 {
-                    station_list.hookup(slist);
+                    station_list.station_list_hookup(slist);
                     _slb.content = slist;
                     _slb.content.show_all ();
                 }

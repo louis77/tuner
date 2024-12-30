@@ -16,7 +16,8 @@ using Gee;
  * @class Station
  * @brief Represents a radio station with various properties.
  */
-public class Tuner.Model.Station : Object {
+public class Tuner.Model.Station : Object
+{
 
     // ----------------------------------------------------------
     // statics
@@ -146,20 +147,20 @@ public class Tuner.Model.Station : Object {
     // Functions
     // ----------------------------------------------------------
 
-    /**
-     * @brief Returns a unique, initiated Station instance for a given JSON node.
-     * 
-     * If station has already been initiated based on stationuuid, returns the existing Station
-     *
-     * @param {Json.Node} json_node - The JSON node containing station data.
-     * @return {Station} The created Station instance.
-     */
-    public static Station make(Json.Node json_node)
-    {
-        Station station = new Station.basic(json_node);
-        station.is_in_index = true;
-        station.is_up_to_date = true; // Assume loaded from the provider as we're adding this to the list
-        station.up_to_date_difference = "";
+	/**
+	* @brief Returns a unique, initiated Station instance for a given JSON node.
+	*
+	* If station has already been initiated based on stationuuid, returns the existing Station
+	*
+	* @param {Json.Node} json_node - The JSON node containing station data.
+	* @return {Station} The created Station instance.
+	*/
+	public static Station make(Json.Node json_node)
+	{
+		Station station = new Station.basic(json_node);
+		station.is_in_index           = true;
+		station.is_up_to_date         = true; // Assume loaded from the provider as we're adding this to the list
+		station.up_to_date_difference = "";
 
         if ( !STATIONS.has_key(station.stationuuid)) 
         /*
@@ -210,57 +211,58 @@ public class Tuner.Model.Station : Object {
                 }
             );
 
-         try {     
-            // Deserialize properties manually
-            // Put in a try/finally as much for visuals as anything
-            changeuuid = json_object.get_string_member("changeuuid").strip();
-            stationuuid = json_object.get_string_member("stationuuid").strip();
-            name = json_object.get_string_member("name").strip();
-            url = json_object.get_string_member("url").strip();
-            urlResolved = json_object.get_string_member("url_resolved").strip();
-            homepage = json_object.get_string_member("homepage").strip();
-            favicon = json_object.get_string_member("favicon").strip();
-            tags = json_object.get_string_member("tags").strip();
-            country = json_object.get_string_member("country").strip();
-            countrycode = json_object.get_string_member("countrycode").strip();
-            iso_3166_2 = json_object.get_string_member("iso_3166_2").strip();
-            state = json_object.get_string_member("state").strip();
-            language = json_object.get_string_member("language").strip();
-            languagecodes = json_object.get_string_member("languagecodes").strip();
-            votes = (int)json_object.get_int_member("votes");
-            lastchangetime = json_object.get_string_member("lastchangetime").strip();
-            lastchangetime_iso8601 = json_object.get_string_member("lastchangetime_iso8601").strip();
-            codec = json_object.get_string_member("codec").strip();
-            bitrate = (int)json_object.get_int_member("bitrate");
-            hls = (int)json_object.get_int_member("hls");
-            lastcheckok = (int)json_object.get_int_member("lastcheckok");
-            lastchecktime = json_object.get_string_member("lastchecktime").strip();
-            lastchecktime_iso8601 = json_object.get_string_member("lastchecktime_iso8601").strip();
-            lastcheckoktime = json_object.get_string_member("lastcheckoktime").strip();
-            lastcheckoktime_iso8601 = json_object.get_string_member("lastcheckoktime_iso8601").strip();
-            lastlocalchecktime = json_object.get_string_member("lastlocalchecktime").strip();
-            lastlocalchecktime_iso8601 = json_object.get_string_member("lastlocalchecktime_iso8601").strip();
-            lastlocalchecktime_iso8601 = json_object.get_string_member("has_extended_info").strip();
-            clicktimestamp = json_object.get_string_member("clicktimestamp").strip();
-            clicktimestamp_iso8601 = json_object.get_string_member("clicktimestamp_iso8601").strip();
-            clickcount = (int)json_object.get_int_member("clickcount");
-            clicktrend = (int)json_object.get_int_member("clicktrend");
-            ssl_error = (int)json_object.get_int_member("ssl_error");
-            geo_lat = json_object.get_string_member("geo_lat").strip();
-            geo_long = json_object.get_string_member("geo_long").strip();
-            has_extended_info = json_object.get_boolean_member("has_extended_info");   
-            
-            var go_serial_fudge = json_object.get_string_member("urlResolved").strip();  // Serialization camelcase fudge
-            if ( go_serial_fudge != null && go_serial_fudge != "" ) 
-            {
-                urlResolved = go_serial_fudge;
-            }
-         
-            // Process favorites
-            if (json_object.has_member("starred") )
-            {
-                _starred = json_object.get_boolean_member("starred");
-            }             
+		try
+		{
+			// Deserialize properties manually
+			// Put in a try/finally as much for visuals as anything
+			changeuuid                 = json_object.get_string_member("changeuuid").strip();
+			stationuuid                = json_object.get_string_member("stationuuid").strip();
+			name                       = json_object.get_string_member("name").strip();
+			url                        = json_object.get_string_member("url").strip();
+			urlResolved                = json_object.get_string_member("url_resolved").strip();
+			homepage                   = json_object.get_string_member("homepage").strip();
+			favicon                    = json_object.get_string_member("favicon").strip();
+			tags                       = json_object.get_string_member("tags").strip();
+			country                    = json_object.get_string_member("country").strip();
+			countrycode                = json_object.get_string_member("countrycode").strip();
+			iso_3166_2                 = json_object.get_string_member("iso_3166_2").strip();
+			state                      = json_object.get_string_member("state").strip();
+			language                   = json_object.get_string_member("language").strip();
+			languagecodes              = json_object.get_string_member("languagecodes").strip();
+			votes                      = (int)json_object.get_int_member("votes");
+			lastchangetime             = json_object.get_string_member("lastchangetime").strip();
+			lastchangetime_iso8601     = json_object.get_string_member("lastchangetime_iso8601").strip();
+			codec                      = json_object.get_string_member("codec").strip();
+			bitrate                    = (int)json_object.get_int_member("bitrate");
+			hls                        = (int)json_object.get_int_member("hls");
+			lastcheckok                = (int)json_object.get_int_member("lastcheckok");
+			lastchecktime              = json_object.get_string_member("lastchecktime").strip();
+			lastchecktime_iso8601      = json_object.get_string_member("lastchecktime_iso8601").strip();
+			lastcheckoktime            = json_object.get_string_member("lastcheckoktime").strip();
+			lastcheckoktime_iso8601    = json_object.get_string_member("lastcheckoktime_iso8601").strip();
+			lastlocalchecktime         = json_object.get_string_member("lastlocalchecktime").strip();
+			lastlocalchecktime_iso8601 = json_object.get_string_member("lastlocalchecktime_iso8601").strip();
+			lastlocalchecktime_iso8601 = json_object.get_string_member("has_extended_info").strip();
+			clicktimestamp             = json_object.get_string_member("clicktimestamp").strip();
+			clicktimestamp_iso8601     = json_object.get_string_member("clicktimestamp_iso8601").strip();
+			clickcount                 = (int)json_object.get_int_member("clickcount");
+			clicktrend                 = (int)json_object.get_int_member("clicktrend");
+			ssl_error                  = (int)json_object.get_int_member("ssl_error");
+			geo_lat                    = json_object.get_string_member("geo_lat").strip();
+			geo_long                   = json_object.get_string_member("geo_long").strip();
+			has_extended_info          = json_object.get_boolean_member("has_extended_info");
+
+			var go_serial_fudge = json_object.get_string_member("urlResolved").strip(); // Serialization camelcase fudge
+			if (go_serial_fudge != null && go_serial_fudge != "")
+			{
+				urlResolved = go_serial_fudge;
+			}
+
+			// Process favorites
+			if (json_object.has_member("starred"))
+			{
+				_starred = json_object.get_boolean_member("starred");
+			}
 
             /* -----------------------------------------------------------------------
                 Process v1 Attribute, if any, from old Favorites format
@@ -293,26 +295,28 @@ public class Tuner.Model.Station : Object {
         is_in_index = false; // Basic station creation - assume not in provider index
         is_up_to_date = false; // Basic station creation - assume not up-to-date with provider
 
-        /*
-            Favicon setup
-        */
-        favicon_loaded =  0;    // Used to notify that favicon loaded
-        _favicon_cache_file = Path.build_filename(Application.instance.cache_dir, stationuuid);
+		/*
+		    Favicon setup
+		 */
+		favicon_loaded      =  0;// Used to notify that favicon loaded
+		_favicon_cache_file = Path.build_filename(Application.instance.cache_dir, stationuuid);
 
-        if ( favicon == null || favicon.length == 0 )
-        {
-            STATION_FAILING_FAVICON.add(stationuuid);
-            debug(@"$(stationuuid) - Favicon missing");
-            return;
-        }
-                    
-        try {
-            debug(@"$(stationuuid) - constructed - Start parse favicon URL: $(favicon)");
-            _favicon_uri = Uri.parse(favicon, NONE);
-         } catch (GLib.UriError e) {
-            info(@"$(stationuuid) - Failed to parse favicon URL: $(e.message)");
-            STATION_FAILING_FAVICON.add(stationuuid);
-        }  
+		if (favicon == null || favicon.length == 0)
+		{
+			STATION_FAILING_FAVICON.add(stationuuid);
+			debug(@"$(stationuuid) - Favicon missing");
+			return;
+		}
+
+		try
+		{
+			debug(@"$(stationuuid) - constructed - Start parse favicon URL: $(favicon)");
+			_favicon_uri = Uri.parse(favicon, NONE);
+		} catch (GLib.UriError e)
+		{
+			info(@"$(stationuuid) - Failed to parse favicon URL: $(e.message)");
+			STATION_FAILING_FAVICON.add(stationuuid);
+		}
 
         load_favicon_async.begin();
     } // Station.basic
@@ -370,7 +374,8 @@ public class Tuner.Model.Station : Object {
             }
         }
 
-        if ( _favicon_uri == null ) return; // First load or reload requested and favicon is not failing
+		if (_favicon_uri == null)
+			return;                                              // First load or reload requested and favicon is not failing
 
         uint status_code;
 
@@ -469,12 +474,12 @@ public class Tuner.Model.Station : Object {
             is_up_to_date = false;
         }
         return true;
-    }
+    } // set_up_to_date_with
 
     /**
      */
     public Station updated()
     {
         return STATIONS.get(stationuuid);
-    } 
-}
+    } // updated
+} // Station

@@ -28,29 +28,34 @@
 using Gee;
 using Granite.Widgets;
 
+
 /**
-    Window
-*/
-public class Tuner.Window : Gtk.ApplicationWindow {
+ * The main application window for the Tuner app.
+ * 
+ * This class extends Gtk.ApplicationWindow and serves as the primary container
+ * for all other widgets and functionality in the Tuner application.
+ */
+public class Tuner.Window : Gtk.ApplicationWindow
+{
 
     /* Public */
 
-    public const string WINDOW_NAME = "Tuner";
-    public const string ACTION_PREFIX = "win.";
-    public const string ACTION_PAUSE = "action_pause";
-    public const string ACTION_QUIT = "action_quit";
-    public const string ACTION_HIDE = "action_hide";
-    public const string ACTION_ABOUT = "action_about";
-    public const string ACTION_DISABLE_TRACKING = "action_disable_tracking";
-    public const string ACTION_ENABLE_AUTOPLAY = "action_enable_autoplay";
-    public const string ACTION_START_ON_STARRED = "action_starred_start";
-    public const string ACTION_STREAM_INFO = "action_stream_info";
-    public const string ACTION_STREAM_INFO_FAST = "action_stream_info_fast";
+	public const string WINDOW_NAME             = "Tuner";
+	public const string ACTION_PREFIX           = "win.";
+	public const string ACTION_PAUSE            = "action_pause";
+	public const string ACTION_QUIT             = "action_quit";
+	public const string ACTION_HIDE             = "action_hide";
+	public const string ACTION_ABOUT            = "action_about";
+	public const string ACTION_DISABLE_TRACKING = "action_disable_tracking";
+	public const string ACTION_ENABLE_AUTOPLAY  = "action_enable_autoplay";
+	public const string ACTION_START_ON_STARRED = "action_starred_start";
+	public const string ACTION_STREAM_INFO      = "action_stream_info";
+	public const string ACTION_STREAM_INFO_FAST = "action_stream_info_fast";
 
 
-    public Settings settings { get; construct; }
-    public PlayerController player_ctrl { get; construct; }
-    public DirectoryController directory { get; construct; }
+	public Settings settings { get; construct; }
+	public PlayerController player_ctrl { get; construct; }
+	public DirectoryController directory { get; construct; }
 
     public bool active { get; private set; } // Window is active
     public int width { get; private set; }
@@ -59,38 +64,38 @@ public class Tuner.Window : Gtk.ApplicationWindow {
 
     /* Private */   
 
-    private const string CSS = "io/github/louis77/tuner/Application.css";
-    private const string NOTIFICATION_PLAYING_BACKGROUND = _("Playing in background");
-    private const string NOTIFICATION_CLICK_RESUME = _("Click here to resume window. To quit Tuner, pause playback and close the window.");
-    private const string NOTIFICATION_APP_RESUME_WINDOW = "app.resume-window";
-    private const string NOTIFICATION_APP_PLAYING_CONTINUE = "continue-playing";
+	private const string CSS                               = "io/github/louis77/tuner/Application.css";
+	private const string NOTIFICATION_PLAYING_BACKGROUND   = _("Playing in background");
+	private const string NOTIFICATION_CLICK_RESUME         = _("Click here to resume window. To quit Tuner, pause playback and close the window.");
+	private const string NOTIFICATION_APP_RESUME_WINDOW    = "app.resume-window";
+	private const string NOTIFICATION_APP_PLAYING_CONTINUE = "continue-playing";
 
-    private const int RANDOM_CATEGORIES = 5;
+	private const int RANDOM_CATEGORIES = 5;
 
-    private const int GEOMETRY_MIN_HEIGHT = 440;
-    private const int GEOMETRY_MIN_WIDTH = 600;
+	private const int GEOMETRY_MIN_HEIGHT = 440;
+	private const int GEOMETRY_MIN_WIDTH  = 600;
 
-    private const ActionEntry[] ACTION_ENTRIES = {
-        { ACTION_PAUSE, on_toggle_playback },
-        { ACTION_QUIT , on_action_quit },
-        { ACTION_ABOUT, on_action_about },
-        { ACTION_DISABLE_TRACKING, on_action_disable_tracking, null, "false" },
-        { ACTION_ENABLE_AUTOPLAY, on_action_enable_autoplay, null, "false" },
-        { ACTION_START_ON_STARRED, on_action_start_on_starred, null, "false" },
-        { ACTION_STREAM_INFO, on_action_stream_info, null, "true" },
-        { ACTION_STREAM_INFO_FAST, on_action_stream_info_fast, null, "false" },
-    };
+	private const ActionEntry[] ACTION_ENTRIES = {
+		{ ACTION_PAUSE,            on_toggle_playback                         },
+		{ ACTION_QUIT,             on_action_quit                             },
+		{ ACTION_ABOUT,            on_action_about                            },
+		{ ACTION_DISABLE_TRACKING, on_action_disable_tracking, null, "false"  },
+		{ ACTION_ENABLE_AUTOPLAY,  on_action_enable_autoplay, null, "false"   },
+		{ ACTION_START_ON_STARRED, on_action_start_on_starred, null, "false"  },
+		{ ACTION_STREAM_INFO,      on_action_stream_info, null, "true"        },
+		{ ACTION_STREAM_INFO_FAST, on_action_stream_info_fast, null, "false"  },
+	};
 
     /*
         Assets
     */
 
-    private HeaderBar _headerbar;
-    private Display _display;
+	private HeaderBar _headerbar;
+	private Display _display;
 
-    private signal void refresh_starred_stations_sig ();
-    
-    private signal void refresh_saved_searches_sig (bool add, string search_text);
+	private signal void refresh_starred_stations_sig ();
+
+	private signal void refresh_saved_searches_sig (bool add, string search_text);
 
 
     /* Construct Static*/
@@ -123,10 +128,10 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         check_online_status();
         show_all ();
 
-        application.set_accels_for_action (ACTION_PREFIX + ACTION_PAUSE, {"<Control>5"});
-        application.set_accels_for_action (ACTION_PREFIX + ACTION_QUIT, {"<Control>q"});
-        application.set_accels_for_action (ACTION_PREFIX + ACTION_QUIT, {"<Control>w"});
-    } // Window
+		application.set_accels_for_action (ACTION_PREFIX + ACTION_PAUSE, {"<Control>5"});
+		application.set_accels_for_action (ACTION_PREFIX + ACTION_QUIT, {"<Control>q"});
+		application.set_accels_for_action (ACTION_PREFIX + ACTION_QUIT, {"<Control>w"});
+	} // Window
 
 
     /* 
@@ -134,37 +139,38 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     */
     construct { 
 
-        /*
-            Theme setup
-            Has to be done from Window
-        */
-        GTK_SETTINGS = Gtk.Settings.get_default();
-        GTK_ORIGINAL_THEME = GTK_SETTINGS.gtk_theme_name;
-        GTK_ORIGINAL_PREFER_DARK_THEME = GTK_SETTINGS.gtk_application_prefer_dark_theme;
-        GTK_ALTERNATIVE_THEME = GTK_ORIGINAL_THEME;
-        if ( GTK_ALTERNATIVE_THEME.has_suffix("-dark")) 
-        {
-            debug(@"Dark system");
-            GTK_DEFAULT_THEME_IS_DARK = true;
-            GTK_ALTERNATIVE_THEME = GTK_ALTERNATIVE_THEME.slice(0,-5);
-        }
+		/*
+		    Theme setup
+		    Has to be done from Window
+		 */
+		GTK_SETTINGS                   = Gtk.Settings.get_default();
+		GTK_ORIGINAL_THEME             = GTK_SETTINGS.gtk_theme_name;
+		GTK_ORIGINAL_PREFER_DARK_THEME = GTK_SETTINGS.gtk_application_prefer_dark_theme;
+		GTK_ALTERNATIVE_THEME          = GTK_ORIGINAL_THEME;
+		if (GTK_ALTERNATIVE_THEME.has_suffix("-dark"))
+		{
+			debug(@"Dark system");
+			GTK_DEFAULT_THEME_IS_DARK = true;
+			GTK_ALTERNATIVE_THEME     = GTK_ALTERNATIVE_THEME.slice(0,-5);
+		}
 
-        set_icon_name(Application.APP_ID);
-        add_action_entries (ACTION_ENTRIES, this);
-        set_title (WINDOW_NAME);
-        window_position = Gtk.WindowPosition.CENTER;
-        set_geometry_hints (null, Gdk.Geometry() { min_height = GEOMETRY_MIN_HEIGHT, min_width = GEOMETRY_MIN_WIDTH}, Gdk.WindowHints.MIN_SIZE);
-        change_action_state (ACTION_DISABLE_TRACKING, settings.do_not_track);
-        change_action_state (ACTION_ENABLE_AUTOPLAY, settings.auto_play);
-        change_action_state (ACTION_START_ON_STARRED, settings.start_on_starred);
-        change_action_state (ACTION_STREAM_INFO, settings.stream_info);
-        change_action_state (ACTION_STREAM_INFO_FAST, settings.stream_info_fast);
+		set_icon_name(Application.APP_ID);
+		add_action_entries (ACTION_ENTRIES, this);
+		set_title (WINDOW_NAME);
+		window_position = Gtk.WindowPosition.CENTER;
+		set_geometry_hints (null, Gdk.Geometry() {
+			min_height = GEOMETRY_MIN_HEIGHT, min_width = GEOMETRY_MIN_WIDTH
+		}, Gdk.WindowHints.MIN_SIZE);
+		change_action_state (ACTION_DISABLE_TRACKING, settings.do_not_track);
+		change_action_state (ACTION_ENABLE_AUTOPLAY, settings.auto_play);
+		change_action_state (ACTION_START_ON_STARRED, settings.start_on_starred);
+		change_action_state (ACTION_STREAM_INFO, settings.stream_info);
+		change_action_state (ACTION_STREAM_INFO_FAST, settings.stream_info_fast);
 
                
         /*
             Setup
         */
-		//size_allocate.connect(on_window_resize);
 
         delete_event.connect (e => {
             return before_destroy ();
@@ -176,15 +182,18 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             _directory.load ();
             var source = _directory.load_station_uuid (_settings.last_played_station);
 
-            try {
-                foreach (var station in source.next_page ()) { 
-                    handle_play_station(station);  
-                    break;
-                }
-            } catch (SourceError e) {
-                warning ("Error while trying to autoplay, aborting...");
-            }
-        }
+			try
+			{
+				foreach (var station in source.next_page ())
+				{
+					handle_play_station(station);
+					break;
+				}
+			} catch (SourceError e)
+			{
+				warning ("Error while trying to autoplay, aborting...");
+			}
+		}
 
         /*
             Online checks & behavior
@@ -197,12 +206,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     } // construct
 
 
-    /**
-     */
-    public void choose_starred_stations()
-    {
-        if ( _active ) _display.choose_starred_stations();
-    } // choose_star
+/**
+ */
+	public void choose_starred_stations()
+	{
+		if (_active)
+			_display.choose_starred_stations();
+	}     // choose_star
 
 
     /**
@@ -215,9 +225,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
         */
         _headerbar = new HeaderBar (this);
 
-        //  _headerbar.star_clicked_sig.connect ( (starred) => {
-        //      player_ctrl.station.toggle_starred ();
-        //  });
+
 
         _headerbar.search_has_focus_sig.connect (() => 
         // Show searched stack when cursor hits search text area
@@ -232,7 +240,7 @@ public class Tuner.Window : Gtk.ApplicationWindow {
             _display.searched_for_sig( text);
         });
 
-         set_titlebar (_headerbar);
+		set_titlebar (_headerbar);
 
         /*
             Display
@@ -341,13 +349,14 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     // ----------------------------------------------------------------------
 
 
-    /**
-     * @brief Handles a station selection and plays the station
-     * @param station The selected station.
-     */
-     public void handle_play_station (Model.Station station) 
-     {
-        if ( app().is_offline || !_headerbar.update_playing_station(station) ) return;  // Online and not already changing station
+	/**
+	* @brief Handles a station selection and plays the station
+	* @param station The selected station.
+	*/
+	public void handle_play_station (Model.Station station)
+	{
+		if (app().is_offline || !_headerbar.update_playing_station(station))
+			return;                                                                                          // Online and not already changing station
 
         player_ctrl.station = station;
         _settings.last_played_station = station.stationuuid;
@@ -357,12 +366,13 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     } // handle_station_click
 
 
-    /**
-     * @brief Handles changes to the favorites list.
-     */
-    public void handle_starred_stations_changed () {
-        _display.refresh_starred_stations_sig ();
-    } // handle_favourites_changed
+	/**
+	* @brief Handles changes to the favorites list.
+	*/
+	public void handle_starred_stations_changed ()
+	{
+		_display.refresh_starred_stations_sig ();
+	}     // handle_favourites_changed
 
 
 
@@ -373,11 +383,12 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     //
     // ----------------------------------------------------------------------
 
-    /**
-     * @brief Performs cleanup actions before the window is destroyed.
-     * @return true if the window should be hidden instead of destroyed, false otherwise.
-     */
-    public bool before_destroy () {
+	/**
+	* @brief Performs cleanup actions before the window is destroyed.
+	* @return true if the window should be hidden instead of destroyed, false otherwise.
+	*/
+	public bool before_destroy ()
+	{
 
         get_size (out _width, out _height); // Echo ending dimensions so Settings can pick them up
         _settings.save ();
@@ -395,25 +406,25 @@ public class Tuner.Window : Gtk.ApplicationWindow {
     } // before_destroy
     
 
-    /**
-     * @brief Checks changes in online state and updates the app accordingly
-     * 
-     */
-    private void check_online_status()
-    {
-        if ( active && app().is_offline )
-        /* Present Offline look */
-        {
-            this.accept_focus = false;
-            active = false;
-        }
+	/**
+	* @brief Checks changes in online state and updates the app accordingly
+	*
+	*/
+	private void check_online_status()
+	{
+		if (active && app().is_offline)
+		/* Present Offline look */
+		{
+			this.accept_focus = false;
+			active            = false;
+		}
 
-        if ( !active && app().is_online)
-        // Online but not active
-        {
-            this.accept_focus = true;
-            active = true;
-        }
+		if (!active && app().is_online)
+		// Online but not active
+		{
+			this.accept_focus = true;
+			active            = true;
+		}
 
         _display.update_state (active);
     } // check_online_status

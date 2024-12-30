@@ -12,20 +12,22 @@
  *
  * @extends Gtk.Label
  */
-public class Tuner.HeaderLabel : Gtk.Label {
-    
-    public HeaderLabel (string label, int xpad = 0, int ypad = 0 ) {
-        Object (
-            label: label,
-            xpad: xpad,
-            ypad: ypad
-        );
-    }
+public class Tuner.HeaderLabel : Gtk.Label
+{
 
-    construct {
-        halign = Gtk.Align.START;
-        xalign = 0;
-        get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
-    }
+	public HeaderLabel (string label, int xpad = 0, int ypad = 0 )
+	{
+		Object (
+			label: label,
+			xpad: xpad,
+			ypad: ypad
+			);
+	}
+
+	construct {
+		halign = Gtk.Align.START;
+		xalign = 0;
+		get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
+	}
 
 }

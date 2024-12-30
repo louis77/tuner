@@ -110,7 +110,10 @@ public class Tuner.ContentBox : Gtk.Box {
             );
             shuffle_button.valign = Gtk.Align.CENTER;
             shuffle_button.tooltip_text = action_tooltip_text;
-            shuffle_button.clicked.connect (() => { action_activated_sig (); });
+            shuffle_button.clicked.connect (() => 
+            { 
+                action_activated_sig (); 
+            });
             _header.pack_start (shuffle_button, false, false);            
         }
 

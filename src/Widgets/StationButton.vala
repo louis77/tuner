@@ -13,7 +13,8 @@
  * 
  * @extends Tuner.WelcomeButton
  */
-public class Tuner.StationButton : Tuner.DisplayButton {
+public class Tuner.StationButton : Tuner.DisplayButton
+{
 
     private const string DEFAULT_ICON_NAME = "internet-radio";
 
@@ -48,9 +49,18 @@ public class Tuner.StationButton : Tuner.DisplayButton {
         get_style_context().add_class("station-button");
         always_show_image = true;
 
-        this.station.notify["starred"].connect ( (sender, prop) => {
-            this.title = make_title (this.station.name, this.station.starred);
-        });
+		this.station.notify["starred"].connect ((sender, prop) =>
+		{
+			warning("StationButton: station.notify");
+			this.title = make_title (this.station.name, this.station.starred);
+		});
+
+		station.station_star_sig.connect (() =>
+		{
+			warning("StationButton: station_star_sig");
+			//  this.title = make_title (this.station.name, this.station.starred);
+		});
+
 
         event.connect ((e) => {
             if (e.type == Gdk.EventType.BUTTON_PRESS && e.button.button == 3) {
@@ -86,34 +96,37 @@ public class Tuner.StationButton : Tuner.DisplayButton {
     } // StationButton
 
 
-    /**
-     * @brief Updates the station button with new information.
-     * @param starred Whether the station is starred (favorited).
-     */
-    public void update(bool starred = false)
-    {
-        _station = station.updated();
-        station.update_favicon_image.begin (_favicon_image);
-        _station.starred = starred;
-        description = make_description (station.countrycode);
-        title = make_title (station.name, station.starred, station.is_up_to_date);
-        tag = make_tag (station.codec, station.bitrate);
-        app().stars.update (station);
-    } // update
+	/**
+	* @brief Updates the station button with new information.
+	* @param starred Whether the station is starred (favorited).
+	*/
+	public void update(bool starred = false)
+	{
+		_station = station.updated();
+		station.update_favicon_image.begin (_favicon_image);
+		_station.starred = starred;
+		description      = make_description (station.countrycode);
+		title            = make_title (station.name, station.starred, station.is_up_to_date);
+		tag              = make_tag (station.codec, station.bitrate);
+		app().stars.update (station);
+	}     // update
 
 
-    /**
-     * @brief Creates a title string for the station.
-     * @param title The station's title.
-     * @param starred Whether the station is starred (favorited).
-     * @param is_up_to_date Whether the station information is up to date.
-     * @return The formatted title string.
-     */
-    private static string make_title (string title, bool starred,bool is_up_to_date = true) {
-        if (!starred) return title;
-        if ( !is_up_to_date ) return Application.EXCLAIM_CHAR + title;
-        return Application.STAR_CHAR + title;
-    } // make_title
+	/**
+	* @brief Creates a title string for the station.
+	* @param title The station's title.
+	* @param starred Whether the station is starred (favorited).
+	* @param is_up_to_date Whether the station information is up to date.
+	* @return The formatted title string.
+	*/
+	private static string make_title (string title, bool starred,bool is_up_to_date = true)
+	{
+		if (!starred)
+			return title;
+		if (!is_up_to_date)
+			return Application.EXCLAIM_CHAR + title;
+		return Application.STAR_CHAR + title;
+	}     // make_title
 
 
     /**
@@ -133,16 +146,16 @@ public class Tuner.StationButton : Tuner.DisplayButton {
     } // make_tag
 
 
-    /**
-     * @brief Creates a description string based on the station's location.
-     * @param location The station's location.
-     * @return The formatted description string.
-     */
-    private static string make_description (string? location) {
-        if ( location != null && location.length > 0) 
-            return _(location);
-        else
-            return location;
-    } // make_description
+	/**
+	* @brief Creates a description string based on the station's location.
+	* @param location The station's location.
+	* @return The formatted description string.
+	*/
+	private static string make_description (string? location)
+	{
+		if (location != null && location.length > 0)
+			return _(location);
+		else
+			return location;
+	}     // make_description
 } // class StationButton
-
