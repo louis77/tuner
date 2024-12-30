@@ -236,7 +236,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 		{
 			warning(_(@"Could not get random station: $(e.message)"));
 		}
-	}      // jukebox_shuffle
+	} // jukebox_shuffle
 
 
     /**
@@ -291,12 +291,12 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 
        ---------------------------------------------------------- */
 
-/**
- * @brief Asynchronously initializes the display components
- *
- * Sets up all categories, loads initial station data, and configures
- * signal handlers for various display components.
- */
+    /**
+    * @brief Asynchronously initializes the display components
+    *
+    * Sets up all categories, loads initial station data, and configures
+    * signal handlers for various display components.
+    */
 	private async void initialize(){
 		_directory.load (); // Initialize the DirectoryController
 
@@ -388,7 +388,8 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             );
 
             starred.badge ( @"$(starred.item_count)\t");
-            starred.notify["item-count"].connect (()=> {
+            starred.item_count_changed_sig.connect (( item_count ) =>
+            {
                 starred.badge ( @"$(starred.item_count)\t");
             });
 
@@ -411,8 +412,17 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         , "starred-symbolic");
 
 		search_results.tooltip_button.sensitive = false;
-
 		_search_controller = new SearchController(directory,this,search_results );
+
+        search_results.item_count_changed_sig.connect (( item_count, parameter ) =>
+        {
+            if ( parameter.length > 0 && stack.get_child_by_name (parameter) == null )  // Search names are prefixed with >
+            {
+                search_results.tooltip_button.sensitive = true;
+                return;
+            }
+            search_results.tooltip_button.sensitive = false;
+        });
 
 
 		// Add saved search from star press
@@ -421,7 +431,8 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 			if (app().is_offline)
 				return;
 			search_results.tooltip_button.sensitive = false;
-			var new_saved_search                    = add_saved_search( search_results.parameter, _directory.add_saved_search (search_results.parameter));
+			var new_saved_search= 
+                add_saved_search( search_results.parameter, _directory.add_saved_search (search_results.parameter));
 			new_saved_search.list(search_results.content);
 			source_list.selected = source_list.get_last_child (_saved_searches_category);
 		});
@@ -498,6 +509,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         /* process the searched text, stripping it, and sensitizing the save
         search star depending on if the search is already saved */
 		{
+            search_results.tooltip_button.sensitive = false;
 			_search_controller.handle_search_for(text);
 		});
 

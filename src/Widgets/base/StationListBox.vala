@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-
+using Gtk;
 using Gee;
 using Granite.Widgets;
 
@@ -46,10 +46,11 @@ namespace Tuner
         */
         //  public HeaderLabel header_label;
 
-        public Gtk.Button tooltip_button{ get; private set; }
+        public Button tooltip_button{ get; private set; }
         public StationListItem item { get; private set; }
         public uint item_count { get; private set; }
         public string parameter { get; set; }
+        public bool show_parameter { get; set; }
 
         /**
         * @brief Updates the badge text for the source list item
@@ -67,6 +68,16 @@ namespace Tuner
         */
         public signal void action_button_activated_sig ();
 
+
+        /**
+         * Signal emitted when the number of items in the list changes.
+         *
+         * @param item_count The new number of items in the list
+         * @param parameter Additional parameter that provides context for the change
+         */
+        public signal void item_count_changed_sig ( uint item_count, string? parameter );
+
+
         /**
         * @signal content_changed_sig
         * @brief Emitted when the content of the ContentBox is changed.
@@ -78,11 +89,11 @@ namespace Tuner
         
         private SourceList.ExpandableItem _category;
         private ThemedIcon _icon;
-        private Gtk.Box _content = base_content();
+        private Box _content = base_content();
         private ContentList _content_list;
-        private Gtk.Stack _stack;
+        private Stack _stack;
         private SourceList _source_list;
-        private Gtk.Stack _substack = new Gtk.Stack ();
+        private Stack _substack = new Stack ();
         private StationSet? _data;
 
 
@@ -97,7 +108,7 @@ namespace Tuner
         * @param action_tooltip_text The tooltip text for the action button.
         */
         private StationListBox (
-            Gtk.Stack stack,
+            Stack stack,
             SourceList source_list,
             SourceList.ExpandableItem category,
             string name,
@@ -112,7 +123,7 @@ namespace Tuner
         {
             Object (
                 name:name,
-                orientation: Gtk.Orientation.VERTICAL,
+                orientation: Orientation.VERTICAL,
                 spacing: 0
             );
 
@@ -140,31 +151,42 @@ namespace Tuner
 
             _substack.add_named (alert, "alert");
 
-            var no_results = new Granite.Widgets.AlertView (_("No stations found"), _("Please try a different search term."), "dialog-warning");
+            var no_results = new AlertView (_("No stations found"), _("Please try a different search term."), "dialog-warning");
             _substack.add_named (no_results, "nothing-found");
 
             _header.pack_start (new HeaderLabel (subtitle, 20, 20 ), false, false);
 
             if (action_icon_name != null && action_tooltip_text != null) {
-                tooltip_button = new Gtk.Button.from_icon_name (
+                tooltip_button = new Button.from_icon_name (
                     action_icon_name,
-                    Gtk.IconSize.LARGE_TOOLBAR
+                    IconSize.LARGE_TOOLBAR
                 );
-                tooltip_button.valign = Gtk.Align.CENTER;
+                tooltip_button.valign = Align.CENTER;
                 tooltip_button.tooltip_text = action_tooltip_text;
                 tooltip_button.clicked.connect (() => { action_button_activated_sig (); });
                 _header.pack_start (tooltip_button, false, false);            
             }
 
+            var _parameter_label = new HeaderLabel("", 20, 20);
+            _header.pack_start (_parameter_label, false, false);            
+            notify["parameter"].connect (() => 
+            {
+                _parameter_label.label = parameter;
+            });
+
             pack_start (_header, false, false);
 
-            pack_start (new Gtk.Separator (Gtk.Orientation.HORIZONTAL), false, false);
+            // -----------------------------------
+            
+            pack_start (new Separator (Orientation.HORIZONTAL), false, false);
+
+            // -----------------------------------
 
             _substack.add_named (content_scroller(_content), "content");
             add (_substack);
             
             show.connect (() => {   
-                _substack.set_visible_child_full ("content", Gtk.StackTransitionType.NONE);            
+                _substack.set_visible_child_full ("content", StackTransitionType.NONE);            
             });
 
             map.connect (() => {
@@ -202,7 +224,7 @@ namespace Tuner
         * @brief Displays the alert view in the content area.
         */
         public void show_alert () {
-            _substack.set_visible_child_full ("alert", Gtk.StackTransitionType.NONE);
+            _substack.set_visible_child_full ("alert", StackTransitionType.NONE);
         } // show_alert
 
 
@@ -210,7 +232,7 @@ namespace Tuner
         * @brief Displays the "nothing found" view in the content area.
         */
         public void show_nothing_found () {
-            _substack.set_visible_child_full ("nothing-found", Gtk.StackTransitionType.NONE);
+            _substack.set_visible_child_full ("nothing-found", StackTransitionType.NONE);
         } // show_nothing_found
         
 
@@ -248,11 +270,11 @@ namespace Tuner
             
                 foreach (var child in _content.get_children ()) { child.destroy (); }
 
-                _substack.set_visible_child_full ("content", Gtk.StackTransitionType.NONE);
+                _substack.set_visible_child_full ("content", StackTransitionType.NONE);
                 _content_list = value;
                 _content.add (_content_list); 
-                //  _content.show_all ();
                 item_count = _content_list.item_count;
+                item_count_changed_sig(item_count, parameter);
             }
 
             get {
@@ -268,9 +290,9 @@ namespace Tuner
         * @brief Creates a basic header box with horizontal orientation
         * @return A new Gtk.Box configured as a header
         */
-        private static Gtk.Box base_header()
+        private static Box base_header()
         {
-            var header = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            var header = new Box (Orientation.HORIZONTAL, 0);
             header.homogeneous = false;
             return header;
         } // base_header
@@ -280,11 +302,11 @@ namespace Tuner
         * @brief Creates a basic content box with vertical orientation
         * @return A new Gtk.Box configured for content
         */
-        private static Gtk.Box base_content()
+        private static Box base_content()
         {
-            var content = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
+            var content = new Box (Orientation.VERTICAL, 0);
             content.get_style_context ().add_class ("color-light");
-            content.valign = Gtk.Align.START;
+            content.valign = Align.START;
             content.get_style_context().add_class("welcome");
             return content;
         } // base_content
@@ -295,10 +317,10 @@ namespace Tuner
         * @param content The content box to be placed in the scrolled window
         * @return A new Gtk.ScrolledWindow containing the content
         */
-        private static Gtk.ScrolledWindow content_scroller(Gtk.Box content)
+        private static ScrolledWindow content_scroller(Gtk.Box content)
         {
-            var scroller = new Gtk.ScrolledWindow (null, null);
-            scroller.hscrollbar_policy = Gtk.PolicyType.NEVER;
+            var scroller = new ScrolledWindow (null, null);
+            scroller.hscrollbar_policy = PolicyType.NEVER;
             scroller.add (content);
             scroller.propagate_natural_height = true;        
             return scroller;
@@ -323,7 +345,7 @@ namespace Tuner
         * @return A new SourceListBox instance
         */
         public static StationListBox create(
-            Gtk.Stack stack,
+            Stack stack,
             SourceList source_list,
             SourceList.ExpandableItem category,
             string name,

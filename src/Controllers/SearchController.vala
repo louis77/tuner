@@ -36,14 +36,14 @@ public class Tuner.SearchController : Object
 	private uint _search_handler_id = 0;
 	private string _current_search_term;
 
-/**
- * Controller class for handling station search functionality.
- *
- * @param dc The directory controller instance to manage station directories
- * @param slh The station list hookup instance for station data binding
- * @param slb The station list box widget instance to display search results
- * @param max_search_results Maximum number of search results to display (defaults to 100)
- */
+	/**
+	* Controller class for handling station search functionality.
+	*
+	* @param dc The directory controller instance to manage station directories
+	* @param slh The station list hookup instance for station data binding
+	* @param slb The station list box widget instance to display search results
+	* @param max_search_results Maximum number of search results to display (defaults to 100)
+	*/
 	public SearchController(DirectoryController dc, StationListHookup slh, StationListBox slb, uint max_search_results = 100)
 	{
 		Object();
@@ -53,14 +53,14 @@ public class Tuner.SearchController : Object
 		_max_search_results  = max_search_results;
 	}     // SearchController
 
-/**
- * @brief Handles a search request.
- *
- * This method is called when the user types in the search entry.
- * It cancels any ongoing search and starts a new search after a brief delay.
- *
- * @param search_term The search term to search for.
- */
+	/**
+	* @brief Handles a search request.
+	*
+	* This method is called when the user types in the search entry.
+	* It cancels any ongoing search and starts a new search after a brief delay.
+	*
+	* @param search_term The search term to search for.
+	*/
 	public void handle_search_for(string search_term)
 	{
 		var search = search_term.strip();
@@ -73,32 +73,28 @@ public class Tuner.SearchController : Object
 		// Cancel any ongoing search
 		{
 			Source.remove(_search_handler_id);			
-            warning(@"1 Searching Id: $_search_handler_id reoved");
 			_search_handler_id = 0;
 		}
 
 		_search_handler_id = Timeout.add(SEARCH_DELAY, () =>
 		                                 // After a brief delay, start the search
 		{
-			warning(@"2 Searching Id: $_search_handler_id for: $(search)");
             _search_handler_id = 0;
 			load_station_search_results.begin(search, _station_list_box);
-			warning(@"3 Searched for: $(search) queued");
 			return Source.REMOVE;
 		}); // _search_handler_id
-	}     // handle_search_for
+	} // handle_search_for
 
-/**
- * @brief Loads search stations based on the provided text and updates the content box.
- *
- * Async since 1.5.5 so that UI is responsive during long searches
- * @param search_term The text to search for stations.
- * @param results_box The ContentBox to update with the search results.
- */
+	/**
+	* @brief Loads search stations based on the provided text and updates the content box.
+	*
+	* Async since 1.5.5 so that UI is responsive during long searches
+	* @param search_term The text to search for stations.
+	* @param results_box The ContentBox to update with the search results.
+	*/
 	private async void load_station_search_results(string search_term, StationListBox results_box)
-	throws SourceError
+		throws SourceError
 	{
-		warning(@"4 Searching Load for: $(search_term)");
 		var station_set = _directory.load_search_stations(search_term, 100);
 
 		try
@@ -108,15 +104,13 @@ public class Tuner.SearchController : Object
 			if (stations == null || stations.size == 0)
 			{
 				results_box.show_nothing_found();
-				warning(@"5 Search Load nothing found");
 			}
 			else
 			{
-				warning(@"6 Search Load found $(stations.size) stations");
 				var _slist = StationList.with_stations(stations);
 				_station_list_hookup.station_list_hookup(_slist);
+				results_box.parameter = search_term;	// set parameter first as content sets off a signal
 				results_box.content   = _slist;
-				results_box.parameter = search_term;
 			}
 		} catch (SourceError e)
 		{
