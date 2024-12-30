@@ -93,8 +93,6 @@ public class Tuner.Window : Gtk.ApplicationWindow
 	private HeaderBar _headerbar;
 	private Display _display;
 
-	private signal void refresh_starred_stations_sig ();
-
 	private signal void refresh_saved_searches_sig (bool add, string search_text);
 
 
@@ -116,7 +114,8 @@ public class Tuner.Window : Gtk.ApplicationWindow
      * @param app The Application instance.
      * @param player The PlayerController instance.
      */
-    public Window (Application app, PlayerController player, Settings settings, DirectoryController directory ) {
+    public Window (Application app, PlayerController player, Settings settings, DirectoryController directory ) 
+    {
         Object (
             application: app,
             player_ctrl: player,
@@ -177,7 +176,8 @@ public class Tuner.Window : Gtk.ApplicationWindow
         });
 
         // Auto-play
-        if (_settings.auto_play) {
+        if (_settings.auto_play) 
+        {
             warning (@"Auto-play enabled");
             _directory.load ();
             var source = _directory.load_station_uuid (_settings.last_played_station);
@@ -200,19 +200,25 @@ public class Tuner.Window : Gtk.ApplicationWindow
 
             Keep in mind that network availability is noisy
         */
-        app().notify["is-online"].connect(() => {
+        app().notify["is-online"].connect(() => 
+        {
             check_online_status();
         });
     } // construct
 
 
-/**
- */
+    /**
+     * Selects and displays the user's starred (favorite) radio stations.
+     * 
+     * This method handles the process of showing the user's favorite stations
+     * in the station list view. It filters and displays only the stations that
+     * have been marked as favorites by the user.
+     */
 	public void choose_starred_stations()
 	{
 		if (_active)
 			_display.choose_starred_stations();
-	}     // choose_star
+	} // choose_star
 
 
     /**
@@ -224,8 +230,6 @@ public class Tuner.Window : Gtk.ApplicationWindow
             Headerbar hookups
         */
         _headerbar = new HeaderBar (this);
-
-
 
         _headerbar.search_has_focus_sig.connect (() => 
         // Show searched stack when cursor hits search text area
@@ -268,7 +272,8 @@ public class Tuner.Window : Gtk.ApplicationWindow
     /**
      * @brief Handles the quit action.
      */
-    private void on_action_quit () {
+    private void on_action_quit () 
+    {
         close ();
     } // on_action_quit
 
@@ -276,7 +281,8 @@ public class Tuner.Window : Gtk.ApplicationWindow
     /**
      * @brief Handles the about action.
      */
-    private void on_action_about () {
+    private void on_action_about () 
+    {
         var dialog = new AboutDialog (this);
         dialog.present ();
     } // on_action_about
@@ -285,7 +291,8 @@ public class Tuner.Window : Gtk.ApplicationWindow
     /**
      * @brief Toggles playback state.
      */
-    public void on_toggle_playback() {
+    public void on_toggle_playback() 
+    {
         info (_("Stop Playback requested"));
         player_ctrl.play_pause ();
     } // on_toggle_playback
@@ -296,7 +303,8 @@ public class Tuner.Window : Gtk.ApplicationWindow
      * @param action The SimpleAction that triggered this method.
      * @param parameter The parameter passed with the action (unused).
      */
-    public void on_action_disable_tracking (SimpleAction action, Variant? parameter) {
+    public void on_action_disable_tracking (SimpleAction action, Variant? parameter) 
+    {
         settings.do_not_track = !settings.do_not_track;
         action.set_state (settings.do_not_track);
         debug (@"on_action_disable_tracking: $(settings.do_not_track)");
@@ -308,7 +316,8 @@ public class Tuner.Window : Gtk.ApplicationWindow
      * @param action The SimpleAction that triggered this method.
      * @param parameter The parameter passed with the action (unused).
      */
-     public void on_action_enable_autoplay (SimpleAction action, Variant? parameter) {
+     public void on_action_enable_autoplay (SimpleAction action, Variant? parameter) 
+     {
         settings.auto_play = !settings.auto_play;
         action.set_state (settings.auto_play);
         debug (@"on_action_enable_autoplay: $(settings.auto_play)");
@@ -320,21 +329,24 @@ public class Tuner.Window : Gtk.ApplicationWindow
      * @param action The SimpleAction that triggered this method.
      * @param parameter The parameter passed with the action (unused).
      */
-     public void on_action_start_on_starred (SimpleAction action, Variant? parameter) {
+     public void on_action_start_on_starred (SimpleAction action, Variant? parameter) 
+     {
         settings.start_on_starred = !settings.start_on_starred;
         action.set_state (settings.start_on_starred);
         debug (@"on_action_enable_autoplay: $(settings.auto_play)");
     } // on_action_enable_autoplay
 
 
-    public void on_action_stream_info (SimpleAction action, Variant? parameter) {
+    public void on_action_stream_info (SimpleAction action, Variant? parameter) 
+    {
         settings.stream_info = !settings.stream_info;
         action.set_state (settings.stream_info);
         _headerbar.stream_info (action.get_state ().get_boolean ());
     } // on_action_enable_stream_info
 
 
-    public void on_action_stream_info_fast (SimpleAction action, Variant? parameter) {
+    public void on_action_stream_info_fast (SimpleAction action, Variant? parameter) 
+    {
         settings.stream_info_fast = !settings.stream_info_fast;
         action.set_state (settings.stream_info_fast);
         _headerbar.stream_info_fast (action.get_state ().get_boolean ());
@@ -366,17 +378,6 @@ public class Tuner.Window : Gtk.ApplicationWindow
     } // handle_station_click
 
 
-	/**
-	* @brief Handles changes to the favorites list.
-	*/
-	public void handle_starred_stations_changed ()
-	{
-		_display.refresh_starred_stations_sig ();
-	}     // handle_favourites_changed
-
-
-
-
     // ----------------------------------------------------------------------
     //
     // State management
@@ -389,7 +390,6 @@ public class Tuner.Window : Gtk.ApplicationWindow
 	*/
 	public bool before_destroy ()
 	{
-
         get_size (out _width, out _height); // Echo ending dimensions so Settings can pick them up
         _settings.save ();
 

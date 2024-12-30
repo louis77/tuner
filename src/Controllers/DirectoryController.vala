@@ -12,7 +12,6 @@
 
 using Gee;
 
-
 /**
  * @brief Error domain for source-related errors.
  */
@@ -109,12 +108,12 @@ public class Tuner.DirectoryController : Object
     //  } // get_station_by_url
 
 
-/**
- * @brief Load a station by its UUID.
- *
- * @param uuid The UUID of the station to load.
- * @return A StationSet object for the requested station.
- */
+	/**
+	* @brief Load a station by its UUID.
+	*
+	* @param uuid The UUID of the station to load.
+	* @return A StationSet object for the requested station.
+	*/
 	public StationSet load_station_uuid (string uuid)
 	{
 		debug(@"LBU UUID: $uuid ");
@@ -502,8 +501,10 @@ public class Tuner.StationSet : Object
 
 			var station = raw_stations.get ();
 
-			station.notify["starred"].connect ((sender, property) => {
-				if (station.starred)
+			//  station.notify["starred"].connect ((sender, property) => // FIXME remove
+			station.station_star_sig.connect ((starred ) =>
+			{
+				if (starred)
 				{
 					_star_store.add_station (station);
 				}

@@ -42,21 +42,25 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
      */
     public signal void station_clicked_sig (Model.Station station);
 
+
     /**
      * @brief Signal emitted when the favourites list changes.
      */
     public signal void favourites_changed_sig ();
+
 
     /**
      * @brief Signal emitted to refresh starred stations.
      */
     public signal void refresh_starred_stations_sig ();
 
+
     /**
      * @brief Signal emitted when a search is performed.
      * @param text The search text.
      */
     public signal void searched_for_sig(string text);
+
 
     /**
      * @brief Signal emitted when the search is focused.
@@ -70,17 +74,20 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
      */
     public Gtk.Stack stack { get; construct; }
 
+
     /**
      * @property source_list
      * @brief The source list widget for displaying categories.
      */
     public SourceList source_list { get; construct; }
 
+
     /**
      * @property directory
      * @brief The directory controller for managing station data.
      */
     public DirectoryController directory { get; construct; }
+
 
     /*
         Display Assets
@@ -198,11 +205,10 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 		source_list.item_selected.connect  ((item) =>
 		// Syncs Item choice to Stack view
 		{
-			//  warning(@"Item selected: $(item.name) - $(item.get_data<string> ("stack_child "))");
 			if (item is StationListItem)
 				((StationListItem)item).populate( this );
-			var selected_item        = item.get_data<string> ("stack_child");
-			stack.visible_child_name = selected_item;
+			var selected_item   = item.get_data<string> ("stack_child");
+			stack.visible_child_name    = selected_item;
 		});
 
 		pack1 (source_list, false, false);
@@ -219,18 +225,31 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         ----------------------------------------------------------
     */
 
-/**
- * @brief Asynchronously shuffles to a new random station in jukebox mode
- *
- * If shuffle mode is active, selects and plays a new random station
- * from the jukebox station set.
- */
+    /**
+    * @brief Asynchronously shuffles to a new random station in jukebox mode
+    *
+    * If shuffle mode is active, selects and plays a new random station
+    * from the jukebox station set.
+    */
 	public async void jukebox_shuffle(){
 		if (!_shuffle)
 			return;
 		try
 		{
-			station_clicked_sig(jukebox_station_set.next_page().to_array()[0]);
+            var station = jukebox_station_set.next_page().to_array()[0];
+            station.station_star_sig.connect(( starred ) =>
+            {
+                if ( starred )
+                {
+                    app().stars.add_station( station);
+                }
+                else
+                {
+                    app().stars.remove_station( station);
+                }
+                refresh_starred_stations_sig ();
+            });
+			station_clicked_sig(station);
 		}
 		catch (SourceError e)
 		{
@@ -258,7 +277,6 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         if ( !_active && activate )
         // Move from not active to active
         {
-
             if (_first_activation)
             // One time set up - do post initialization
             {
@@ -388,6 +406,8 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             );
 
             starred.badge ( @"$(starred.item_count)\t");
+            starred.parameter = @"$(starred.item_count)";
+            
             starred.item_count_changed_sig.connect (( item_count ) =>
             {
                 starred.badge ( @"$(starred.item_count)\t");
@@ -491,7 +511,6 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 		refresh_starred_stations_sig.connect (() =>
 		//
 		{ 
-            warning(@"refresh_starred_stations_sig size: $(_directory.get_starred ().size)");
 			if (app().is_offline && _directory.get_starred ().size > 0)
 				return;
 			var _slist = StationList.with_stations (_directory.get_starred ());
@@ -516,6 +535,8 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             search_results.tooltip_button.sensitive = false;
 			_search_controller.handle_search_for(text);
 		});
+
+        source_list.selected = source_list.get_first_child(_selections_category);
 
 		show();
 	}     // initialize
@@ -556,12 +577,12 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 	}     // jukebox
 
 
-/**
- * @brief Hooks up signals for a StationList.
- * @param station_list The StationList to hook up.
- *
- * Configures signal handlers for station clicks and favorites changes.
- */
+    /**
+    * @brief Hooks up signals for a StationList.
+    * @param station_list The StationList to hook up.
+    *
+    * Configures signal handlers for station clicks and favorites changes.
+    */
 	internal void station_list_hookup(StationList station_list){
 		station_list.station_clicked_sig.connect((station) =>
 		{
@@ -582,7 +603,16 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 	}  // station_list_hookup
 
 
-    /** */
+
+    /**
+     * Adds a saved search to the display with the specified search term and station set.
+     * 
+     * @param search      The search term to be saved
+     * @param station_set The set of stations to associate with this search
+     * @param content    Optional station list to be used as content. If null, a new list will be created
+     * 
+     * @return Returns a StationListBox widget containing the search results
+     */
     private StationListBox add_saved_search(string search, StationSet station_set, StationList? content = null)//StationSet station_set)
     {
         var saved_search = create_category_specific 

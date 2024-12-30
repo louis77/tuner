@@ -73,7 +73,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 	private MenuButton _prefs_button = new MenuButton ();
 	private SearchEntry _search_entry = new SearchEntry ();
 	private ListButton _list_button  = new ListButton.from_icon_name ("mark-location-symbolic", IconSize.LARGE_TOOLBAR);
-	private Button _off_button       = new Button.from_icon_name ("list-add", IconSize.LARGE_TOOLBAR);
 
 	/*
 		secondary display assets
@@ -96,7 +95,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 
 	private PlayerInfo _player_info;
 
-/** @property {bool} starred - Station starred. */
+	/** @property {bool} starred - Station starred. */
 	private bool _starred = false;
 	private bool starred {
 		get { return _starred; }
@@ -166,7 +165,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 		{
 			if (_station == null)
 				return;
-			_station.starred = !starred;
+			_station.starred = !_starred;
 			starred          =_station.starred;
 		});
 
@@ -222,15 +221,17 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 		// pack RHS
 		pack_end (_prefs_button);
 		pack_end (_list_button);
-		pack_end (_off_button);
+
+		/* Test fixture */
+		//  private Button _off_button       = new Button.from_icon_name ("list-add", IconSize.LARGE_TOOLBAR);
+		//  pack_end (_off_button);
+		//  _off_button.clicked.connect (() => {
+		//  	app().is_online = !app().is_online;
+		//  });
+
 		pack_end (_search_entry);
 		show_close_button = true;
 
-		// FIXME remove
-
-		_off_button.clicked.connect (() => {
-			app().is_online = !app().is_online;
-		});
 
 		/*
 		    Tuner icon and online/offline behavior
@@ -313,9 +314,12 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 
 				_player_info.change_station.begin(station, () =>
 				{
+
+			warning(@"change_station Starring $(station.name) $(station.starred)");
 					_station            = station;
 					starred             = _station.starred;
-					_station_handler_id = _station.station_star_sig.connect((starred) => {
+					_station_handler_id = _station.station_star_sig.connect((starred) => 
+					{
 						this.starred = starred;
 					});
 				});
@@ -441,8 +445,14 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
         internal signal void info_changed_completed_sig ();
         
 
-        /**
-         */
+
+		/**
+		 * Creates a new PlayerInfo widget.
+		 * 
+		 * @param window The parent window this header bar belongs to
+		 *
+		 * @since 1.0
+		 */
         public PlayerInfo(Window window)
         {
             Object();

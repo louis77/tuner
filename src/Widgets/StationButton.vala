@@ -49,16 +49,9 @@ public class Tuner.StationButton : Tuner.DisplayButton
         get_style_context().add_class("station-button");
         always_show_image = true;
 
-		this.station.notify["starred"].connect ((sender, prop) =>
-		{
-			warning("StationButton: station.notify");
-			this.title = make_title (this.station.name, this.station.starred);
-		});
-
 		station.station_star_sig.connect (() =>
 		{
-			warning("StationButton: station_star_sig");
-			//  this.title = make_title (this.station.name, this.station.starred);
+			this.title = make_title (this.station.name, this.station.starred);
 		});
 
 

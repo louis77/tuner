@@ -226,7 +226,7 @@ namespace Tuner {
         private bool _is_online = false;
         public bool is_online { 
             get { return _is_online; } 
-            private set {
+            private set {        
                 if ( value ) 
                 { 
                     _offline_cancel.reset (); 
@@ -299,10 +299,11 @@ namespace Tuner {
                 Wrap network monitoring into a bool property 
             */
             offline_cancel = new Cancellable();
-            monitor.network_changed.connect((monitor) => {
+            monitor.network_changed.connect((monitor) => {      
                 check_online_status();
             });
-            is_online = monitor.get_network_available ();
+            is_online = monitor.get_network_available ();            
+            is_offline = !is_online;
 
 
             /* 

@@ -632,6 +632,8 @@ namespace Tuner.DataProvider {
         {
             var results = new ArrayList<string>();
 
+            if ( app().is_offline ) return results;
+
             try {
                 /*
                     DNS SRV record lookup 
