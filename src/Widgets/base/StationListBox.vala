@@ -272,7 +272,8 @@ namespace Tuner
 
                 _substack.set_visible_child_full ("content", StackTransitionType.NONE);
                 _content_list = value;
-                _content.add (_content_list); 
+
+                _content.add (_content_list);   // FIXME analyze why when 'saving a search' content is double wrapped? 
                 item_count = _content_list.item_count;
                 item_count_changed_sig(item_count, parameter);
                 show_all ();

@@ -113,6 +113,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 	private Gtk.Overlay _overlay             = new Gtk.Overlay ();
 	private StationSet jukebox_station_set;      // Jukebox station set
 	private SearchController _search_controller;      // Search controller
+    private StationListBox _search_results;      // Search results list
 
 
 
@@ -409,7 +410,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         // Search Results Box
         
 
-        var search_results = StationListBox.create 
+        _search_results = StationListBox.create 
         ( stack
         , source_list
         , _library_category
@@ -422,29 +423,30 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         , _("Save this search")
         , "starred-symbolic");
 
-		search_results.tooltip_button.sensitive = false;
-		_search_controller = new SearchController(directory,this,search_results );
+		_search_results.tooltip_button.sensitive = false;
+		_search_controller = new SearchController(directory,this,_search_results );
 
-        search_results.item_count_changed_sig.connect (( item_count, parameter ) =>
+        _search_results.item_count_changed_sig.connect (( item_count, parameter ) =>
         {
             if ( parameter.length > 0 && stack.get_child_by_name (parameter) == null )  // Search names are prefixed with >
             {
-                search_results.tooltip_button.sensitive = true;
+                _search_results.tooltip_button.sensitive = true;
                 return;
             }
-            search_results.tooltip_button.sensitive = false;
+            _search_results.tooltip_button.sensitive = false;
         });
 
 
 		// Add saved search from star press
-		search_results.action_button_activated_sig.connect (() =>
+		_search_results.action_button_activated_sig.connect (() =>
+        // FIXME - Causes double wrap of a widget
 		{
 			if (app().is_offline)
 				return;
-			search_results.tooltip_button.sensitive = false;
+			_search_results.tooltip_button.sensitive = false;
 			var new_saved_search= 
-                add_saved_search( search_results.parameter, _directory.add_saved_search (search_results.parameter));
-			new_saved_search.list(search_results.content);
+                add_saved_search( _search_results.parameter, _directory.add_saved_search (_search_results.parameter));
+			new_saved_search.list(_search_results.content);
 			source_list.selected = source_list.get_last_child (_saved_searches_category);
 		});
 
@@ -524,7 +526,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         /* process the searched text, stripping it, and sensitizing the save
         search star depending on if the search is already saved */
 		{
-            search_results.tooltip_button.sensitive = false;
+            _search_results.tooltip_button.sensitive = false;
 			_search_controller.handle_search_for(text);
 		});
 
@@ -601,7 +603,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
      * 
      * @return Returns a StationListBox widget containing the search results
      */
-    private StationListBox add_saved_search(string search, StationSet station_set, StationList? content = null)//StationSet station_set)
+    private StationListBox add_saved_search(string search, StationSet station_set) //, StationList? content = null)//StationSet station_set)
     {
         var saved_search = create_category_specific 
             ( stack
@@ -616,13 +618,15 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             , "non-starred-symbolic"
             );
 
-        if ( content != null ) { 
-            saved_search.content = content; 
-        }
+        //  if ( content != null ) { 
+        //      saved_search.content = content; 
+        //  }
 
         saved_search.action_button_activated_sig.connect (() => {
             if ( app().is_offline ) return;
             _directory.remove_saved_search (search);
+            if ( _search_results.parameter == search )
+                _search_results.tooltip_button.sensitive = true;
             saved_search.delist ();
         });
 
