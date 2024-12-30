@@ -177,7 +177,7 @@ namespace Tuner
             pack_start (_header, false, false);
 
             // -----------------------------------
-            
+
             pack_start (new Separator (Orientation.HORIZONTAL), false, false);
 
             // -----------------------------------
@@ -275,6 +275,7 @@ namespace Tuner
                 _content.add (_content_list); 
                 item_count = _content_list.item_count;
                 item_count_changed_sig(item_count, parameter);
+                show_all ();
             }
 
             get {

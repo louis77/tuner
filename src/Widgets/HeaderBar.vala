@@ -71,7 +71,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 		);
 	private PlayButton _play_button  = new PlayButton ();
 	private MenuButton _prefs_button = new MenuButton ();
-	private SearchEntry _searchentry = new SearchEntry ();
+	private SearchEntry _search_entry = new SearchEntry ();
 	private ListButton _list_button  = new ListButton.from_icon_name ("mark-location-symbolic", IconSize.LARGE_TOOLBAR);
 	private Button _off_button       = new Button.from_icon_name ("list-add", IconSize.LARGE_TOOLBAR);
 
@@ -162,7 +162,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 		_star_button.valign       = Align.CENTER;
 		_star_button.sensitive    = true;
 		_star_button.tooltip_text = _("Star this station");
-		_star_button.clicked.connect (() => {
+		_star_button.clicked.connect (() => 
+		{
 			if (_station == null)
 				return;
 			_station.starred = !starred;
@@ -182,15 +183,15 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
         */     
 
 		// Search entry
-		_searchentry.valign           = Align.CENTER;
-		_searchentry.placeholder_text = _("Station name");
+		_search_entry.valign           = Align.CENTER;
+		_search_entry.placeholder_text = _("Station name");
 
-		_searchentry.changed.connect (() => {
-			_searchentry_text = _searchentry.text;
+		_search_entry.changed.connect (() => {
+			_searchentry_text = _search_entry.text;
 			reset_search_timeout();
 		});
 
-		_searchentry.focus_in_event.connect ((e) => {
+		_search_entry.focus_in_event.connect ((e) => {
 			search_has_focus_sig ();
 			return true;
 		});
@@ -222,7 +223,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 		pack_end (_prefs_button);
 		pack_end (_list_button);
 		pack_end (_off_button);
-		pack_end (_searchentry);
+		pack_end (_search_entry);
 		show_close_button = true;
 
 		// FIXME remove
@@ -385,7 +386,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 			_play_button.opacity               = 0.5;
 			_volume_button.sensitive           = false;
 			_list_button.sensitive             = false;
-			_searchentry.sensitive             = false;
+			_search_entry.sensitive             = false;
 
 		}
 		else
@@ -397,7 +398,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 			_play_button.opacity               = 1.0;
 			_volume_button.sensitive           = true;
 			_list_button.sensitive             = true;
-			_searchentry.sensitive             = true;
+			_search_entry.sensitive             = true;
 		}
 	}     // check_online_status
 

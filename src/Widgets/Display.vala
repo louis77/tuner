@@ -264,7 +264,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             {
                 //  TBD
                 _first_activation = false;
-                initialize.begin();   // TODO -  Check logic
+                initialize.begin();  
             }
             _active = true;
             show_all();   
@@ -383,7 +383,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
                 , "starred"
                 , "starred"
                 , _("Starred by You")
-                , _("Starred by You")
+                , _("Starred by You :")
                 ,_directory.get_starred() 
             );
 
@@ -391,6 +391,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             starred.item_count_changed_sig.connect (( item_count ) =>
             {
                 starred.badge ( @"$(starred.item_count)\t");
+                starred.parameter = @"$(starred.item_count)";
             });
 
 
@@ -488,13 +489,16 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 
 
 		refresh_starred_stations_sig.connect (() =>
-		                                      //
-		{
+		//
+		{ 
+            warning(@"refresh_starred_stations_sig size: $(_directory.get_starred ().size)");
 			if (app().is_offline && _directory.get_starred ().size > 0)
 				return;
 			var _slist = StationList.with_stations (_directory.get_starred ());
 			station_list_hookup(_slist);
 			starred.content = _slist;
+            starred.parameter = @"$(starred.item_count)";
+            starred.show_all();
 		});
 
 
@@ -562,17 +566,20 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 		station_list.station_clicked_sig.connect((station) =>
 		{
 			station_clicked_sig(station);
-			_shuffle = false;
-			app().player.shuffle_mode_sig(false);
-			_background_jukebox.reveal_child = false;
-			_background_tuner.reveal_child   = true;
+            if ( _shuffle ) 
+            {
+                _shuffle = false;
+                app().player.shuffle_mode_sig(false);
+                _background_jukebox.reveal_child = false;
+                _background_tuner.reveal_child   = true;
+            } // if
 		});
 
 		station_list.favourites_changed_sig.connect(() =>
 		{
 			refresh_starred_stations_sig();
 		});
-	}     // hookup
+	}  // station_list_hookup
 
 
     /** */
