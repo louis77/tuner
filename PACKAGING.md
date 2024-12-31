@@ -22,14 +22,14 @@ $ flatpak run org.freedesktop.appstream-glib validate [path-to-xml]
 ### Test different languages
 
 ```
-$ LANGUAGE=de_DE ./com.github.louis77.tuner
+$ LANGUAGE=de_DE ./io.github.louis77.tuner
 
 ```
 
 ## Flatpak
 
 The flathub build manifest can be found here:
-https://github.com/louis77/flathub/tree/com.github.louis77.tuner
+https://github.com/louis77/flathub/tree/io.github.louis77.tuner
 
 - [ ] Move over to a non-elementary base image
 
@@ -45,7 +45,7 @@ https://github.com/louis77/pacstall-programs
 https://docs.elementary.io/develop/writing-apps/logging
 
 ```bash
-$ G_MESSAGES_DEBUG=all ./com.github.louis77.tuner
+$ G_MESSAGES_DEBUG=all ./io.github.louis77.tuner
 ```
 
 ### Available elementary Icons

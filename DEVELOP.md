@@ -50,7 +50,7 @@ sudo apt install libgtk-3-dev libgee-0.8-dev libgranite-dev libgstreamer1.0-dev 
 ```
 
 ### Building the Tuner App From Source
-There are two build configurations: _debug_ and _release_. The _debug_ build (manifest _com.github.louis77.tuner.debug.yml_) is recommended for development, while the _release_ build (manifest _com.github.louis77.tuner.yml_) is for distribution. Build instructions will focus on the _debug_ build. Copy the required manifest to _com.github.louis77.tuner.xml_ before building.
+There are two build configurations: _debug_ and _release_. The _debug_ build (manifest _io.github.louis77.tuner.debug.yml_) is recommended for development, while the _release_ build (manifest _io.github.louis77.tuner.yml_) is for distribution. Build instructions will focus on the _debug_ build. Copy the required manifest to _io.github.louis77.tuner.xml_ before building.
 
 
 Clone the repo and drop into the Tuner directory:
@@ -64,7 +64,7 @@ Configure Meson for development debug build, build Tuner with Ninja, and run the
 meson setup --buildtype=debug builddir
 meson compile -C builddir
 meson install -C builddir     # only needed once to get the gschema in place
-./builddir/com.github.louis77.tuner
+./builddir/io.github.louis77.tuner
 ```
 
 Tuner can be deployed to the local system to bypass flatpak if required, however it is _recommended to use flatpak_.To do deploy locally, run the following command:
@@ -87,19 +87,19 @@ flatpak install elementary io.elementary.Sdk//8 io.elementary.Platform//8
 
 Build the flatpak in the _user_ scope:
 ```bash
-flatpak-builder --force-clean --user --sandbox --install build-dir com.github.louis77.tuner.debug.yml
+flatpak-builder --force-clean --user --sandbox --install build-dir io.github.louis77.tuner.debug.yml
 ```
 
 Run the Tuner flatpack:
 ```bash
-flatpak --user run com.github.louis77.tuner
+flatpak --user run io.github.louis77.tuner
 ```
 Check the app version to ensure that it matches the version in the manifest.
 
 ### Readying code for a Pull Request
 Before a pull request can be accepted, the code must pass linting. This is done by running the following command:
 ```bash
-flatpak run --command=flatpak-builder-lint org.flatpak.Builder manifest com.github.louis77.tuner.yml
+flatpak run --command=flatpak-builder-lint org.flatpak.Builder manifest io.github.louis77.tuner.yml
 ```
 
 Linting currently produces the following issues (adddressed in ticket #140): 
@@ -143,7 +143,7 @@ Debugging from VSCode using GDB, set up the launch.json file as follows:
       "name": "Debug Vala with Meson",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/builddir/com.github.louis77.tuner",
+      "program": "${workspaceFolder}/builddir/io.github.louis77.tuner",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
@@ -176,7 +176,7 @@ After checking out the required version, build and run the app as described abov
 
 
 ## Release Process
-Releasing _Tuner_ comprises cutting a release of the code in [tuner github](https://github.com/louis77/tuner) and then updating the [flathub repo](https://github.com/flathub/com.github.louis77.tuner) which will automatically have the flatpak generated and rolled to Flathub for distribution.
+Releasing _Tuner_ comprises cutting a release of the code in [tuner github](https://github.com/louis77/tuner) and then updating the [flathub repo](https://github.com/flathub/io.github.louis77.tuner) which will automatically have the flatpak generated and rolled to Flathub for distribution.
 
 ### Beta Releases
 Beta releases should be tagged from the Tuner _development_ branch in with a version number format of _v1.\*.\*-beta.\*_ 
@@ -190,6 +190,6 @@ Once a beta roll is deamed a success its pull request can be merged, and a produ
 ### Production Releases
 Production releases are generated from _development_ pull requests into _main_. The updated _main_ branch should be tagged with a version number format of _v1.\*.\*_ 
 
-Once a release has been tagged, the [flathub repo](https://github.com/flathub/com.github.louis77.tuner) _main_ branch can be updated with the _release_ tag going into the manifest _.json_, and any patches and documentation updated as needed. Updates from the _main_ branch should be copied in from a direct _pull request_ of the _main_ branch. The _main_ branch **should not** come from a merge _beta_ branch to avoid triggering subsequent builds in _beta_ .
+Once a release has been tagged, the [flathub repo](https://github.com/flathub/io.github.louis77.tuner) _main_ branch can be updated with the _release_ tag going into the manifest _.json_, and any patches and documentation updated as needed. Updates from the _main_ branch should be copied in from a direct _pull request_ of the _main_ branch. The _main_ branch **should not** come from a merge _beta_ branch to avoid triggering subsequent builds in _beta_ .
 
 Once the main production release is built by flathub it will be available for installation and automatically distributed to user community.

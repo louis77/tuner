@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2020-2024 Louis Brauer / <louis@brauer.family> -->
 <component type="desktop-application">
-  <id>com.github.louis77.tuner</id>
+  <id>io.github.louis77.tuner</id>
   <metadata_license>FSFAP</metadata_license>
   <project_group>tuner-elementary</project_group>
   <project_license>GPL-3.0+</project_license>
   <name>Tuner</name>
   <developer_name>Louis Brauer</developer_name>
-  <launchable type="desktop-id">com.github.louis77.tuner.desktop</launchable>
+  <launchable type="desktop-id">io.github.louis77.tuner.desktop</launchable>
   <branding>
     <color type="primary" scheme_preference="light">#fafafa</color>
     <color type="primary" scheme_preference="dark">#abacae</color>
@@ -62,7 +62,7 @@
   </content_rating>
 
   <provides>
-    <binary>com.github.louis77.tuner</binary>
+    <binary>io.github.louis77.tuner</binary>
     <dbus type="system">org.mpris.MediaPlayer2</dbus>
     <dbus type="system">org.mpris.MediaPlayer2.Player</dbus>
   </provides>

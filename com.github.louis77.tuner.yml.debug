@@ -1,9 +1,9 @@
 ---
-app-id: com.github.louis77.tuner
+app-id: io.github.louis77.tuner
 runtime: io.elementary.Platform
 runtime-version: '8'
 sdk: io.elementary.Sdk
-command: com.github.louis77.tuner
+command: io.github.louis77.tuner
 finish-args:
 - "--share=ipc"
 - "--socket=fallback-x11"
