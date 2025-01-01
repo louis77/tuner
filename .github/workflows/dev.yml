@@ -1,0 +1,52 @@
+name: Build and Test
+
+on:      
+  push:
+    branches:
+      - development
+    paths-ignore:
+      - '.github/**'
+      - 'docs/**'
+      - '**.md'
+      - '**.mm'
+  pull_request:
+    branches:
+      - development
+    paths-ignore:
+      - '.github/**'
+      - 'docs/**'
+      - '**.md'
+      - '**.mm'
+      
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Set up Flatpak
+      - name: Set up Flatpak
+        uses: flatpak/flatpak-builder-action@v5
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder
+
+      # Add Flatpak repository
+      - name: Add Flatpak repository
+        run: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+      # Build the Flatpak application
+      - name: Build Flatpak application
+        run: |
+          flatpak-builder --user --install-deps-from=flathub build-dir io.github.louis77.tuner.yml
+
+      # Verify the Flatpak application
+      - name: Verify Flatpak build
+        run: |
+          flatpak-builder --run build-dir io.github.louis77.tuner.yml tuner --version
