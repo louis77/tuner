@@ -1,12 +1,15 @@
 ---
 app-id: io.github.louis77.tuner
+
 runtime: org.freedesktop.Platform
 runtime-version: '24.08'
+
 sdk: org.freedesktop.Sdk
-base: io.elementary.BaseApp
-base-version: 'circe-24.08'
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.vala
+  
+base: io.elementary.BaseApp
+base-version: 'circe-24.08'
   
 command: io.github.louis77.tuner
 
