@@ -1,9 +1,10 @@
-name: Build and Test
+name: CI
 
-on:      
+# This workflow will run for any pull request or pushed commit
+on:
   push:
     branches:
-      - development
+      - main
     paths-ignore:
       - '.github/**'
       - 'docs/**'
@@ -11,42 +12,42 @@ on:
       - '**.mm'
   pull_request:
     branches:
-      - development
+      - main
     paths-ignore:
       - '.github/**'
       - 'docs/**'
       - '**.md'
       - '**.mm'
-      
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build:
+  # This workflow contains a single job called "flatpak"
+  flatpak:
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    # This job runs in a special container designed for building Flatpaks for AppCenter
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-24.08
+      options: --privileged
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checkout the code
-      - name: Checkout code
-        uses: actions/checkout@v4
+      # Checks-out your repository under $GITHUB_WORKSPACE, so the job can access it
+    - uses: actions/checkout@v4
 
-      # Set up Flatpak
-      - name: Set up Flatpak
-        uses: flatpak/flatpak-builder-action@v5
+      # Builds your flatpak manifest using the Flatpak Builder action
+    - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v6.3
+      with:
+        # This is the name of the Bundle file we're building and can be anything you like
+        bundle: Tuner.flatpak
+        # This uses your app's RDNN ID
+        manifest-path: io.github.louis77.tuner.yml
 
-      # Install dependencies
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y flatpak flatpak-builder
+        # You can automatically run any of the tests you've created as part of this workflow
+        run-tests: true
 
-      # Add Flatpak repository
-      - name: Add Flatpak repository
-        run: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-
-      # Build the Flatpak application
-      - name: Build Flatpak application
-        run: |
-          flatpak-builder --user --install-deps-from=flathub build-dir io.github.louis77.tuner.yml
-
-      # Verify the Flatpak application
-      - name: Verify Flatpak build
-        run: |
-          flatpak-builder --run build-dir io.github.louis77.tuner.yml tuner --version
+        # These lines specify the location of the elementary Runtime and Sdk
+        repository-name: appcenter
+        repository-url: https://flatpak.elementary.io/repo.flatpakrepo
+        cache-key: "flatpak-builder-${{ github.sha }}"
