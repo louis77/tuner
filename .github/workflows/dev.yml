@@ -21,32 +21,25 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:gnome-44
+      options: --privileged
+      
     steps:
-      # Checkout the code
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+    - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+      with:
+        bundle: palette.flatpak
+        manifest-path: org.gnome.zbrown.Palette.yml
+        cache-key: flatpak-builder-${{ github.sha }}
 
-      # Set up Flatpak
-      - name: Set up Flatpak
-        uses: flatpak/flatpak-builder-action@v5
+    # Build the Flatpak application
+    - name: Build Flatpak application
+      run: |
+        flatpak-builder --user --install-deps-from=flathub build-dir io.github.louis77.tuner.yml
 
-      # Install dependencies
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y flatpak flatpak-builder
-
-      # Add Flatpak repository
-      - name: Add Flatpak repository
-        run: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-
-      # Build the Flatpak application
-      - name: Build Flatpak application
-        run: |
-          flatpak-builder --user --install-deps-from=flathub build-dir io.github.louis77.tuner.yml
-
-      # Verify the Flatpak application
-      - name: Verify Flatpak build
-        run: |
-          flatpak-builder --run build-dir io.github.louis77.tuner.yml tuner --version
+    # Verify the Flatpak application
+    - name: Verify Flatpak build
+      run: |
+        flatpak-builder --run build-dir io.github.louis77.tuner.yml tuner --version
