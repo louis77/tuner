@@ -108,6 +108,7 @@ modules:
     buildtype: "debug"
   config-opts:
   - "--buildtype=debug"
+  
   post-install:
   - install -Dm644 /app/share/icons/hicolor/64x64/apps/${FLATPAK_ID}.svg  -t /app/share/icons/hicolor/128x128/apps/
   sources:
