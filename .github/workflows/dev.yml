@@ -19,13 +19,12 @@ on:
       - '**.mm'
       
 jobs:
-  build:
+  flatpak:
+    name: "Flatpak"
     runs-on: ubuntu-latest
-    
     container:
-      image: bilelmoussaoui/flatpak-github-actions:gnome-44
+      image: image: bilelmoussaoui/flatpak-github-actions:freedesktop-24.08
       options: --privileged
-      
     steps:
     - uses: actions/checkout@v4
     - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
