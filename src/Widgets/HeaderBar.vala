@@ -249,7 +249,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 		{
 			if (_station == null)
 				return false;
-			tooltip.set_text(_(@"Votes: $(_station.votes)\t Clicks: $(_station.clickcount)\t Trend: $(_station.clicktrend)\n\n$(_player_info.metadata)"));
+			tooltip.set_text(_(@"Votes: $(_station.popularity())\n\n$(_player_info.metadata)"));
 			return true;
 		});
 

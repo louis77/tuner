@@ -39,12 +39,45 @@ public class Tuner.StationContextMenu : Gtk.Menu {
 
         _station = station_button.station;
 
-        // Info
+        // Name
         var name = new Gtk.MenuItem.with_label (station_button.station.name);
         name.sensitive = false;
+		append (name);
+        
 
-        var country = new Gtk.MenuItem.with_label (station_button.station.countrycode);
-        country.sensitive = false;
+        // Country
+        if ( _station.countrycode != null && _station.countrycode.length > 0 )
+        {
+            var sb = new StringBuilder (_station.countrycode);
+            if ( _station.state != null && _station.state.length > 0 )
+            sb.append (" - ").append (_station.state);
+
+            // Language
+            if ( station_button.station.language != null && station_button.station.language.length > 0 )
+            {
+                sb.append ("\t[").append (station_button.station.language).append ("]");
+            }
+
+            var info = new Gtk.MenuItem.with_label (sb.str);
+            info.sensitive = false;
+            append (info);
+        }
+
+		append (new Gtk.SeparatorMenuItem ());
+
+
+        // ----------------------------------------------
+
+
+        var popularity = new Gtk.MenuItem.with_label (station_button.station.popularity ());
+        popularity.sensitive = false;
+		append (popularity);
+
+		append (new Gtk.SeparatorMenuItem ());
+
+
+        // ----------------------------------------------
+
 
         var not_up_to_date = new Gtk.MenuItem.with_label (_("Station info updated Online - View changes"));
         var make_up_to_date = new Gtk.MenuItem.with_label (_("Update Station from Online"));
@@ -76,12 +109,6 @@ public class Tuner.StationContextMenu : Gtk.Menu {
         }); // Context starred action
 
 
-        // Layout
-
-
-		append (name);
-		append (country);
-		append (new Gtk.SeparatorMenuItem ());
 		if (!_station.is_up_to_date)
 		{
 			not_up_to_date.tooltip_text = _station.up_to_date_difference;

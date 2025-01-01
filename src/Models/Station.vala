@@ -340,6 +340,15 @@ public class Tuner.Model.Station : Object
      * @brief Returns a string representation of the station.
      * @return {string} A string in the format "[id] title".
      */
+     public string popularity() {
+        return _(@"Votes: $(votes)\t Clicks: $(clickcount)\t Trend: $(clicktrend)");
+    } // to_string
+
+
+    /**
+     * @brief Returns a string representation of the station.
+     * @return {string} A string in the format "[id] title".
+     */
     public string to_string() {
         return @"[$(stationuuid)] $(name)";
     } // to_string

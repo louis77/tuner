@@ -64,35 +64,55 @@ namespace Tuner {
     *
     * @return The Application instance
     */
-    public void apply_theme(string requested_theme)
+    public static void apply_theme(THEME requested_theme)
     {
-        debug(@"Apply request: $requested_theme");
+        apply_theme_name( requested_theme.get_name() );
+    }
 
-        if ( requested_theme == THEME.LIGHT.get_name() )
-        {
-            debug(@"Applying theme: light");
-            if ( GTK_DEFAULT_THEME_IS_DARK ) GTK_SETTINGS.gtk_theme_name = GTK_ALTERNATIVE_THEME;
-            GTK_SETTINGS.gtk_application_prefer_dark_theme = false;
-            return;
-        }
+    public static void apply_theme_name(string requested_theme_name)
+    {
+    var css_choice = @"io/github/louis77/tuner/css/Tuner-$(requested_theme_name).css";
+    warning(@"Applying CSS: $css_choice");
+    var provider = new Gtk.CssProvider ();
+    provider.load_from_resource (css_choice);
+    Gtk.StyleContext.add_provider_for_screen (
+        Gdk.Screen.get_default (),
+        provider,
+        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+    );
+    }
+    //  public static void apply_theme(string requested_theme)
+    //  {
+    //      return;
+    //      warning(@"GTK_SETTINGS.gtk_theme_name: $(GTK_SETTINGS.gtk_theme_name)");
+    //      warning(@"GGTK_SETTINGS.gtk_application_prefer_dark_theme: $(GTK_SETTINGS.gtk_application_prefer_dark_theme)");
+    //      warning(@"Apply request: $requested_theme");
 
-        if ( requested_theme == THEME.DARK.get_name() )
-        {
-            debug(@"Applying theme dark");
-            GTK_SETTINGS.gtk_theme_name = GTK_ORIGINAL_THEME;
-            GTK_SETTINGS.gtk_application_prefer_dark_theme = true;
-            return;
-        }
+    //      if ( requested_theme == THEME.LIGHT.get_name() )
+    //      {
+    //          warning(@"Applying theme: light");
+    //          if ( GTK_DEFAULT_THEME_IS_DARK ) GTK_SETTINGS.gtk_theme_name = GTK_ALTERNATIVE_THEME;
+    //          GTK_SETTINGS.gtk_application_prefer_dark_theme = false;
+    //          return;
+    //      }
 
-        if ( requested_theme == THEME.SYSTEM.get_name() )
-        {
-            debug(@"Applying theme system");
-            GTK_SETTINGS.gtk_theme_name = GTK_ORIGINAL_THEME;
-            GTK_SETTINGS.gtk_application_prefer_dark_theme = GTK_ORIGINAL_PREFER_DARK_THEME;
-            return;
-        }
-        assert_not_reached();
-    } // apply_theme
+    //      if ( requested_theme == THEME.DARK.get_name() )
+    //      {
+    //          warning(@"Applying theme dark");
+    //          GTK_SETTINGS.gtk_theme_name = GTK_ORIGINAL_THEME;
+    //          GTK_SETTINGS.gtk_application_prefer_dark_theme = true;
+    //          return;
+    //      }
+
+    //      if ( requested_theme == THEME.SYSTEM.get_name() )
+    //      {
+    //          warning(@"Applying theme system");
+    //          GTK_SETTINGS.gtk_theme_name = GTK_ORIGINAL_THEME;
+    //          GTK_SETTINGS.gtk_application_prefer_dark_theme = GTK_ORIGINAL_PREFER_DARK_THEME;
+    //          return;
+    //      }
+    //      assert_not_reached();
+    //  } // apply_theme
 
 
     /**
@@ -192,7 +212,6 @@ namespace Tuner {
 
         /** @brief Connectivity monitoring*/
         private static NetworkMonitor monitor = NetworkMonitor.get_default ();
-        private uint _monitor_changed_id = 0;
 
 
         // -------------------------------------
@@ -250,6 +269,9 @@ namespace Tuner {
             { "resume-window", on_resume_window }
         };
 
+        private uint _monitor_changed_id = 0;
+        private bool _has_started = false;
+
 
         /**
         * @brief Constructor for the Application
@@ -302,7 +324,7 @@ namespace Tuner {
             monitor.network_changed.connect((monitor) => {      
                 check_online_status();
             });
-            is_online = monitor.get_network_available ();            
+            is_online = monitor.get_network_available ();           
             is_offline = !is_online;
 
 
@@ -354,8 +376,8 @@ namespace Tuner {
         */
         public static Application instance {
             get {
-                    if (Tuner._instance == null) {
-                    Tuner._instance = new Application ();
+                    if (Tuner._instance == null) {  
+                    Tuner._instance = new Application ();  
                 }
                 return Tuner._instance;
             }
@@ -368,13 +390,15 @@ namespace Tuner {
         * This method is called when the application is activated. It creates
         * or presents the main window and initializes the DBus connection.
         */
-        protected override void activate() {
-            if (window == null) {
-                window = new Window (this, player, settings, directory);
-                DBus.initialize ();
-                settings.configure();
-                apply_theme( settings.theme_mode);
-                if ( settings.start_on_starred ) window.choose_starred_stations();  // Start on starred
+        protected override void activate() 
+        {
+            if (window == null) { 
+                window = new Window (this, player, settings, directory); 
+                DBus.initialize (); 
+                settings.configure();  
+                apply_theme( SYSTEM);
+                //  apply_theme( settings.theme_mode);
+                //  if ( settings.start_on_starred ) window.choose_starred_stations();  // Start on starred
                 add_window (window);
             } else {
                 window.present ();
@@ -427,15 +451,16 @@ namespace Tuner {
 
             /*
                 If change to online from offline state
-                wait 2 seconds before setting to online status
+                wait 1 seconds before setting to online status
                 to whatever the state is at that time
             */
             if ( is_offline && monitor.get_network_available ()  )
             {
-                _monitor_changed_id = Timeout.add_seconds( 2, () => 
+                _monitor_changed_id = Timeout.add_seconds( (uint)_has_started, () => 
                 {           
                     _monitor_changed_id = 0; // Reset timeout ID after scheduling  
                     is_online = monitor.get_network_available ();
+                    _has_started = true;
                     return Source.REMOVE;
                 });
 

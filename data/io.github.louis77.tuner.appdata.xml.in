@@ -28,20 +28,53 @@
 
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_light_1.4.2.png</image>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_light_2.0.0_1.png</image>
       <caption>Tuner with light theme</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_light-2_1.4.2.png</image>
-      <caption>Tuner with light theme, Swiss stations</caption>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_dark_2.0.0_1.png</image>
+      <caption>Tuner with dark theme</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/screen_dark_1.4.2.png</image>
-      <caption>Tuner with dark theme</caption>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_light_2.0.0_2.png</image>
+      <caption>Tuner with light theme, discover category</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_dark_2.0.0_2.png</image>
+      <caption>Tuner with dark theme, sub-genre category</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_light_2.0.0_3.png</image>
+      <caption>Tuner with light theme, preferences menu</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_light_2.0.0_4.png</image>
+      <caption>Tuner with light theme, explore random category</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_dark_2.0.0_6.png</image>
+      <caption>Tuner with dark theme, station and title history</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_light_2.0.0_5.png</image>
+      <caption>Tuner with light theme, recent search</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_light_2.0.0_6.png</image>
+      <caption>Tuner with light theme, saved search</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_dark_2.0.0_3.png</image>
+      <caption>Tuner with dark theme, preferences menu</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_dark_2.0.0_4.png</image>
+      <caption>Tuner with dark theme, station context menu</caption>
     </screenshot>
   </screenshots>
 
   <update_contact>louis_AT_brauer.family</update_contact>
+  <update_contact>tuner.10.technomation_AT_xoxy.net</update_contact>
   <url type="homepage">https://github.com/louis77/tuner</url>
   <url type="bugtracker">http://github.com/louis77/tuner/issues</url>
   <url type="help">http://github.com/louis77/tuner/issues</url>
@@ -68,18 +101,20 @@
   </provides>
 
   <releases>
-    <release version="2.0.0=BETA1" date="2025-01-11">
+    <release version="2.0.0-BETA1" date="2025-01-11">
       <description>
         <p>New Version!</p>
         <ul>
           <li>Saved Searches - new feature</li>
           <li>Explore Genres - new feature</li>
-          <li>Play Random Station - new feature</li>
+          <li>Jukebox Shuffle - Play Random Station - new feature</li>
           <li>New Default Genres added</li>
-          <li>Offline behavior finessed</li>
           <li>Updated look and feel</li>
+          <li>Station and Stream History - new feature</li>
+          <li>More Station and Stream Metadata - new feature</li>
+          <li>Save, import Starred Stations to playlists - new feature</li>
           <li>Faster responsiveness and image loading</li>
-          <li>Refactored out data provider linkage, added better support for Radio Browser</li>
+          <li>New data provider API, plus better support for Radio Browser</li>
           <li>Refactored for separation of concerns, OO, maintainability</li>
           <li>Updated icons, description and screenshots per Flathub quality directives</li>
         </ul>

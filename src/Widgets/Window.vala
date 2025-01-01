@@ -92,20 +92,21 @@ public class Tuner.Window : Gtk.ApplicationWindow
 
 	private HeaderBar _headerbar;
 	private Display _display;
+    private bool _start_on_starred = false;
 
 	private signal void refresh_saved_searches_sig (bool add, string search_text);
 
 
-    /* Construct Static*/
-    static construct {
-        var provider = new Gtk.CssProvider ();
-        provider.load_from_resource (CSS);
-        Gtk.StyleContext.add_provider_for_screen (
-            Gdk.Screen.get_default (),
-            provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        );
-    } // static construct
+    //  /* Construct Static*/
+    //  static construct {
+    //      var provider = new Gtk.CssProvider ();
+    //      provider.load_from_resource (CSS);
+    //      Gtk.StyleContext.add_provider_for_screen (
+    //          Gdk.Screen.get_default (),
+    //          provider,
+    //          Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+    //      );
+    //  } // static construct
 
 
     /**
@@ -125,6 +126,11 @@ public class Tuner.Window : Gtk.ApplicationWindow
 
         add_widgets();
         check_online_status();
+
+        if ( settings.start_on_starred ) choose_starred_stations();  // Start on starred
+
+        //  Tuner.apply_theme( settings.theme_mode);
+
         show_all ();
 
 		application.set_accels_for_action (ACTION_PREFIX + ACTION_PAUSE, {"<Control>5"});
@@ -197,8 +203,9 @@ public class Tuner.Window : Gtk.ApplicationWindow
      */
 	public void choose_starred_stations()
 	{
-		if (_active)
-			_display.choose_starred_stations();
+        _start_on_starred = true;
+		//  if (_active)
+		//  	_display.choose_starred_stations();
 	} // choose_star
 
 
@@ -425,7 +432,6 @@ public class Tuner.Window : Gtk.ApplicationWindow
 			this.accept_focus = true;
 			active            = true;
 		}
-
-        _display.update_state (active);
+        _display.update_state (active, _start_on_starred );
     } // check_online_status
 } // Window

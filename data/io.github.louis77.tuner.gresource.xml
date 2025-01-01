@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/io/github/louis77/tuner">
-    <file alias="Application.css" compressed="true">Application.css</file>
+  <gresource prefix="/io/github/louis77/tuner/css">
+    <file alias="Tuner-system.css" compressed="true">css/Tuner-system.css</file>
+    <file alias="Tuner-light.css" compressed="true">css/Tuner-light.css</file>
+    <file alias="Tuner-dark.css" compressed="true">css/Tuner-dark.css</file>
   </gresource>
   <gresource prefix="/io/github/louis77/tuner/icons">
     <file alias="playlist-queue.svg" compressed="true">icons/16/playlist-queue.svg</file>

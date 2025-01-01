@@ -256,7 +256,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
     * Manages the display's active state and performs first-time initialization
     * when needed.
     */
-    public void update_state( bool activate)
+    public void update_state( bool activate, bool start_on_starred ) 
     {        
         if ( _active && !activate )
         /* Present Offline look */
@@ -273,7 +273,11 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             {
                 //  TBD
                 _first_activation = false;
-                initialize.begin();  
+                initialize.begin(() =>
+                {
+                    if ( start_on_starred) choose_starred_stations();
+                    //  Tuner.apply_theme("dark");
+                });
             }
             _active = true;
             show_all();   

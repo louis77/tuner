@@ -36,7 +36,7 @@ public class Tuner.PreferencesPopover : Gtk.Popover
 		theme_combo.active_id = app().settings.theme_mode;   // Initial state from settings
 
 		theme_combo.changed.connect ((elem) => {
-			apply_theme(elem.active_id);
+			apply_theme_name(elem.active_id);
 			app().settings.theme_mode = elem.active_id;
 		});
 

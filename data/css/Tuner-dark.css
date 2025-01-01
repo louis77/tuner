@@ -1,0 +1,15 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
+ */
+
+ @import url("Tuner-system.css");
+
+ * {
+    background-color: rgba(46, 46, 46, 0.8); /* Dark background with 80% opacity */
+    color: #ffffff; /* White text for contrast */
+}
+
+button {
+    background-color: rgba(46, 46, 46, 0.0);
+}
