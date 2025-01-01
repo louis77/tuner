@@ -16,6 +16,7 @@ command: io.github.louis77.tuner
 build-options:
   prepend-path: /usr/lib/sdk/vala/bin/
   prepend-ld-library-path: /usr/lib/sdk/vala/lib
+  
 add-extensions:
   org.freedesktop.Sdk.Extension.vala:
     version: '24.08'
