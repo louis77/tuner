@@ -124,6 +124,8 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
     {
         Object();
 
+		get_style_context ().add_class ("header-bar");
+
         /*
             LHS Controls
         */        
@@ -249,12 +251,12 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 		{
 			if (_station == null)
 				return false;
-			tooltip.set_text(_(@"Votes: $(_station.popularity())\n\n$(_player_info.metadata)"));
+			tooltip.set_text(_(@"$(_station.popularity())\n\n$(_player_info.metadata)"));
 			return true;
 		});
 
 		_player_info.info_changed_completed_sig.connect(() =>
-		                                                // _player_info is going to signal when it has completed and the lock can be released
+		// _player_info is going to signal when it has completed and the lock can be released
 		{
 			if (!_station_locked)
 				return;
@@ -458,10 +460,11 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 			transition_type     = RevealerTransitionType.CROSSFADE;
 
 			station_label = new Label ( "Tuner" );
-			station_label.get_style_context ().add_class (Granite.STYLE_CLASS_H4_LABEL);
+			station_label.get_style_context ().add_class ("station-label");
 			station_label.ellipsize = Pango.EllipsizeMode.MIDDLE;
 
 			title_label                     = new CyclingRevealLabel (window,100);
+			title_label.get_style_context ().add_class ("track-info");
 			title_label.halign              = Align.CENTER;
 			title_label.valign              = Align.CENTER;
 			title_label.show_metadata       = window.settings.stream_info;

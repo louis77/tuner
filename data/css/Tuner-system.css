@@ -2,14 +2,39 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
  */
+/*
+* {
+    background-color: rgba(200, 200, 200, 0.9);
+    color: #000000;
+}
 
-.h2 {
+.image-button { 
+    border-color: red;
+    
+}
+*/
+/*
+button {
+    border-color: red;
+    border-style: hidden;
+}
+*/
+
+/*
+.window.title {
+    background-color: transparent;
+    background-image: url("/io/github/louis77/tuner/icons/background-tuner");
+    background-size: cover;
+}
+*/
+
+.stack-label {
     font-weight: 300;
     font-size: 18pt;
     letter-spacing: -0.05em;
 }
 
-.h3 {
+.station-button {
 	font-weight: 500;
 }
 
@@ -37,7 +62,20 @@
 	background-color: darker(@bg_color);
 	margin-right: 5px;
     min-width: 48px;
-} */
+}
+
+.station-label {
+    font-weight: 200;
+    font-size: 13pt;
+    letter-spacing: -0.05em;
+}
+
+.track-info {
+    font-weight: 200;
+    font-size: 12pt;
+    letter-spacing: -0.05em;
+}
+
 
 /* Used in Station Button for Codec/Bitrate Tag */
 .tag {

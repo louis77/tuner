@@ -127,6 +127,7 @@ namespace Tuner
                 spacing: 0
             );
 
+            //  get_style_context().add_class("station-list-box");
             
             var _header = base_header();
 
@@ -136,7 +137,7 @@ namespace Tuner
 
             _data = data;
             _icon = new ThemedIcon (icon);
-            //  item = new Granite.Widgets.SourceList.Item (title);
+            
             item = new StationListItem (title, this, prepopulated);
             item.icon = _icon;
             item.set_data<string> ("stack_child", name);  
@@ -154,7 +155,7 @@ namespace Tuner
             var no_results = new AlertView (_("No stations found"), _("Please try a different search term."), "dialog-warning");
             _substack.add_named (no_results, "nothing-found");
 
-            _header.pack_start (new HeaderLabel (subtitle, 20, 20 ), false, false);
+            _header.pack_start (new StackLabel (subtitle, 20, 20 ), false, false);
 
             if (action_icon_name != null && action_tooltip_text != null) {
                 tooltip_button = new Button.from_icon_name (
@@ -167,7 +168,7 @@ namespace Tuner
                 _header.pack_start (tooltip_button, false, false);            
             }
 
-            var _parameter_label = new HeaderLabel("", 20, 20);
+            var _parameter_label = new StackLabel("", 20, 20);
             _header.pack_start (_parameter_label, false, false);            
             notify["parameter"].connect (() => 
             {
