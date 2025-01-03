@@ -40,19 +40,26 @@ public class Tuner.Window : Gtk.ApplicationWindow
 
     /* Public */
 
-    public const string WINDOW_NAME = "Tuner";
-    public const string ACTION_PREFIX = "win.";
-    public const string ACTION_PAUSE = "action_pause";
-    public const string ACTION_QUIT = "action_quit";
-    public const string ACTION_HIDE = "action_hide";
-    public const string ACTION_ABOUT = "action_about";
-    public const string ACTION_DISABLE_TRACKING = "action_disable_tracking";
-    public const string ACTION_ENABLE_AUTOPLAY = "action_enable_autoplay";
+	public const string WINDOW_NAME             = "Tuner";
+	public const string ACTION_PREFIX           = "win.";
+	public const string ACTION_PAUSE            = "action_pause";
+	public const string ACTION_QUIT             = "action_quit";
+	public const string ACTION_HIDE             = "action_hide";
+	public const string ACTION_ABOUT            = "action_about";
+	public const string ACTION_DISABLE_TRACKING = "action_disable_tracking";
+	public const string ACTION_ENABLE_AUTOPLAY  = "action_enable_autoplay";
+	public const string ACTION_START_ON_STARRED = "action_starred_start";
+	public const string ACTION_STREAM_INFO      = "action_stream_info";
+	public const string ACTION_STREAM_INFO_FAST = "action_stream_info_fast";
 
 
-    public GLib.Settings settings { get; construct; }
-    public Gtk.Stack stack { get; set; }
-    public PlayerController player { get; construct; }
+	public Settings settings { get; construct; }
+	public PlayerController player_ctrl { get; construct; }
+	public DirectoryController directory { get; construct; }
+
+    public bool active { get; private set; } // Window is active
+    public int width { get; private set; }
+    public int height { get; private set; }
 
 
     /* Private */   
@@ -157,191 +164,65 @@ public class Tuner.Window : Gtk.ApplicationWindow
             return before_destroy ();
         });
 
-        var stack = new Gtk.Stack ();
-        stack.transition_type = Gtk.StackTransitionType.CROSSFADE;
 
-        var favorites_file = Path.build_filename (Application.instance.data_dir, "favorites.json");
-        var store = new Model.StationStore (favorites_file);
-        _directory = new DirectoryController (store);
+        /*
+            Online checks & behavior
 
-        var primary_box = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);
-
-
-        var selections_category = new Granite.Widgets.SourceList.ExpandableItem (_("Selections"));
-        selections_category.collapsible = false;
-        selections_category.expanded = true;
-
-        var searched_category = new Granite.Widgets.SourceList.ExpandableItem (_("Library"));
-        searched_category.collapsible = false;
-        searched_category.expanded = true;
-
-        var genres_category = new Granite.Widgets.SourceList.ExpandableItem (_("Genres"));
-        genres_category.collapsible = true;
-        genres_category.expanded = true;
-
-        source_list = new Granite.Widgets.SourceList ();
-
-        // Discover Box
-        var item1 = new Granite.Widgets.SourceList.Item (_("Discover"));
-        item1.icon = new ThemedIcon ("face-smile");
-        selections_category.add (item1);
-
-        var c1 = create_content_box ("discover", item1,
-                            _("Discover Stations"), "media-playlist-shuffle-symbolic",
-                            _("Discover more stations"),
-                            stack, source_list);
-        var s1 = _directory.load_random_stations(20);
-        c1.realize.connect (() => {
-            try {
-                var slist = new StationList.with_stations (s1.next ());
-                slist.selection_changed.connect (handle_station_click);
-                slist.favourites_changed.connect (handle_favourites_changed);
-                c1.content = slist;
-            } catch (SourceError e) {
-                c1.show_alert ();
-            }
+            Keep in mind that network availability is noisy
+        */
+        app().notify["is-online"].connect(() => 
+        {
+            check_online_status();
         });
-        c1.action_activated_sig.connect (() => {
-            try {
-                var slist = new StationList.with_stations (s1.next ());
-                slist.selection_changed.connect (handle_station_click);
-                slist.favourites_changed.connect (handle_favourites_changed);
-                c1.content = slist;
-            } catch (SourceError e) {
-                c1.show_alert ();
-            }
+    } // construct
+
+
+    /**
+     * Selects and displays the user's starred (favorite) radio stations.
+     * 
+     * This method handles the process of showing the user's favorite stations
+     * in the station list view. It filters and displays only the stations that
+     * have been marked as favorites by the user.
+     */
+	public void choose_starred_stations()
+	{
+        _start_on_starred = true;
+		if (_active)
+			_display.choose_starred_stations();
+	} // choose_star
+
+
+    /**
+        Add widgets after Window creation
+    */
+    private void add_widgets()
+    {
+        /*
+            Headerbar hookups
+        */
+        _headerbar = new HeaderBar (this);
+
+        _headerbar.search_has_focus_sig.connect (() => 
+        // Show searched stack when cursor hits search text area
+        {
+            _display.search_focused_sig( );
         });
 
-        // Trending Box
-        var item2 = new Granite.Widgets.SourceList.Item (_("Trending"));
-        item2.icon = new ThemedIcon ("playlist-queue");
-        selections_category.add (item2);
-
-        var c2 = create_content_box ("trending", item2,
-                            _("Trending in the last 24 hours"), null, null,
-                            stack, source_list);
-        var s2 = _directory.load_trending_stations(40);
-        c2.realize.connect (() => {
-            try {
-                var slist = new StationList.with_stations (s2.next ());
-                slist.selection_changed.connect (handle_station_click);
-                slist.favourites_changed.connect (handle_favourites_changed);
-                c2.content = slist;
-            } catch (SourceError e) {
-                c2.show_alert ();
-            }
-
+        _headerbar.searching_for_sig.connect ( (text) => 
+        // process the searched text, stripping it, and sensitizing the save 
+        // search star depending on if the search is already saved
+        {
+            _display.searched_for_sig( text);
         });
 
-        // Popular Box
-        var item3 = new Granite.Widgets.SourceList.Item (_("Popular"));
-        item3.icon = new ThemedIcon ("playlist-similar");
-        selections_category.add (item3);
+		set_titlebar (_headerbar);
 
-        var c3 = create_content_box ("popular", item3,
-                            _("Most-listened over 24 hours"), null, null,
-                            stack, source_list);
-        var s3 = _directory.load_popular_stations(40);
-        c3.realize.connect (() => {
-            try {
-                var slist = new StationList.with_stations (s3.next ());
-                slist.selection_changed.connect (handle_station_click);
-                slist.favourites_changed.connect (handle_favourites_changed);
-                c3.content = slist;
-            } catch (SourceError e) {
-                c3.show_alert ();
-            }
-        });
-
-        // Country-specific stations list
-        var item4 = new Granite.Widgets.SourceList.Item (_("Your Country"));
-        item4.icon = new ThemedIcon ("emblem-web");
-        ContentBox c_country;
-        c_country = create_content_box ("my-country", item4,
-                            _("Your Country"), null, null,
-                            stack, source_list, true);
-        var c_slist = new StationList ();
-        c_slist.selection_changed.connect (handle_station_click);
-        c_slist.favourites_changed.connect (handle_favourites_changed);
-
-        // Favourites Box
-        var item5 = new Granite.Widgets.SourceList.Item (_("Starred by You"));
-        item5.icon = new ThemedIcon ("starred");
-        searched_category.add (item5);
-        var c4 = create_content_box ("starred", item5,
-                            _("Starred by You"), null, null,
-                            stack, source_list, true);
-
-        var slist = new StationList.with_stations (_directory.get_stored ());
-        slist.selection_changed.connect (handle_station_click);
-        slist.favourites_changed.connect (handle_favourites_changed);
-        c4.content = slist;
-
-        // Search Results Box
-        var item6 = new Granite.Widgets.SourceList.Item (_("Recent Search"));
-        item6.icon = new ThemedIcon ("folder-saved-search");
-        searched_category.add (item6);
-        var c5 = create_content_box ("searched", item6,
-                            _("Search"), null, null,
-                            stack, source_list, true);
-
-        // Genre Boxes
-        foreach (var genre in Model.genres ()) {
-            var item8 = new Granite.Widgets.SourceList.Item (_(genre.name));
-            item8.icon = new ThemedIcon ("playlist-symbolic");
-            genres_category.add (item8);
-            var cb = create_content_box (genre.name, item8,
-                genre.name, null, null, stack, source_list);
-            var tags = new ArrayList<string>.wrap (genre.tags);
-            var ds = _directory.load_by_tags (tags);
-            cb.realize.connect (() => {
-                try {
-                    var slist1 = new StationList.with_stations (ds.next ());
-                    slist1.selection_changed.connect (handle_station_click);
-                    slist1.favourites_changed.connect (handle_favourites_changed);
-                    cb.content = slist1;
-                } catch (SourceError e) {
-                    cb.show_alert ();
-                }
-            });
-        }
-
-        _headerbar.star_clicked_sig.connect ( (starred) => {
-            player.station.toggle_starred ();
-        });
-
-        refresh_favourites_sig.connect ( () => {
-            var _slist = new StationList.with_stations (_directory.get_stored ());
-            _slist.selection_changed.connect (handle_station_click);
-            _slist.favourites_changed.connect (handle_favourites_changed);
-            c4.content = _slist;
-        });
-
-        source_list.root.add (selections_category);
-        source_list.root.add (searched_category);
-        source_list.root.add (genres_category);
-
-        source_list.ellipsize_mode = Pango.EllipsizeMode.NONE;
-        source_list.selected = source_list.get_first_child (selections_category);
-        source_list.item_selected.connect  ((item) => {
-            var selected_item = item.get_data<string> ("stack_child");
-            stack.visible_child_name = selected_item;
-        });
-
-        _headerbar.searched_for_sig.connect ( (text) => {
-            if (text.length > 0) {
-                load_search_stations.begin(text, c5);
-            }
-        });
-
-        _headerbar.search_focused_sig.connect (() => {
-            stack.visible_child_name = "searched";
-        });
-
-        primary_box.pack1 (source_list, false, false);
-        primary_box.pack2 (stack, true, false);
-        add (primary_box);
-        show_all ();
+        /*
+            Display
+        */
+        _display = new Display(directory);  
+        _display.station_clicked_sig.connect (handle_play_station);  // Station clicked -> change station     
+        add (_display);
 
         // Auto-play
         if (_settings.auto_play) 
