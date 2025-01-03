@@ -28,48 +28,36 @@
 
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_light_2.0.0_1.png</image>
-      <caption>Tuner with light theme</caption>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/Tuner_2.0_discover.png</image>
+      <caption>Tuner with dark theme, discovery</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_dark_2.0.0_1.png</image>
-      <caption>Tuner with dark theme</caption>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/Tuner_2.0_starred.png</image>
+      <caption>Tuner with light theme, starred stations</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_light_2.0.0_2.png</image>
-      <caption>Tuner with light theme, discover category</caption>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/Tuner_2.0_search.png</image>
+      <caption>Tuner search for stations</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_dark_2.0.0_2.png</image>
-      <caption>Tuner with dark theme, sub-genre category</caption>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/Tuner_2.0_saved.png</image>
+      <caption>Tuner saved searches</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_light_2.0.0_3.png</image>
-      <caption>Tuner with light theme, preferences menu</caption>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/Tuner_2.0_meta.png</image>
+      <caption>Tuner playing station metadata</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_light_2.0.0_4.png</image>
-      <caption>Tuner with light theme, explore random category</caption>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/Tuner_2.0_pref.png</image>
+      <caption>Tuner preferences</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_dark_2.0.0_6.png</image>
-      <caption>Tuner with dark theme, station and title history</caption>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/Tuner_2.0_context.png</image>
+      <caption>Tuner station context information</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_light_2.0.0_5.png</image>
-      <caption>Tuner with light theme, recent search</caption>
-    </screenshot>
-    <screenshot>
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_light_2.0.0_6.png</image>
-      <caption>Tuner with light theme, saved search</caption>
-    </screenshot>
-    <screenshot>
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_dark_2.0.0_3.png</image>
-      <caption>Tuner with dark theme, preferences menu</caption>
-    </screenshot>
-    <screenshot>
-      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/tuner_dark_2.0.0_4.png</image>
-      <caption>Tuner with dark theme, station context menu</caption>
+      <image>https://raw.githubusercontent.com/louis77/tuner/master/docs/Tuner_2.0_jukebox.png</image>
+      <caption>Tuner jukebox station shuffle</caption>
     </screenshot>
   </screenshots>
 

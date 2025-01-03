@@ -324,7 +324,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             , "discover"
             , "face-smile"
             , "Discover"
-            , "Stations to Explore"
+            , "Stations to Discover"
             , false
             ,_directory.load_random_stations(20)
             , "Discover more stations"
