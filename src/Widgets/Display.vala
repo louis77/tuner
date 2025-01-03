@@ -275,8 +275,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
                 _first_activation = false;
                 initialize.begin(() =>
                 {
-                    if ( start_on_starred) choose_starred_stations();
-                    //  Tuner.apply_theme("dark");
+                    if ( start_on_starred) choose_starred_stations(); // coresponding to same call in Window
                 });
             }
             _active = true;

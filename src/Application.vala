@@ -23,12 +23,6 @@ namespace Tuner {
     */
     private static Application _instance;
 
-    private static Gtk.Settings GTK_SETTINGS;
-    private static bool GTK_ORIGINAL_PREFER_DARK_THEME;
-    private static bool GTK_DEFAULT_THEME_IS_DARK;
-    private static string GTK_ORIGINAL_THEME;
-    private static string GTK_ALTERNATIVE_THEME;
-
 
     /**
     * @brief Available themes
@@ -69,50 +63,31 @@ namespace Tuner {
         apply_theme_name( requested_theme.get_name() );
     }
 
-    public static void apply_theme_name(string requested_theme_name)
+
+    public static void apply_theme_name(string requested_theme)
     {
-    var css_choice = @"io/github/louis77/tuner/css/Tuner-$(requested_theme_name).css";
-    warning(@"Applying CSS: $css_choice");
-    var provider = new Gtk.CssProvider ();
-    provider.load_from_resource (css_choice);
-    Gtk.StyleContext.add_provider_for_screen (
-        Gdk.Screen.get_default (),
-        provider,
-        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-    );
-    }
-    //  public static void apply_theme(string requested_theme)
-    //  {
-    //      return;
-    //      warning(@"GTK_SETTINGS.gtk_theme_name: $(GTK_SETTINGS.gtk_theme_name)");
-    //      warning(@"GGTK_SETTINGS.gtk_application_prefer_dark_theme: $(GTK_SETTINGS.gtk_application_prefer_dark_theme)");
-    //      warning(@"Apply request: $requested_theme");
+        if ( requested_theme == THEME.LIGHT.get_name() )
+        {
+            debug(@"Applying theme: light");           
+            Gtk.Settings.get_default().set_property("gtk-theme-name", "Adwaita");
+            return;
+        }
 
-    //      if ( requested_theme == THEME.LIGHT.get_name() )
-    //      {
-    //          warning(@"Applying theme: light");
-    //          if ( GTK_DEFAULT_THEME_IS_DARK ) GTK_SETTINGS.gtk_theme_name = GTK_ALTERNATIVE_THEME;
-    //          GTK_SETTINGS.gtk_application_prefer_dark_theme = false;
-    //          return;
-    //      }
+        if ( requested_theme == THEME.DARK.get_name() )
+        {
+            debug(@"Applying theme: dark");            
+            Gtk.Settings.get_default().set_property("gtk-theme-name", "Adwaita-dark");
+            return;
+        }
 
-    //      if ( requested_theme == THEME.DARK.get_name() )
-    //      {
-    //          warning(@"Applying theme dark");
-    //          GTK_SETTINGS.gtk_theme_name = GTK_ORIGINAL_THEME;
-    //          GTK_SETTINGS.gtk_application_prefer_dark_theme = true;
-    //          return;
-    //      }
-
-    //      if ( requested_theme == THEME.SYSTEM.get_name() )
-    //      {
-    //          warning(@"Applying theme system");
-    //          GTK_SETTINGS.gtk_theme_name = GTK_ORIGINAL_THEME;
-    //          GTK_SETTINGS.gtk_application_prefer_dark_theme = GTK_ORIGINAL_PREFER_DARK_THEME;
-    //          return;
-    //      }
-    //      assert_not_reached();
-    //  } // apply_theme
+        if ( requested_theme == THEME.SYSTEM.get_name() )
+        {
+            debug(@"System theme X: $(Application.SYSTEM_THEME())");       
+            Gtk.Settings.get_default().set_property("gtk-theme-name", Application.SYSTEM_THEME());
+            return;
+        }
+        assert_not_reached();
+    } // apply_theme
 
 
     /**
@@ -190,7 +165,11 @@ namespace Tuner {
     * 
     * @note This class follows the singleton pattern, accessible via Application.instance
     */
-    public class Application : Gtk.Application {
+    public class Application : Gtk.Application 
+    {
+
+        private static Gtk.Settings GTK_SETTINGS;
+        private static string GTK_SYSTEM_THEME = "unset";
 
         /** @brief Application version */
         public const string APP_VERSION = VERSION;
@@ -200,7 +179,7 @@ namespace Tuner {
         
         /** @brief Unicode character for starred items */
         public const string STAR_CHAR = "★ ";
-        
+
         /** @brief Unicode character for unstarred items */
         public const string UNSTAR_CHAR = "☆ ";
 
@@ -211,7 +190,10 @@ namespace Tuner {
         public const string STARRED = "starred.json";
 
         /** @brief Connectivity monitoring*/
-        private static NetworkMonitor monitor = NetworkMonitor.get_default ();
+        private static NetworkMonitor NETMON = NetworkMonitor.get_default ();
+
+        private static Gtk.CssProvider CSSPROVIDER = new Gtk.CssProvider();
+
 
 
         // -------------------------------------
@@ -239,6 +221,9 @@ namespace Tuner {
         public string? data_dir { get; construct; }
 
         public Cancellable offline_cancel { get; construct; }
+
+        public static string SYSTEM_THEME() { return GTK_SYSTEM_THEME; }
+
 
         /** @brief Are we online */
         public bool is_offline { get; private set; }   
@@ -321,10 +306,10 @@ namespace Tuner {
                 Wrap network monitoring into a bool property 
             */
             offline_cancel = new Cancellable();
-            monitor.network_changed.connect((monitor) => {      
+            NETMON.network_changed.connect((monitor) => {      
                 check_online_status();
             });
-            is_online = monitor.get_network_available ();           
+            is_online = NETMON.get_network_available ();           
             is_offline = !is_online;
 
 
@@ -346,9 +331,11 @@ namespace Tuner {
             // Do a provider click when starting to play a sation
             {
                 if ( !settings.do_not_track  && state == PlayerController.Is.PLAYING )
+                {
                     provider.click(station.stationuuid);                
                     station.clickcount++;
                     station.clicktrend++;
+                }
             });
 
             player.tape_counter_sig.connect((station) =>
@@ -396,16 +383,25 @@ namespace Tuner {
                 window = new Window (this, player, settings, directory); 
                 DBus.initialize (); 
                 settings.configure();  
-                apply_theme( SYSTEM);
-                //  apply_theme( settings.theme_mode);
-                //  if ( settings.start_on_starred ) window.choose_starred_stations();  // Start on starred
+
+                GTK_SETTINGS = Gtk.Settings.get_default();
+                GTK_SYSTEM_THEME = GTK_SETTINGS.gtk_theme_name;
+                apply_theme_name( settings.theme_mode);                
+
+                CSSPROVIDER.load_from_resource ("io/github/louis77/tuner/css/Tuner-system.css");
+                Gtk.StyleContext.add_provider_for_screen(
+                    Gdk.Screen.get_default(),
+                    CSSPROVIDER,
+                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+                );
+
                 add_window (window);
             } else {
                 window.present ();
             }
         } // activate
-
-
+        
+        
         /**
         * @brief Resumes the window
         *
@@ -454,12 +450,12 @@ namespace Tuner {
                 wait 1 seconds before setting to online status
                 to whatever the state is at that time
             */
-            if ( is_offline && monitor.get_network_available ()  )
+            if ( is_offline && NETMON.get_network_available ()  )
             {
                 _monitor_changed_id = Timeout.add_seconds( (uint)_has_started, () => 
                 {           
                     _monitor_changed_id = 0; // Reset timeout ID after scheduling  
-                    is_online = monitor.get_network_available ();
+                    is_online = NETMON.get_network_available ();
                     _has_started = true;
                     return Source.REMOVE;
                 });
@@ -469,5 +465,5 @@ namespace Tuner {
             // network is unavailable 
             is_online = false;
         } // check_online_status
-    }
-}
+    } // Application
+} // namespace Tuner

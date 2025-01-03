@@ -104,7 +104,6 @@ public class Tuner.HttpClient : Object
      */
     public static InputStream? GET(Uri uri, out uint status_code) 
     {
-
 		debug(@"Get: $(uri.to_string()) ");
 		status_code = 0;
 

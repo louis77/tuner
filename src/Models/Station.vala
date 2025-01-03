@@ -463,25 +463,40 @@ public class Tuner.Model.Station : Object
 
 
     /**
+     * @brief Sets the station up-to-date status based on the given station.
+     *
+     * @param {Station} p - The station to compare with.
+     * @return {bool} True if the station is up-to-date with the given station.
      */
     public bool set_up_to_date_with(Station? p) 
     { 
         if ( p == null || this.stationuuid != p.stationuuid) return false;
-        if ( (this.changeuuid == p.changeuuid) 
-            && ( this.url == p.url) 
+        if ( 
+            ( this.url == p.url) 
             && (this.bitrate == p.bitrate) 
-            && ( this.codec == p.codec)) 
+            && ( this.codec == p.codec)
+            //  && (this.changeuuid == p.changeuuid) // TODO Radio browser changeuuids broken
+            ) 
         { 
             is_up_to_date = true; 
             up_to_date_difference = "";
         }
         else
         {   
-            StringBuilder sb = new StringBuilder();
-            if ( this.url != p.url) sb.append(@"Url: $(this.url) > $(p.url)\n");
-            if ( this.bitrate != p.bitrate) sb.append(@"Bitrate: $(this.bitrate) > $(p.bitrate)\n");
-            if ( this.codec != p.codec) sb.append(@"Codec: $(this.codec) > $(p.codec)\n");
-            if (this.changeuuid != p.changeuuid) sb.append("Other minor items have changed");
+            StringBuilder sb = new StringBuilder(_("Changes:"));
+            if ( this.url != p.url) sb.append(_("\n\tStream Url"));
+            if ( this.urlResolved != p.urlResolved) sb.append(_("\n\tStream Resolved Url"));
+            if ( this.favicon != p.favicon) sb.append(_("\n\tFavicon address"));
+            if ( this.homepage != p.homepage) sb.append(_("\n\tHomepage address"));
+            if ( this.tags != p.tags) sb.append(_("\n\tStation tags"));
+            if ( this.bitrate != p.bitrate) sb.append(_("\n\tBitrate: $(this.bitrate) > $(p.bitrate)"));
+            if ( this.codec != p.codec) sb.append(_("\n\todec: $(this.codec) > $(p.codec)"));
+            //  if (this.changeuuid != p.changeuuid) sb.append(_("\nOther minor items have changed"));
+            //  sb.append(@"\n\n stationuuid: $(p.stationuuid) - $(this.stationuuid) ");
+            //  sb.append(@"\n\n changeuuid: $(p.changeuuid) - $(this.changeuuid) ");
+            //  sb.append(@"\n\n urlResolved: $(p.urlResolved) - $(this.urlResolved) ");
+            //  warning(@"$name $(p.stationuuid) - $(this.stationuuid)\n$(p.changeuuid) - $(this.changeuuid)");
+            //  sb.append(@"\n\n changeuuid: $(p.changeuuid) - $(this.changeuuid) ");
             up_to_date_difference = sb.str;
             is_up_to_date = false;
         }

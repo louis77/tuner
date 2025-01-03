@@ -60,7 +60,7 @@ namespace Tuner.DataProvider {
 
         private string? _optionalservers;
         private ArrayList<string> _servers;
-        private string _current_server;
+        private string _current_server = RBI_ALL_API;
         private int _degrade = DEGRADE_CAPITAL;
         private int _available_tags = 1000;     // default guess
 
@@ -626,7 +626,7 @@ namespace Tuner.DataProvider {
                     results.add(target.get_hostname());
                 }
             } catch (GLib.Error e) {
-                @warning(@"Unable to resolve Radio-Browser SRV records: $(e.message)");
+              @warning(@"Unable to resolve Radio-Browser SRV records: $(e.message)");
             }
 
             if (results.is_empty) {
@@ -636,11 +636,10 @@ namespace Tuner.DataProvider {
                 */
                 try {
                     uint status_code;
-                   // Uri uri = Uri.build(GLib.UriFlags flags, string scheme, string? userinfo, string? host, int port, string path, string? query, string? fragment)
-                    
-                    var stream = HttpClient.GET(build_uri(@"$(RBI_ALL_API)/$(RBI_SERVERS)"), out status_code);
+  
+                    var stream = HttpClient.GET(build_uri(@"$(RBI_SERVERS)"), out status_code);
 
-                    debug(@"response from $(RBI_ALL_API)/$(RBI_SERVERS): $(status_code)");
+                    debug(@"response from $(_current_server)$(RBI_SERVERS): $(status_code)");
 
                     if (status_code == 200) {
                         Json.Node root_node;

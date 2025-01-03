@@ -5,8 +5,8 @@
 
  @import url("Tuner-system.css");
 
- * {
-    background-color: rgba(46, 46, 46, 0.8); /* Dark background with 80% opacity */
+* {
+    background-color: rgba(71, 71, 71, 0.9); /* Dark background with 80% opacity */
     color: #ffffff; /* White text for contrast */
 }
 

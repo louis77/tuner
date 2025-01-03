@@ -127,9 +127,7 @@ public class Tuner.Window : Gtk.ApplicationWindow
         add_widgets();
         check_online_status();
 
-        if ( settings.start_on_starred ) choose_starred_stations();  // Start on starred
-
-        //  Tuner.apply_theme( settings.theme_mode);
+        if ( settings.start_on_starred ) choose_starred_stations();  // Start on starred  
 
         show_all ();
 
@@ -142,23 +140,8 @@ public class Tuner.Window : Gtk.ApplicationWindow
     /* 
         Construct 
     */
-    construct { 
-
-		/*
-		    Theme setup
-		    Has to be done from Window
-		 */
-		GTK_SETTINGS                   = Gtk.Settings.get_default();
-		GTK_ORIGINAL_THEME             = GTK_SETTINGS.gtk_theme_name;
-		GTK_ORIGINAL_PREFER_DARK_THEME = GTK_SETTINGS.gtk_application_prefer_dark_theme;
-		GTK_ALTERNATIVE_THEME          = GTK_ORIGINAL_THEME;
-		if (GTK_ALTERNATIVE_THEME.has_suffix("-dark"))
-		{
-			debug(@"Dark system");
-			GTK_DEFAULT_THEME_IS_DARK = true;
-			GTK_ALTERNATIVE_THEME     = GTK_ALTERNATIVE_THEME.slice(0,-5);
-		}
-
+    construct 
+    { 
 		set_icon_name(Application.APP_ID);
 		add_action_entries (ACTION_ENTRIES, this);
 		set_title (WINDOW_NAME);
@@ -204,8 +187,8 @@ public class Tuner.Window : Gtk.ApplicationWindow
 	public void choose_starred_stations()
 	{
         _start_on_starred = true;
-		//  if (_active)
-		//  	_display.choose_starred_stations();
+		if (_active)
+			_display.choose_starred_stations();
 	} // choose_star
 
 
