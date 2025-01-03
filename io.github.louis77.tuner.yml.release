@@ -10,6 +10,8 @@ finish-args:
 - "--socket=system-bus"
 - "--socket=wayland"
 - "--talk-name=org.gtk.vfs.*"
+- "--filesystem=xdg-run/gvfsd"
+- "--filesystem=xdg-desktop"
 - "--share=network"
 - "--metadata=X-DConf=migrate-path=/com/github/louis77/tuner/"
 - "--socket=pulseaudio"
