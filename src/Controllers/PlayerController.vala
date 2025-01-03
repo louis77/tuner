@@ -225,8 +225,8 @@ public class Tuner.PlayerController : GLib.Object
         station_changed_sig (_station);
 		_player.uri = (_station.urlResolved != null && _station.urlResolved != "") ? _station.urlResolved : _station.url;
 		play_error  = false;
-		Timeout.add (250, () =>
-		// Wait a quarter of a second to play the station to help flush metadata
+		Timeout.add (500, () =>
+		// Wait a half of a second to play the station to help flush metadata
 		{
 			_player.play ();
 			return Source.REMOVE;

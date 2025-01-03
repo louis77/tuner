@@ -183,8 +183,9 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
         */     
 
 		// Search entry
+		_search_entry.placeholder_text = _("Station Search");
+		_search_entry.set_margin_start(5);   // 5 pixels padding on the left
 		_search_entry.valign           = Align.CENTER;
-		_search_entry.placeholder_text = _("Station name");
 
 		_search_entry.changed.connect (() => {
 			_searchentry_text = _search_entry.text;
@@ -506,7 +507,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 			Idle.add(() =>
 			{
 				Timeout.add (5*REVEAL_DELAY/3, () =>
-				             // Clear the info well after the fade has completed
+				// Clear the info well after the fade has completed
 				{
 					favicon_image.clear();
 					title_label.clear();
@@ -515,7 +516,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 					return Source.REMOVE;
 				});
 
-				Timeout.add (5*REVEAL_DELAY/2, () =>
+				Timeout.add (3*REVEAL_DELAY, () =>
 				             // Redisplay after fade out and clear have completed
 				{
 					station.update_favicon_image.begin(favicon_image, true, DEFAULT_ICON_NAME,() =>

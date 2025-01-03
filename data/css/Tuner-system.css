@@ -16,7 +16,7 @@
 */
 .station-label {
    font-weight: 500;
-    font-size: 11pt;
+    font-size: 12pt;
     letter-spacing: -0.05em;
 }
 
@@ -25,7 +25,7 @@
 */
 .track-info {
    /* font-weight: 150; */
-    /*font-size: 11pt;*/
+    font-size: 11pt;
     letter-spacing: -0.05em;
 }
 
