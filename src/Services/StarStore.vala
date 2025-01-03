@@ -4,9 +4,9 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
- * @file StationStore.vala
+ * @file StarStore.vala
  *
- * @brief Store and retrieve a collection of favorite stations.
+ * @brief Store and retrieve a collection of starred stations.
  * 
  * Manages a collection of stations stored in a JSON file.
  * Provides methods to add, remove, and persist stations.
@@ -21,7 +21,7 @@ using Tuner.Model;
 
 
 /**
- * @class StarredController
+ * @class StarStore
  *
  * @brief Manages a collection of starred stations and saved searches
  * 

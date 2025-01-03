@@ -88,8 +88,12 @@
     <dbus type="system">org.mpris.MediaPlayer2.Player</dbus>
   </provides>
 
+  <replaces>
+    <id>com.github.louis77.tuner</id>
+  </replaces>
+
   <releases>
-    <release version="2.0.0-BETA1" date="2025-01-11">
+    <release version="2.0.0-BETA1" date="2025-01-02">
       <description>
         <p>New Version!</p>
         <ul>
@@ -104,7 +108,7 @@
           <li>Faster responsiveness and image loading</li>
           <li>New data provider API, plus better support for Radio Browser</li>
           <li>Refactored for separation of concerns, OO, maintainability</li>
-          <li>Updated icons, description and screenshots per Flathub quality directives</li>
+          <li>Renamed, updated icons, description and screenshots per Flathub quality directives</li>
         </ul>
       </description>
     </release>     

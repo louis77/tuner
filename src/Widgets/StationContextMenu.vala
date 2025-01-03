@@ -1,8 +1,12 @@
-/*
+/**
+ * SPDX-FileCopyrightText: Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
+ * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
+ *
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
+ *
+ * @file StationContextMenu.vala
  */
-
+ 
 /**
  * @class StationContextMenu
  * @brief A context menu for radio stations.
@@ -13,7 +17,8 @@
  *
  * @extends Gtk.Menu
  */
-public class Tuner.StationContextMenu : Gtk.Menu {
+public class Tuner.StationContextMenu : Gtk.Menu 
+{
     /**
      * @property station
      * @brief The radio station associated with this context menu.
@@ -124,9 +129,9 @@ public class Tuner.StationContextMenu : Gtk.Menu {
     }
 
 
-/**
- * @brief Handles the action to open the station's website.
- */
+    /**
+    * @brief Handles the action to open the station's website.
+    */
 	private void on_website_handler ()
 	{
 		try
@@ -139,9 +144,9 @@ public class Tuner.StationContextMenu : Gtk.Menu {
 	}
 
 
-/**
- * @brief Handles copying the stream URL to clipboard. UrlResolved is the stream url, url can be playlists
- */
+    /**
+    * @brief Handles copying the stream URL to clipboard. UrlResolved is the stream url, url can be playlists
+    */
 	private void on_streamurl_handler ()
 	{
 		Gdk.Display   display   = Gdk.Display.get_default ();
@@ -149,10 +154,10 @@ public class Tuner.StationContextMenu : Gtk.Menu {
 		clipboard.set_text (( _station.urlResolved == null || _station.urlResolved == "" ) ? _station.url : _station.urlResolved, -1);
 	}
 
-/**
- * @brief Updates the star menu item's label based on the station's starred status.
- * @param item The menu item to update.
- */
+    /**
+    * @brief Updates the star menu item's label based on the station's starred status.
+    * @param item The menu item to update.
+    */
 	private void set_context_star (Gtk.MenuItem item)
 	{
 		item.label = _station.starred ? Application.UNSTAR_CHAR + _("Unstar this station") : Application.STAR_CHAR + _("Star this station");
