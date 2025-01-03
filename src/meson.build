@@ -2,34 +2,40 @@
 sources = files (
     'Controllers/DirectoryController.vala',
     'Controllers/PlayerController.vala',
+    'Controllers/SearchController.vala',
 
     'Models/Countries.vala',
     'Models/Genre.vala',
     'Models/Station.vala',
-    'Models/StationStore.vala',
+
+    'Providers/RadioBrowser.vala',
 
     'Services/DBusMediaPlayer.vala',
     'Services/DBusInterface.vala',
-    'Services/RadioBrowser.vala',
-  #  'Services/LocationDiscovery.vala',
+    'Services/DataProvider.vala',
     'Services/HttpClient.vala',
-    'Services/Favicon.vala',
+    'Services/StarStore.vala',
 
-    'Widgets/AbstractContentList.vala',
-    'Widgets/ContentBox.vala',
+    'Widgets/base/ListFlowBox.vala',
+    'Widgets/base/DisplayButton.vala',
+    'Widgets/base/RevealLabel.vala',
+    'Widgets/base/CyclingRevealLabel.vala',
+    'Widgets/base/StationListBox.vala',
+    'Widgets/base/StackLabel.vala',
+    'Widgets/base/StationList.vala',
+
     'Widgets/HeaderBar.vala',
-    'Widgets/HeaderLabel.vala',
-    'Widgets/StationBox.vala',
+    'Widgets/PlayButton.vala',
+    'Widgets/ListButton.vala',
+    'Widgets/StationButton.vala',
     'Widgets/StationContextMenu.vala',
+    'Widgets/Display.vala',
     'Widgets/Window.vala',
     'Widgets/AboutDialog.vala',
-    'Widgets/WelcomeButton.vala',
-    #'Widgets/Theme.vala',
     'Widgets/CountryList.vala',
-    'Widgets/StationList.vala',
-    'Widgets/RevealLabel.vala',
     'Widgets/PreferencesPopover.vala',
 
+    'Settings.vala',
     'Application.vala',
     'Main.vala'
 )

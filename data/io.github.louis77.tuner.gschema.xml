@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<schemalist>
+    <schema path="/io/github/louis77/tuner/" id="io.github.louis77.tuner">
+        <key name="pos-x" type="i">
+            <default>0</default>
+            <summary>Horizontal position</summary>
+            <description>Saved horizontal position of main window</description>
+        </key>
+        <key name="pos-y" type="i">
+            <default>0</default>
+            <summary>Vertical position</summary>
+            <description>Saved vertical position of main window</description>
+        </key>
+        <key name="window-width" type="i">
+            <default>1040</default>
+            <summary>Window width</summary>
+            <description>Saved width of main window</description>
+        </key>
+        <key name="window-height" type="i">
+            <default>400</default>
+            <summary>Window height</summary>
+            <description>Saved height of main window</description>
+        </key>
+        <key name="do-not-track" type="b">
+            <default>false</default>
+            <summary>Do not participate in Station voting</summary>
+            <description>If enabled, do not send voting and popularity information to metadata provider</description>
+        </key>
+        <key name="start-on-starred" type="b">
+            <default>false</default>
+            <summary>Open to the Starred Stations view</summary>
+            <description>If enabled, opens to the starred stations view</description>
+        </key>
+        <key name="stream-info" type="b">
+            <default>true</default>
+            <summary>Show stream info when playing</summary>
+            <description>Cycle through the metadata from the playing stream</description>
+        </key>        
+        <key name="stream-info-fast" type="b">
+            <default>false</default>
+            <summary>Faster cycling through stream info</summary>
+            <description>Fast cycle through the metadata from the playing stream if show stream info is enabled</description>
+        </key>        
+        <key name="excluded-countries" type="as">
+            <default>[]</default>
+            <summary>Excluded Countries</summary>
+            <description>A list of ISO-3166-2 country codes where we don't show you stations from</description>
+        </key>
+        <key name="dark-mode" type="b">
+            <default>false</default>
+            <summary>Dark mode</summary>
+            <description>Deprecated: see "theme-mode"</description>
+        </key>     
+        <key name="auto-play" type="b">
+            <default>false</default>
+            <summary>Auto-play last station</summary>
+            <description>If enabled, when Tuner starts it will automatically start to play the last played station</description>
+        </key>
+        <key name="last-played-station" type="s">
+            <default>""</default>
+            <summary>Last played station</summary>
+            <description>Station UUID of station the was last played. Used for auto-play</description>
+        </key>
+        <key name="volume" type="d">
+            <default>0.5</default>
+            <summary>Volume control</summary>
+            <description>The last volume setting. Value from 0.0 to 1.0</description>
+        </key>
+        <key name="theme-mode" type="s">
+            <choices>
+                <choice value="system" />
+                <choice value="dark" />
+                <choice value="light" />
+            </choices>
+            <default>"system"</default>
+            <summary>Theme mode</summary>
+            <description>Which theme the app should use</description>
+        </key>    
+    </schema>
+</schemalist>

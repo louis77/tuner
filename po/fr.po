@@ -1,11 +1,11 @@
-# French translations for com.github.louis77.tuner package.
-# Copyright (C) 2020 THE com.github.louis77.tuner'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the com.github.louis77.tuner package.
+# French translations for io.github.louis77.tuner package.
+# Copyright (C) 2020 THE io.github.louis77.tuner'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the io.github.louis77.tuner package.
 # Nathan Bonnemains (@NathanBnm), 2020.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: com.github.louis77.tuner\n"
+"Project-Id-Version: io.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-08 19:49+0100\n"
 "PO-Revision-Date: 2020-09-28 11:48+0200\n"

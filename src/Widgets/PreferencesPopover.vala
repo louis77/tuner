@@ -2,6 +2,10 @@
  * SPDX-FileCopyrightText: Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
  * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
  *
+/**
+ * SPDX-FileCopyrightText: Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
+ * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
+ *
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * @file PreferencesPopover.vala
@@ -14,10 +18,10 @@
  */
 public class Tuner.PreferencesPopover : Gtk.Popover {
 
-    construct {
-        var about_menuitem = new Gtk.ModelButton ();
-        about_menuitem.text = _("About");
-        about_menuitem.action_name = Window.ACTION_PREFIX + Window.ACTION_ABOUT;
+	construct {
+		var about_menuitem = new Gtk.ModelButton ();
+		about_menuitem.text        = _("About");
+		about_menuitem.action_name = Window.ACTION_PREFIX + Window.ACTION_ABOUT;
 
         // Voting
         var disable_tracking_item = new Gtk.ModelButton ();
@@ -33,14 +37,14 @@ public class Tuner.PreferencesPopover : Gtk.Popover {
         theme_combo.halign = Gtk.Align.CENTER;
         theme_combo.active_id = Application.instance.settings.get_string("theme-mode");
 
-        theme_combo.changed.connect ((elem) => {
-            warning(@"Theme changed: $(elem.active_id)");
-            Application.instance.settings.set_string("theme-mode", elem.active_id);
-        });
+		theme_combo.changed.connect ((elem) => {
+			apply_theme_name(elem.active_id);
+			app().settings.theme_mode = elem.active_id;
+		});
 
-        var theme_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);
-        theme_box.pack_end (theme_combo, true, true, 5);
-        theme_box.pack_end (new Gtk.Label(_("Theme")), false, false, 12);
+		var theme_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);
+		theme_box.pack_end (theme_combo, true, true, 5);
+		theme_box.pack_end (new Gtk.Label(_("Theme")), false, false, 12);
 
         // Autoplay
         var autoplay_item = new Gtk.ModelButton ();

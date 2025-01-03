@@ -3,30 +3,87 @@
  * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
  */
 
-namespace Tuner.Model {
-    public class Genre {
-        public string name;
-        public string[] tags;
+using Gee;
 
-        public Genre (string name, string[] tags) {
-            this.name = name;
-            this.tags = tags;
+namespace Tuner.Model.Genre {
+
+    private static Set<string> PREDEFINED;
+
+    public static bool in_genre(string genre)
+    {
+        if ( PREDEFINED == null)
+        {
+            PREDEFINED = new HashSet<string>();
+            foreach( var a in GENRES) {PREDEFINED.add(a); }
+            foreach( var a in SUBGENRES) {PREDEFINED.add(a); }
+            foreach( var a in ERAS) {PREDEFINED.add(a); }
+            foreach( var a in TALK) {PREDEFINED.add(a); }
         }
+        return PREDEFINED.contains(genre);
     }
 
-    public Genre[] genres() {
-        return {
-            new Genre (_("70s"), {"70s"}),
-            new Genre (_("80s"), {"80s"}),
-            new Genre (_("90s"), {"90s"}),
-            new Genre (_("Classical"), {"classical"}),
-            new Genre (_("Country"), {"country"}),
-            new Genre (_("Dance"), {"dance"}),
-            new Genre (_("Electronic"), {"electronic"}),
-            new Genre (_("House"), {"house"}),
-            new Genre (_("Jazz"), {"jazz"}),
-            new Genre (_("Pop"), {"pop"}),
-            new Genre (_("Rock"), {"rock"})
-        };
-    }
+    public  const string[] GENRES = {
+        "Blues",
+        "Classical",
+        "Country",
+        "Dance",
+        "Disco",
+        "Easy",
+        "Folk",
+        "Hits",
+        "Jazz",
+        "Oldies",
+        "Pop",
+        "Rap",
+        "Rock",
+        "Soul"
+        };   
+
+    public  const string[] SUBGENRES = {
+        "Alternative",
+        "Ambient", 
+        "Club", 
+        "Electronic", 
+        "Funk",
+        "HipHop",
+        "House",
+        "Indie",
+        "Metal",
+        "Latino",
+        "Punk",
+        "Reggae",
+        "Salsa",
+        "World Music"
+    };     
+        
+    public  const string[] ERAS = {
+        "40s",
+        "50s",
+        "60s",
+        "70s",
+        "80s",
+        "90s",
+        "2000s",
+        "2010s",
+        "Contemporary"
+    };         
+        
+    public  const string[] TALK = 
+    {   "AM"
+        ,"Comedy"
+        ,"College Radio"
+        ,"Community Radio"
+        ,"Culture"
+        ,"Educational"
+        ,"Kids"
+        ,"Public Radio"
+        ,"News"
+        ,"Religion"
+        ,"Sport"
+        ,"Talk"
+    };               
 }
+
+
+
+

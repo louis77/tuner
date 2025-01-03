@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Tuner
+GenericName=Internet Radio Player
+Comment=Listen to Radio Stations all over the world
+Categories=AudioVideo;Audio;Video;Tuner;Player;Music;
+Exec=io.github.louis77.tuner
+Icon=io.github.louis77.tuner
+Terminal=false
+Keywords=Radio;Audio;Listen;Stations;Receiver;
