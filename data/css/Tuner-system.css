@@ -1,0 +1,86 @@
+/**
+ * SPDX-FileCopyrightText: Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
+ * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * @file Tuner-system.css
+ *
+ * Base CSS for Tuner - import this into superceding CSS
+ * 
+ * Nominal order is top-to-bottom, left-to-right
+ */
+
+/*
+    Station Label - top center top line
+*/
+.station-label {
+   font-weight: 500;
+    font-size: 12pt;
+    letter-spacing: -0.05em;
+}
+
+/*
+    Track Info - top center bottom line
+*/
+.track-info {
+   /* font-weight: 150; */
+    font-size: 11pt;
+    letter-spacing: -0.05em;
+}
+
+
+
+/* 
+    Stack 
+    The Lower right quadrant that makes up 3/4 of the real estate 
+*/
+.stack-label {
+    font-weight: 300;
+    font-size: 18pt;
+    letter-spacing: -0.05em;
+}
+
+
+/* 
+    Station Button 
+*/
+.station-button {
+	font-weight: 500;
+}
+
+/* Pops the Station button on hover with a transitioning border */
+.station-button:hover {
+        background-color: lighter(@bg_color);
+        border: 0.1px;
+        border-style: ridge;
+}
+
+/* Spaces the station button image */
+.station-button image {
+	background-color: darker(@bg_color);
+	margin-right: 5px;
+    min-width: 48px;
+}
+
+/* Description on 2nd line RHS of the station button */
+.station-button-description { 
+    font-size: 13px;
+    color: gray; 
+    background-color: transparent;
+    border: none;
+}
+
+/* Used in Station Button for Codec/Bitrate Tag, 2nd line, LHS */
+.tag {
+	border-radius: 5px;
+    box-shadow: none;
+    min-width: 20px;
+    min-height: 18px;
+    font-size: 11px;
+    font-weight: 400;
+    margin-top: 3px;
+    margin-left: -2px;
+    padding-bottom: 0px;
+}
+

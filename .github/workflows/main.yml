@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - development
     paths-ignore:
       - '.github/**'
       - 'docs/**'
@@ -14,7 +13,6 @@ on:
   pull_request:
     branches:
       - main
-      - development
     paths-ignore:
       - '.github/**'
       - 'docs/**'
@@ -30,7 +28,7 @@ jobs:
 
     # This job runs in a special container designed for building Flatpaks for AppCenter
     container:
-      image: ghcr.io/elementary/flatpak-platform/runtime:8
+      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-24.08
       options: --privileged
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -44,7 +42,7 @@ jobs:
         # This is the name of the Bundle file we're building and can be anything you like
         bundle: Tuner.flatpak
         # This uses your app's RDNN ID
-        manifest-path: com.github.louis77.tuner.yml
+        manifest-path: io.github.louis77.tuner.yml
 
         # You can automatically run any of the tests you've created as part of this workflow
         run-tests: true

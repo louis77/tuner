@@ -1,9 +1,9 @@
-/*
- * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2020-2022 Louis Brauer <louis@brauer.family>
- */
-
 /**
+ * SPDX-FileCopyrightText: Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
+ * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
  * @file HttpClient.vala
  * @author technosf
  * @date 2024-10-01
@@ -20,7 +20,8 @@ using Gee;
  * This class provides static methods for making HTTP requests using the Soup library.
  * It includes a singleton Soup.Session instance for efficient request handling.
  */
-public class Tuner.HttpClient : Object {
+public class Tuner.HttpClient : Object
+{
 
     /**
      * @brief Singleton instance of Soup.Session
@@ -30,6 +31,7 @@ public class Tuner.HttpClient : Object {
      * in the getSession() method.
      */
     private static Soup.Session _session;
+
 
     /**
      * @brief Get the singleton Soup.Session instance
@@ -55,9 +57,44 @@ public class Tuner.HttpClient : Object {
         }
         debug(@"Conns Max: $(_session.get_max_conns()), Conns PH: $(_session.get_max_conns_per_host())");
         return _session;
-    }
+    } // getSession
+
 
     /**
+     * @brief Perform a HEAD request to the specified URL
+     *
+     *  Does not sanity check the URL
+     *
+     * @param url_string The URL to send the GET request to     
+     * @return status_code the HTTP status code of the response
+     * @throws Error if there's an error sending the request or receiving the response
+     */
+     public static uint HEAD(Uri uri) 
+     {         
+        if ( app().is_offline) return 0;
+
+        var msg = new Soup.Message.from_uri("HEAD", uri);
+        /*
+            Ignore all TLS certificate errors
+        */
+        msg.accept_certificate.connect ((msg, cert, errors) => {
+            return true;
+        });
+
+        try { 
+            getSession().send(msg);
+            return msg.status_code;
+        } catch (Error e) {
+            warning("HEAD - Error accessing URL: %s (%s)",
+            uri.to_string(),
+                e.message);
+        }
+
+         return 0;
+     } // HEAD
+
+
+     /**
      * @brief Perform a GET request to the specified URL
      *
      * @param url_string The URL to send the GET request to
@@ -65,19 +102,15 @@ public class Tuner.HttpClient : Object {
      * @return InputStream containing the response body, or null if the request failed
      * @throws Error if there's an error sending the request or receiving the response
      */
-    public static InputStream? GET(string url_string, out uint status_code) 
+    public static InputStream? GET(Uri uri, out uint status_code) 
     {
-        status_code = 0;
-        
-        if (url_string == null || url_string.length < 4) // domains are at least 4 chars
-        {
-            warning("GET - Invalid URL: %s", url_string ?? "null");
-            return null;
-        }
+		debug(@"Get: $(uri.to_string()) ");
+		status_code = 0;
 
-        string sanitized_url = ensure_https_prefix(url_string);
+		if (app().is_offline)
+			return null;
 
-        var msg = new Soup.Message("GET", sanitized_url);
+        var msg = new Soup.Message.from_uri("GET", uri);
 
         /*
             Ignore all TLS certificate errors
@@ -87,23 +120,16 @@ public class Tuner.HttpClient : Object {
         });
 
         try {
-
-            if (Uri.is_valid(sanitized_url, UriFlags.NONE))
-            {
-                var inputStream = getSession().send(msg);
-                status_code = msg.status_code;
-                return inputStream;
-            } else {
-                debug("GET - Invalid URL format: %s", sanitized_url);
-            }
+            var inputStream = getSession().send(msg);
+            status_code = msg.status_code;
+            return inputStream;
         } catch (Error e) {
-            warning("GET - Error accessing URL: %s (%s)",
-                sanitized_url,
-                e.message);
+            warning(@"GET - Error accessing URL: $(uri.to_string()) ($(e.message))");
         }
 
         return null;
-    }
+    } // GET
+
 
     /**
      * @brief Perform an asynchronous GET request to the specified URL
@@ -112,29 +138,14 @@ public class Tuner.HttpClient : Object {
      * @param status_code Output parameter for the HTTP status code of the response
      * @return InputStream containing the response body, or null if the request failed
      */
-    public static async InputStream? GETasync(string url_string, out uint status_code) 
+    public static async InputStream? GETasync(Uri uri, int priority, out uint status_code) 
     {
         status_code = 0;
 
-        if (url_string == null || url_string.length  < 4 || url_string == "null") // domains are at least 4 chars
-        {
-            debug("GETasync - Invalid URL: %s", url_string ?? "null");
-            return null;
-        }
+		if (app().is_offline)
+			return null;
 
-        string sanitized_url = ensure_https_prefix(url_string);
-
-        try {
-            if (!Uri.is_valid(sanitized_url, UriFlags.NONE)) {
-                debug("GETasync - Invalid URL format: %s", sanitized_url);
-                return null;
-            }
-        } catch (GLib.UriError e) {
-            debug("GETasync - URI error: %s", e.message);
-            return null;
-        }
-
-        var msg = new Soup.Message("GET", sanitized_url);
+        var msg = new Soup.Message.from_uri("GET", uri);
 
         /*
             Ignore all TLS certificate errors
@@ -143,38 +154,26 @@ public class Tuner.HttpClient : Object {
             return true;
         });
 
-        try {
+		uint loop = 1;
+		do
+		/*
+		    Try three times
+		 */
+		{
+			try
+			{
+				var inputStream = yield getSession().send_async(msg, priority, app().offline_cancel);
+				status_code = msg.status_code;
+				if (status_code >= 200 && status_code < 300)
+					return inputStream;
+			} catch (Error e)
+			{
+				info(@"GETasync - Try $(loop) failed to fetch: $(uri.to_string()) $(e.message)");
+			}
+			yield nap(200 * loop);
+		} while (loop++ < 3);
 
-            var inputStream = yield getSession().send_async(msg, Priority.DEFAULT, null);
-            status_code = msg.status_code;
-            return inputStream;
-
-        } catch (Error e) {
-            warning("GETasync - Couldn't fetch resource: %s (%s)",
-                sanitized_url,
-                e.message);
-        }
-
+        info(@"GETasync - GETasync failed for: $(uri.to_string())");
         return null;
-    }
-
-    /**
-     * @brief Ensures that the given URL has an HTTPS prefix
-     *
-     * This method checks if the provided URL starts with either "http://" or "https://".
-     * If it doesn't have either prefix, it adds "https://" to the beginning of the URL.
-     *
-     * @param url The input URL string to be checked and potentially modified
-     * @return A string representing the URL with an HTTPS prefix
-     *
-     * @note This method does not validate the URL structure beyond checking for the protocol prefix
-     */
-    private static string ensure_https_prefix(string url) {
-        // Check if the string starts with "http://" or "https://"
-        if (!url.has_prefix("http://") && !url.has_prefix("https://")) {
-            // If it doesn't, prefix the string with "https://"
-            return "https://" + url;
-        }
-        return url;
-    }
+    } // GETasync
 }

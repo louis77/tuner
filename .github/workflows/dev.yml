@@ -1,0 +1,34 @@
+name: Build and Test
+
+on:      
+  push:
+    branches:
+      - development
+    paths-ignore:
+      - '.github/**'
+      - 'docs/**'
+      - '**.md'
+      - '**.mm'
+  pull_request:
+    branches:
+      - development
+    paths-ignore:
+      - '.github/**'
+      - 'docs/**'
+      - '**.md'
+      - '**.mm'
+      
+jobs:
+  flatpak:
+    name: "Flatpak"
+    runs-on: ubuntu-latest
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:freedesktop-24.08
+      options: --privileged
+    steps:
+    - uses: actions/checkout@v4
+    - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+      with:
+        bundle: io.github.louis77.tuner.flatpak
+        manifest-path: io.github.louis77.tuner.yml
+        cache-key: flatpak-builder-${{ github.sha }}

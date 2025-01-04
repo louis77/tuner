@@ -1,3 +1,15 @@
+/**
+ * SPDX-FileCopyrightText: Copyright © 2020-2024 Louis Brauer <louis@brauer.family>
+ * SPDX-FileCopyrightText: Copyright © 2024 technosf <https://github.com/technosf>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * @file Config.vala.in
+ *
+ * @brief App configuration template
+ * 
+ */
+ 
 public const string GETTEXT_PACKAGE = @GETTEXT_PACKAGE@;
 public const string LOCALEDIR = @LOCALEDIR@;
 public const string VERSION = @VERSION@;
