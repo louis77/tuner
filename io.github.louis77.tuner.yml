@@ -5,8 +5,10 @@ runtime: org.freedesktop.Platform
 runtime-version: '24.08'
 
 sdk: org.freedesktop.Sdk
-sdk-extensions:
-  - org.freedesktop.Sdk.Extension.vala
+
+## Commenting out - Aligning the app manifest with the flathub build 
+# sdk-extensions:
+#   - org.freedesktop.Sdk.Extension.vala
   
 #base: io.elementary.BaseApp
 #base-version: 'circe-24.08'
@@ -51,10 +53,31 @@ cleanup:
   - "*.a"
 
 modules:
-- name: vala
-  buildsystem: simple
-  build-commands:
-    - install -d /app/vala
+# - name: vala
+#   buildsystem: simple
+#   build-commands:
+#     - install -d /app/vala
+- name: vala-mod
+  buildsystem: meson
+  builddir: _build
+  modules:
+    - name: graphviz
+      buildsystem: autotools
+      sources:
+        - type: archive
+          url: "https://gitlab.com/graphviz/graphviz/-/archive/10.0.1/graphviz-10.0.1.tar.gz"
+          sha256: "28f452ef1cb12288c8758a62f8c3fcfefdb91b251f7aae61d0d703f851bde931"
+    - name: valac
+      buildsystem: autotools
+      cleanup:
+        - /share/info
+        - /share/man
+        - /share/doc
+        - /include
+      sources:
+        - type: archive
+          url: "https://download.gnome.org/sources/vala/0.56/vala-0.56.17.tar.xz"
+          sha256: "26100c4e4ef0049c619275f140d97cf565883d00c7543c82bcce5a426934ed6a"
 
 - name: libsoup
   buildsystem: meson
