@@ -291,15 +291,16 @@ namespace Tuner {
             var _favorites_file =  File.new_build_filename (data_dir, "favorites.json"); // v1 file
             var _starred_file =  File.new_build_filename (data_dir, Application.STARRED);   // v2 file
 
-            try {
-                _favorites_file.open_readwrite().close ();   // Try to open, if succeeds it exists, if not err - no migration
-                _starred_file.create(NONE); // Try to create, if fails starred already exists, if not ok to migrate
-                _favorites_file.copy (_starred_file, FileCopyFlags.NONE);  // Copy
-                warning(@"Migrated v1 Favorites to v2 Starred");
-            }     
-            catch (Error e) {
-                // Peconditions not met
-            }
+            /* Migration not possible with renamed app */
+            //  try {
+            //      _favorites_file.open_readwrite().close ();   // Try to open, if succeeds it exists, if not err - no migration
+            //      _starred_file.create(NONE); // Try to create, if fails starred already exists, if not ok to migrate
+            //      _favorites_file.copy (_starred_file, FileCopyFlags.NONE);  // Copy
+            //      warning(@"Migrated v1 Favorites to v2 Starred");
+            //  }     
+            //  catch (Error e) {
+            //      // Peconditions not met
+            //  }
 
             /* 
                 Create the cancellable.

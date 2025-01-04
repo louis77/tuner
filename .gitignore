@@ -15,3 +15,4 @@ tuner.code-workspace
 labelexpand.ods
 tuner-starred.m3u8
 uncrustify.cfg
+repo/*

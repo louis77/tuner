@@ -393,7 +393,10 @@ public class Tuner.PlayerController : GLib.Object
 							break;
 						case  GLib.Type.UINT:
 							list.get_uint(tag, out u);
-							_metadata_values.set ( tag,  @"$(u/1000)K");
+                            if ( u > 1000)
+                                _metadata_values.set ( tag,  @"$(u/1000)K");
+                            else
+                                _metadata_values.set ( tag,  u.to_string ());
 							break;
 						case  GLib.Type.BOOLEAN:
 							list.get_boolean (tag, out b);

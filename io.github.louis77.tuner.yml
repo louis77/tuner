@@ -8,8 +8,8 @@ sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.vala
   
-base: io.elementary.BaseApp
-base-version: 'circe-24.08'
+#base: io.elementary.BaseApp
+#base-version: 'circe-24.08'
   
 command: io.github.louis77.tuner
 
@@ -55,6 +55,7 @@ modules:
   buildsystem: simple
   build-commands:
     - install -d /app/vala
+
 - name: libsoup
   buildsystem: meson
   builddir: true
