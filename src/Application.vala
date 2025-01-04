@@ -331,7 +331,7 @@ namespace Tuner {
             player.state_changed_sig.connect ((station, state) => 
             // Do a provider click when starting to play a sation
             {
-                if ( !settings.do_not_track  && state == PlayerController.Is.PLAYING )
+                if ( !settings.do_not_vote  && state == PlayerController.Is.PLAYING )
                 {
                     provider.click(station.stationuuid);                
                     station.clickcount++;
@@ -343,7 +343,7 @@ namespace Tuner {
             // Every ten minutes of continuous playing tape counter sigs are emitted
             // Vote and click the station each time as appropriate
             {     
-                if ( settings.do_not_track ) return;
+                if ( settings.do_not_vote ) return;
                 if ( station.starred ) 
                 { 
                     provider.vote(station.stationuuid); 

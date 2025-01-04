@@ -149,7 +149,7 @@ public class Tuner.Window : Gtk.ApplicationWindow
 		set_geometry_hints (null, Gdk.Geometry() {
 			min_height = GEOMETRY_MIN_HEIGHT, min_width = GEOMETRY_MIN_WIDTH
 		}, Gdk.WindowHints.MIN_SIZE);
-		change_action_state (ACTION_DISABLE_TRACKING, settings.do_not_track);
+		change_action_state (ACTION_DISABLE_TRACKING, settings.do_not_vote);
 		change_action_state (ACTION_ENABLE_AUTOPLAY, settings.auto_play);
 		change_action_state (ACTION_START_ON_STARRED, settings.start_on_starred);
 		change_action_state (ACTION_STREAM_INFO, settings.stream_info);
@@ -295,9 +295,9 @@ public class Tuner.Window : Gtk.ApplicationWindow
      */
     public void on_action_disable_tracking (SimpleAction action, Variant? parameter) 
     {
-        settings.do_not_track = !settings.do_not_track;
-        action.set_state (settings.do_not_track);
-        debug (@"on_action_disable_tracking: $(settings.do_not_track)");
+        settings.do_not_vote = !settings.do_not_vote;
+        action.set_state (settings.do_not_vote);
+        debug (@"on_action_disable_tracking: $(settings.do_not_vote)");
     } // on_action_disable_tracking
 
 
