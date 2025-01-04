@@ -10,7 +10,7 @@
 public class Tuner.Settings : GLib.Settings 
 {  
     private const string SETTINGS_AUTO_PLAY = "auto-play";
-    private const string SETTINGS_DO_NOT_TRACK = "do-not-track";
+    private const string SETTINGS_DO_NOT_VOTE = "do-not-vote";
     private const string SETTINGS_LAST_PLAYED_STATION = "last-played-station";
     private const string SETTINGS_POS_X = "pos-x";
     private const string SETTINGS_POS_Y = "pos-y";
@@ -23,7 +23,7 @@ public class Tuner.Settings : GLib.Settings
     private const string SETTINGS_WINDOW_WIDTH = "window-width";
 
     public bool auto_play { get; set; }
-    public bool do_not_track { get; set; }
+    public bool do_not_vote { get; set; }
     public string last_played_station { get; set; }
     public bool start_on_starred { get; set; }
     public bool stream_info { get; set; }
@@ -48,7 +48,7 @@ public class Tuner.Settings : GLib.Settings
         _window_width = get_int(SETTINGS_WINDOW_WIDTH);
 
         auto_play = get_boolean(SETTINGS_AUTO_PLAY);
-        do_not_track = get_boolean(SETTINGS_DO_NOT_TRACK);
+        do_not_vote = get_boolean(SETTINGS_DO_NOT_VOTE);
         last_played_station = get_string(SETTINGS_LAST_PLAYED_STATION);
         start_on_starred = get_boolean(SETTINGS_START_ON_STARRED);
         stream_info = get_boolean(SETTINGS_STREAM_INFO);
@@ -80,7 +80,7 @@ public class Tuner.Settings : GLib.Settings
         set_int(SETTINGS_WINDOW_WIDTH, app().window.width);
 
         set_boolean(SETTINGS_AUTO_PLAY, auto_play);
-        set_boolean(SETTINGS_DO_NOT_TRACK, do_not_track);
+        set_boolean(SETTINGS_DO_NOT_VOTE, do_not_vote);
         set_string(SETTINGS_LAST_PLAYED_STATION, last_played_station);
         set_boolean(SETTINGS_START_ON_STARRED, start_on_starred);
         set_boolean(SETTINGS_STREAM_INFO, stream_info);

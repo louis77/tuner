@@ -333,14 +333,14 @@ public class Tuner.DirectoryController : Object
 	*/
 	public void count_station_click (Model.Station station)
 	{
-		if (!app().settings.do_not_track)
+		if (!app().settings.do_not_vote)
 		{
 			debug (@"Send listening event for station $(station.stationuuid)");
 			_provider.click (station.stationuuid);
 		}
 		else
 		{
-			debug ("do-not-track enabled, will not send listening event");
+			debug ("do-not-vote enabled, will not send listening event");
 		}
 	} // count_station_click
 

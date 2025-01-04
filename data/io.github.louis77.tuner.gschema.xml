@@ -22,7 +22,7 @@
             <summary>Window height</summary>
             <description>Saved height of main window</description>
         </key>
-        <key name="do-not-track" type="b">
+        <key name="do-not-vote" type="b">
             <default>false</default>
             <summary>Do not participate in Station voting</summary>
             <description>If enabled, do not send voting and popularity information to metadata provider</description>
