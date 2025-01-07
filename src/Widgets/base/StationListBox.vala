@@ -139,6 +139,7 @@ namespace Tuner
             _icon = new ThemedIcon (icon);
             
             item = new StationListItem (title, this, prepopulated);
+            item.tooltip = subtitle;
             item.icon = _icon;
             item.set_data<string> ("stack_child", name);  
 
@@ -359,25 +360,116 @@ namespace Tuner
             StationSet? data = null,
             string? action_tooltip_text = null,
             string? action_icon_name = null ) 
+        {
+            var slb = new StationListBox(
+                stack,
+                source_list,
+                category,
+                name,
+                icon,
+                title,
+                subtitle,
+                prepopulated,
+                data,
+                action_tooltip_text,
+                action_icon_name,
+                true);
+
+            stack.add_named (slb, name);
+
+            return slb;
+        } // create
+
+        /**
+        * @brief Creates a predefined category in the source list.
+        * @param stack The stack widget.
+        * @param source_list The source list widget.
+        * @param category The category to add to.
+        * @param name The name of the category.
+        * @param icon The icon for the category.
+        * @param title The title of the category.
+        * @param subtitle The subtitle of the category.
+        * @param stations The collection of stations for the category.
+        * @return The created SourceListBox for the category.
+        */
+        public static StationListBox create_category_predefined
+        ( StationListHookup slh
+        , Gtk.Stack stack
+        , Granite.Widgets.SourceList source_list
+        , Granite.Widgets.SourceList.ExpandableItem category
+        , string name
+        , string icon
+        , string title
+        , string subtitle
+        , Collection<Model.Station>? stations
+        )
+        {
+            var genre = StationListBox.create 
+                ( stack
+                , source_list
+                , category
+                , name
+                , icon
+                , title
+                , subtitle 
+                , true
+                );
+
+            if (stations != null)
             {
-                var slb = new StationListBox(
-                    stack,
-                    source_list,
-                    category,
-                    name,
-                    icon,
-                    title,
-                    subtitle,
-                    prepopulated,
-                    data,
-                    action_tooltip_text,
-                    action_icon_name,
-                    true);
+                var slist = StationList.with_stations (stations);
+                slh.station_list_hookup(slist);
+                genre.content = slist;
+            }
 
-                stack.add_named (slb, name);
+            return genre;
 
-                return slb;
-            } // create
+        } // create_category_predefined
+
+        /**
+        * @brief Creates a specific category in the source list.
+        * @param stack The stack widget.
+        * @param source_list The source list widget.
+        * @param category The category to add to.
+        * @param name The name of the category.
+        * @param icon The icon for the category.
+        * @param title The title of the category.
+        * @param subtitle The subtitle of the category.
+        * @param station_set The set of stations for the category.
+        * @param action_tooltip_text Optional tooltip text for the action.
+        * @param action_icon_name Optional icon name for the action.
+        * @return The created SourceListBox for the category.
+        */
+        public static StationListBox create_category_specific
+        ( Gtk.Stack stack,
+        Granite.Widgets.SourceList source_list,
+        Granite.Widgets.SourceList.ExpandableItem category,
+        string name,
+        string icon,
+        string title,
+        string subtitle,
+        StationSet station_set,
+        string? action_tooltip_text = null,
+        string? action_icon_name    = null
+        )
+        {
+            var genre = StationListBox.create
+            ( stack,
+            source_list,
+            category,
+            name,
+            icon,
+            title,
+            subtitle,
+            false,
+            station_set,
+            action_tooltip_text,
+            action_icon_name
+            );
+
+            return genre;
+        } // create_category_specific
+
     } // SourceListBox
 
 
@@ -392,7 +484,7 @@ namespace Tuner
     */
     public class StationListItem : SourceList.Item
     {
-        private bool populated;
+        private bool _populated;
         private StationListBox _slb;
 
         /**
@@ -407,7 +499,7 @@ namespace Tuner
                 title
             );
             _slb = slb;
-            populated = prepopulated;
+            _populated = prepopulated;
         }
 
         /**
@@ -420,8 +512,8 @@ namespace Tuner
         */
         public void populate( StationListHookup station_list, bool force = false )
         {
-            if ( ( populated && !force ) || app().is_offline ) return;
-            populated = true;
+            if ( ( _populated && !force ) || app().is_offline ) return;
+            _populated = true;
             try {
                 var? slist = StationList.with_stations (_slb.next_page ());
                 if ( slist != null ) 

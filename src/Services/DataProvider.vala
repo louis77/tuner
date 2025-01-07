@@ -210,11 +210,18 @@ namespace Tuner.DataProvider {
 
 
         /**
-         * @brief Number of tags available
+         * @brief Number of stations available
          *
-         * @return the number of available tags
+         * @return the number of available stations
          */
-        public abstract int available_tags();   
+         public abstract int available_stations();   
+
+         /**
+          * @brief Number of tags available
+          *
+          * @return the number of available tags
+          */
+         public abstract int available_tags();   
 
 
         /**
