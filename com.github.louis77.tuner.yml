@@ -1,5 +1,5 @@
 ---
-app-id: io.github.louis77.tuner
+app-id: com.github.louis77.tuner
 
 runtime: org.freedesktop.Platform
 runtime-version: '24.08'
@@ -11,7 +11,7 @@ sdk-extensions:
 #base: io.elementary.BaseApp
 #base-version: 'circe-24.08'
   
-command: io.github.louis77.tuner
+command: com.github.louis77.tuner
 
 build-options:
   prepend-path: /usr/lib/sdk/vala/bin/
@@ -31,7 +31,6 @@ finish-args:
   - "--filesystem=xdg-run/gvfsd"
   - "--filesystem=xdg-desktop"
   - "--share=network"
-  - "--metadata=X-DConf=migrate-path=/com/github/louis77/tuner/"
   - "--socket=pulseaudio"
   - "--talk-name=org.freedesktop.Notifications"
   - "--own-name=org.mpris.MediaPlayer2.Tuner"
