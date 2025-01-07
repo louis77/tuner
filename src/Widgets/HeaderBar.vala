@@ -145,7 +145,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 		{
 			if (app().is_offline)
 				return false;
-			tooltip.set_text(_(@"Data Provider: $(window.directory.provider())"));
+			tooltip.set_text(_(@"Data Provider: $(window.directory.provider())\n\n$(app().provider.available_stations()) Stations,\t$(app().provider.available_tags()) Tags"));
 			return true;
 		});
 
