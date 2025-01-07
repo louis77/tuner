@@ -1,5 +1,8 @@
 ---
-app-id: io.github.louis77.tuner
+app-id: com.github.louis77.tuner
+
+command: com.github.louis77.tuner
+
 
 runtime: org.freedesktop.Platform
 runtime-version: '24.08'
@@ -13,7 +16,6 @@ sdk: org.freedesktop.Sdk
 #base: io.elementary.BaseApp
 #base-version: 'circe-24.08'
   
-command: io.github.louis77.tuner
 
 build-options:
   prepend-path: /usr/lib/sdk/vala/bin/
@@ -62,14 +64,14 @@ modules:
   buildsystem: meson
   builddir: _build
   modules:
-    - name: graphviz
-      buildsystem: autotools
-      config-opts:
-        - --prefix=/app
-      sources:
-        - type: archive
-          url: "https://gitlab.com/graphviz/graphviz/-/archive/10.0.1/graphviz-10.0.1.tar.gz"
-          sha256: "28f452ef1cb12288c8758a62f8c3fcfefdb91b251f7aae61d0d703f851bde931"
+#    - name: graphviz
+#      buildsystem: autotools
+#      config-opts:
+#        - --prefix=/app
+#      sources:
+#        - type: archive
+#          url: "https://gitlab.com/graphviz/graphviz/-/archive/10.0.1/graphviz-10.0.1.tar.gz"
+#          sha256: "28f452ef1cb12288c8758a62f8c3fcfefdb91b251f7aae61d0d703f851bde931"
     - name: valac
       buildsystem: autotools
       config-opts:
@@ -99,16 +101,16 @@ modules:
       tag: 3.6.1
       commit: 8b46a93bc1cbadb22dcdbb6844d9616723376535
 
-- name: taglib
-  buildsystem: cmake-ninja
-  config-opts:
-    - "-DBUILD_SHARED_LIBS=ON"
-    - "-DCMAKE_BUILD_TYPE=Release"
-  sources:
-    - type: git
-      url: https://github.com/taglib/taglib.git
-      tag: v2.0.2
-      commit: e3de03501ff66221d1f1f971022b248d5b38ba06
+# - name: taglib
+#   buildsystem: cmake-ninja
+#   config-opts:
+#     - "-DBUILD_SHARED_LIBS=ON"
+#     - "-DCMAKE_BUILD_TYPE=Release"
+#   sources:
+#     - type: git
+#       url: https://github.com/taglib/taglib.git
+#       tag: v2.0.2
+#       commit: e3de03501ff66221d1f1f971022b248d5b38ba06
 
 - name: gee
   buildsystem: autotools
@@ -131,15 +133,9 @@ modules:
 
 - name: tuner
   buildsystem: meson
-  build-options:
-    cflags: "-g"
-    cxxflags: "-g"
-    buildtype: "debug"
   config-opts:
-  - "--buildtype=debug"
-  
+  - "--buildtype=release"
+  build-commands:
+      - install -Dm755 myapp /app/bin/myapp  
   post-install:
   - install -Dm644 /app/share/icons/hicolor/64x64/apps/${FLATPAK_ID}.svg  -t /app/share/icons/hicolor/128x128/apps/
-  sources:
-  - type: dir
-    path: .

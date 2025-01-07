@@ -29,6 +29,6 @@ jobs:
     - uses: actions/checkout@v4
     - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
       with:
-        bundle: io.github.louis77.tuner.flatpak
-        manifest-path: io.github.louis77.tuner.yml
+        bundle: com.github.louis77.tuner.flatpak
+        manifest-path: com.github.louis77.tuner.yml
         cache-key: flatpak-builder-${{ github.sha }}

@@ -6,13 +6,13 @@
    viewBox="0 0 64 64"
    xml:space="preserve"
    id="svg1076"
-   sodipodi:docname="io.github.louis77.tuner-symbolic.svg"
+   sodipodi:docname="com.github.louis77.tuner-symbolic.svg"
    inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
-   inkscape:export-filename="io.github.louis77.tuner-symbolic.png"
+   inkscape:export-filename="com.github.louis77.tuner-symbolic.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
-   width="48"
-   height="48"
+   width="16"
+   height="16"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -28,15 +28,15 @@
    guidetolerance="10"
    inkscape:pageopacity="0"
    inkscape:pageshadow="2"
-   inkscape:window-width="1145"
+   inkscape:window-width="1236"
    inkscape:window-height="735"
    id="namedview99"
    showgrid="false"
-   inkscape:zoom="7.375"
-   inkscape:cx="30.440678"
-   inkscape:cy="30.169492"
-   inkscape:window-x="14"
-   inkscape:window-y="208"
+   inkscape:zoom="14.75"
+   inkscape:cx="13.627119"
+   inkscape:cy="12.033898"
+   inkscape:window-x="204"
+   inkscape:window-y="242"
    inkscape:window-maximized="0"
    inkscape:current-layer="svg1076"
    inkscape:showpageshadow="2"
@@ -82,8 +82,9 @@
 </g>
 <g
    id="Layer_2"
-   transform="matrix(1.0114942,0,0,0.98412608,-0.36781132,-5.3650594)"
-   style="display:inline">
+   transform="matrix(1.10347,0,0,1.0475396,-3.312158,-11.901582)"
+   style="display:inline"
+   sodipodi:insensitive="true">
 	
 	
 		<radialGradient
