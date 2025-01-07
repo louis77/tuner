@@ -62,6 +62,7 @@ namespace Tuner.DataProvider {
         private ArrayList<string> _servers;
         private string _current_server = RBI_ALL_API;
         private int _degrade = DEGRADE_CAPITAL;
+        private int _available_stations = 1000;     // default guess
         private int _available_tags = 1000;     // default guess
 
 
@@ -74,6 +75,11 @@ namespace Tuner.DataProvider {
         public Status status { get; protected set; }
 
         public DataError? last_data_error { get; set; }
+
+		public int available_stations()
+		{
+			return _available_stations;
+		}
 
 		public int available_tags()
 		{
@@ -399,13 +405,14 @@ namespace Tuner.DataProvider {
                     parser.load_from_stream(stream, null);
                     rootnode = parser.get_root();
                     Json.Object json_object = rootnode.get_object();
+                    _available_stations = (int)json_object.get_int_member("stations");
                     _available_tags = (int)json_object.get_int_member("tags");
 
                 } catch (Error e) {
                     warning(@"Could not get server stats: $(e.message)");
                 }
             }
-            debug(@"response: $(status_code) - Tags: $(_available_tags)");
+            debug(@"response: $(status_code) - Stations: $(_available_stations) Tags: $(_available_tags)");
         } // stats
 
             

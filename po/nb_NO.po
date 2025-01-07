@@ -1,11 +1,11 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the io.github.louis77.tuner package.
+# This file is distributed under the same license as the com.github.louis77.tuner package.
 # Allan Nordhøy <epost@anotheragency.no>, 2022.
 # Jon Helgeland <jhelg@live.no>, 2022.
 msgid ""
 msgstr ""
-"Project-Id-Version: io.github.louis77.tuner\n"
+"Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: louis@brauer.family\n"
 "POT-Creation-Date: 2020-11-08 19:49+0100\n"
 "PO-Revision-Date: 2022-11-20 15:47+0000\n"
