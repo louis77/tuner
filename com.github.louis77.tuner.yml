@@ -1,21 +1,17 @@
 ---
 app-id: com.github.louis77.tuner
 
-command: com.github.louis77.tuner
-
-
 runtime: org.freedesktop.Platform
 runtime-version: '24.08'
 
 sdk: org.freedesktop.Sdk
-
-## Commenting out - Aligning the app manifest with the flathub build 
-# sdk-extensions:
-#   - org.freedesktop.Sdk.Extension.vala
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.vala
   
 #base: io.elementary.BaseApp
 #base-version: 'circe-24.08'
   
+command: com.github.louis77.tuner
 
 build-options:
   prepend-path: /usr/lib/sdk/vala/bin/
@@ -35,7 +31,6 @@ finish-args:
   - "--filesystem=xdg-run/gvfsd"
   - "--filesystem=xdg-desktop"
   - "--share=network"
-  - "--metadata=X-DConf=migrate-path=/com/github/louis77/tuner/"
   - "--socket=pulseaudio"
   - "--talk-name=org.freedesktop.Notifications"
   - "--own-name=org.mpris.MediaPlayer2.Tuner"
@@ -64,14 +59,14 @@ modules:
   buildsystem: meson
   builddir: _build
   modules:
-#    - name: graphviz
-#      buildsystem: autotools
-#      config-opts:
-#        - --prefix=/app
-#      sources:
-#        - type: archive
-#          url: "https://gitlab.com/graphviz/graphviz/-/archive/10.0.1/graphviz-10.0.1.tar.gz"
-#          sha256: "28f452ef1cb12288c8758a62f8c3fcfefdb91b251f7aae61d0d703f851bde931"
+    - name: graphviz
+      buildsystem: autotools
+      config-opts:
+        - --prefix=/app
+      sources:
+        - type: archive
+          url: "https://gitlab.com/graphviz/graphviz/-/archive/10.0.1/graphviz-10.0.1.tar.gz"
+          sha256: "28f452ef1cb12288c8758a62f8c3fcfefdb91b251f7aae61d0d703f851bde931"
     - name: valac
       buildsystem: autotools
       config-opts:
@@ -133,9 +128,15 @@ modules:
 
 - name: tuner
   buildsystem: meson
+  build-options:
+    cflags: "-g"
+    cxxflags: "-g"
+    buildtype: "debug"
   config-opts:
-  - "--buildtype=release"
-  build-commands:
-      - install -Dm755 myapp /app/bin/myapp  
+  - "--buildtype=debug"
+  
   post-install:
   - install -Dm644 /app/share/icons/hicolor/64x64/apps/${FLATPAK_ID}.svg  -t /app/share/icons/hicolor/128x128/apps/
+  sources:
+  - type: dir
+    path: .
