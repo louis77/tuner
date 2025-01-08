@@ -170,6 +170,7 @@ namespace Tuner {
 
         private static Gtk.Settings GTK_SETTINGS;
         private static string GTK_SYSTEM_THEME = "unset";
+        private static string ENV_LANG = "LANGUAGE";
 
         /** @brief Application version */
         public const string APP_VERSION = VERSION;
@@ -185,19 +186,57 @@ namespace Tuner {
 
         /** @brief Unicode character for out-of-date items */
         public const string EXCLAIM_CHAR = "⚠ ";
-
+    
         /** @brief File name for starred station sore */
         public const string STARRED = "starred.json";
+
+        public static Gee.Collection<string> LANGUAGES = new Gee.TreeSet<string>();
 
         /** @brief Connectivity monitoring*/
         private static NetworkMonitor NETMON = NetworkMonitor.get_default ();
 
         private static Gtk.CssProvider CSSPROVIDER = new Gtk.CssProvider();
 
+        public static string SYSTEM_THEME() { return GTK_SYSTEM_THEME; }
 
+        static construct 
+        {
+            // Interntionalization
+            Intl.setlocale (LocaleCategory.ALL, "");
+            Intl.bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+            Intl.bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+            Intl.textdomain (GETTEXT_PACKAGE);
+            LANGUAGES.add("en");    // App core language
+            try {
+                // Add translations
+                var dir = File.new_for_path(LOCALEDIR);
+                var enumerator = dir.enumerate_children("standard::*", FileQueryInfoFlags.NONE);
+                FileInfo info;
+                while ((info = enumerator.next_file()) != null) 
+                {
+                    if (info.get_file_type() == FileType.DIRECTORY && info.get_name() != "C") 
+                    {
+                        var lang_dir = dir.get_child(info.get_name());
+                        var mo_file = lang_dir.get_child("LC_MESSAGES").get_child(GETTEXT_PACKAGE + ".mo");
+                        if (mo_file.query_exists()) LANGUAGES.add(info.get_name());
+                    }
+                } //  while
+            } catch (Error e) {
+                warning(@"Error reading locale path: $(e.message)");
+            }            
+        }
 
         // -------------------------------------
 
+        public string language { 
+            get { return GLib.Environment.get_variable(ENV_LANG); }
+            set { 
+                if ( GLib.Environment.get_variable(ENV_LANG) == value 
+                || ( value != "" && !LANGUAGES.contains(value )) ) return;
+               GLib.Environment.set_variable(ENV_LANG, value, true);
+                settings.language = value;
+            }
+        }
 
         /** @brief Application settings */
         public Settings settings { get; construct; }  
@@ -222,7 +261,6 @@ namespace Tuner {
 
         public Cancellable offline_cancel { get; construct; }
 
-        public static string SYSTEM_THEME() { return GTK_SYSTEM_THEME; }
 
 
         /** @brief Are we online */
@@ -273,12 +311,7 @@ namespace Tuner {
         * @brief Construct block for initializing the application
         */
         construct 
-        {
-            Intl.setlocale (LocaleCategory.ALL, "");
-            Intl.bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-            Intl.bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-            Intl.textdomain (GETTEXT_PACKAGE);
-            
+        {           
             // Create required directories and files
 
             cache_dir = stat_dir(Environment.get_user_cache_dir ());
@@ -381,14 +414,10 @@ namespace Tuner {
         protected override void activate() 
         {
             if (window == null) { 
-                window = new Window (this, player, settings, directory); 
                 DBus.initialize (); 
-                settings.configure();  
 
                 GTK_SETTINGS = Gtk.Settings.get_default();
                 GTK_SYSTEM_THEME = GTK_SETTINGS.gtk_theme_name;
-                apply_theme_name( settings.theme_mode);                
-
                 CSSPROVIDER.load_from_resource ("/com/github/louis77/tuner/css/Tuner-system.css");
                 Gtk.StyleContext.add_provider_for_screen(
                     Gdk.Screen.get_default(),
@@ -396,6 +425,11 @@ namespace Tuner {
                     Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
                 );
 
+                apply_theme_name( settings.theme_mode);    
+                language = settings.language;  
+                     
+                window = new Window (this, player, settings, directory); 
+                settings.configure();  
                 add_window (window);
             } else {
                 window.present ();

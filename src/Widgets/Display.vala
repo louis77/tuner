@@ -271,7 +271,6 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             if (_first_activation)
             // One time set up - do post initialization
             {
-                //  TBD
                 _first_activation = false;
                 initialize.begin(() =>
                 {
@@ -323,11 +322,11 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             ,  _selections_category
             , "discover"
             , "face-smile"
-            , "Discover"
-            , "Stations to Discover"
+            , _("Discover")
+            , _("Stations to Discover")
             , false
             ,_directory.load_random_stations(20)
-            , "Discover more stations"
+            , _("Discover more stations")
             , "media-playlist-shuffle-symbolic");
         
         discover.action_button_activated_sig.connect (() => {
@@ -344,8 +343,8 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 		        _selections_category,
 		        "trending",
 		        "playlist-queue",
-		        "Trending",
-		        "Trending Stations in the last 24 hours",
+		        _("Trending"),
+		        _("Trending Stations in the last 24 hours"),
 		        _directory.load_trending_stations(40)
 		        );
 
@@ -359,8 +358,8 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
                 , _selections_category
                 , "popular"
                 , "playlist-similar"
-                , "Popular"
-                , "Most listened to Stations in the last 24 hours"
+                , _("Popular")
+                , _("Most listened to Stations in the last 24 hours")
                 ,_directory.load_popular_stations(40)
             );
     

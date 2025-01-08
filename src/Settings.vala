@@ -18,6 +18,7 @@ public class Tuner.Settings : GLib.Settings
     private const string SETTINGS_STREAM_INFO = "stream-info";
     private const string SETTINGS_STREAM_INFO_FAST = "stream-info-fast";
     private const string SETTINGS_THEME_MODE = "theme-mode";
+    private const string SETTINGS_LANGUAGE = "language";
     private const string SETTINGS_VOLUME = "volume";
     private const string SETTINGS_WINDOW_HEIGHT = "window-height";
     private const string SETTINGS_WINDOW_WIDTH = "window-width";
@@ -29,6 +30,7 @@ public class Tuner.Settings : GLib.Settings
     public bool stream_info { get; set; }
     public bool stream_info_fast { get; set; }
     public string theme_mode { get; set; }
+    public string language { get; set; }
     public double volume { get; set; }
 
     private int _pos_x;
@@ -54,6 +56,7 @@ public class Tuner.Settings : GLib.Settings
         stream_info = get_boolean(SETTINGS_STREAM_INFO);
         stream_info_fast = get_boolean(SETTINGS_STREAM_INFO_FAST);
         theme_mode = get_string(SETTINGS_THEME_MODE);
+        language = get_string(SETTINGS_LANGUAGE);
         volume = get_double(SETTINGS_VOLUME);
     } // Settings
 
@@ -62,8 +65,7 @@ public class Tuner.Settings : GLib.Settings
     {        
         app().window.resize(_window_width, _window_height);
         app().window.move(_pos_x, _pos_y);
-        app().player.volume = _volume;     
-        
+        app().player.volume = _volume;             
     } // configure
 
 
@@ -86,6 +88,7 @@ public class Tuner.Settings : GLib.Settings
         set_boolean(SETTINGS_STREAM_INFO, stream_info);
         set_boolean(SETTINGS_STREAM_INFO_FAST, stream_info_fast);
         set_string(SETTINGS_THEME_MODE, theme_mode);
+        set_string(SETTINGS_LANGUAGE, language);
         set_double(SETTINGS_VOLUME, app().player.volume);
     } // save
 } // Tuner.Settings
