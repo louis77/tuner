@@ -1,9 +1,9 @@
 # ![icon](docs/logo_01.png) Tuner [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0) [![Translation status](https://hosted.weblate.org/widgets/tuner/-/tuner-ui/svg-badge.svg)](https://hosted.weblate.org/engage/tuner/)
 
-## Minimalist radio station player
+## Minimalist radio station player - V2
 Discover and Listen to your favourite internet radio stations.
 
-![Screenshot 01](docs/screen_dark_1.4.2.png?raw=true)
+![Screenshot 01](docs/Tuner_2.0_discover.png?raw=true)
 
 ## Contributors wanted!
 
@@ -21,7 +21,7 @@ Yet, users keep sending bug reports and feature requests. I want `Tuner` to live
 
 Tuner translations are now hosted on [Weblate](https://hosted.weblate.org/engage/tuner/). Please help by translating Tuner into your language or fix any translation issues.
 
-[![Translation status](https://hosted.weblate.org/widgets/tuner/-/tuner-ui/multi-auto.svg)](https://hosted.weblate.org/engage/tuner/)
+[![Translation status](https://hosted.weblate.org/widgets/tuner/-/tuner/multi-auto.svg)](https://hosted.weblate.org/engage/tuner/)
 
 Thanks to the Weblate team for generously hosting Tuner for free.
 
@@ -42,15 +42,23 @@ Things I need help with:
 
 ### Flathub
 
-Tuner is available asa Flatpak on Flathub:
+Tuner is primarily available as a Flatpak on Flathub:
 https://flathub.org/apps/details/io.github.louis77.tuner
 
-### elementary OS
+### Local Build
+
+Build Tuner localy with the [development doc](DEVELOP.md).
+
+
+### Other Places
+Other packed versions of Tuner are available, but are maintained outside of Tuner itself: Versions may be out of date.
+
+#### elementary OS
 
 Install Tuner via elementary's App store:
 https://appcenter.elementary.io/io.github.louis77.tuner
 
-### Arch Linux / AUR
+#### Arch Linux / AUR
 Arch-based GNU/Linux users can find `Tuner` under the name [tuner-git](https://aur.archlinux.org/packages/tuner-git/) in the **AUR**:
 
 ```sh
@@ -58,12 +66,12 @@ $ yay -S tuner-git
 ```
 Thanks to [@btd1377](https://github.com/btd1337) for supporting Tuner on Arch Linux!
 
-### MX Linux
+#### MX Linux
 MX Linux users can find `Tuner` by using the MX Package Installer (currently under the MX Test Repo tab for MX-19 and the Stable Repo for MX-21)
 
 Thanks to SwampRabbit for packaging Tuner for MX Linux!
 
-### Pacstall
+#### Pacstall
 Pacstall is a totally new package manager for Ubuntu that provides an AUR-like community-driven repo for package builds. If you already use `pacstall` you can install Tuner:
 
 ```sh
@@ -130,8 +138,9 @@ This relates to Gtk looking for Xapp (which isn't used by Tuner) and can be igno
 
 ## Credits
 
+- [technosf](https://github.com/technosf) (_Me!_) Louis has been gracious enough to let me rewrite a swarthes of Tuner and create v2
 - [faleksandar.com](https://faleksandar.com/) for icons and colors
-- [radio-browser.info](http://www.radio-browser.info) for providing a free radio station directory
+- [faleksandar.com](https://faleksandar.com/) for icons and colors
 - [@NathanBnm](https://github.com/NathanBnm) - French translation
 - [@DevAlien](https://github.com/DevAlien) - Italian translation 
 - [@albanobattistella](https://github.com/albanobattistella) - Italian translation
