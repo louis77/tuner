@@ -10,10 +10,6 @@ message('Starting build for project: ' + meson.project_name())
 message('Build type: ' + get_option('buildtype'))
 
 
-# if meson.get_compiler ('vala').get_id() == 'valac'
-#     extra_args = ['-g', '--save_temps']
-# endif
-
 # Translation module
 i18n = import ('i18n')
 
@@ -59,6 +55,8 @@ dependencies = [
 
 subdir ('src')
 
+subdir ('po')
+
 # Executable
 executable (
     meson.project_name (),
@@ -70,7 +68,5 @@ executable (
 )
 
 subdir ('data')
-
-subdir ('po')
 
 message('Build for project: ' + meson.project_name() + ' finished.\n')
