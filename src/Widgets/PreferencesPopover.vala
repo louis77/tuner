@@ -65,11 +65,30 @@ public class Tuner.PreferencesPopover : Gtk.Popover
 		stream_info.action_name  = Window.ACTION_PREFIX + Window.ACTION_STREAM_INFO;
 		stream_info.tooltip_text = _("Cycle through the metadata from the playing stream");
 
-
 		var stream_info_fast = new Gtk.ModelButton ();
 		stream_info_fast.text         = _("Faster cycling through stream info");
 		stream_info_fast.action_name  = Window.ACTION_PREFIX + Window.ACTION_STREAM_INFO_FAST;
 		stream_info_fast.tooltip_text = _("Fast cycle through the metadata from the playing stream if show stream info is enabled");
+
+
+		//Language
+		var lang_combo = new Gtk.ComboBoxText ();
+		lang_combo.append("", _("Default"));
+		foreach( var lang in Application.LANGUAGES)
+		{
+			lang_combo.append(lang, lang);
+		}
+		lang_combo.halign    = Gtk.Align.CENTER;
+		lang_combo.active_id = app().settings.language;   // Initial state from settings
+
+		var lang_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);
+		lang_box.pack_end (lang_combo, true, true, 5);
+		lang_box.pack_end (new Gtk.Label(_("Language")), false, false, 12);
+		lang_box.tooltip_text = _("Requires restarting Tuner");
+
+		lang_combo.changed.connect ((elem) => {
+			app().language = elem.active_id;
+		});
 
 
 		// Export starred
@@ -123,7 +142,12 @@ public class Tuner.PreferencesPopover : Gtk.Popover
 
 		menu_grid.attach (new Gtk.SeparatorMenuItem (), 0, vpos++, 4, 1);
 
+		menu_grid.attach (lang_box, 0, vpos++, 4, 1);
+
+		menu_grid.attach (new Gtk.SeparatorMenuItem (), 0, vpos++, 4, 1);
+
 		menu_grid.attach (about_menuitem, 0, vpos++, 4, 1);
+		
 		menu_grid.show_all ();
 
 		this.add (menu_grid);
@@ -183,7 +207,7 @@ public class Tuner.PreferencesPopover : Gtk.Popover
 	public void import_stationuuids()
 	{
 		var dialog = new Gtk.FileChooserDialog(
-			"Choose a file",
+			_("Choose a file"),
 			app().window,
 			Gtk.FileChooserAction.OPEN,
 			"_Cancel", Gtk.ResponseType.CANCEL,

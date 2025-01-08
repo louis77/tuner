@@ -77,5 +77,10 @@
             <summary>Theme mode</summary>
             <description>Which theme the app should use</description>
         </key>    
+        <key name="language" type="s">
+            <default>""</default>
+            <summary>Display Language</summary>
+            <description>Language to use for UI</description>
+        </key>
     </schema>
 </schemalist>
