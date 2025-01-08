@@ -43,7 +43,8 @@ Things I need help with:
 ### Flathub
 
 Tuner is primarily available as a Flatpak on Flathub:
-https://flathub.org/apps/details/io.github.louis77.tuner
+https://flathub.org/apps/details/com.github.louis77.tuner
+
 
 ### Local Build
 
@@ -56,7 +57,7 @@ Other packed versions of Tuner are available, but are maintained outside of Tune
 #### elementary OS
 
 Install Tuner via elementary's App store:
-https://appcenter.elementary.io/io.github.louis77.tuner
+https://appcenter.elementary.io/com.github.louis77.tuner
 
 #### Arch Linux / AUR
 Arch-based GNU/Linux users can find `Tuner` under the name [tuner-git](https://aur.archlinux.org/packages/tuner-git/) in the **AUR**:
@@ -108,7 +109,7 @@ While I hacked on this App, I discovered so many cool and new stations, which ma
 ## Environment Variables
 
 * `TUNER_API` - a `:` separated list of API servers to read from, e.g.
-    * `export TUNER_API="de1.api.radio-browser.info:nl1.api.radio-browser.info"; io.github.louis77.tuner`
+    * `export TUNER_API="de1.api.radio-browser.info:nl1.api.radio-browser.info"; com.github.louis77.tuner`
 
 
 ## Build, Maintance and Development of Tuner
@@ -129,7 +130,7 @@ $ sudo apt install gstreamer1.0-libav
 ```
 
 #### 'Failed to load module "xapp-gtk3-module"'
-Running Tuner from the CLI with `flatpak run io.github.louis77.tuner` may produce a message like the following:
+Running Tuner from the CLI with `flatpak run com.github.louis77.tuner` may produce a message like the following:
 
 `Gtk-Message: 10:01:00.561: Failed to load module "xapp-gtk3-module"`
 

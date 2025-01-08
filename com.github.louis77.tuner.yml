@@ -1,19 +1,17 @@
 ---
-app-id: io.github.louis77.tuner
+app-id: com.github.louis77.tuner
 
 runtime: org.freedesktop.Platform
 runtime-version: '24.08'
 
 sdk: org.freedesktop.Sdk
-
-## Commenting out - Aligning the app manifest with the flathub build 
-# sdk-extensions:
-#   - org.freedesktop.Sdk.Extension.vala
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.vala
   
 #base: io.elementary.BaseApp
 #base-version: 'circe-24.08'
   
-command: io.github.louis77.tuner
+command: com.github.louis77.tuner
 
 build-options:
   prepend-path: /usr/lib/sdk/vala/bin/
@@ -33,7 +31,6 @@ finish-args:
   - "--filesystem=xdg-run/gvfsd"
   - "--filesystem=xdg-desktop"
   - "--share=network"
-  - "--metadata=X-DConf=migrate-path=/com/github/louis77/tuner/"
   - "--socket=pulseaudio"
   - "--talk-name=org.freedesktop.Notifications"
   - "--own-name=org.mpris.MediaPlayer2.Tuner"
@@ -99,16 +96,16 @@ modules:
       tag: 3.6.1
       commit: 8b46a93bc1cbadb22dcdbb6844d9616723376535
 
-- name: taglib
-  buildsystem: cmake-ninja
-  config-opts:
-    - "-DBUILD_SHARED_LIBS=ON"
-    - "-DCMAKE_BUILD_TYPE=Release"
-  sources:
-    - type: git
-      url: https://github.com/taglib/taglib.git
-      tag: v2.0.2
-      commit: e3de03501ff66221d1f1f971022b248d5b38ba06
+# - name: taglib
+#   buildsystem: cmake-ninja
+#   config-opts:
+#     - "-DBUILD_SHARED_LIBS=ON"
+#     - "-DCMAKE_BUILD_TYPE=Release"
+#   sources:
+#     - type: git
+#       url: https://github.com/taglib/taglib.git
+#       tag: v2.0.2
+#       commit: e3de03501ff66221d1f1f971022b248d5b38ba06
 
 - name: gee
   buildsystem: autotools

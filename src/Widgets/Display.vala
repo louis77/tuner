@@ -30,8 +30,8 @@ using Granite.Widgets;
  */
 public class Tuner.Display : Gtk.Paned, StationListHookup {
 
-	private const string BACKGROUND_TUNER                               = "/io/github/louis77/tuner/icons/background-tuner";
-	private const string BACKGROUND_JUKEBOX                             = "/io/github/louis77/tuner/icons/background-jukebox";
+	private const string BACKGROUND_TUNER                               = "/com/github/louis77/tuner/icons/background-tuner";
+	private const string BACKGROUND_JUKEBOX                             = "/com/github/louis77/tuner/icons/background-jukebox";
 	private const int EXPLORE_CATEGORIES                                = 5;     // How many explore categories to display
 	private const double BACKGROUND_OPACITY                             = 0.15;
 	private const int BACKGROUND_TRANSITION_TIME_MS                     = 1500;
@@ -338,14 +338,14 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 		/* ---------------------------------------------------------------------------
 		    Trending
 		 */
-		create_category_specific
+         StationListBox.create_category_specific
 		        ( stack,
 		        source_list,
 		        _selections_category,
 		        "trending",
 		        "playlist-queue",
 		        "Trending",
-		        "Trending in the last 24 hours",
+		        "Trending Stations in the last 24 hours",
 		        _directory.load_trending_stations(40)
 		        );
 
@@ -353,14 +353,14 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             Popular
         */
 
-        create_category_specific
+        StationListBox.create_category_specific
             ( stack
                 , source_list
                 , _selections_category
                 , "popular"
                 , "playlist-similar"
                 , "Popular"
-                , "Most-listened over 24 hours"
+                , "Most listened to Stations in the last 24 hours"
                 ,_directory.load_popular_stations(40)
             );
     
@@ -388,8 +388,9 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             Starred
         */
 
-        var starred = create_category_predefined
-            (   stack
+        var starred = StationListBox.create_category_predefined
+            (   this
+                , stack
                 , source_list
                 , _library_category
                 , "starred"
@@ -424,7 +425,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         , false
         , null
         , _("Save this search")
-        , "starred-symbolic");
+        , "non-starred-symbolic");
 
 		_search_results.tooltip_button.sensitive = false;
 		_search_controller = new SearchController(directory,this,_search_results );
@@ -477,7 +478,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             foreach (var tag in _directory.load_random_genres(EXPLORE_CATEGORIES))
             {
             if ( Model.Genre.in_genre (tag.name)) break;  // Predefined genre, ignore
-                create_category_specific( stack, source_list, _explore_category
+            StationListBox.create_category_specific( stack, source_list, _explore_category
                     , @"$(explore++)"   // tag names can have charaters that are not suitable for name
                     , "playlist-symbolic"
                     , tag.name
@@ -556,6 +557,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
     {
         SourceList.Item item = new SourceList.Item(_("Jukebox"));
         item.icon = new ThemedIcon("jukebox");
+        item.tooltip = _(@"Double click to shuffle through $(app().provider.available_stations()) stations,\none, every ten minutes, for $(app().provider.available_stations()/(6*24)) days");
         item.activated.connect(() =>
         {
                 _shuffle = true;
@@ -608,7 +610,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
      */
     private StationListBox add_saved_search(string search, StationSet station_set) //, StationList? content = null)//StationSet station_set)
     {
-        var saved_search = create_category_specific 
+        var saved_search = StationListBox.create_category_specific 
             ( stack
             , source_list
             , _saved_searches_category
@@ -618,7 +620,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             , _(@"Saved Search :  $search")
             , station_set
             , _("Remove this saved search")
-            , "non-starred-symbolic"
+            , "starred-symbolic"
             );
 
         //  if ( content != null ) { 
@@ -635,97 +637,6 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 
         return saved_search;
     } // refresh_saved_searches
-    
-
-    /**
-     * @brief Creates a predefined category in the source list.
-     * @param stack The stack widget.
-     * @param source_list The source list widget.
-     * @param category The category to add to.
-     * @param name The name of the category.
-     * @param icon The icon for the category.
-     * @param title The title of the category.
-     * @param subtitle The subtitle of the category.
-     * @param stations The collection of stations for the category.
-     * @return The created SourceListBox for the category.
-     */
-    private StationListBox create_category_predefined
-        ( Gtk.Stack stack
-        , Granite.Widgets.SourceList source_list
-        , Granite.Widgets.SourceList.ExpandableItem category
-        , string name
-        , string icon
-        , string title
-        , string subtitle
-        , Collection<Model.Station>? stations
-        )
-    {
-        var genre = StationListBox.create 
-            ( stack
-            , source_list
-            , category
-            , name
-            , icon
-            , title
-            , subtitle 
-            , true
-            );
-
-		if (stations != null)
-		{
-			var slist = StationList.with_stations (stations);
-			station_list_hookup(slist);
-			genre.content = slist;
-		}
-
-        return genre;
-    
-    } // create_category_predefined
-
-
-	/**
-	* @brief Creates a specific category in the source list.
-	* @param stack The stack widget.
-	* @param source_list The source list widget.
-	* @param category The category to add to.
-	* @param name The name of the category.
-	* @param icon The icon for the category.
-	* @param title The title of the category.
-	* @param subtitle The subtitle of the category.
-	* @param station_set The set of stations for the category.
-	* @param action_tooltip_text Optional tooltip text for the action.
-	* @param action_icon_name Optional icon name for the action.
-	* @return The created SourceListBox for the category.
-	*/
-	private StationListBox create_category_specific
-	        ( Gtk.Stack stack,
-	        Granite.Widgets.SourceList source_list,
-	        Granite.Widgets.SourceList.ExpandableItem category,
-	        string name,
-	        string icon,
-	        string title,
-	        string subtitle,
-	        StationSet station_set,
-	        string? action_tooltip_text = null,
-	        string? action_icon_name    = null
-	        )
-    {
-		var genre = StationListBox.create
-		                    ( stack,
-		                    source_list,
-		                    category,
-		                    name,
-		                    icon,
-		                    title,
-		                    subtitle,
-		                    false,
-		                    station_set,
-		                    action_tooltip_text,
-		                    action_icon_name
-		                    );
-
-		return genre;
-	} // create_category_specific
 
 
 	/**
@@ -745,7 +656,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 	        ){
 		foreach (var genre in genres )
 		{
-			create_category_specific(stack,
+			StationListBox.create_category_specific(stack,
 			                         source_list,
 			                         category,
 			                         genre,

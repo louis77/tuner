@@ -175,7 +175,7 @@ namespace Tuner {
         public const string APP_VERSION = VERSION;
         
         /** @brief Application ID */
-        public const string APP_ID = "io.github.louis77.tuner";
+        public const string APP_ID = "com.github.louis77.tuner";
         
         /** @brief Unicode character for starred items */
         public const string STAR_CHAR = "★ ";
@@ -292,15 +292,15 @@ namespace Tuner {
             var _starred_file =  File.new_build_filename (data_dir, Application.STARRED);   // v2 file
 
             /* Migration not possible with renamed app */
-            //  try {
-            //      _favorites_file.open_readwrite().close ();   // Try to open, if succeeds it exists, if not err - no migration
-            //      _starred_file.create(NONE); // Try to create, if fails starred already exists, if not ok to migrate
-            //      _favorites_file.copy (_starred_file, FileCopyFlags.NONE);  // Copy
-            //      warning(@"Migrated v1 Favorites to v2 Starred");
-            //  }     
-            //  catch (Error e) {
-            //      // Peconditions not met
-            //  }
+            try {
+                _favorites_file.open_readwrite().close ();   // Try to open, if succeeds it exists, if not err - no migration
+                _starred_file.create(NONE); // Try to create, if fails starred already exists, if not ok to migrate
+                _favorites_file.copy (_starred_file, FileCopyFlags.NONE);  // Copy
+                warning(@"Migrated v1 Favorites to v2 Starred");
+            }     
+            catch (Error e) {
+                // Peconditions not met
+            }
 
             /* 
                 Create the cancellable.
@@ -389,7 +389,7 @@ namespace Tuner {
                 GTK_SYSTEM_THEME = GTK_SETTINGS.gtk_theme_name;
                 apply_theme_name( settings.theme_mode);                
 
-                CSSPROVIDER.load_from_resource ("io/github/louis77/tuner/css/Tuner-system.css");
+                CSSPROVIDER.load_from_resource ("/com/github/louis77/tuner/css/Tuner-system.css");
                 Gtk.StyleContext.add_provider_for_screen(
                     Gdk.Screen.get_default(),
                     CSSPROVIDER,
