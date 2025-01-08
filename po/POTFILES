@@ -1,14 +1,13 @@
+src/Settings.vala
+src/Config.vala.in
 src/Controllers/PlayerController.vala
-
 src/Models/Station.vala
-
 src/Widgets/Display.vala
 src/Widgets/HeaderBar.vala
 src/Widgets/PreferencesPopover.vala
 src/Widgets/StationButton.vala
 src/Widgets/StationContextMenu.vala
 src/Widgets/Window.vala
-
 src/Widgets/base/StationListBox.vala
 
 
