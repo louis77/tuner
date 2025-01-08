@@ -1,9 +1,15 @@
-src/Models/Countries.vala
-src/Models/Genre.vala
+src/Controllers/PlayerController.vala
 
-src/Widgets/ContentBox.vala
+src/Models/Countries.vala
+src/Models/Station.vala
+
+src/Widgets/Display.vala
 src/Widgets/HeaderBar.vala
+src/Widgets/PreferencesPopover.vala
+src/Widgets/StationButton.vala
 src/Widgets/StationContextMenu.vala
 src/Widgets/Window.vala
 
-src/Application.vala
+src/Widgets/base/StationListBox.vala
+
+
