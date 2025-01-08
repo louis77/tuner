@@ -430,6 +430,8 @@ namespace Tuner {
                      
                 window = new Window (this, player, settings, directory); 
                 settings.configure();  
+                //app().window.resize(1000, 625);    // Screenshot sizing - round corners 80, ds op 1
+
                 add_window (window);
             } else {
                 window.present ();
