@@ -1,0 +1,6 @@
+option('translation',
+    type: 'combo',
+    choices: ['update','none'],
+    value: 'none',
+    description: 'Translation build mode'
+)
