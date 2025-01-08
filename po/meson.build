@@ -5,31 +5,36 @@
 message('Installing translations...')
 
 # Generate POT file if not a snapshot build
+if get_option('translation') == 'update'
+    pot = custom_target('pot',
+        input: 'POTFILES',
+        output: meson.project_name() + '.pot',
+        command: [
+            'xgettext',
+            '--files-from=@INPUT@',
+            '--output=' + meson.current_source_dir() + '/' + meson.project_name() + '.pot',
+            '--from-code=UTF-8',
+            '--package-name=' + meson.project_name(),
+            '--package-version=' + meson.project_version(),
+            '--keyword=_',
+            '--keyword=N_',
+            '--keyword=C_:1c,2',
+            '--keyword=NC_:1c,2',
+            '--add-comments=TRANSLATORS',
+            '--sort-output',
+            '--width=80',
+            '--foreign-user',
+            '--directory=' + meson.project_source_root(),
+        ]
+    )
+    
+    # Make POT a build dependency for translations in debug mode
+    translations = [pot]
+else
+    translations = []
+endif
 
-pot = custom_target('pot',
-    input: 'POTFILES',
-    output: meson.project_name() + '.pot',
-    command: [
-        'xgettext',
-        '--files-from=@INPUT@',
-        '--output=' + meson.current_source_dir() + '/' + meson.project_name() + '.pot',  # Output to source dir
-        '--from-code=UTF-8',
-        '--package-name=' + meson.project_name(),
-        '--package-version=' + meson.project_version(),
-        '--keyword=_',
-        '--keyword=N_',
-        '--keyword=C_:1c,2',
-        '--keyword=NC_:1c,2',
-        '--add-comments=TRANSLATORS',
-        '--sort-output',
-        '--width=80',
-        '--foreign-user',
-        '--directory=' + meson.project_source_root(),
-    ]
-)
-
-# Install translations - process each .po file
-translations = []
+# Process .po files
 foreach lang : run_command('cat', 'LINGUAS', check: true).stdout().strip().split('\n')
     po_file = lang + '.po'
     if run_command('test', '-f', po_file, check: false).returncode() == 0
