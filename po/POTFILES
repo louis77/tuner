@@ -1,6 +1,5 @@
 src/Controllers/PlayerController.vala
 
-src/Models/Countries.vala
 src/Models/Station.vala
 
 src/Widgets/Display.vala
