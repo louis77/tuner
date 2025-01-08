@@ -200,7 +200,6 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 		// Preferences button
 		_prefs_button.image  = new Image.from_icon_name ("open-menu", IconSize.LARGE_TOOLBAR);
 		_prefs_button.valign = Align.CENTER;
-		//  _prefs_button.sensitive = true;
 		_prefs_button.tooltip_text = _("Preferences");
 		_prefs_button.popover      = new Tuner.PreferencesPopover();
 
