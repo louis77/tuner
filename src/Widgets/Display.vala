@@ -181,7 +181,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         _saved_searches_category.expanded = false;
 
         _explore_category.collapsible = true;
-        _explore_category.expanded = false;
+        _explore_category.expanded = true;
 
         _genres_category.collapsible = true;
         _genres_category.expanded = false;
@@ -561,7 +561,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
         {
                 _shuffle = true;
                 jukebox_shuffle.begin();
-                app().player.shuffle_mode_sig(true);
+                app().shuffle_mode_sig(true);
                 _background_tuner.reveal_child = false;    
                 _background_jukebox.reveal_child = true; 
         });
@@ -589,7 +589,7 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
             if ( _shuffle ) 
             {
                 _shuffle = false;
-                app().player.shuffle_mode_sig(false);
+                app().shuffle_mode_sig(false);
                 _background_jukebox.reveal_child = false;
                 _background_tuner.reveal_child   = true;
             } // if

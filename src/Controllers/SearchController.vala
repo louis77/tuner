@@ -28,7 +28,7 @@ using Gee;
  */
 public class Tuner.SearchController : Object
 {
-	private const uint SEARCH_DELAY = 250;
+	private const uint SEARCH_DELAY = 333;
 	public signal void search_for_sig(string text);
 
 	private DirectoryController _directory;

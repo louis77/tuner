@@ -168,6 +168,9 @@ namespace Tuner {
     public class Application : Gtk.Application 
     {
 
+        /** @brief Signal emitted when the shuffle mode changes   */
+        public signal void shuffle_mode_sig(bool shuffle);
+
         private static Gtk.Settings GTK_SETTINGS;
         private static string GTK_SYSTEM_THEME = "unset";
         private static string ENV_LANG = "LANGUAGE";

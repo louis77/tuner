@@ -171,7 +171,7 @@ namespace Tuner.DBus {
 				trigger_metadata_update ();
 			});
 
-			app().player.shuffle_mode_sig.connect ((shuffle) =>
+			app().shuffle_mode_sig.connect ((shuffle) =>
 			{
 				_shuffle = shuffle;
 			});
