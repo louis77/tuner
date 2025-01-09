@@ -29,7 +29,7 @@ public class Tuner.PreferencesPopover : Gtk.Popover
 
 		//Theme
 		var theme_combo = new Gtk.ComboBoxText ();
-		theme_combo.append(THEME.SYSTEM.get_name (), _("Use System"));
+		theme_combo.append(THEME.SYSTEM.get_name (), _("System"));
 		theme_combo.append(THEME.LIGHT.get_name (), _("Light mode"));
 		theme_combo.append(THEME.DARK.get_name (), _("Dark mode"));
 		theme_combo.halign    = Gtk.Align.CENTER;
