@@ -4,17 +4,17 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
- * @file Station.vala
+ * @file Favicon.vala
  *
- * @brief Station metadata and related cachable objects
+ * @brief Favicon index, loading and caching
  * 
  */
 
 using Gee;
 
 /**
- * @class Station
- * @brief Represents a radio station with various properties.
+ * @class Favicon
+ * @brief Favicon location and loading.
  */
 public abstract class Tuner.Model.Favicon : Object
 {
@@ -41,7 +41,7 @@ public abstract class Tuner.Model.Favicon : Object
     public string favicon {
         get { return _favicon; }
         protected set {
-            if (_favicon == value || favicon == null || favicon.length == 0 ) return;            
+            if ( value == null || value.length == 0 || _favicon == value ) return;            
             _favicon = value;	
             try	            
             {
@@ -59,77 +59,34 @@ public abstract class Tuner.Model.Favicon : Object
     // ----------------------------------------------------------
     
     private Uri _favicon_uri;
-    private int _favicon_loaded = 0;  // Indicates the number of times the favicon has been loaded from cache or internet
+    private int _favicon_loaded = 0;  // Indicates the number of load attempts the favicon from cache or internet
     private Gdk.Pixbuf _favicon_pixbuf; // Favicon for this station
 
 
-    protected abstract string favicon_cache_file();
-
-    public int favicon_loaded()
-    { 
-        return _favicon_loaded;
-    }
     // ----------------------------------------------------------
     // Methods
     // ----------------------------------------------------------
 
+    /**
+     * @brief Abstract method to get the file path of the favicon cache.
+     *
+     * This method should be implemented by subclasses to provide the specific
+     * file path where the favicon cache is stored.
+     *
+     * @return A string representing the file path of the favicon cache.
+     */
+    protected abstract string favicon_cache_file();
+
     
     /**
-     * @brief Asynchronously loads the favicon for the station.
+     * @brief Has favicon been loaded.
      *
-     * Loads from cache is not requesting reload and cache exists
-     * Otherwise async calls to the website to download the favicon,
-     * then stores it in the cache and replaces the Station favicon
-     *
-     * @param {bool} reload - Whether to force reload the favicon.
+     * @return An integer indicating the status of the favicon loading process.
      */
-    protected async void load_favicon_async( bool reload = false )
-    {
-        /*  
-            Get favicon from cache file if file is in cache AND
-            Not requesting reload Or favicon is currently failing
-        */
-        if (    ( !reload || FAILING_FAVICON.contains(_favicon) )
-            &&  FileUtils.test(favicon_cache_file(), FileTest.EXISTS)) 
-            {
-            try {
-                var pixbuf = new Gdk.Pixbuf.from_file_at_scale(favicon_cache_file(), 48, 48, true);
-                _favicon_pixbuf = pixbuf;              
-                _favicon_loaded++;
-                favicon_sig();
-                return;
-            } catch (Error e) {
-                info(@"$(_favicon) - Failed to load cached favicon: $(e.message)");
-            }
-        }
-
-		if (_favicon_uri == null)
-			return;                                              // First load or reload requested and favicon is not failing
-
-        uint status_code;
-
-        InputStream? stream = yield HttpClient.GETasync(_favicon_uri, Priority.LOW, out status_code); // Will automatically try several times
-
-        if ( stream != null && status_code == 200 ) 
-        /*
-            Input stream OK
-        */
-        {
-            try {
-                var pixbuf = yield new Gdk.Pixbuf.from_stream_at_scale_async(stream, 48, 48, true,null);
-                pixbuf.save(favicon_cache_file(), "png");
-                _favicon_pixbuf = pixbuf;
-                 _favicon_loaded++;
-                favicon_sig();
-                return;
-
-            } catch (Error e) {
-                debug(@"$(_favicon) - Failed to process favicon $(_favicon_uri.to_string()) - $(e.message)");
-            }
-        }
-        info(@"$(_favicon) - Failed to load favicon $(_favicon_uri.to_string()) - Status code: $(status_code)");
-        FAILING_FAVICON.add(_favicon);
-    } // load_favicon_async
+    public int favicon_loaded()
+    { 
+        return _favicon_loaded;
+    }
 
 
     /**
@@ -176,4 +133,64 @@ public abstract class Tuner.Model.Favicon : Object
         } while ( reloading );
         return true;
     } // update_favicon_image
+
+    
+    /**
+     * @brief Asynchronously loads the favicon for the station.
+     *
+     * Loads from cache is not requesting reload and cache exists
+     * Otherwise async calls to the website to download the favicon,
+     * then stores it in the cache and replaces the Station favicon
+     *
+     * @param {bool} reload - Whether to force reload the favicon.
+     */
+    protected async void load_favicon_async( bool reload = false )
+    {
+        if ( _favicon_uri == null || ( !reload && _favicon_loaded > 0 )) return;
+
+        /*  
+            Get favicon from cache file if file is in cache AND
+            Not requesting reload Or favicon is currently failing
+        */
+        if (    ( !reload || FAILING_FAVICON.contains(_favicon) )
+            &&  FileUtils.test(favicon_cache_file(), FileTest.EXISTS)) 
+            {
+            try {
+                var pixbuf = new Gdk.Pixbuf.from_file_at_scale(favicon_cache_file(), 48, 48, true);
+                _favicon_pixbuf = pixbuf;              
+                _favicon_loaded++;
+                favicon_sig();
+                return;
+            } catch (Error e) {
+                info(@"$(_favicon) - Failed to load cached favicon: $(e.message)");
+            }
+        }
+
+		if (_favicon_uri == null)
+			return;                                              // First load or reload requested and favicon is not failing
+
+        uint status_code;
+
+        InputStream? stream = yield HttpClient.GETasync(_favicon_uri, Priority.LOW, out status_code); // Will automatically try several times
+
+        if ( stream != null && status_code == 200 ) 
+        /*
+            Input stream OK
+        */
+        {
+            try {
+                var pixbuf = yield new Gdk.Pixbuf.from_stream_at_scale_async(stream, 48, 48, true,null);
+                pixbuf.save(favicon_cache_file(), "png");
+                _favicon_pixbuf = pixbuf;
+                 _favicon_loaded++;
+                favicon_sig();
+                return;
+
+            } catch (Error e) {
+                debug(@"$(_favicon) - Failed to process favicon $(_favicon_uri.to_string()) - $(e.message)");
+            }
+        }
+        info(@"$(_favicon) - Failed to load favicon $(_favicon_uri.to_string()) - Status code: $(status_code)");
+        FAILING_FAVICON.add(_favicon);
+    } // load_favicon_async
 } // Station
