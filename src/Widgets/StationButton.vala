@@ -78,12 +78,12 @@ public class Tuner.StationButton : Tuner.DisplayButton
             Set the button image. Connect to the flag that the Station has loaded the favicon
             and when it set, update the image. Check that if its already loaded, load now.
         */        
-        favicon_handler_id = station.station_favicon_sig.connect(() => 
+        favicon_handler_id = station.favicon_sig.connect(() => 
         {
             station.disconnect(favicon_handler_id);
             station.update_favicon_image.begin (_favicon_image);
         });
-        if ( station.favicon_loaded > 0 ) 
+        if ( station.favicon_loaded() > 0 ) 
         {
             station.disconnect(favicon_handler_id);
             station.update_favicon_image.begin (_favicon_image);
@@ -137,7 +137,6 @@ public class Tuner.StationButton : Tuner.DisplayButton
         {
             tag = tag + " " + bitrate.to_string() + "k";
         }
-
         return tag;
     } // make_tag
 

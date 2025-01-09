@@ -16,7 +16,7 @@ using Gee;
  * @class Station
  * @brief Represents a radio station with various properties.
  */
-public class Tuner.Model.Station : Object
+public class Tuner.Model.Station : Favicon
 {
 
     // ----------------------------------------------------------
@@ -24,17 +24,15 @@ public class Tuner.Model.Station : Object
     // ----------------------------------------------------------
 
     // Stations with Favicons that failed to load
-    private static Set<string> STATION_FAILING_FAVICON = new HashSet<string>();
+    //  private static Set<string> STATION_FAILING_FAVICON = new HashSet<string>();
 
     // Core set of all station so far retrieved
     private static Map<string,Station> STATIONS = new HashMap<string,Station>();
 
-    private const int FADE_MS = 400;
 
     // Signals
     public signal void station_star_changed_sig( bool starred );  // Station starred state has changed
 
-    public signal void station_favicon_sig();  // Station favicon loaded
 
     // ----------------------------------------------------------
     // Properties
@@ -53,7 +51,7 @@ public class Tuner.Model.Station : Object
     /** @property {string} homepage - Homepage of the station. */
     public string	homepage	{ get; private set; }
     /** @property {string} favicon - Favicon URL of the station. */
-    public string	favicon	{ get; private set ; }
+    //  public string	favicon	{ get; private set ; }
     /** @property {string} tags - Tags associated with the station. */
     public string	tags	{ get; private set ; }
     /** @property {string} country - Country where the station is located. */
@@ -129,7 +127,7 @@ public class Tuner.Model.Station : Object
     }
 
 
-    public int favicon_loaded;  // Indicates the number of times the favicon has been loaded from cache or internet
+    //  public int favicon_loaded;  // Indicates the number of times the favicon has been loaded from cache or internet
     public bool is_in_index;    // Indicates if the station is in the provider index
     public bool is_up_to_date;  // Indicates if the station is up-to-date with the provider index
     public string up_to_date_difference = _("Station no longer in the index");
@@ -139,8 +137,8 @@ public class Tuner.Model.Station : Object
     // Privates
     // ----------------------------------------------------------
     
-    private Uri _favicon_uri;
-    private Gdk.Pixbuf _favicon_pixbuf; // Favicon for this station
+    //  private Uri _favicon_uri;
+    //  private Gdk.Pixbuf _favicon_pixbuf; // Favicon for this station
     private string _favicon_cache_file;
 
 
@@ -299,28 +297,9 @@ public class Tuner.Model.Station : Object
         is_up_to_date = false; // Basic station creation - assume not up-to-date with provider
 
 		/*
-		    Favicon setup
+		    Favicon load
 		 */
-		favicon_loaded      =  0;// Used to notify that favicon loaded
-		_favicon_cache_file = Path.build_filename(Application.instance.cache_dir, stationuuid);
-
-		if (favicon == null || favicon.length == 0)
-		{
-			STATION_FAILING_FAVICON.add(stationuuid);
-			debug(@"$(stationuuid) - Favicon missing");
-			return;
-		}
-
-		try
-		{
-			debug(@"$(stationuuid) - constructed - Start parse favicon URL: $(favicon)");
-			_favicon_uri = Uri.parse(favicon, NONE);
-		} catch (GLib.UriError e)
-		{
-			info(@"$(stationuuid) - Failed to parse favicon URL: $(e.message)");
-			STATION_FAILING_FAVICON.add(stationuuid);
-		}
-
+         _favicon_cache_file = Path.build_filename(Application.instance.cache_dir, stationuuid);
         load_favicon_async.begin();
     } // Station.basic
 
@@ -352,114 +331,6 @@ public class Tuner.Model.Station : Object
     public string to_string() {
         return @"[$(stationuuid)] $(name)";
     } // to_string
-
-
-    /**
-     * @brief Asynchronously loads the favicon for the station.
-     *
-     * Loads from cache is not requesting reload and cache exists
-     * Otherwise async calls to the website to download the favicon,
-     * then stores it in the cache and replaces the Station favicon
-     *
-     * @param {bool} reload - Whether to force reload the favicon.
-     */
-    private async void load_favicon_async( bool reload = false )
-    {
-        debug(@"$(stationuuid) - Start - load_favicon_async for favicon: $(favicon)");
-
-        /*  
-            Get favicon from cache file if file is in cache AND
-            Not requesting reload Or favicon is currently failing
-        */
-        if (    ( !reload || STATION_FAILING_FAVICON.contains(stationuuid) )
-            &&  FileUtils.test(_favicon_cache_file, FileTest.EXISTS)) 
-            {
-            try {
-                var pixbuf = new Gdk.Pixbuf.from_file_at_scale(_favicon_cache_file, 48, 48, true);
-                _favicon_pixbuf = pixbuf;              
-                debug(@"$(stationuuid) - Complete - load_favicon_async from cache stored in file://$(_favicon_cache_file)");
-                favicon_loaded++;
-                station_favicon_sig();
-                return;
-            } catch (Error e) {
-                info(@"$(stationuuid) - Failed to load cached favicon: $(e.message)");
-            }
-        }
-
-		if (_favicon_uri == null)
-			return;                                              // First load or reload requested and favicon is not failing
-
-        uint status_code;
-
-        InputStream? stream = yield HttpClient.GETasync(_favicon_uri, Priority.LOW, out status_code); // Will automatically try several times
-
-        if ( stream != null && status_code == 200 ) 
-        /*
-            Input stream OK
-        */
-        {
-            try {
-                var pixbuf = yield new Gdk.Pixbuf.from_stream_at_scale_async(stream, 48, 48, true,null);
-                pixbuf.save(_favicon_cache_file, "png");
-                _favicon_pixbuf = pixbuf;
-                debug(@"$(stationuuid) - Complete - load_favicon_async from internet for $(_favicon_uri.to_string())\nStored in file://$(_favicon_cache_file)");
-                favicon_loaded++;
-                station_favicon_sig();
-                return;
-
-            } catch (Error e) {
-                debug(@"$(stationuuid) - Failed to process favicon $(_favicon_uri.to_string()) - $(e.message)");
-            }
-        }
-        info(@"$(stationuuid) - Failed to load favicon $(_favicon_uri.to_string()) - Status code: $(status_code)");
-        STATION_FAILING_FAVICON.add(stationuuid);
-    } // load_favicon_async
-
-
-    /**
-     * @brief Asynchronously sets the given image to the station favicon, if available.
-     *
-     * Load the known icons first, and if reload, go around after trying the favicon url
-     *
-     * @param {Image} favicon_image - The favicon image to be updated.
-     * @param {bool} reload - Whether to force reload the favicon from source.
-     * @return {bool} True if the favicon was available and the image updated.
-     */
-    public async bool update_favicon_image( Gtk.Image favicon_image, bool reload = false, string defaulticon = "")
-    {
-        bool reloading = false;
-        do {           
-            try{
-                if ( _favicon_pixbuf == null || STATION_FAILING_FAVICON.contains(stationuuid)) 
-                {
-                    yield fade(favicon_image, FADE_MS, false);
-                    favicon_image.set_from_icon_name(defaulticon,Gtk.IconSize.DIALOG);
-                    yield fade(favicon_image, FADE_MS, true);
-                }
-                else{
-
-                    yield fade(favicon_image, FADE_MS, false);
-                    favicon_image.set_from_pixbuf(_favicon_pixbuf);
-                    yield fade(favicon_image, FADE_MS, true);
-                }
-            } finally {
-                favicon_image.opacity = 1;
-                reloading = false;
-            }
-            
-            if ( reload && favicon_loaded < 2 ) 
-            /*
-                Reload requested, and favicon has not had reload requested before
-            */
-            { 
-                STATION_FAILING_FAVICON.remove(stationuuid);    // Give possible 2nd chance
-                yield load_favicon_async(true); // Wait for load_favicon_async to complete
-                reloading = true;
-                reload = false;
-            }
-        } while ( reloading );
-        return true;
-    } // update_favicon_image
 
 
     /**
@@ -513,4 +384,21 @@ public class Tuner.Model.Station : Object
     {
         return STATIONS.get(stationuuid);
     } // updated
+
+    
+    /**
+     * @brief Compares this station with another station.
+     * @param other The station to compare with.
+     * @return {bool} True if stations are equal.
+     */
+    public bool equals(Station other)
+    {
+        return this.stationuuid == other.stationuuid;
+    } // equals
+
+
+    protected override string favicon_cache_file()
+    {
+        return _favicon_cache_file;
+    } // favicon_cache_file
 } // Station

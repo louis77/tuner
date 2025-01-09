@@ -539,7 +539,7 @@ public class Tuner.HeaderBar : Gtk.HeaderBar
 		*
 		* Desensitive when off-line
 		*/
-		public void handle_metadata_changed ( Model.Station station, PlayerController.Metadata metadata )
+		public void handle_metadata_changed ( Model.Station station, Model.Metadata metadata )
 		{
 			if (_metadata == metadata.pretty_print)
 				return;                                                                  // No change
