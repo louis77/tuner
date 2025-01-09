@@ -1,27 +1,18 @@
 ---
 app-id: com.github.louis77.tuner
 
+command: com.github.louis77.tuner
+
 runtime: org.freedesktop.Platform
 runtime-version: '24.08'
 
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.vala
-  
-#base: io.elementary.BaseApp
-#base-version: 'circe-24.08'
-  
-command: com.github.louis77.tuner
 
 build-options:
   prepend-path: /usr/lib/sdk/vala/bin/
   prepend-ld-library-path: /usr/lib/sdk/vala/lib
-  
-add-extensions:
-  org.freedesktop.Sdk.Extension.vala:
-    version: '24.08'
-    directory: vala
-    autodelete: true
 
 finish-args:
   - "--share=ipc"
@@ -35,7 +26,7 @@ finish-args:
   - "--talk-name=org.freedesktop.Notifications"
   - "--own-name=org.mpris.MediaPlayer2.Tuner"
   - "--env=PATH=/usr/bin:/app/bin:/app/vala/bin"
-  - "--env=LD_LIBRARY_PATH=/app/vala/lib:/app/lib:/lib"
+  - "--env=add-ld-path=/app/vala/lib:/app/lib:/lib"
 
 cleanup:
   - "/include"
@@ -54,32 +45,6 @@ modules:
   buildsystem: simple
   build-commands:
     - install -d /app/vala
-    
-- name: vala-mod
-  buildsystem: meson
-  builddir: _build
-  modules:
-    - name: graphviz
-      buildsystem: autotools
-      config-opts:
-        - --prefix=/app
-      sources:
-        - type: archive
-          url: "https://gitlab.com/graphviz/graphviz/-/archive/10.0.1/graphviz-10.0.1.tar.gz"
-          sha256: "28f452ef1cb12288c8758a62f8c3fcfefdb91b251f7aae61d0d703f851bde931"
-    - name: valac
-      buildsystem: autotools
-      config-opts:
-        - --prefix=/app
-      cleanup:
-        - /share/info
-        - /share/man
-        - /share/doc
-        - /include
-      sources:
-        - type: archive
-          url: "https://download.gnome.org/sources/vala/0.56/vala-0.56.17.tar.xz"
-          sha256: "26100c4e4ef0049c619275f140d97cf565883d00c7543c82bcce5a426934ed6a"
 
 - name: libsoup
   buildsystem: meson
@@ -96,22 +61,10 @@ modules:
       tag: 3.6.1
       commit: 8b46a93bc1cbadb22dcdbb6844d9616723376535
 
-# - name: taglib
-#   buildsystem: cmake-ninja
-#   config-opts:
-#     - "-DBUILD_SHARED_LIBS=ON"
-#     - "-DCMAKE_BUILD_TYPE=Release"
-#   sources:
-#     - type: git
-#       url: https://github.com/taglib/taglib.git
-#       tag: v2.0.2
-#       commit: e3de03501ff66221d1f1f971022b248d5b38ba06
-
 - name: gee
   buildsystem: autotools
   build-options:
     cflags: -Wno-error=incompatible-pointer-types
-  cleanup: ["*"]
   sources:
     - type: archive
       url: https://download.gnome.org/sources/libgee/0.20/libgee-0.20.6.tar.xz
@@ -128,13 +81,8 @@ modules:
 
 - name: tuner
   buildsystem: meson
-  build-options:
-    cflags: "-g"
-    cxxflags: "-g"
-    buildtype: "debug"
   config-opts:
-  - "--buildtype=debug"
-  
+  - "--buildtype=release"  
   post-install:
   - install -Dm644 /app/share/icons/hicolor/64x64/apps/${FLATPAK_ID}.svg  -t /app/share/icons/hicolor/128x128/apps/
   sources:

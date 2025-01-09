@@ -1,48 +1,88 @@
 ---
 app-id: com.github.louis77.tuner
-runtime: io.elementary.Platform
-runtime-version: '8'
-sdk: io.elementary.Sdk
+
 command: com.github.louis77.tuner
+
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.vala
+
+build-options:
+  prepend-path: /usr/lib/sdk/vala/bin/
+  prepend-ld-library-path: /usr/lib/sdk/vala/lib
+
 finish-args:
-- "--share=ipc"
-- "--socket=fallback-x11"
-- "--socket=system-bus"
-- "--socket=wayland"
-- "--talk-name=org.gtk.vfs.*"
-- "--filesystem=xdg-run/gvfsd"
-- "--filesystem=xdg-desktop"
-- "--share=network"
-- "--metadata=X-DConf=migrate-path=/com/github/louis77/tuner/"
-- "--socket=pulseaudio"
-- "--talk-name=org.freedesktop.Notifications"
-- "--own-name=org.mpris.MediaPlayer2.Tuner"
+  - "--share=ipc"
+  - "--socket=fallback-x11"
+  - "--socket=wayland"
+  - "--talk-name=org.gtk.vfs.*"
+  - "--filesystem=xdg-run/gvfsd"
+  - "--filesystem=xdg-desktop"
+  - "--share=network"
+  - "--socket=pulseaudio"
+  - "--talk-name=org.freedesktop.Notifications"
+  - "--own-name=org.mpris.MediaPlayer2.Tuner"
+  - "--env=PATH=/usr/bin:/app/bin:/app/vala/bin"
+  - "--env=add-ld-path=/app/vala/lib:/app/lib:/lib"
+
 cleanup:
-- "/include"
-- "/lib/pkgconfig"
-- "/share/pkgconfig"
-- "/share/aclocal"
-- "/man"
-- "/share/man"
-- "/share/gtk-doc"
-- "/share/vala"
-- "*.la"
-- "*.a"
+  - "/include"
+  - "/lib/pkgconfig"
+  - "/share/pkgconfig"
+  - "/share/aclocal"
+  - "/man"
+  - "/share/man"
+  - "/share/gtk-doc"
+  - "/share/vala"
+  - "*.la"
+  - "*.a"
+
 modules:
-- name: taglib
-  buildsystem: cmake-ninja
+- name: vala
+  buildsystem: simple
+  build-commands:
+    - install -d /app/vala
+
+- name: libsoup
+  buildsystem: meson
+  builddir: true
   config-opts:
-  - "-DBUILD_SHARED_LIBS=ON"
-  - "-DCMAKE_BUILD_TYPE=Release"
+    - "--buildtype=release"
+    - "-Dvapi=enabled"
+    - "-Dtests=false"
+    - "-Dgssapi=disabled"
+    - "-Dsysprof=disabled"
   sources:
-  - type: archive
-  # taglib updated in v1.5.3  
-    url: https://github.com/taglib/taglib/releases/download/v1.13.1/taglib-1.13.1.tar.gz
-    sha256: c8da2b10f1bfec2cd7dbfcd33f4a2338db0765d851a50583d410bacf055cfd0b
+    - type: git
+      url: https://gitlab.gnome.org/GNOME/libsoup.git
+      tag: 3.6.1
+      commit: 8b46a93bc1cbadb22dcdbb6844d9616723376535
+
+- name: gee
+  buildsystem: autotools
+  build-options:
+    cflags: -Wno-error=incompatible-pointer-types
+  sources:
+    - type: archive
+      url: https://download.gnome.org/sources/libgee/0.20/libgee-0.20.6.tar.xz
+      sha256: 1bf834f5e10d60cc6124d74ed3c1dd38da646787fbf7872220b8b4068e476d4d
+
+- name: granite
+  buildsystem: meson
+  config-opts:
+    - "--buildtype=release"
+  sources:
+    - type: archive
+      url: https://github.com/elementary/granite/archive/refs/tags/6.2.0.tar.gz
+      sha256: 067d31445da9808a802fca523630c3e4b84d2d7c78ae547ced017cb7f3b9c6b5
+
 - name: tuner
   buildsystem: meson
   config-opts:
-  - "--buildtype=release"
+  - "--buildtype=release"  
   post-install:
   - install -Dm644 /app/share/icons/hicolor/64x64/apps/${FLATPAK_ID}.svg  -t /app/share/icons/hicolor/128x128/apps/
   sources:
