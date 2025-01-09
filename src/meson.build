@@ -7,6 +7,8 @@ sources = files (
     'Models/Countries.vala',
     'Models/Genre.vala',
     'Models/Station.vala',
+    'Models/Favicon.vala',
+    'Models/StreamMetadata.vala',
 
     'Providers/RadioBrowser.vala',
 
