@@ -139,7 +139,7 @@ This relates to Gtk looking for Xapp (which isn't used by Tuner) and can be igno
 
 ## Credits
 
-- [technosf](https://github.com/technosf) (_Me!_) Louis has been gracious enough to let me rewrite a swarthes of Tuner and create v2
+- [technosf](https://github.com/technosf) (_Me!_) Louis has been gracious enough to let me rewrite a swarthe of Tuner and create v2
 - [faleksandar.com](https://faleksandar.com/) for icons and colors
 - [faleksandar.com](https://faleksandar.com/) for icons and colors
 - [@NathanBnm](https://github.com/NathanBnm) - French translation

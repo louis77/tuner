@@ -93,7 +93,7 @@
   </replaces>
 
   <releases>
-    <release version="2.0.0-BETA1" date="2025-01-02">
+    <release version="2.0.0" date="2025-01-10">
       <description>
         <p>New Version!</p>
         <ul>
