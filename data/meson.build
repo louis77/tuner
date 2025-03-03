@@ -75,7 +75,12 @@ settings_schemas = [ meson.project_name() + '.gschema.xml' ]
 
 install_data(settings_schemas, install_dir: schemas_dir)
 
-meson.add_install_script('glib-compile-schemas', schemas_dir, install_tag: 'schemas')
+meson.add_install_script(
+    'glib-compile-schemas',
+    '--targetdir=' + meson.project_build_root(),
+    schemas_dir,
+    install_tag: 'schemas'
+)
 
 
 message('Installed schema\n')
