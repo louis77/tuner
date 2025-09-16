@@ -214,8 +214,14 @@ public class Tuner.Display : Gtk.Paned, StationListHookup {
 			stack.visible_child_name    = selected_item;
 		});
 
-		pack1 (source_list, false, false);
-		pack2 (_overlay, true, false);
+		var sidebar_scroller = new Gtk.ScrolledWindow (null, null);
+		sidebar_scroller.set_policy (Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
+		sidebar_scroller.hexpand = false;
+		sidebar_scroller.vexpand = true;
+		sidebar_scroller.add (source_list);
+
+		pack1 (sidebar_scroller, false, true);
+		pack2 (_overlay, true, true);
 		set_position(200);
 
 	} // Display

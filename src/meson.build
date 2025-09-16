@@ -25,6 +25,7 @@ sources = files (
     'Widgets/base/StationListBox.vala',
     'Widgets/base/StackLabel.vala',
     'Widgets/base/StationList.vala',
+    'Widgets/base/GraniteShim.vala',
 
     'Widgets/HeaderBar.vala',
     'Widgets/PlayButton.vala',

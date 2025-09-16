@@ -324,9 +324,12 @@ namespace Tuner
         private static ScrolledWindow content_scroller(Gtk.Box content)
         {
             var scroller = new ScrolledWindow (null, null);
-            scroller.hscrollbar_policy = PolicyType.NEVER;
+            scroller.set_policy (PolicyType.NEVER, PolicyType.AUTOMATIC);
+            scroller.hexpand = true;
+            scroller.vexpand = true;
             scroller.add (content);
-            scroller.propagate_natural_height = true;        
+            // Avoid requesting full natural height of content, which can balloon the window
+            scroller.propagate_natural_height = false;
             return scroller;
         } // content_scroller
 

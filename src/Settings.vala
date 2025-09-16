@@ -63,8 +63,27 @@ public class Tuner.Settings : GLib.Settings
     
     public void configure()
     {        
-        app().window.resize(_window_width, _window_height);
-        app().window.move(_pos_x, _pos_y);
+        // Determine reasonable initial size
+        int w = _window_width > 0 ? _window_width : 1040;
+        int h = _window_height > 0 ? _window_height : 600;
+
+        // Clamp to screen bounds if available
+        var screen = Gdk.Screen.get_default();
+        if (screen != null) {
+            int sw = screen.get_width();
+            int sh = screen.get_height();
+            // leave some margin to allow grabbing borders
+            if (sw > 200 && sh > 200) {
+                w = (w < sw - 100) ? w : sw - 100;
+                h = (h < sh - 100) ? h : sh - 100;
+            }
+        }
+        app().window.set_default_size(w, h);
+
+        // Position and volume
+        if (_pos_x != 0 || _pos_y != 0) {
+            app().window.move(_pos_x, _pos_y);
+        }
         app().player.volume = _volume;             
     } // configure
 

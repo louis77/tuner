@@ -149,6 +149,10 @@ public class Tuner.Window : Gtk.ApplicationWindow
 		set_geometry_hints (null, Gdk.Geometry() {
 			min_height = GEOMETRY_MIN_HEIGHT, min_width = GEOMETRY_MIN_WIDTH
 		}, Gdk.WindowHints.MIN_SIZE);
+		// Ensure window is resizable and not maximized by default
+		resizable = true;
+		maximize();
+		unmaximize();
 		change_action_state (ACTION_DISABLE_TRACKING, settings.do_not_vote);
 		change_action_state (ACTION_ENABLE_AUTOPLAY, settings.auto_play);
 		change_action_state (ACTION_START_ON_STARRED, settings.start_on_starred);
