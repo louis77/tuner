@@ -2,13 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the com.github.louis77.tuner package.
 # TANIGUCHI Takaki <takaki@asis.media-as.org>, 2022.
+# ejlaner <everest@bodynaturally.ca>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: com.github.louis77.tuner\n"
 "Report-Msgid-Bugs-To: louis@brauer.family\n"
 "POT-Creation-Date: 2020-11-08 19:49+0100\n"
-"PO-Revision-Date: 2022-07-15 11:29+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2025-03-12 12:40+0000\n"
+"Last-Translator: ejlaner <everest@bodynaturally.ca>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/tuner/tuner-ui/"
 "ja/>\n"
 "Language: ja\n"
@@ -16,107 +17,87 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14-dev\n"
+"X-Generator: Weblate 5.10.3-dev\n"
 
 #: src/Models/Countries.vala:34
-#, fuzzy
 msgid "Afghanistan"
-msgstr "Afghanistan"
+msgstr "アフガニスタン"
 
 #: src/Models/Countries.vala:35
-#, fuzzy
 msgid "Åland Islands"
-msgstr "Åland Islands"
+msgstr "オーランド諸島"
 
 #: src/Models/Countries.vala:36
-#, fuzzy
 msgid "Albania"
-msgstr "Albania"
+msgstr "アルバニア"
 
 #: src/Models/Countries.vala:37
-#, fuzzy
 msgid "Algeria"
-msgstr "Algeria"
+msgstr "アルジェリア"
 
 #: src/Models/Countries.vala:38
-#, fuzzy
 msgid "American Samoa"
-msgstr "American Samoa"
+msgstr "アメリカ サモア"
 
 #: src/Models/Countries.vala:39
-#, fuzzy
 msgid "Andorra"
-msgstr "Andorra"
+msgstr "アンドラ"
 
 #: src/Models/Countries.vala:40
-#, fuzzy
 msgid "Angola"
-msgstr "Angola"
+msgstr "アンゴラ"
 
 #: src/Models/Countries.vala:41
-#, fuzzy
 msgid "Anguilla"
-msgstr "Anguilla"
+msgstr "アンギラ"
 
 #: src/Models/Countries.vala:42
-#, fuzzy
 msgid "Antarctica"
-msgstr "Antarctica"
+msgstr "南極大陸"
 
 #: src/Models/Countries.vala:43
-#, fuzzy
 msgid "Antigua and Barbuda"
-msgstr "Antigua and Barbuda"
+msgstr "アンティグア・バーブーダ"
 
 #: src/Models/Countries.vala:44
-#, fuzzy
 msgid "Argentina"
-msgstr "Argentina"
+msgstr "アルゼンチン"
 
 #: src/Models/Countries.vala:45
-#, fuzzy
 msgid "Armenia"
-msgstr "Armenia"
+msgstr "アルメニア"
 
 #: src/Models/Countries.vala:46
-#, fuzzy
 msgid "Aruba"
-msgstr "Aruba"
+msgstr "アルバ"
 
 #: src/Models/Countries.vala:47
-#, fuzzy
 msgid "Australia"
-msgstr "Australia"
+msgstr "オーストラリア"
 
 #: src/Models/Countries.vala:48
-#, fuzzy
 msgid "Austria"
-msgstr "Austria"
+msgstr "オーストリア"
 
 #: src/Models/Countries.vala:49
-#, fuzzy
 msgid "Azerbaijan"
-msgstr "Azerbaijan"
+msgstr "アゼルバイジャン"
 
 #: src/Models/Countries.vala:50
-#, fuzzy
 msgid "Bahamas"
-msgstr "Bahamas"
+msgstr "バハマ"
 
 #: src/Models/Countries.vala:51
-#, fuzzy
 msgid "Bahrain"
-msgstr "Bahrain"
+msgstr "バーレーン"
 
 #: src/Models/Countries.vala:52
-#, fuzzy
 msgid "Bangladesh"
-msgstr "Bangladesh"
+msgstr "バングラデシュ"
 
 #: src/Models/Countries.vala:53
-#, fuzzy
 msgid "Barbados"
-msgstr "Barbados"
+msgstr "バルバドス"
 
 #: src/Models/Countries.vala:54
 #, fuzzy
@@ -219,9 +200,8 @@ msgid "Cameroon"
 msgstr "Cameroon"
 
 #: src/Models/Countries.vala:74
-#, fuzzy
 msgid "Canada"
-msgstr "Canada"
+msgstr "カナダ"
 
 #: src/Models/Countries.vala:75
 #, fuzzy
